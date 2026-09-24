@@ -23,4 +23,6 @@ The flag did not add a meaningful gain after the low-acceptance gate disabled dr
 
 Use `spacemit/bench/bench-server.py` with `--draft-backend-sampling on` or `off`, the same model, and `--modes mtp --prompt-set frspec --n-predict 128`. For the combined mode use `--modes combined --prompt-set ngram --ngram-min 16 --ngram-max 16 --n-predict 160`. Keep `SPINE_SPEC_RS=1` and the TCM library path as in the integration guide. The new [raw JSONL records](raw/2026-09-24-sampling/) and the [control records](raw/2026-09-24-lowacc/) back the table.
 
+After committing the fallback as `f3e71c9` on the board branch `codex/lowacc-fallback` and rebuilding its normal `~/Projects/spacemit-llama/build/bin/llama-server`, a Chinese-then-English same-server smoke test with both `SPINE_SPEC_LOWACC=1` and CPU draft sampling measured 4.271 and 6.702 tokens/s, respectively, with the expected hashes. The record is `raw/2026-09-24-sampling/deployed-board.jsonl`.
+
 This is a candidate flag for dedicated greedy single-stream workloads on this board. Stochastic sampling and high concurrency were not measured; neither is covered by the recommendation.
