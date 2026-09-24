@@ -1,0 +1,403 @@
+diff --git a/ggml/include/ggml.h b/ggml/include/ggml.h
+index 92ba652..da4d08f 100644
+--- a/ggml/include/ggml.h
++++ b/ggml/include/ggml.h
+@@ -2580,6 +2580,12 @@ extern "C" {
+             struct ggml_tensor  * state,
+             int64_t               K);
+ 
++    // Write the final state into `state_out` instead of into the state tail of the op output and
++    // update the input state in place. This lets the caller pass its persistent state buffer and
++    // skip the follow-up write-back copy. Requires K == 1 and n_tokens == 1; the state tail of
++    // the op output is left untouched and must not be read.
++    GGML_API void ggml_gated_delta_net_set_state_out(struct ggml_tensor * tensor, struct ggml_tensor * state_out);
++
+     // DSA lightning indexer
+     //
+     // q:       [n_embd_idx, n_head_idx, n_batch, ne3 ]
+diff --git a/ggml/src/ggml-cpu/CMakeLists.txt b/ggml/src/ggml-cpu/CMakeLists.txt
+index ccf45bd..7f5478b 100644
+--- a/ggml/src/ggml-cpu/CMakeLists.txt
++++ b/ggml/src/ggml-cpu/CMakeLists.txt
+@@ -479,12 +479,20 @@ function(ggml_add_cpu_backend_variant_impl tag_name)
+                 ggml-cpu/spacemit/repack.h
+                 ggml-cpu/spacemit/ime_env.cpp
+                 ggml-cpu/spacemit/ime_env.h
+-                ggml-cpu/spacemit/ime1_kernels.cpp
+-                ggml-cpu/spacemit/ime2_kernels.cpp
+                 ggml-cpu/spacemit/ime_kernels.h
+                 ggml-cpu/spacemit/rvv_kernels.cpp
+                 ggml-cpu/spacemit/rvv_kernels.h
+             )
++            # IME kernels are spec-specific: only compile the one(s) the
++            # compiler probe in FindSMTIME.cmake actually detected. Compiling
++            # ime2_kernels.cpp without RISCV64_SPACEMIT_IME2 defined is a hard
++            # #error. Mirrors upstream ggml-org.
++            if ("RISCV64_SPACEMIT_IME1" IN_LIST RISCV64_SPACEMIT_IME_SPEC)
++                list(APPEND GGML_CPU_SOURCES ggml-cpu/spacemit/ime1_kernels.cpp)
++            endif()
++            if ("RISCV64_SPACEMIT_IME2" IN_LIST RISCV64_SPACEMIT_IME_SPEC)
++                list(APPEND GGML_CPU_SOURCES ggml-cpu/spacemit/ime2_kernels.cpp)
++            endif()
+         endif()
+         if(NOT GGML_CPU_ALL_VARIANTS)
+             set(MARCH_STR "rv64gc")
+diff --git a/ggml/src/ggml-cpu/ops.cpp b/ggml/src/ggml-cpu/ops.cpp
+index 8022ab4..c089b5b 100644
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -10732,6 +10732,48 @@ void ggml_compute_forward_solve_tri(const struct ggml_compute_params * params, s
+ }
+ 
+ // ggml_compute_forward_gated_delta_net
++#if defined(__riscv_v_intrinsic)
++// fused RVV decode step for the scalar-gate (non-kda) K=1 single-token case.
++// per row: gate-scale + dot(k) + rank-1 update + dot(q) in one pass.
++// kept as a separate noinline function: the exact op order and the m8 +
++// vfredusum reduction structure of the generic path are preserved, so
++// results are bitwise-identical - only the per-row calls and the extra
++// state sweeps are gone.
++__attribute__((noinline))
++static void ggml_gdn_decode_step_rvv(float * s_out, const float * k_d, const float * v_d,
++                                     const float * q_d, float ge, float beta_val, float scale,
++                                     int64_t S_v, float * attn_data) {
++    const size_t vlmax = __riscv_vsetvlmax_e32m8();
++    for (int64_t j = 0; j < S_v; ++j) {
++        float * row = s_out + j * S_v;
++        vfloat32m8_t acck = __riscv_vfmv_v_f_f32m8(0.0f, vlmax);
++        for (int64_t i = 0; i < S_v; ) {
++            const size_t vl = __riscv_vsetvl_e32m8(S_v - i);
++            vfloat32m8_t r = __riscv_vle32_v_f32m8(row + i, vl);
++            r = __riscv_vfmul_vf_f32m8(r, ge, vl);
++            __riscv_vse32_v_f32m8(row + i, r, vl);
++            acck = __riscv_vfmacc_vv_f32m8(acck, r, __riscv_vle32_v_f32m8(k_d + i, vl), vl);
++            i += vl;
++        }
++        const float sumk = __riscv_vfmv_f_s_f32m1_f32(__riscv_vfredusum_vs_f32m8_f32m1(
++                    acck, __riscv_vfmv_v_f_f32m1(0.0f, 1), vlmax));
++        const float dj = (v_d[j] - sumk) * beta_val;
++        vfloat32m8_t accq = __riscv_vfmv_v_f_f32m8(0.0f, vlmax);
++        for (int64_t i = 0; i < S_v; ) {
++            const size_t vl = __riscv_vsetvl_e32m8(S_v - i);
++            vfloat32m8_t r = __riscv_vle32_v_f32m8(row + i, vl);
++            r = __riscv_vfmacc_vf_f32m8(r, dj, __riscv_vle32_v_f32m8(k_d + i, vl), vl);
++            __riscv_vse32_v_f32m8(row + i, r, vl);
++            accq = __riscv_vfmacc_vv_f32m8(accq, r, __riscv_vle32_v_f32m8(q_d + i, vl), vl);
++            i += vl;
++        }
++        const float sumq = __riscv_vfmv_f_s_f32m1_f32(__riscv_vfredusum_vs_f32m8_f32m1(
++                    accq, __riscv_vfmv_v_f_f32m1(0.0f, 1), vlmax));
++        attn_data[j] = sumq * scale;
++    }
++}
++#endif
++
+ static void ggml_compute_forward_gated_delta_net_one_chunk(
+     const ggml_compute_params * params,
+     ggml_tensor * dst,
+@@ -10774,6 +10816,9 @@ static void ggml_compute_forward_gated_delta_net_one_chunk(
+ 
+     // K (snapshot slot count) is an op param; state holds s0 only [S_v, S_v, H, n_seqs].
+     const int64_t K = ggml_get_op_params_i32(dst, 0);
++    // op param 1, bit 0: the K == 1 final state goes into src[6] (see _set_state_out)
++    const bool state_out_external = K == 1 && (ggml_get_op_params_i32(dst, 1) & 1) != 0;
++    GGML_ASSERT(!state_out_external || dst->src[6] != nullptr);
+     GGML_ASSERT(K >= 1);
+     // per-seq stride in floats (seq s starts at state + s * seq_stride)
+     const int64_t state_seq_stride = src_state->nb[3] / sizeof(float);
+@@ -10795,7 +10840,9 @@ static void ggml_compute_forward_gated_delta_net_one_chunk(
+     // snapshot slot mapping: slot 0 = most recent state, slot s = s tokens back.
+     // When n_tokens < K only slots 0..n_tokens-1 are written; older slots are caller-owned.
+ 
+-    const float * state_in_base = (const float *)src_state->data;
++    const float * state_in_base   = (const float *)src_state->data;
++    float *       state_out_dst   = state_out_external ? (float *)dst->src[6]->data : nullptr;
++    const int64_t state_out_stride = state_out_external ? (int64_t) (dst->src[6]->nb[3] / sizeof(float)) : 0;
+ 
+   //const int64_t rq1 = nev1 / neq1;
+   //const int64_t rk1 = nev1 / nek1;
+@@ -10816,14 +10863,23 @@ static void ggml_compute_forward_gated_delta_net_one_chunk(
+ 
+         // For K=1, write directly to the single output slot to avoid an extra memcpy at the end.
+         // For K>1, work in scratch and copy out per-token when the slot is in range.
+-        float * s_out = (K > 1)
+-            ? state_work
+-            : state_out_base + (iv3 * H + iv1) * S_v * S_v;
++        // With an external state buffer the recurrence is staged into it directly, which folds
++        // the caller's write-back copy into this one.
++        float * s_out;
++        if (K > 1) {
++            s_out = state_work;
++        } else if (state_out_external) {
++            s_out = state_out_dst + iv3 * state_out_stride + iv1 * S_v * S_v;
++        } else {
++            s_out = state_out_base + (iv3 * H + iv1) * S_v * S_v;
++        }
+ 
+         // copy input state into the working buffer and operate in-place
+         // state layout [S_v, S_v, H, n_seqs]: seq iv3 starts at iv3 * state_seq_stride.
+         const float * s_in = state_in_base + iv3 * state_seq_stride + iv1 * S_v * S_v;
+-        memcpy(s_out, s_in, S_v * S_v * sizeof(float));
++        if (s_out != s_in) {
++            memcpy(s_out, s_in, S_v * S_v * sizeof(float));
++        }
+ 
+         // attn output pointer for first token of this (head, seq)
+         float * attn_data = attn_out_base + (iv3 * n_tokens * H + iv1) * S_v;
+@@ -10839,6 +10895,12 @@ static void ggml_compute_forward_gated_delta_net_one_chunk(
+             // state is stored transposed: s_out[j*S_v + i] = S[i][j]
+             // so row j of s_out = column j of S (contiguous access)
+ 
++#if defined(__riscv_v_intrinsic)
++            if (!kda && K == 1 && n_tokens == 1 && !(getenv("SPINE_GDN_RVV") != nullptr && getenv("SPINE_GDN_RVV")[0] == "0"[0])) {
++                ggml_gdn_decode_step_rvv(s_out, k_d, v_d, q_d, expf(g_d[0]), beta_val, scale, S_v, attn_data);
++            } else
++#endif
++            {
+             if (kda) {
+                 // precompute exp(g) into delta scratch (reused below)
+                 for (int64_t i = 0; i < S_v; ++i) {
+@@ -10870,6 +10932,7 @@ static void ggml_compute_forward_gated_delta_net_one_chunk(
+                 ggml_vec_dot_f32(S_v, &sum, 0, &s_out[j * S_v], 0, q_d, 0, 1);
+                 attn_data[j] = sum * scale;
+             }
++            }
+ 
+             attn_data += S_v * H; // advance to next token
+ 
+@@ -10882,6 +10945,7 @@ static void ggml_compute_forward_gated_delta_net_one_chunk(
+                 }
+             }
+         }
++
+     }
+ }
+ 
+diff --git a/ggml/src/ggml-cpu/spacemit/ime.cpp b/ggml/src/ggml-cpu/spacemit/ime.cpp
+index e1bcebc..2a9d43f 100644
+--- a/ggml/src/ggml-cpu/spacemit/ime.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime.cpp
+@@ -341,6 +341,13 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS> class tensor_
+ 
+         long          tcm_buffer_size = 0;
+         void *        tcm_buffer      = spacemit_spert_shared_buffer(&tcm_buffer_size);
++        if (getenv("SPINE_TCM_DEBUG")) {
++            static thread_local bool printed = false;
++            if (!printed) {
++                printed = true;
++                fprintf(stderr, "[tcmdbg] ith=%d shared_buffer=%p size=%ld\n", ith, tcm_buffer, tcm_buffer_size);
++            }
++        }
+ 
+         auto * quant_a_buffer = reinterpret_cast<uint8_t *>(ws_ptr);
+ 
+diff --git a/ggml/src/ggml.c b/ggml/src/ggml.c
+index 086b6ab..f754a22 100644
+--- a/ggml/src/ggml.c
++++ b/ggml/src/ggml.c
+@@ -6301,6 +6301,17 @@ struct ggml_tensor * ggml_gated_delta_net(
+     return result;
+ }
+ 
++void ggml_gated_delta_net_set_state_out(struct ggml_tensor * tensor, struct ggml_tensor * state_out) {
++    GGML_ASSERT(tensor->op == GGML_OP_GATED_DELTA_NET);
++    GGML_ASSERT(state_out != NULL);
++    GGML_ASSERT(ggml_nelements(state_out) == ggml_nelements(tensor->src[5]));
++
++    tensor->src[6] = state_out;
++
++    // op param 1, bit 0: the K == 1 state goes into src[6] instead of the output's state tail
++    ggml_set_op_params_i32(tensor, 1, ggml_get_op_params_i32(tensor, 1) | 1);
++}
++
+ // ggml_lightning_indexer
+ 
+ struct ggml_tensor * ggml_lightning_indexer(
+diff --git a/src/llama-context.cpp b/src/llama-context.cpp
+index 8794dc1..e5ee274 100644
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -234,6 +234,26 @@ llama_context::llama_context(
+     cparams.fused_gdn_ch = true;
+     cparams.auto_fgdn    = true;
+ 
++    // The K == 1 GDN state write-back can be folded into the op: the CPU kernel stages the final
++    // state straight into the recurrent cache, which removes one 1 MB copy per SSM layer per
++    // token. Only enable this when every layer runs on the CPU backend - other backends write
++    // the state into the op output and rely on the write-back copy in the graph.
++    cparams.gdn_state_inplace = model.hparams.n_layer() > 0;
++    for (uint32_t il = 0; il < model.hparams.n_layer(); ++il) {
++        const ggml_backend_dev_t dev = model.dev_layer((int) il);
++        if (dev == nullptr || ggml_backend_dev_type(dev) != GGML_BACKEND_DEVICE_TYPE_CPU) {
++            cparams.gdn_state_inplace = false;
++            break;
++        }
++    }
++
++    // SPINE_GDN_INPLACE=0 forces the write-back copy path (diagnostics / A-B control)
++    if (const char * env = getenv("SPINE_GDN_INPLACE")) {
++        if (env[0] == '0' && env[1] == '\0') {
++            cparams.gdn_state_inplace = false;
++        }
++    }
++
+     cparams.fused_lid    = true;
+     cparams.auto_flid    = true;
+ 
+diff --git a/src/llama-cparams.h b/src/llama-cparams.h
+index 58520ca..9df14d7 100644
+--- a/src/llama-cparams.h
++++ b/src/llama-cparams.h
+@@ -39,6 +39,7 @@ struct llama_cparams {
+     bool flash_attn;
+     bool auto_fa;
+     bool fused_gdn_ar;       // use fused gated delta net (autoregressive)
++    bool gdn_state_inplace;  // fold the GDN state write-back into the op (CPU backend only)
+     bool fused_gdn_ch;       // use fused gated delta net (chunked)
+     bool auto_fgdn;
+     bool fused_lid;          // use fused lightning indexer
+diff --git a/src/models/delta-net-base.cpp b/src/models/delta-net-base.cpp
+index ad66126..88ffa66 100644
+--- a/src/models/delta-net-base.cpp
++++ b/src/models/delta-net-base.cpp
+@@ -13,6 +13,13 @@ static ggml_tensor * get_slice_2d(ggml_context * ctx0, ggml_tensor * t, int64_t
+ 
+ llm_build_delta_net_base::llm_build_delta_net_base(const llm_graph_params & params) : llm_graph_context(params) {}
+ 
++// K == 1 single-token decode can fold the state write-back into the op: the op stages the final
++// state straight into the recurrent cache slot and the graph needs no write-back copy. Only
++// enabled when the CPU backend runs the op (see the check in the llama_context constructor).
++static bool gdn_state_inplace_enabled(const llama_cparams & cparams, int64_t n_tokens) {
++    return n_tokens == 1 && cparams.fused_gdn_ar && cparams.gdn_state_inplace;
++}
++
+ std::pair<ggml_tensor *, ggml_tensor *> llm_build_delta_net_base::build_delta_net_chunking(
+         ggml_tensor * q,
+         ggml_tensor * k,
+@@ -377,7 +384,8 @@ std::pair<ggml_tensor *, ggml_tensor *> llm_build_delta_net_base::build_delta_ne
+         ggml_tensor * g,
+         ggml_tensor * b,
+         ggml_tensor * s,
+-        int           il) {
++        int           il,
++        ggml_tensor * state_out) {
+     const int64_t S_k      = q->ne[0];
+     const int64_t H_k      = q->ne[1];
+     const int64_t n_tokens = q->ne[2];
+@@ -400,6 +408,10 @@ std::pair<ggml_tensor *, ggml_tensor *> llm_build_delta_net_base::build_delta_ne
+ 
+     // K=1: output carries the final state only. state s is 4D [S_v, S_v, H_v, n_seqs].
+     ggml_tensor * result = ggml_gated_delta_net(ctx0, q, k, v, g, b, s, /*K=*/1);
++    if (state_out != nullptr) {
++        GGML_ASSERT(n_tokens == 1);
++        ggml_gated_delta_net_set_state_out(result, state_out);
++    }
+     if (n_tokens == 1) {
+         res->add_fused_node({LLM_FUSED_OP_GDN_AR, result, il});
+     } else {
+@@ -429,18 +441,22 @@ std::pair<ggml_tensor *, ggml_tensor *> llm_build_delta_net_base::build_delta_ne
+         ggml_tensor * g,
+         ggml_tensor * b,
+         ggml_tensor * s,
+-        int           il) {
++        int           il,
++        ggml_tensor * state_out) {
+     const int64_t n_seq_tokens = q->ne[2];
+ 
+     if (n_seq_tokens == 1) {
+         if (cparams.fused_gdn_ar) {
+-            return build_delta_net_fused(q, k, v, g, b, s, il);
++            return build_delta_net_fused(q, k, v, g, b, s, il, state_out);
+         }
++        GGML_ASSERT(state_out == nullptr);
+         return build_delta_net_autoregressive(q, k, v, g, b, s, il);
+     }
+ 
++    GGML_ASSERT(state_out == nullptr);
++
+     if (cparams.fused_gdn_ch) {
+-        return build_delta_net_fused(q, k, v, g, b, s, il);
++        return build_delta_net_fused(q, k, v, g, b, s, il, nullptr);
+     }
+ 
+     return build_delta_net_chunking(q, k, v, g, b, s, il);
+@@ -546,12 +562,26 @@ ggml_tensor * llm_build_delta_net_base::build_recurrent_attn(
+     const bool keep = cparams.n_rs_seq > 0;
+ 
+     if (!keep) {
+-        auto attn_out = build_delta_net(q, k, v, g, b, s, il);
++        // with the folded write-back the op owns the state update, so hand it the cache slot and
++        // drop the write-back copy entirely
++        ggml_tensor * state_out = nullptr;
++        if (gdn_state_inplace_enabled(cparams, n_seq_tokens)) {
++            state_out = ggml_reshape_4d(ctx0,
++                    ggml_view_2d(ctx0, ssm_states_all, hparams.n_embd_s(), n_seqs, ssm_states_all->nb[1],
++                        kv_head * hparams.n_embd_s() * ggml_element_size(ssm_states_all)),
++                    S_v, S_v, H_v, n_seqs);
++        }
++
++        auto attn_out = build_delta_net(q, k, v, g, b, s, il, state_out);
+         ggml_tensor * output    = attn_out.first;
+         ggml_tensor * new_state = attn_out.second;
+         cb(output, "attn_output", il);
+         cb(new_state, "new_state", il);
+ 
++        if (state_out != nullptr) {
++            return output;
++        }
++
+         ggml_build_forward_expand(gf,
+                 ggml_cpy(ctx0, new_state,
+                     ggml_view_2d(ctx0, ssm_states_all, hparams.n_embd_s(), n_seqs, ssm_states_all->nb[1],
+diff --git a/src/models/models.h b/src/models/models.h
+index beab9f6..21eb067 100644
+--- a/src/models/models.h
++++ b/src/models/models.h
+@@ -54,7 +54,8 @@ struct llm_build_delta_net_base : public llm_graph_context {
+                 ggml_tensor * g,
+                 ggml_tensor * b,
+                 ggml_tensor * s,
+-                        int   il);
++                        int   il,
++                ggml_tensor * state_out = nullptr);
+ 
+     // choose one of two implementations above based on the number of tokens
+     std::pair<ggml_tensor *, ggml_tensor *> build_delta_net(
+@@ -64,7 +65,8 @@ struct llm_build_delta_net_base : public llm_graph_context {
+                 ggml_tensor * g,
+                 ggml_tensor * b,
+                 ggml_tensor * s,
+-                        int   il);
++                        int   il,
++                ggml_tensor * state_out = nullptr);
+ 
+     // read conv state from cache, concat with qkv_mixed, write back (single slot or per-token)
+     // qkv_mixed: (qkv_dim, n_seq_tokens, n_seqs); returns conv_input: (kernel_size + n_seq_tokens - 1, channels, n_seqs)
+diff --git a/src/models/qwen35.cpp b/src/models/qwen35.cpp
+index d8ffe43..c9a3f4b 100644
+--- a/src/models/qwen35.cpp
++++ b/src/models/qwen35.cpp
+@@ -387,8 +387,21 @@ ggml_tensor * llama_model_qwen35::graph::build_layer_attn_linear(
+ 
+     ggml_tensor * conv_input = build_conv_state(inp, conv_states_all, qkv_mixed, conv_kernel_size, conv_channels, il);
+ 
+-    ggml_tensor * state = build_rs(inp, ssm_states_all, hparams.n_embd_s(), n_seqs);
+-    state = ggml_reshape_4d(ctx0, state, head_v_dim, head_v_dim, num_v_heads, n_seqs);
++    ggml_tensor * state = nullptr;
++    if (n_seq_tokens == 1 && cparams.fused_gdn_ar && cparams.gdn_state_inplace &&
++            cparams.n_rs_seq <= 0 && (int64_t) mctx_cur->get_n_rs() == n_seqs && mctx_cur->get_rs_z() < 0) {
++        // decode fast path: hand the fused GDN op a direct view of the cache slot.
++        // the op then reads and updates the state in place (its s_in == s_out alias
++        // guard skips the staging memcpy) and the build_rs gather copy disappears.
++        // only valid when no slot maintenance (zeroing / extra copies) is pending.
++        state = ggml_reshape_4d(ctx0,
++                ggml_view_2d(ctx0, ssm_states_all, hparams.n_embd_s(), n_seqs, ssm_states_all->nb[1],
++                    (size_t) mctx_cur->get_head() * hparams.n_embd_s() * ggml_element_size(ssm_states_all)),
++                head_v_dim, head_v_dim, num_v_heads, n_seqs);
++    } else {
++        state = ggml_reshape_4d(ctx0, build_rs(inp, ssm_states_all, hparams.n_embd_s(), n_seqs),
++                head_v_dim, head_v_dim, num_v_heads, n_seqs);
++    }
+     cb(state, "state_predelta", il);
+ 
+     ggml_tensor * conv_output_proper = ggml_ssm_conv(ctx0, conv_input, conv_kernel);
