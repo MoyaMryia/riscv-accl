@@ -46,16 +46,16 @@ def prompts_frspec():
     }
 
 
-def mode_flags(mode, ngram_min):
+def mode_flags(mode, ngram_min, ngram_max, draft_p_min):
     if mode == 'plain':
         return []
     if mode == 'mtp':
-        return ['--spec-type', 'draft-mtp', '--spec-draft-n-max', '3']
-    ngram = ['--spec-ngram-mod-n-match', '16', '--spec-ngram-mod-n-min', str(ngram_min), '--spec-ngram-mod-n-max', '16']
+        return ['--spec-type', 'draft-mtp', '--spec-draft-n-max', '3', '--spec-draft-p-min', str(draft_p_min)]
+    ngram = ['--spec-ngram-mod-n-match', '16', '--spec-ngram-mod-n-min', str(ngram_min), '--spec-ngram-mod-n-max', str(ngram_max)]
     if mode == 'ngram':
         return ['--spec-type', 'ngram-mod'] + ngram
     if mode == 'combined':
-        return ['--spec-type', 'ngram-mod,draft-mtp', '--spec-draft-n-max', '3'] + ngram
+        return ['--spec-type', 'ngram-mod,draft-mtp', '--spec-draft-n-max', '3', '--spec-draft-p-min', str(draft_p_min)] + ngram
     raise ValueError(mode)
 
 
@@ -92,12 +92,24 @@ def main():
     parser.add_argument('--prompt-set', choices=('ngram', 'frspec'), default='ngram')
     parser.add_argument('--prompt', action='append', help='run only this prompt name; repeatable')
     parser.add_argument('--modes', nargs='+', choices=('plain', 'ngram', 'mtp', 'combined'), default=['plain', 'ngram', 'mtp', 'combined'])
-    parser.add_argument('--ngram-min', type=int, choices=(4, 8, 16), default=16)
+    parser.add_argument('--ngram-min', type=int, default=16)
+    parser.add_argument('--ngram-max', type=int, default=16, help='maximum n-gram draft length (default: 16)')
     parser.add_argument('--n-predict', type=int, default=160)
+    parser.add_argument('--draft-p-min', type=float, default=0.0, help='MTP draft confidence threshold (default: 0)')
+    parser.add_argument('--batch-size', type=int, default=32)
+    parser.add_argument('--ubatch-size', type=int, default=32)
     parser.add_argument('--port', type=int, default=18085)
     parser.add_argument('--output', type=Path, help='append JSONL results here')
     parser.add_argument('--log-dir', type=Path, default=Path('/tmp'))
     args = parser.parse_args()
+    if not 0.0 <= args.draft_p_min <= 1.0:
+        parser.error('--draft-p-min must be between 0 and 1')
+    if not 1 <= args.ngram_min <= args.ngram_max <= 1024:
+        parser.error('require 1 <= --ngram-min <= --ngram-max <= 1024')
+    if not 1 <= args.ubatch_size <= args.batch_size:
+        parser.error('require 1 <= --ubatch-size <= --batch-size')
+    if any(mode in ('ngram', 'combined') for mode in args.modes) and args.batch_size <= args.ngram_max:
+        parser.error('--batch-size must exceed --ngram-max to hold sampled and draft tokens')
 
     if not args.server.is_file() or not args.model.is_file():
         parser.error('server executable and model GGUF must exist')
@@ -123,9 +135,9 @@ def main():
         command = [
             str(args.server.resolve()), '-m', str(args.model.resolve()),
             '-t', '4', '-c', '8192', '--parallel', '1',
-            '-b', '32', '-ub', '32', '-fa', 'on',
+            '-b', str(args.batch_size), '-ub', str(args.ubatch_size), '-fa', 'on',
             '--host', '127.0.0.1', '--port', str(args.port),
-        ] + mode_flags(mode, args.ngram_min)
+        ] + mode_flags(mode, args.ngram_min, args.ngram_max, args.draft_p_min)
         with log_path.open('wb') as log:
             proc = subprocess.Popen(command, cwd=args.server.resolve().parent, env=os.environ.copy(),
                                     stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
@@ -138,6 +150,10 @@ def main():
                     digest = hashlib.sha256(result.get('content', '').encode()).hexdigest()
                     record = {
                         'model': label, 'mode': mode, 'prompt': name,
+                        'ngram_min': args.ngram_min if mode in ('ngram', 'combined') else None,
+                        'ngram_max': args.ngram_max if mode in ('ngram', 'combined') else None,
+                        'batch_size': args.batch_size, 'ubatch_size': args.ubatch_size,
+                        'draft_p_min': args.draft_p_min if mode in ('mtp', 'combined') else None,
                         'prompt_tokens': timings.get('prompt_n'),
                         'tokens': result.get('tokens_predicted'),
                         'tps': timings.get('predicted_per_second'),
