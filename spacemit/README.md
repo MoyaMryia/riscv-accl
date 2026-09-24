@@ -48,8 +48,11 @@ SPINE_SPEC_RS=1 ./build/bin/llama-server \
   -t 4 -c 8192 --parallel 1 -b 32 -ub 32 -fa on \
   --spec-type ngram-mod,draft-mtp \
   --spec-ngram-mod-n-match 16 --spec-ngram-mod-n-min 16 \
-  --spec-ngram-mod-n-max 16 --spec-draft-n-max 3
+  --spec-ngram-mod-n-max 16 --spec-draft-n-max 3 \
+  --no-spec-draft-backend-sampling
 ```
+
+On six tested 2B greedy single-stream prompts, CPU-side MTP draft sampling (`--no-spec-draft-backend-sampling`) improved decode by 0.8–3.1% with identical outputs; the 4B one-pass gains were about 1%. The flag was not tested for stochastic sampling or high concurrency.
 
 For a general server with up to eight concurrent requests, use the default checkpoint rollback and speculative gate from patches 0003–0004: omit `SPINE_SPEC_RS=1`, use `--parallel 8 -c 16384`, and start with `--spec-type draft-mtp --spec-draft-n-max 3`. That configuration was measured at 13.85 aggregate tokens/s for 2B at concurrency 8; the single-stream RS setting lost throughput under high concurrency. N-gram-first mode was only measured with one active stream.
 
@@ -62,6 +65,7 @@ After applying optional patch 0006, set `SPINE_SPEC_LOWACC=1` on a dedicated sin
 - [N-gram plus MTP experiment](reports/2026-09-24-ngram.md): 2B near-copy C++ editing improved from 7.994 to about 10.36 decode tokens/s with a full 16-token n-gram match; Python edit and prose were effectively tied. The 4B C++ result improved 3.390 to 3.634 tokens/s in one pass.
 - [Speculative settings sweep](reports/2026-09-24-spec-sweep.md) rules out longer n-gram bursts and a single global MTP confidence threshold on the tested prompts.
 - [Adaptive low-acceptance fallback](reports/2026-09-24-lowacc.md) records paired 2B/4B runs and reset behavior.
+- [CPU-side MTP draft sampling](reports/2026-09-24-cpu-sampling.md) records the small measured gain from the existing sampler flag.
 - [Benchmark runner](bench/README.md) freezes those prompt families and reports response hashes. The archived reports retain their original board-local paths and historical statements; use this directory for the integrated reproduction steps.
 
 These are measured results on one X60 board and a small set of prompts. The copy-heavy n-gram setting and corpus-dependent 32k map are experimental choices, not universal defaults.
