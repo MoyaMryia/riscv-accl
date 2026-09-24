@@ -1,0 +1,124 @@
+diff --git a/common/common.cpp b/common/common.cpp
+index 5077d53..f688893 100644
+--- a/common/common.cpp
++++ b/common/common.cpp
+@@ -1593,9 +1593,14 @@ struct llama_context_params common_context_params_to_llama(const common_params &
+     cparams.n_ctx             = params.n_ctx;
+     cparams.n_seq_max         = params.n_parallel;
+     cparams.n_rs_seq          = params.speculative.need_n_rs_seq();
+-    if (getenv("SPINE_SPEC_NO_RS")) {
+-        cparams.n_rs_seq = 0; // disable rs snapshots: rollback falls back to checkpoints
+-                              // keeps the GDN in-place decode fast path active when not speculating
++    {
++        // default: no rs snapshots (checkpoint rollback) - keeps the GDN in-place decode fast
++        // path available; snapshots cost ~30% at high concurrency even when not speculating.
++        // SPINE_SPEC_RS=1 re-enables snapshot rollback (best single-stream spec latency).
++        const char * e = getenv("SPINE_SPEC_RS");
++        if (e == nullptr || atoi(e) == 0) {
++            cparams.n_rs_seq = 0;
++        }
+     }
+     cparams.n_outputs_max     = std::max(params.n_outputs_max, 0);
+     cparams.n_batch           = params.n_batch;
+@@ -2098,6 +2103,14 @@ void common_prompt_checkpoint::update_pos(
+     this->pos_max  = pos_max;
+ }
+ 
++#include <cstdio>
++#include <cstdlib>
++
++static bool ckpt_prof_enabled() {
++    static const bool v = getenv("SPINE_CKPT_PROF") != nullptr;
++    return v;
++}
++
+ void common_prompt_checkpoint::update_tgt(
+         llama_context * ctx,
+         llama_seq_id seq_id,
+@@ -2106,6 +2119,8 @@ void common_prompt_checkpoint::update_tgt(
+         return;
+     }
+ 
++    const int64_t t0 = ckpt_prof_enabled() ? ggml_time_us() : 0;
++
+     const size_t ckpt_size = llama_state_seq_get_size_ext(ctx, seq_id, flags);
+ 
+     data_tgt.resize(ckpt_size);
+@@ -2114,6 +2129,10 @@ void common_prompt_checkpoint::update_tgt(
+     if (n != ckpt_size) {
+         GGML_ABORT("checkpoint size mismatch: expected %zu, got %zu\n", ckpt_size, n);
+     }
++
++    if (t0) {
++        fprintf(stderr, "CKPTPROF update_tgt: %zu B in %.2f ms\n", ckpt_size, (ggml_time_us() - t0) / 1000.0);
++    }
+ }
+ 
+ void common_prompt_checkpoint::update_dft(
+@@ -2124,6 +2143,8 @@ void common_prompt_checkpoint::update_dft(
+         return;
+     }
+ 
++    const int64_t t0 = ckpt_prof_enabled() ? ggml_time_us() : 0;
++
+     const size_t ckpt_size = llama_state_seq_get_size_ext(ctx, seq_id, flags);
+ 
+     data_dft.resize(ckpt_size);
+@@ -2132,6 +2153,10 @@ void common_prompt_checkpoint::update_dft(
+     if (n != ckpt_size) {
+         GGML_ABORT("checkpoint size mismatch: expected %zu, got %zu\n", ckpt_size, n);
+     }
++
++    if (t0) {
++        fprintf(stderr, "CKPTPROF update_dft: %zu B in %.2f ms\n", ckpt_size, (ggml_time_us() - t0) / 1000.0);
++    }
+ }
+ 
+ void common_prompt_checkpoint::load_tgt(
+@@ -2146,10 +2171,16 @@ void common_prompt_checkpoint::load_tgt(
+         return;
+     }
+ 
++    const int64_t t0 = ckpt_prof_enabled() ? ggml_time_us() : 0;
++
+     const size_t n = llama_state_seq_set_data_ext(ctx, data_tgt.data(), data_tgt.size(), seq_id, flags);
+     if (n != data_tgt.size()) {
+         GGML_ABORT("checkpoint size mismatch: expected %zu, got %zu\n", data_tgt.size(), n);
+     }
++
++    if (t0) {
++        fprintf(stderr, "CKPTPROF load_tgt: %zu B in %.2f ms\n", data_tgt.size(), (ggml_time_us() - t0) / 1000.0);
++    }
+ }
+ 
+ void common_prompt_checkpoint::load_dft(
+@@ -2164,10 +2195,16 @@ void common_prompt_checkpoint::load_dft(
+         return;
+     }
+ 
++    const int64_t t0 = ckpt_prof_enabled() ? ggml_time_us() : 0;
++
+     const size_t n = llama_state_seq_set_data_ext(ctx, data_dft.data(), data_dft.size(), seq_id, flags);
+     if (n != data_dft.size()) {
+         GGML_ABORT("checkpoint size mismatch: expected %zu, got %zu\n", data_dft.size(), n);
+     }
++
++    if (t0) {
++        fprintf(stderr, "CKPTPROF load_dft: %zu B in %.2f ms\n", data_dft.size(), (ggml_time_us() - t0) / 1000.0);
++    }
+ }
+ 
+ void common_prompt_checkpoint::clear_tgt() {
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index 28512fb..f12217a 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -424,7 +424,7 @@ struct server_slot {
+         // batch is compute-bound (>=3-4 streams), so disable it under load.
+         if (g_spec_max_active == -1) { // unset
+             const char * e = getenv("SPINE_SPEC_MAX_ACTIVE");
+-            g_spec_max_active = e ? atoi(e) : 2; // default <=2 active; 0 = never draft; <0 = always draft
++            g_spec_max_active = e ? atoi(e) : 1; // default <=1 active; 0 = never draft; <0 = always draft
+         }
+         if (g_spec_max_active >= 0 && g_spec_slots_vec) {
+             const auto & v = *static_cast<const std::vector<server_slot> *>(g_spec_slots_vec);
