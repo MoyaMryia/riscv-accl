@@ -118,7 +118,7 @@ def main():
         unknown = set(args.prompt) - set(prompts)
         if unknown:
             parser.error(f'unknown prompts: {sorted(unknown)}')
-        prompts = {key: value for key, value in prompts.items() if key in args.prompt}
+        prompts = {key: prompts[key] for key in args.prompt}
     args.log_dir.mkdir(parents=True, exist_ok=True)
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
