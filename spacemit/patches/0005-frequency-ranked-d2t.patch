@@ -1,0 +1,37 @@
+diff --git a/src/models/qwen35.cpp b/src/models/qwen35.cpp
+index 555f85d..6dcf063 100644
+--- a/src/models/qwen35.cpp
++++ b/src/models/qwen35.cpp
+@@ -40,6 +40,12 @@ void llama_model_qwen35::load_arch_tensors(llama_model_loader & ml) {
+     const bool mtp_only = (hparams.n_layer_nextn > 0) && (ml.get_weight("blk.0.attn_norm.weight") == nullptr);
+     const int trunk_flags = mtp_only ? TENSOR_NOT_REQUIRED : 0;
+ 
++    if (const ggml_tensor * d2t_meta = ml.get_tensor_meta("d2t")) {
++        GGML_ASSERT(d2t_meta->type == GGML_TYPE_I64);
++        GGML_ASSERT(d2t_meta->ne[0] > 0 && d2t_meta->ne[0] <= n_vocab);
++        d2t = create_tensor(tn(LLM_TENSOR_D2T), { d2t_meta->ne[0] }, 0);
++    }
++
+     tok_embd = create_tensor(tn(LLM_TENSOR_TOKEN_EMBD, "weight"), { n_embd, n_vocab }, 0);
+ 
+     // output
+@@ -673,7 +679,18 @@ llama_model_qwen35::graph_mtp::graph_mtp(const llama_model & model, const llm_gr
+     // truncated draft-vocab head (e.g. 32k prefix rows): pad logits with -inf up to the full
+     // vocab so out-of-prefix tokens are never proposed. lossless: verify uses the full-vocab target.
+     const int64_t n_vocab_full = model.tok_embd->ne[1];
+-    if (cur->ne[0] < n_vocab_full) {
++    if (model.d2t) {
++        const int64_t n_vocab_dft = cur->ne[0];
++        const int64_t n_outputs   = cur->ne[1];
++        GGML_ASSERT(model.d2t->ne[0] == n_vocab_dft);
++        ggml_tensor * logits = ggml_fill(ctx0,
++                ggml_new_tensor_3d(ctx0, GGML_TYPE_F32, 1, n_vocab_full, n_outputs), -INFINITY);
++        cur = ggml_set_rows(ctx0, logits,
++                ggml_reshape_3d(ctx0, cur,       1,           n_vocab_dft, n_outputs),
++                ggml_reshape_3d(ctx0, model.d2t, n_vocab_dft, 1,           1));
++        cur = ggml_reshape_2d(ctx0, cur, n_vocab_full, n_outputs);
++        cb(cur, "result_output_d2t", -1);
++    } else if (cur->ne[0] < n_vocab_full) {
+         ggml_tensor * pad = ggml_new_tensor_2d(ctx0, GGML_TYPE_F32, n_vocab_full - cur->ne[0], cur->ne[1]);
+         pad = ggml_fill(ctx0, pad, -INFINITY);
+         cur = ggml_concat(ctx0, cur, pad, /*dim=*/ 0);
