@@ -28,4 +28,19 @@ The tool requires Q4_0 token embeddings and refuses to overwrite an output. The 
 
 ## 4B MTP weights
 
-The tested 4B base GGUF did not contain MTP tensors. `extract-mtp-safetensors.py` and `add-mtp-4b.py` assemble them from a local BF16 safetensors checkpoint before adding the prefix head. See those scripts' help and `spacemit/README.md` for the order of operations.
+The tested 4B base GGUF did not contain MTP tensors. Start with a local HF safetensors checkpoint containing all 15 `mtp.*` tensors. `extract-mtp-safetensors.py` reads only these tensors from indexed or unindexed shards. Its output directory must not already exist.
+
+```bash
+python3 /path/to/riscv-accl/spacemit/models/tools/extract-mtp-safetensors.py \
+  /path/to/Qwen3.5-4B-safetensors /tmp/mtp-4b
+python3 /path/to/riscv-accl/spacemit/models/tools/add-mtp-4b.py \
+  models/Qwen3.5-4B-Q4_0-embQ4_0.gguf \
+  models/Qwen3.5-4B-MTP-Q4_0-embQ4_0.gguf /tmp/mtp-4b
+python3 /path/to/riscv-accl/spacemit/models/tools/add-prefix-head.py \
+  models/Qwen3.5-4B-MTP-Q4_0-embQ4_0.gguf \
+  models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf --layer 32 --rows 65536
+```
+
+The 4B assembler converts the BF16 MTP matrices to Q4_0 and adds 1 to the BF16 norm values before saving F32 GGUF tensors, matching the tested Qwen3.5 conversion. It refuses to overwrite an output.
+
+The packaged 4B assembler reproduced the tested MTP GGUF byte-for-byte (SHA-256 `e575502912e015bd3eed928758736a31fd6a0fe5c59d3c49c2682f4569738b2a`); verification of the tested reference hash is recorded in the integration notes.
