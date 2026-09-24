@@ -46,16 +46,17 @@ def prompts_frspec():
     }
 
 
-def mode_flags(mode, ngram_min, ngram_max, draft_p_min):
+def mode_flags(mode, ngram_min, ngram_max, draft_p_min, backend_sampling):
     if mode == 'plain':
         return []
+    sampling = [] if backend_sampling else ['--no-spec-draft-backend-sampling']
     if mode == 'mtp':
-        return ['--spec-type', 'draft-mtp', '--spec-draft-n-max', '3', '--spec-draft-p-min', str(draft_p_min)]
+        return ['--spec-type', 'draft-mtp', '--spec-draft-n-max', '3', '--spec-draft-p-min', str(draft_p_min)] + sampling
     ngram = ['--spec-ngram-mod-n-match', '16', '--spec-ngram-mod-n-min', str(ngram_min), '--spec-ngram-mod-n-max', str(ngram_max)]
     if mode == 'ngram':
         return ['--spec-type', 'ngram-mod'] + ngram
     if mode == 'combined':
-        return ['--spec-type', 'ngram-mod,draft-mtp', '--spec-draft-n-max', '3', '--spec-draft-p-min', str(draft_p_min)] + ngram
+        return ['--spec-type', 'ngram-mod,draft-mtp', '--spec-draft-n-max', '3', '--spec-draft-p-min', str(draft_p_min)] + sampling + ngram
     raise ValueError(mode)
 
 
@@ -96,6 +97,7 @@ def main():
     parser.add_argument('--ngram-max', type=int, default=16, help='maximum n-gram draft length (default: 16)')
     parser.add_argument('--n-predict', type=int, default=160)
     parser.add_argument('--draft-p-min', type=float, default=0.0, help='MTP draft confidence threshold (default: 0)')
+    parser.add_argument('--draft-backend-sampling', choices=('on', 'off'), default='on')
     parser.add_argument('--batch-size', type=int, default=32)
     parser.add_argument('--ubatch-size', type=int, default=32)
     parser.add_argument('--port', type=int, default=18085)
@@ -137,7 +139,7 @@ def main():
             '-t', '4', '-c', '8192', '--parallel', '1',
             '-b', str(args.batch_size), '-ub', str(args.ubatch_size), '-fa', 'on',
             '--host', '127.0.0.1', '--port', str(args.port),
-        ] + mode_flags(mode, args.ngram_min, args.ngram_max, args.draft_p_min)
+        ] + mode_flags(mode, args.ngram_min, args.ngram_max, args.draft_p_min, args.draft_backend_sampling == 'on')
         with log_path.open('wb') as log:
             proc = subprocess.Popen(command, cwd=args.server.resolve().parent, env=os.environ.copy(),
                                     stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT)
@@ -154,6 +156,7 @@ def main():
                         'ngram_max': args.ngram_max if mode in ('ngram', 'combined') else None,
                         'batch_size': args.batch_size, 'ubatch_size': args.ubatch_size,
                         'draft_p_min': args.draft_p_min if mode in ('mtp', 'combined') else None,
+                        'draft_backend_sampling': args.draft_backend_sampling if mode in ('mtp', 'combined') else None,
                         'prompt_tokens': timings.get('prompt_n'),
                         'tokens': result.get('tokens_predicted'),
                         'tps': timings.get('predicted_per_second'),
