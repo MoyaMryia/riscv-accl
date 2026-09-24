@@ -1,6 +1,6 @@
 # SpaceMiT X60 llama.cpp integration
 
-This directory packages the measured Qwen3.5 2B/4B work on MUSE-Pi-Pro (`musepipro-wg`). Source patches apply to the [official SpaceMiT llama.cpp fork](https://github.com/spacemit-com/llama.cpp) at commit `5ad05d8`. Patches 0001–0004 reproduce the tested `port-gdn` source at `6562c22`; patch 0005 adds the separately measured frequency-ranked 32k MTP prototype. We compared all 12 patched source files byte-for-byte with the board's experimental checkout. The base optimization is not a replacement for upstream llama.cpp or a general RISC-V backend.
+This directory packages the measured Qwen3.5 2B/4B work on MUSE-Pi-Pro (`musepipro-wg`). Source patches apply to the [official SpaceMiT llama.cpp fork](https://github.com/spacemit-com/llama.cpp) at commit `5ad05d8`. Patches 0001–0004 reproduce the tested `port-gdn` source at `6562c22`; patch 0005 adds the separately measured frequency-ranked 32k MTP prototype; patch 0006 adds an opt-in per-request low-acceptance fallback. For patches 0001–0005, we compared all 12 changed source files byte-for-byte with the board's experimental checkout; patch 0006 was built and benchmarked separately. The base optimization is not a replacement for upstream llama.cpp or a general RISC-V backend.
 
 ## Apply and build
 
@@ -11,7 +11,7 @@ git clone https://github.com/spacemit-com/llama.cpp.git ~/Projects/spacemit-llam
 cd ~/Projects/spacemit-llama/llama.cpp
 git checkout 5ad05d8
 /path/to/riscv-accl/spacemit/apply-patches.sh "$PWD"
-# Add --frspec only when testing the mapped 32k MTP head.
+# Add --frspec for the mapped 32k head, --lowacc for the acceptance fallback, or both.
 ```
 
 On the board, install the matching SpaceMiT `spert` runtime and use a compiler with the IME intrinsics. The measured build used GCC 14 and these key CMake settings (adjust paths to your local checkout):
@@ -53,11 +53,15 @@ SPINE_SPEC_RS=1 ./build/bin/llama-server \
 
 For a general server with up to eight concurrent requests, use the default checkpoint rollback and speculative gate from patches 0003–0004: omit `SPINE_SPEC_RS=1`, use `--parallel 8 -c 16384`, and start with `--spec-type draft-mtp --spec-draft-n-max 3`. That configuration was measured at 13.85 aggregate tokens/s for 2B at concurrency 8; the single-stream RS setting lost throughput under high concurrency. N-gram-first mode was only measured with one active stream.
 
+After applying optional patch 0006, set `SPINE_SPEC_LOWACC=1` on a dedicated single-stream server to stop drafting for the rest of a request when a 12-step window yields fewer than nine accepted draft tokens. It resets for each new request. On the measured low-acceptance Chinese prompt this raised 2B decode from 3.59 to 4.26 tokens/s and 4B from 1.69 to 1.92, with identical greedy output. English, code, and three combined n-gram/MTP prompts stayed within run-to-run noise. The switch is opt-in because six prompts do not justify changing the general default; the direct-decoding ceiling inside an RS-configured server remains lower than a separately configured direct server.
+
 ## Evidence and scope
 
 - [Final 2B/4B baseline and optimization report](reports/2026-09-21-final.md): 2B `llama-bench` tg128 5.19 tokens/s and pp128 22.07 tokens/s; 4B tg128 2.30 and pp128 9.04; model and runtime details.
 - [Frequency-ranked MTP experiment](reports/2026-09-23-frspec.md): mapped 32k head improved the three tested prompts versus a prefix 64k head, but direct decoding was faster on the Chinese prompt.
 - [N-gram plus MTP experiment](reports/2026-09-24-ngram.md): 2B near-copy C++ editing improved from 7.994 to about 10.36 decode tokens/s with a full 16-token n-gram match; Python edit and prose were effectively tied. The 4B C++ result improved 3.390 to 3.634 tokens/s in one pass.
+- [Speculative settings sweep](reports/2026-09-24-spec-sweep.md) rules out longer n-gram bursts and a single global MTP confidence threshold on the tested prompts.
+- [Adaptive low-acceptance fallback](reports/2026-09-24-lowacc.md) records paired 2B/4B runs and reset behavior.
 - [Benchmark runner](bench/README.md) freezes those prompt families and reports response hashes. The archived reports retain their original board-local paths and historical statements; use this directory for the integrated reproduction steps.
 
 These are measured results on one X60 board and a small set of prompts. The copy-heavy n-gram setting and corpus-dependent 32k map are experimental choices, not universal defaults.

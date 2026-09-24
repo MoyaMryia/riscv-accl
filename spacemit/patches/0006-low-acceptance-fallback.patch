@@ -1,0 +1,65 @@
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index f12217a..21590e0 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -75,6 +75,7 @@ struct server_slot; // forward declaration
+ // used by server_slot::can_speculate() to disable drafting when the server is busy.
+ static void * g_spec_slots_vec = nullptr;
+ static int    g_spec_max_active = -1; // lazy env read; <=0 means "unset"
++static int    g_spec_lowacc = -1; // opt-in per-request fallback after poor draft acceptance
+ 
+ struct server_batch {
+     llama_batch batch;
+@@ -300,6 +301,9 @@ struct server_slot {
+     int32_t n_draft_total = 0;      // Total draft tokens generated
+     int32_t n_draft_accepted = 0;   // Draft tokens actually accepted
+     int32_t n_draft_verif_steps = 0; // Total draft token verification steps by the target model
++    bool    spec_lowacc_disabled = false;
++    int32_t spec_lowacc_steps = 0;
++    int32_t spec_lowacc_accepted = 0;
+     std::vector<int32_t> n_accepted_per_pos; // Accepted tokens per draft position
+ 
+     void reset() {
+@@ -315,6 +319,9 @@ struct server_slot {
+         stopping_word  = "";
+         n_sent_text    = 0;
+ 
++        spec_lowacc_disabled = false;
++        spec_lowacc_steps = 0;
++        spec_lowacc_accepted = 0;
+         if (can_speculate()) {
+             spec_draft.clear();
+             spec_i_batch.clear();
+@@ -416,7 +423,7 @@ struct server_slot {
+     }
+ 
+     bool can_speculate() const {
+-        if (!spec) {
++        if (!spec || spec_lowacc_disabled) {
+             return false;
+         }
+         // adaptive speculation: only draft when few slots are active. speculative decoding
+@@ -4002,6 +4009,23 @@ private:
+             // update how many tokens out of those tested were accepted
+             slot.n_draft_accepted += ids.size() - 1;
+             slot.n_draft_verif_steps += 1;
++            if (g_spec_lowacc == -1) {
++                const char * e = getenv("SPINE_SPEC_LOWACC");
++                g_spec_lowacc = e ? atoi(e) : 0;
++            }
++            if (g_spec_lowacc) {
++                slot.spec_lowacc_steps++;
++                slot.spec_lowacc_accepted += ids.size() - 1;
++                if (slot.spec_lowacc_steps >= 12) {
++                    if (slot.spec_lowacc_accepted * 4 < slot.spec_lowacc_steps * 3) {
++                        slot.spec_lowacc_disabled = true;
++                        SLT_INF(slot, "disable speculation after %d accepted in %d verification steps\n",
++                                slot.spec_lowacc_accepted, slot.spec_lowacc_steps);
++                    }
++                    slot.spec_lowacc_steps = 0;
++                    slot.spec_lowacc_accepted = 0;
++                }
++            }
+ 
+             if (slot.n_accepted_per_pos.empty()) {
+                 slot.n_accepted_per_pos.resize(common_speculative_n_max(&params_base.speculative), 0);
