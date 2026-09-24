@@ -1,0 +1,97 @@
+diff --git a/common/common.cpp b/common/common.cpp
+index 8f13217..5077d53 100644
+--- a/common/common.cpp
++++ b/common/common.cpp
+@@ -1593,6 +1593,10 @@ struct llama_context_params common_context_params_to_llama(const common_params &
+     cparams.n_ctx             = params.n_ctx;
+     cparams.n_seq_max         = params.n_parallel;
+     cparams.n_rs_seq          = params.speculative.need_n_rs_seq();
++    if (getenv("SPINE_SPEC_NO_RS")) {
++        cparams.n_rs_seq = 0; // disable rs snapshots: rollback falls back to checkpoints
++                              // keeps the GDN in-place decode fast path active when not speculating
++    }
+     cparams.n_outputs_max     = std::max(params.n_outputs_max, 0);
+     cparams.n_batch           = params.n_batch;
+     cparams.n_ubatch          = params.n_ubatch;
+diff --git a/src/models/qwen35.cpp b/src/models/qwen35.cpp
+index 27bd36f..555f85d 100644
+--- a/src/models/qwen35.cpp
++++ b/src/models/qwen35.cpp
+@@ -394,8 +394,20 @@ ggml_tensor * llama_model_qwen35::graph::build_layer_attn_linear(
+     ggml_tensor * conv_input = build_conv_state(inp, conv_states_all, qkv_mixed, conv_kernel_size, conv_channels, il);
+ 
+     ggml_tensor * state = nullptr;
+-    if (n_seq_tokens == 1 && cparams.fused_gdn_ar && cparams.gdn_state_inplace &&
+-            cparams.n_rs_seq <= 0 && (int64_t) mctx_cur->get_n_rs() == n_seqs && mctx_cur->get_rs_z() < 0) {
++    static const bool gdn_dbg = getenv("SPINE_GDN_DBG") != nullptr;
++    const bool gdn_fast_ok = n_seq_tokens == 1 && cparams.fused_gdn_ar && cparams.gdn_state_inplace &&
++            cparams.n_rs_seq <= 0 && (int64_t) mctx_cur->get_n_rs() == n_seqs && mctx_cur->get_rs_z() < 0;
++    if (gdn_dbg && n_seq_tokens == 1 && !gdn_fast_ok) {
++        static int dbg_n = 0;
++        dbg_n++;
++        if (dbg_n < 8 || dbg_n % 1024 == 1) {
++            fprintf(stderr, "GDNDBG[%d] il=%d nst=%lld ar=%d ip=%d rs_seq=%d n_rs=%lld n_seqs=%lld rs_z=%lld\n",
++                    dbg_n, il, (long long) n_seq_tokens, (int) cparams.fused_gdn_ar, (int) cparams.gdn_state_inplace,
++                    cparams.n_rs_seq, (long long) mctx_cur->get_n_rs(), (long long) n_seqs,
++                    (long long) mctx_cur->get_rs_z());
++        }
++    }
++    if (gdn_fast_ok) {
+         // decode fast path: hand the fused GDN op a direct view of the cache slot.
+         // the op then reads and updates the state in place (its s_in == s_out alias
+         // guard skips the staging memcpy) and the build_rs gather copy disappears.
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index 4c22ad5..28512fb 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -71,6 +71,11 @@ enum slot_state {
+ 
+ struct server_slot; // forward declaration
+ 
++// adaptive speculation: pointer to the live slots vector (set after slot init).
++// used by server_slot::can_speculate() to disable drafting when the server is busy.
++static void * g_spec_slots_vec = nullptr;
++static int    g_spec_max_active = -1; // lazy env read; <=0 means "unset"
++
+ struct server_batch {
+     llama_batch batch;
+     bool batch_rendered = false;
+@@ -411,7 +416,27 @@ struct server_slot {
+     }
+ 
+     bool can_speculate() const {
+-        return !!spec;
++        if (!spec) {
++            return false;
++        }
++        // adaptive speculation: only draft when few slots are active. speculative decoding
++        // wins in the memory-bound regime (1-2 streams) but wastes IME compute when the
++        // batch is compute-bound (>=3-4 streams), so disable it under load.
++        if (g_spec_max_active == -1) { // unset
++            const char * e = getenv("SPINE_SPEC_MAX_ACTIVE");
++            g_spec_max_active = e ? atoi(e) : 2; // default <=2 active; 0 = never draft; <0 = always draft
++        }
++        if (g_spec_max_active >= 0 && g_spec_slots_vec) {
++            const auto & v = *static_cast<const std::vector<server_slot> *>(g_spec_slots_vec);
++            int n_active = 0;
++            for (const auto & s : v) {
++                n_active += s.is_processing() ? 1 : 0;
++            }
++            if (n_active > g_spec_max_active) {
++                return false;
++            }
++        }
++        return true;
+     }
+ 
+     void add_token(const completion_token_output & token) {
+@@ -1414,6 +1439,9 @@ private:
+             slot.reset();
+         }
+ 
++        // adaptive speculation: expose the live slots vector to server_slot::can_speculate()
++        g_spec_slots_vec = (void *) &slots;
++
+         {
+             const char * LLAMA_TRACE = getenv("LLAMA_TRACE");
+             trace = LLAMA_TRACE ? atoi(LLAMA_TRACE) : 0;
