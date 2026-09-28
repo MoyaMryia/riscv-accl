@@ -138,6 +138,12 @@ to keep routine JSONL records compact.
 
 For the opt-in occupied-page gather experiment, run `python3 summarize-page-gather.py SERVER_LOG` on a verbose server log. It reports the fraction of recorded attention spans that were actually compacted and the physical versus gathered row counts. A negative configuration test alone does not establish compaction.
 
+`verify-results-matrix.py REPORT RAW_DIR` recomputes the compact matrix table in a report from the archived lifecycle records, checks each TTFT, prefill, decode, end-to-end, and peak-RSS cell within rounding tolerance, and verifies the per-row output-hash claim. It exits nonzero on any mismatch, so report edits to the matrix can be gated on it.
+
+`paired-stats.py BASE_FILES --candidate CAND_FILES [--metric ...] [--select key=value] [--baseline-regex ... --candidate-regex ...]` extracts launch-level values from llama-bench, bench-server, or lifecycle JSONL, prints per-launch values and arm means, and reports a Welch 95% interval for the difference. Arms with a single launch get a point estimate with an explicit no-variance note; expect near-zero degrees of freedom and wide intervals at two launches per arm.
+
+`summarize-microbatch-scaling.py SERVER_LOG` converts prompt-processing progress lines into per-32-token chunk times, fits chunk time against the processed-context position, prints bracket means with the linear share, and extrapolates a longer-prompt projection. The fit attributes the growth to a linear-in-context term; operator-level attribution still requires on-board profiling.
+
 The RVV TTFT figure can include the serialized integrated 12k results with `python3 plot-rvv-prefill.py SHORT_JSONL LONG_JSONL OUTPUT.svg --integrated INTEGRATED_12K_JSONL`. It requires both off/on rows before plotting a model's 12k point and uses square markers for the single-pair measurements.
 
 The 4,096-token fixed-code traces also support a standalone 128-token-window decode plot:
