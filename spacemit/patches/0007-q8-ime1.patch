@@ -1,0 +1,460 @@
+From 8b519fd87780dd1c05bdee39e35b3bd19cc034e0 Mon Sep 17 00:00:00 2001
+From: alanhc <alanhc.tseng1999@gmail.com>
+Date: Sun, 6 Sep 2026 14:35:14 +0800
+Subject: [PATCH] ggml-cpu : add Q8_0 IME1 matrix kernel for SpacemiT X60
+
+On the SpacemiT X60, IME matrix acceleration only covered Q4_0/Q4_1/Q4_K.
+Q8_0 had no IME1 kernel, and since the SpacemiT build sets
+GGML_CPU_REPACK=OFF there was no repack path compiled in either, so Q8_0
+had no accelerated path at all and ran roughly ten times slower than
+Q4_0 for prefill on the same board.
+
+- add make_block_q8_0x16 and the Q8_0 repack entry: interleave the
+  weights into the 16-column layout the IME1 vmadot sequence expects
+- add ime1::gemm_kernel_i8i8, an int8 x int8 IME1 kernel with a
+  single-row and a 4-row A path; the 4-row path loads each B panel once
+  and reuses it across 4 rows of A
+- add quantize_a_4row_i8 for the 4-row activation quantization
+- wire both into forward_mul_mat and the repack factory for Q8_0
+- docs: mark Q8_0 as supported on X60
+
+Correctness was checked against a quant-exact integer reference for
+K = 32 up to 4096, with a max relative error of about 1e-6, and by
+checking that generation stays coherent across several prompts.
+
+Tested on Milk-V Jupiter (SpacemiT X60), Bianbu 2.1.1, gcc 14.2, with
+Qwen2.5-0.5B-Instruct Q8_0. llama-bench -t 4 under taskset -c 0-3, 5
+repetitions on an idle board: pp128 goes from 10.70 to 93.87 t/s. Q4_0
+is unchanged at 106.40 -> 107.51 t/s, as expected since this does not
+touch that path.
+---
+ docs/build-riscv64-spacemit.md              |   2 +-
+ ggml/src/ggml-cpu/spacemit/ime.cpp          |  13 ++
+ ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp | 237 ++++++++++++++++++++
+ ggml/src/ggml-cpu/spacemit/ime_kernels.h    |  10 +
+ ggml/src/ggml-cpu/spacemit/repack.cpp       |  72 ++++++
+ 5 files changed, 333 insertions(+), 1 deletion(-)
+
+diff --git a/docs/build-riscv64-spacemit.md b/docs/build-riscv64-spacemit.md
+index 7a9a1f3ad4ed..c16054a81ff1 100644
+--- a/docs/build-riscv64-spacemit.md
++++ b/docs/build-riscv64-spacemit.md
+@@ -63,7 +63,7 @@ ${QEMU_ROOT_PATH}/bin/qemu-riscv64 -L ${RISCV_ROOT_PATH_IME1}/sysroot -cpu max,v
+ | Q5_1 |  | :heavy_check_mark: |
+ | Q5_K |  | :heavy_check_mark: |
+ | Q6_K |  | :heavy_check_mark: |
+-| Q8_0 |  | :heavy_check_mark: |
++| Q8_0 | :heavy_check_mark: | :heavy_check_mark: |
+ 
+ 
+ ## Performance
+diff --git a/ggml/src/ggml-cpu/spacemit/ime.cpp b/ggml/src/ggml-cpu/spacemit/ime.cpp
+index 29d683270e51..18e78010be90 100644
+--- a/ggml/src/ggml-cpu/spacemit/ime.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime.cpp
+@@ -321,6 +321,9 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS> class tensor_
+                           std::is_same_v<BLOC_TYPE, block_q4_K>) {
+                 gemm_kernel     = spacemit_kernels::ime1::gemm_kernel_i8i4;
+                 set_kernel_impl = true;
++            } else if constexpr (std::is_same_v<BLOC_TYPE, block_q8_0>) {
++                gemm_kernel     = spacemit_kernels::ime1::gemm_kernel_i8i8;
++                set_kernel_impl = true;
+             }
+         }
+ #endif
+@@ -624,6 +627,9 @@ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS> class tensor_
+                           std::is_same_v<BLOC_TYPE, block_q4_K>) {
+                 gemm_kernel     = spacemit_kernels::ime1::gemm_kernel_i8i4;
+                 set_kernel_impl = true;
++            } else if constexpr (std::is_same_v<BLOC_TYPE, block_q8_0>) {
++                gemm_kernel        = spacemit_kernels::ime1::gemm_kernel_i8i8;
++                set_kernel_impl    = true;
+             }
+         }
+ #endif
+@@ -1247,6 +1253,7 @@ static const tensor_traits<block_q4_1, 256, 32> q4_1_32x256_q8_0;
+ static const tensor_traits<block_q4_K, 32, 32>  q4_k_32x32_q8_0;
+ static const tensor_traits<block_q6_K, 32, 32>  q6_k_32x32_q8_0;
+ static const tensor_traits<block_q8_0, 32, 32>  q8_0_32x32_q8_0;
++static const tensor_traits<block_q8_0, 32, 16>  q8_0_16x32_q8_0;
+ static const tensor_traits<block_mxfp4, 32, 32> mxfp4_32x32_q8_0;
+ static const tensor_traits<block_q5_K, 32, 32>  q5_k_32x32_q8_0;
+ static const tensor_traits<block_q5_1, 32, 32>  q5_1_32x32_q8_0;
+@@ -1348,6 +1355,12 @@ static const ggml::cpu::tensor_traits * ggml_riscv64_spacemit_get_optimal_repack
+                     return &ggml::cpu::riscv64_spacemit::q8_0_32x32_q8_0;
+                 }
+ #endif
++
++#if defined(RISCV64_SPACEMIT_IME1)
++                if (cur->ne[1] % 16 == 0 && (ggml::cpu::riscv64_spacemit::global_spine_env_info.use_ime1)) {
++                    return &ggml::cpu::riscv64_spacemit::q8_0_16x32_q8_0;
++                }
++#endif
+             }
+             break;
+         case GGML_TYPE_MXFP4:
+diff --git a/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp b/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp
+index 6acc6819dfb1..6c974f6eb3a4 100644
+--- a/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp
+@@ -991,6 +991,224 @@ void SQ4BitGemmM1Kernel_CompInt8_ScaleFp16_Impl(size_t          BlkLen,
+         }
+     }
+ }
++
++
++// ---- Q8_0 IME1 int8xint8 M4 kernel ----------------------------------------
++// Handles 4 rows at once using the 4-row interleaved A produced by quantize_a_4row_i8:
++// per K-block (stride 144B) the first 16B are the four fp32 row scales and the following
++// 128B are four 32B chunks, each holding 8 K-values for each of the 4 rows. That maps
++// directly onto vmadot's 4-lane row dimension, so the A side is identical to Q4_0.
++// B is block_q8_0x16 as in the M1 kernel: 32B of fp16 scales then 512B of interleaved
++// int8, loaded with 8 plain vle8 into v2..v9 (no nibble unpack).
++static void SQ8BitGemmM4Kernel_CompInt8_ScaleFp16_Impl(size_t          BlkLen,
++                                                       const uint8_t * QuantA,
++                                                       const uint8_t * QuantBData,
++                                                       float *         C,
++                                                       size_t          CountN,
++                                                       size_t          BlockCountK,
++                                                       const size_t    ldc) {
++    // Same invariant as the Q4_0 M4 kernel: SAVE_RESULT_4x16 stores a full 4x16 tile with no tail
++    // handling. Q8_0 is only admitted to the IME1 path when ne[1] % 16 == 0 (ime.cpp),
++    // and the n-tiling step is NB_COLS == 16, so a partial tile never reaches here.
++    GGML_ASSERT(CountN % 16 == 0);
++
++    const size_t INNER = BlkLen / 16;
++    const size_t LDC   = ldc * sizeof(float);
++
++    for (size_t n = 0; n < CountN; n += 16) {
++        uint8_t * QuantBDataPtr =
++            (uint8_t *) QuantBData + (n / 16) * BlockCountK * (16 * sizeof(_Float16) + 512);
++        float * CPtr = C + n;
++
++        __asm__ volatile(
++            "vsetvli            t0, zero, e32, m8           \n\t"
++            "vxor.vv            v24, v24, v24               \n\t"
++            "addi               t3, %[BlockCountK], 0       \n\t"
++            "addi               a1, %[A], 0                 \n\t"
++            "addi               s1, %[B], 0                 \n\t"
++
++            "BLOCK_COUNTK_LOOP%=:                           \n\t"
++            "addi               s5, s1, 0                   \n\t"
++            "addi               s1, s5, 32                  \n\t"
++            "vsetvli            t0, zero, e32, m8           \n\t"
++            "vxor.vv            v16, v16, v16               \n\t"
++            "flw                f1, (a1)                    \n\t"
++            "flw                f2, 4(a1)                   \n\t"
++            "flw                f3, 8(a1)                   \n\t"
++            "flw                f4, 12(a1)                  \n\t"
++            "addi               a1, a1, 16                  \n\t"
++            "addi               t2, %[INNER], 0             \n\t"
++
++            "BLOCK_INNER_LOOP%=:                            \n\t"
++            "vsetvli            t0, zero, e8, m1            \n\t"
++            "vle8.v             v2, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v3, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v4, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v5, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v6, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v7, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v8, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v9, (s1)                    \n\t"
++            "addi               s1, s1, 32                  \n\t"
++            "vle8.v             v10, (a1)                   \n\t"
++            "addi               a1, a1, 32                  \n\t"
++            "vle8.v             v11, (a1)                   \n\t"
++            "addi               a1, a1, 32                  \n\t"
++
++            SQ4BIT_KERNEL_COMP_4x16x16
++
++            "addi               t2, t2, -1                  \n\t"
++            "bnez               t2, BLOCK_INNER_LOOP%=      \n\t"
++
++            LOAD_SCALE_4x16_FP16
++
++            "vsetvli            t0, zero, e32, m8           \n\t"
++            "vfcvt.f.x.v        v16, v16                    \n\t"
++            "vfmacc.vv          v24, v16, v8                \n\t"
++            "addi               t3, t3, -1                  \n\t"
++            "bnez               t3, BLOCK_COUNTK_LOOP%=     \n\t"
++
++            "RESULT_SAVE%=:                                 \n\t"
++
++            SAVE_RESULT_4x16
++
++            :
++            : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [LDC] "r"(LDC),
++              [BlockCountK] "r"(BlockCountK), [C] "r"(CPtr)
++            : "cc", "t0", "t1", "t2", "t3", "a1", "a2", "a3", "a4", "f1", "f2", "f3", "f4",
++              "s1", "s2", "s3", "s4", "s5", "s6");
++    }
++}
++
++// ---- Q8_0 IME1 int8xint8 M1 kernel ----------------------------------------
++// B comes from block_q8_0x16 (make_block_q8_0x16): 16 fp16 scales (32B) then 512B of interleaved
++// int8 weights laid out as [INNER0: reg0..reg7][INNER1: reg0..reg7], each reg 32B = 4 columns x
++// (even=K-first-half / odd=K-second-half). A comes from quantize_a_row_i8 (same as Q4_0 path).
++// Reuses the vmadot COMP macro and the ACC_F16 dequant tail from the Q4_0 kernel.
++static void SQ8BitGemmM1Kernel_CompInt8_ScaleFp16_Impl(size_t          BlkLen,
++                                                       const uint8_t * QuantA,
++                                                       const uint8_t * QuantBData,
++                                                       float *         C,
++                                                       size_t          CountN,
++                                                       size_t          BlockCountK,
++                                                       const size_t    ldc) {
++    GGML_UNUSED(ldc);
++    const size_t INNER = BlkLen / 16;  // = 2 for QK8_0=32
++
++    for (size_t n = 0; n < CountN; n += 16) {
++        size_t    nblks = (CountN - n) > 16 ? 16 : CountN - n;
++        // Each x16 K-block is {16 fp16 scales (32B), 512B interleaved int8}; stride = 544B.
++        uint8_t * QuantBDataPtr = (uint8_t *) QuantBData + (n / 16) * BlockCountK * (16 * sizeof(_Float16) + 512);
++        float *   CPtr = C + n;
++        size_t    cnt  = BlockCountK;
++
++        __asm__ volatile(
++            "vsetvli      t0, zero, e32, m4       \n\t"
++            "vxor.vv      v28, v28, v28           \n\t"
++            // s7 = per-K-block base (scale@+0, data@+32, block stride 544)
++            "addi         s7, %[B], 0             \n\t"
++            "addi         s5, %[A], 0             \n\t"   // A scale (fp32)
++            "addi         s6, %[A], 12            \n\t"   // A data (int8), offset like Q4_0 M1
++            "LOOP_K%=:                            \n\t"
++            "addi         s1, s7, 32              \n\t"   // data base for this K-block
++            // B scales: d[0..15] fp16 at block start. Load in 4 groups of 4 (d[0-3]/[4-7]/[8-11]/[12-15])
++            // matching the 4 accumulators (each covers columns [g*4 .. g*4+3]).
++            "addi         s2, s7, 8               \n\t"
++            "addi         s3, s7, 16              \n\t"
++            "addi         s4, s7, 24              \n\t"
++            "vsetvli      t0, zero, e16, mf4      \n\t"
++            "vle16.v      v4, (s7)                \n\t"
++            "vle16.v      v5, (s2)                \n\t"
++            "vle16.v      v6, (s3)                \n\t"
++            "vle16.v      v7, (s4)                \n\t"
++            "addi         s7, s7, 544             \n\t"   // advance to next K-block (32 scale + 512 data)
++            "flw          f1, (s5)                \n\t"
++            "addi         s5, s5, 4               \n\t"
++            "vfwcvt.f.f.v v8, v4                  \n\t"
++            "vfwcvt.f.f.v v9, v5                  \n\t"
++            "vfwcvt.f.f.v v10, v6                 \n\t"
++            "vfwcvt.f.f.v v11, v7                 \n\t"
++            "vsetvli      t0, zero, e32, mf2      \n\t"
++            "addi         t5, %[INNER], 0         \n\t"
++            "vxor.vv      v16, v16, v16           \n\t"
++            "vxor.vv      v18, v18, v18           \n\t"
++            "vxor.vv      v20, v20, v20           \n\t"
++            "vxor.vv      v22, v22, v22           \n\t"
++            // combined scale (A_scale * B_scale) -> v24..v27 (one per accumulator)
++            "vfmul.vf     v24, v8, f1             \n\t"
++            "vfmul.vf     v25, v9, f1             \n\t"
++            "vfmul.vf     v26, v10, f1            \n\t"
++            "vfmul.vf     v27, v11, f1            \n\t"
++            "addi         %[CNT], %[CNT], -1      \n\t"
++            "vsetvli      t0, zero, e8, m1        \n\t"
++            "LOOP_INNER%=:                        \n\t"
++            // load 8 B data regs (v0..v7) directly (int8, no nibble unpack)
++            "vle8.v       v0, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v1, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v2, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v3, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v4, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v5, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v6, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            "vle8.v       v7, (s1)                \n\t"
++            "addi         s1, s1, 32              \n\t"
++            // load A (2 halves): v14 from s5, v15 from s6 (matches Q4_0 M1 A packing)
++            "vsetvli      t0, zero, e8, mf4       \n\t"
++            "vle8.v       v14, (s5)               \n\t"
++            "addi         s5, s5, 16              \n\t"
++            "vle8.v       v15, (s6)               \n\t"
++            "addi         s6, s6, 16              \n\t"
++            "addi         t5, t5, -1              \n\t"
++            "vsetvli      t0, zero, e8, m1        \n\t"
++            SQ4BIT_KERNEL_COMP_1x8x2_4X8X4
++            "bnez         t5, LOOP_INNER%=        \n\t"
++            "vsetvli      t0, zero, e32, mf2      \n\t"
++            SQ4BIT_KERNEL_ACC_F16_1X4X4
++            "bnez         %[CNT], LOOP_K%=        \n\t"
++            "addi         t3, zero, 16            \n\t"
++            "addi         s1, %[C], 16            \n\t"
++            "addi         s2, %[C], 32            \n\t"
++            "addi         s3, %[C], 48            \n\t"
++            "blt          %[NBLKS], t3, ST_TAIL%= \n\t"
++            "vse32.v      v28, (%[C])             \n\t"
++            "vse32.v      v29, (s1)               \n\t"
++            "vse32.v      v30, (s2)               \n\t"
++            "vse32.v      v31, (s3)               \n\t"
++            "jal          x0, END%=               \n\t"
++            "ST_TAIL%=:                           \n\t"
++            "vsetvli      t0, %[NBLKS], e32, mf2  \n\t"
++            "sub          %[NBLKS], %[NBLKS], t0  \n\t"
++            "vse32.v      v28, (%[C])             \n\t"
++            "vsetvli      t0, %[NBLKS], e32, mf2  \n\t"
++            "sub          %[NBLKS], %[NBLKS], t0  \n\t"
++            "vse32.v      v29, (s1)               \n\t"
++            "vsetvli      t0, %[NBLKS], e32, mf2  \n\t"
++            "sub          %[NBLKS], %[NBLKS], t0  \n\t"
++            "vse32.v      v30, (s2)               \n\t"
++            "vsetvli      t0, %[NBLKS], e32, mf2  \n\t"
++            "sub          %[NBLKS], %[NBLKS], t0  \n\t"
++            "vse32.v      v31, (s3)               \n\t"
++            "END%=:                               \n\t"
++            : [CNT] "+r"(cnt), [NBLKS] "+r"(nblks)
++            : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [C] "r"(CPtr)
++            : "cc", "t0", "t3", "t5", "f1", "s1", "s2", "s3", "s4", "s5", "s6", "s7");
++    }
++}
++
+ }  // namespace
+ 
+ namespace ime1 {
+@@ -1023,5 +1241,24 @@ size_t gemm_kernel_i8i4(size_t          blk_len,
+         return 1;
+     }
+ }
++
++size_t gemm_kernel_i8i8(size_t          blk_len,
++                        const uint8_t * quant_a_ptr,
++                        const uint8_t * quant_b_data,
++                        const uint8_t * quant_b_zp,
++                        float *         c_ptr,
++                        size_t          count_m,
++                        size_t          count_n,
++                        size_t          k_blks,
++                        size_t          ldc) {
++    GGML_UNUSED(quant_b_zp);
++    if (count_m >= 4) {
++        SQ8BitGemmM4Kernel_CompInt8_ScaleFp16_Impl(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks,
++                                                   ldc);
++        return 4;
++    }
++    SQ8BitGemmM1Kernel_CompInt8_ScaleFp16_Impl(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
++    return 1;
++}
+ }  // namespace ime1
+ }  // namespace spacemit_kernels
+diff --git a/ggml/src/ggml-cpu/spacemit/ime_kernels.h b/ggml/src/ggml-cpu/spacemit/ime_kernels.h
+index 0a1fafffb257..476a0e74be13 100644
+--- a/ggml/src/ggml-cpu/spacemit/ime_kernels.h
++++ b/ggml/src/ggml-cpu/spacemit/ime_kernels.h
+@@ -79,6 +79,16 @@ size_t gemm_kernel_i8i4(size_t          blk_len,
+                         size_t          k_blks,
+                         size_t          ldc);
+ 
++size_t gemm_kernel_i8i8(size_t          blk_len,
++                        const uint8_t * quant_a_ptr,
++                        const uint8_t * quant_b_data,
++                        const uint8_t * quant_b_zp,
++                        float *         c_ptr,
++                        size_t          count_m,
++                        size_t          count_n,
++                        size_t          k_blks,
++                        size_t          ldc);
++
+ void quantize_a_row_i8(size_t blk_len, const float * a_ptr, size_t count_k, uint8_t * quant_a_ptr);
+ 
+ void quantize_a_4row_i8(size_t blk_len, const float * a_ptr, size_t count_k, uint8_t * quant_a_ptr);
+diff --git a/ggml/src/ggml-cpu/spacemit/repack.cpp b/ggml/src/ggml-cpu/spacemit/repack.cpp
+index 3c879c4b7a04..2039056e0a5a 100644
+--- a/ggml/src/ggml-cpu/spacemit/repack.cpp
++++ b/ggml/src/ggml-cpu/spacemit/repack.cpp
+@@ -370,6 +370,74 @@ static block_q8_0x32 make_block_q8_0x32(block_q8_0 * in, unsigned int blck_size_
+     return out;
+ }
+ 
++// IME1: interleave 16 q8_0 rows so a plain vle8 sequence in the i8i8 kernel lands weights in the
++// vmadot group/parity layout. Mirrors make_block_q4_0x16 but stores full int8 (no nibble packing).
++// qs (512B) = [INNER step 0: reg0..reg7][INNER step 1: reg0..reg7], each reg 32B holding 4 columns
++// x (even=K-first-half / odd=K-second-half). Column col -> acc=col/4, cgrp=col%4.
++static block_q8_0x16 make_block_q8_0x16(block_q8_0 * in, unsigned int blck_size_interleave) {
++    block_q8_0x16 out;
++    GGML_ASSERT(QK8_0 / blck_size_interleave == 2);
++    GGML_UNUSED(blck_size_interleave);
++
++    for (int i = 0; i < 16; i++) {
++        out.d[i] = in[i].d;
++    }
++
++    memset(out.qs, 0, sizeof(out.qs));
++    for (int col = 0; col < 16; col++) {
++        const int      acc  = col / 4;
++        const int      cgrp = col % 4;
++        const int8_t * q    = in[col].qs;
++        for (int s = 0; s < 2; s++) {
++            const int base   = s * 16;
++            uint8_t * reg_lo = out.qs + (s * 8 + acc)     * 32;
++            uint8_t * reg_hi = out.qs + (s * 8 + acc + 4) * 32;
++            for (int i = 0; i < 4; i++) {
++                reg_lo[(2 * cgrp)     * 4 + i] = (uint8_t) q[base + 0  + i];
++                reg_lo[(2 * cgrp + 1) * 4 + i] = (uint8_t) q[base + 4  + i];
++                reg_hi[(2 * cgrp)     * 4 + i] = (uint8_t) q[base + 8  + i];
++                reg_hi[(2 * cgrp + 1) * 4 + i] = (uint8_t) q[base + 12 + i];
++            }
++        }
++    }
++    return out;
++}
++
++static int repack_q8_0_to_q8_0_16_bl_ref(ggml_tensor *              t,
++                                         int                        interleave_block,
++                                         const void * GGML_RESTRICT data,
++                                         size_t                     data_size) {
++    GGML_ASSERT(t->type == GGML_TYPE_Q8_0);
++    GGML_ASSERT(interleave_block == 16);
++
++    constexpr int nrows_interleaved = 16;
++
++    block_q8_0x16 *    dst = (block_q8_0x16 *) t->data;
++    const block_q8_0 * src = (const block_q8_0 *) data;
++    block_q8_0         dst_tmp[16];
++    int                nrow    = ggml_nrows(t);
++    int                nblocks = t->ne[0] / QK8_0;
++
++    GGML_ASSERT(data_size == nrow * nblocks * sizeof(block_q8_0));
++
++    if (t->ne[1] % nrows_interleaved != 0 || t->ne[0] % QK8_0 != 0) {
++        return -1;
++    }
++
++    for (int b = 0; b < nrow; b += nrows_interleaved) {
++        for (int64_t x = 0; x < nblocks; x++) {
++            for (int i = 0; i < nrows_interleaved; i++) {
++                dst_tmp[i] = src[x + i * nblocks];
++            }
++            *dst++ = make_block_q8_0x16(dst_tmp, interleave_block);
++        }
++        src += nrows_interleaved * nblocks;
++    }
++    return 0;
++
++    GGML_UNUSED(data_size);
++}
++
+ static int repack_q2_k_to_q2_k_32_bl(ggml_tensor *              t,
+                                      int                        interleave_block,
+                                      const void * GGML_RESTRICT data,
+@@ -1768,6 +1836,10 @@ template <> int repack<block_q6_K, 32, 32>(ggml_tensor * t, const void * data, s
+ #endif
+ }
+ 
++template <> int repack<block_q8_0, 32, 16>(ggml_tensor * t, const void * data, size_t data_size) {
++    return repack_q8_0_to_q8_0_16_bl_ref(t, 16, data, data_size);
++}
++
+ template <> int repack<block_q8_0, 32, 32>(ggml_tensor * t, const void * data, size_t data_size) {
+ #if 1
+     return repack_q8_0_to_q8_0_32_bl_ref(t, 32, data, data_size);

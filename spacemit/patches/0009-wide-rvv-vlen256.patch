@@ -1,0 +1,169 @@
+--- a/ggml/src/ggml-cpu/spacemit/ime.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime.cpp
+@@ -28,6 +28,7 @@
+ #include <cerrno>
+ #include <cmath>
+ #include <cstdio>  // for GGML_ASSERT
++#include <cstdlib>
+ #include <stdexcept>
+ #include <thread>
+ // clang-format off
+@@ -1002,7 +1003,7 @@
+                     // Per-thread: Q_q + KQ + mask + VKQ32 + V32 + K_f32 + padding
+                     size_t prefill = sizeof(float) *
+                                      (GGML_FA_TILE_Q * DK + 2 * GGML_FA_TILE_Q * GGML_FA_TILE_KV + GGML_FA_TILE_Q * DV +
+-                                      GGML_FA_TILE_KV * DV + GGML_FA_TILE_KV * DK) *
++                                      GGML_FA_TILE_KV * DV + GGML_FA_TILE_KV * DK + CACHE_LINE_SIZE_F32) *
+                                      n_tasks;
+ 
+                     // Decode path: n_kv_chunks = n_tasks (one chunk per thread)
+@@ -1235,14 +1236,31 @@
+ 
+         const bool supported_prec  = (dst->op_params[3] == GGML_PREC_F32 || dst->op_params[3] == GGML_PREC_DEFAULT);
+         const bool supported_types = (q->type == GGML_TYPE_F32 && k->type == GGML_TYPE_F16 && v->type == GGML_TYPE_F16);
+-        const bool supported_shape = (DK > 0 && DK <= 128 && DV > 0 && DV <= 128);
+-        const bool supported_vlen  = (__riscv_vlenb() == 128);
++        // The 256-wide Qwen3.5 head uses the tiled kernel only. The one-chunk
++        // path has vector loads that assume the head fits within 128 lanes.
++        static const bool enable_wide_tile = [] {
++            const char * env = std::getenv("SPINE_FA_WIDE_TILE");
++            return env && env[0] == '1' && env[1] == '\0';
++        }();
++        const bool wide_tile = enable_wide_tile && !params->use_ref &&
++                               DK == 256 && DV == 256 && neq1 >= 16;
++        const bool supported_shape = (DK > 0 && DK <= 128 && DV > 0 && DV <= 128) || wide_tile;
++        // The wide tiled dot helper below loops over all 64 KV cells on VLEN=256.
++        // Keep the original VLEN=1024 condition for the unmodified kernels.
++        const bool supported_vlen  = wide_tile ? (__riscv_vlenb() == 32) : (__riscv_vlenb() == 128);
+ 
+         if (!(supported_prec && supported_types && supported_shape && supported_vlen)) {
+             ggml_compute_forward_flash_attn_ext(params, dst);
+             return;
+         }
+ 
++        if (wide_tile) {
++            static std::atomic<bool> logged { false };
++            if (!logged.exchange(true)) {
++                fprintf(stderr, "SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads\n");
++            }
++        }
++
+         // total rows in q
+         const int64_t nr = neq1 * neq2 * neq3;
+ 
+@@ -1251,7 +1269,7 @@
+         const int nth = params->nth;
+ 
+         static constexpr int64_t Q_TILE_SZ = ggml_fa_tile_config::Q;
+-        const bool               use_tiled = !params->use_ref && (neq1 >= Q_TILE_SZ);
++        const bool               use_tiled = wide_tile || (!params->use_ref && neq1 >= Q_TILE_SZ);
+ 
+         // 4x chunks per thread
+         // int     nth_scaled = nth * 4;
+@@ -1277,7 +1295,7 @@
+ 
+             if (use_tiled) {
+                 spacemit_kernels::rvv::forward_flash_attn_ext_f16_tiled_vlen1024_vf16(
+-                    params, dst, ir0, ir1, tcm_buf, tcm_size);
++                    params, dst, ir0, ir1, wide_tile ? nullptr : tcm_buf, wide_tile ? 0 : tcm_size);
+             } else {
+                 spacemit_kernels::rvv::forward_flash_attn_ext_f16_one_chunk_vlen1024_vf16(
+                     params, dst, ir0, ir1, tcm_buf, tcm_size);
+--- a/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
++++ b/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+@@ -474,15 +474,20 @@
+                                           const _Float16 * k_pack,
+                                           int64_t          dk,
+                                           int64_t          kv_tile) {
+-    const size_t vl  = __riscv_vsetvl_e16m1(kv_tile);
+-    vfloat32m2_t acc = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-
+-    for (int64_t d = 0; d < dk; ++d) {
+-        const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV, vl);
+-        acc                      = __riscv_vfwmacc_vf_f32m2(acc, q_row[d], k_vec, vl);
+-    }
+-
+-    __riscv_vse32_v_f32m2(dst, acc, vl);
++    // On X60 VLEN=256, e16m1 covers only 16 of the 64 KV tile cells.
++    // Preserve one accumulator per cell and walk the tile in VL-sized chunks.
++    for (int64_t offset = 0; offset < kv_tile;) {
++        const size_t vl  = __riscv_vsetvl_e16m1(kv_tile - offset);
++        vfloat32m2_t acc = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++
++        for (int64_t d = 0; d < dk; ++d) {
++            const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV + offset, vl);
++            acc                      = __riscv_vfwmacc_vf_f32m2(acc, q_row[d], k_vec, vl);
++        }
++
++        __riscv_vse32_v_f32m2(dst + offset, acc, vl);
++        offset += vl;
++    }
+ }
+ 
+ static inline void rvv_qk_dot_tile_f16_x4(float *          dst0,
+@@ -496,24 +501,27 @@
+                                           const _Float16 * k_pack,
+                                           int64_t          dk,
+                                           int64_t          kv_tile) {
+-    const size_t vl   = __riscv_vsetvl_e16m1(kv_tile);
+-    vfloat32m2_t acc0 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-    vfloat32m2_t acc1 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-    vfloat32m2_t acc2 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-    vfloat32m2_t acc3 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-
+-    for (int64_t d = 0; d < dk; ++d) {
+-        const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV, vl);
+-        acc0                     = __riscv_vfwmacc_vf_f32m2(acc0, q0[d], k_vec, vl);
+-        acc1                     = __riscv_vfwmacc_vf_f32m2(acc1, q1[d], k_vec, vl);
+-        acc2                     = __riscv_vfwmacc_vf_f32m2(acc2, q2[d], k_vec, vl);
+-        acc3                     = __riscv_vfwmacc_vf_f32m2(acc3, q3[d], k_vec, vl);
+-    }
+-
+-    __riscv_vse32_v_f32m2(dst0, acc0, vl);
+-    __riscv_vse32_v_f32m2(dst1, acc1, vl);
+-    __riscv_vse32_v_f32m2(dst2, acc2, vl);
+-    __riscv_vse32_v_f32m2(dst3, acc3, vl);
++    for (int64_t offset = 0; offset < kv_tile;) {
++        const size_t vl   = __riscv_vsetvl_e16m1(kv_tile - offset);
++        vfloat32m2_t acc0 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++        vfloat32m2_t acc1 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++        vfloat32m2_t acc2 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++        vfloat32m2_t acc3 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++
++        for (int64_t d = 0; d < dk; ++d) {
++            const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV + offset, vl);
++            acc0                     = __riscv_vfwmacc_vf_f32m2(acc0, q0[d], k_vec, vl);
++            acc1                     = __riscv_vfwmacc_vf_f32m2(acc1, q1[d], k_vec, vl);
++            acc2                     = __riscv_vfwmacc_vf_f32m2(acc2, q2[d], k_vec, vl);
++            acc3                     = __riscv_vfwmacc_vf_f32m2(acc3, q3[d], k_vec, vl);
++        }
++
++        __riscv_vse32_v_f32m2(dst0 + offset, acc0, vl);
++        __riscv_vse32_v_f32m2(dst1 + offset, acc1, vl);
++        __riscv_vse32_v_f32m2(dst2 + offset, acc2, vl);
++        __riscv_vse32_v_f32m2(dst3 + offset, acc3, vl);
++        offset += vl;
++    }
+ }
+ 
+ static inline void rvv_pv_accumulate_f16_x1(float *          dst,
+@@ -1327,7 +1335,7 @@
+     const int64_t DV = nev0;
+     const int64_t N  = neq1;
+ 
+-    GGML_ASSERT(flash_attn_ext_supported_shape_vlen1024_vf16(DK, DV));
++    GGML_ASSERT(flash_attn_ext_supported_shape_vlen1024_vf16(DK, DV) || (DK == 256 && DV == 256));
+ 
+     GGML_ASSERT(ne0 == DV);
+     GGML_ASSERT(ne2 == N);
+--- a/ggml/src/ggml-cpu/ggml-cpu.c
++++ b/ggml/src/ggml-cpu/ggml-cpu.c
+@@ -2956,7 +2956,7 @@
+ 
+                         // Tiled flash attention scratch (tile sizes defined in common.h)
+                         // Per-thread: Q_q + KQ + mask + VKQ32 + V32 + K_f32 + padding
+-                        size_t prefill  = sizeof(float)*(GGML_FA_TILE_Q*DK + 2*GGML_FA_TILE_Q*GGML_FA_TILE_KV + GGML_FA_TILE_Q*DV + GGML_FA_TILE_KV*DV + GGML_FA_TILE_KV*DK)*n_tasks;
++                        size_t prefill  = sizeof(float)*(GGML_FA_TILE_Q*DK + 2*GGML_FA_TILE_Q*GGML_FA_TILE_KV + GGML_FA_TILE_Q*DV + GGML_FA_TILE_KV*DV + GGML_FA_TILE_KV*DK + CACHE_LINE_SIZE_F32)*n_tasks;
+ 
+                         // Decode path: n_kv_chunks = n_tasks (one chunk per thread)
+                         // Per-thread: VKQ accmulator (DV), partial M, partial S + intra-thread scratch for V, Q and VKQ
