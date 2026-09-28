@@ -1,0 +1,10 @@
+START 2B-shared-document-8192-rvv1 2026-09-28T17:48:08+08:00
+PASS 2B 8192: new question cold 468.47s, warm 4.12s, cache 8181/8192, exact 32 tokens
+START 2B-shared-document-16384-rvv1 2026-09-28T18:04:38+08:00
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/audit-shared-document-cache.py", line 54, in <module>
+    audit(args.record, args.context, args.model_size)
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/audit-shared-document-cache.py", line 37, in audit
+    assert warm['result']['token_ids'] == cold['result']['token_ids'], 'new-question token IDs differ'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: new-question token IDs differ

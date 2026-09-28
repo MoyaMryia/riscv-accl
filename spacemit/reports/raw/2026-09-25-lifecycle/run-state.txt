@@ -1,0 +1,78 @@
+Board: musepipro-wg
+Board checkout: ~/Projects/spacemit-llama-integrated (a990751)
+Model directory: ~/Projects/spacemit-llama/models
+Runner on board: /tmp/bench-lifecycle.py
+TCM runtime: ~/Projects/llm-bench/.toolchain/spine-tcm
+
+Queued board jobs (they wait for the preceding PID to exit):
+147808 /tmp/run-lifecycle-baseline.sh -> /tmp/lifecycle-baseline.jsonl
+147889 /tmp/run-lifecycle-followup.sh -> /tmp/lifecycle-followup.jsonl
+147914 /tmp/run-lifecycle-scheduling.sh -> /tmp/lifecycle-scheduling.jsonl
+147968 /tmp/run-lifecycle-long-mtp.sh -> /tmp/lifecycle-long-mtp.jsonl
+149571 /tmp/run-lifecycle-windowed.sh -> isolated windowed build and /tmp/lifecycle-windowed.jsonl
+149650 /tmp/run-lifecycle-mixed-scheduling.sh -> uneven 4-slot ABBA scheduling, /tmp/lifecycle-mixed-scheduling.jsonl
+150062 /tmp/run-lifecycle-code-concurrency.sh -> 4B fixed-code direct/MTP concurrency 1/4/8, /tmp/lifecycle-code-concurrency.jsonl
+151664 /tmp/run-lifecycle-wide-fa.sh -> isolated 256-head RVV attention build and 2B/4B off/on ABBA, /tmp/lifecycle-wide-fa.jsonl
+152287 /tmp/run-lifecycle-soak.sh -> gated repeated 2,048-token direct/MTP generation for both sizes, /tmp/lifecycle-soak.jsonl
+152917 /tmp/run-lifecycle-reuse-scheduling.sh -> rotated two-round, uneven 4-slot partitioned/unified ABBA, /tmp/lifecycle-reuse-scheduling.jsonl
+153564 /tmp/run-lifecycle-wide-fa-long.sh -> gate exact 128/2k RVV arms, then 8k off/on/on/off for passing sizes, /tmp/lifecycle-wide-fa-long.jsonl
+154133 /tmp/run-lifecycle-threads.sh -> 2B/4B thread-count prefill TTFT sweep 4/6/8/2/4, /tmp/lifecycle-threads.jsonl
+154698 /tmp/run-lifecycle-opencl.sh -> isolated OpenCL build and 2B/4B 0/4/4/0 GPU-layer A/B under temporary render group, /tmp/lifecycle-opencl.jsonl
+185376 /tmp/run-lifecycle-windowed-control.sh -> complete-window arms get 12k full MTP control on the same patched build, /tmp/lifecycle-windowed-control.jsonl
+185452 /tmp/run-lifecycle-4b-kv-abba.sh -> 4B F16/Q4_0/Q4_0/F16 KV A/B at 128/2048, /tmp/lifecycle-4b-kv-abba.jsonl
+
+Local raw copies are snapshots until each board job finishes. Recopy the JSONL files from /tmp on the board, and inspect /tmp/run-lifecycle-*.out plus /tmp/lifecycle-*.log for errors. Keep this sequence isolated; do not launch another benchmark while one is active.
+
+2026-09-26 slot-assignment correction: runner atomically replaced while windowed server PID181152 remained active and mixed PID149650 / rotated PID152917 still waited. SHA256 e4e9fe60c1ef638e8037a20d05fbb71b1c78fd06a7fda774b11975bd68b7499e matches local and board. --slot-contexts now sends id_slot and validates the returned id_slot. Regression: python3 spacemit/bench/test-lifecycle-slots.py passed. Latest observed windowed progress 10880/12288 (89%), prefill 5343.43s.
+
+186804 /tmp/run-lifecycle-page-gather.sh -> waits for 185452; isolated occupied-page gather build, X60 numerical gate, 2B/4B smoke exact-output gate, then pinned uneven two-round off/on/on/off comparison; /tmp/lifecycle-page-gather-smoke.jsonl and /tmp/lifecycle-page-gather.jsonl. Patch SHA256 c8a4e8a3f803b7b9d932daa19716e6806b54547be3ec03b048b20a5413671b85.
+Runner SHA256 now ed917afbdd43da0447a3d7df203659b8dded71f784511941219d3bc614c991fc; adds SPINE_KV_PAGE_GATHER to recorded runtime environment. Slot pinning correction unchanged.
+
+204226 /tmp/run-lifecycle-rvv32.sh -> waits for page-gather PID186804; builds isolated VLEN256 wide-head tiled attention patch and tests 2B/4B at 128/2048 off/on/on/off. Patch SHA256 768e82d55bfdc675b6b7c47cade18795e4c8d7cf3b16eba6c9bf2f2bbc7d7965; git apply --check passed on board base a990751. The old wide-FA 8k selector now requires activation marker; short logs had none, direct RVV probe returned vlenb=32 versus old kernel requirement 128.
+
+Soak PID152287 completed. Archived final lifecycle-soak.jsonl (16 records: four 2B direct, four 2B MTP, two 4B direct, two 4B MTP, each with config row). Strict audit with followup long runs checked ten 2B and six 4B 2048-token completions, one token hash per model, no error. 4B MTP decode rates 3.407/3.403 t/s, decode RSS drift +58.50/+4.25 MiB. Next running PID152917 rotated scheduling.
+
+Read-only CPU capability check: /proc/cpuinfo shows eight X60 harts, IME only on cores0-3; cores4-7 lack _ime. taskset probes on cores0 and4 both returned vlenb=32. Runtime default num_perfer_cores4 cpu_mask:f therefore matches IME-capable cores; interpret queued 6/8-thread prefill sweep accordingly.
+
+205128 /tmp/run-lifecycle-rvv32-long.sh -> waits for short RVV32 PID204226; per-model selector requires complete exact 128/2048-token arms and enabled server activation markers, then runs 8192-token off/on/on/off with same binary; /tmp/lifecycle-rvv32-long.jsonl. Local positive/negative selector fixtures passed, shell syntax passed, script and selector staged on board. Wrapper launched and waiting; no 8k result yet.
+
+2B partitioned rotated-slot two-round arm completed and archived in lifecycle-reuse-scheduling-partial.jsonl. Strict audit passed eight 128-token completions in four context groups with one token hash per length, including physical ID0-3 rotation [128,512,1024,2048] -> [512,1024,2048,128]. Aggregate 1.8939/1.8746 tok/s. Await unified and 4B arms before comparing scheduling policies.
+
+205591 /tmp/run-lifecycle-code-long.sh -> waits for RVV32 long PID205128; 2B/4B direct and MTP, two persistent-server repeats each, 128-token fixed C++ prompt, 4096 forced output tokens, exact token/hash and event-trace audit; /tmp/lifecycle-code-long.jsonl. Script staged and launched. Fixed prompt archived as lifecycle-code-prompt.cpp, SHA256 06ed2b6d42854f42b74a2fb940a5b5bf405c619fa0d40f81cf8ca18b566104f7. No result yet.
+
+2B unified rotated-slot first round completed at 1.8168 tok/s with all four 128-token outputs exact-hash matching the partitioned arm. One more rotated round is required for a matched scheduling comparison. Partial snapshot recopied and 12-completion cross-mode strict audit passed.
+
+205793 /tmp/run-lifecycle-code-pinned.sh -> waits for code-long PID205591; 4B direct/MTP ABBA at c4/c8 with fixed C++ prompt and explicit physical slot IDs, 128-token output, exact per-slot hash audit; /tmp/lifecycle-code-pinned.jsonl. Local comparator positive/negative fixtures passed; script staged, syntax checked, launched. Existing automatic-assignment c8 outputs were stable by server slot across all four arms; c4 first direct arm differed from later arms. No pinned result yet.
+
+First 2B rotated-slot partitioned and unified arms completed. Archived partial snapshot has seven JSONL rows (two completed configs/four measurements plus next 2B unified config). Strict 16-completion audit passed with one token hash per prompt length across modes and slot rotations, exact requested/server IDs0-3. Partitioned aggregate 1.8939/1.8746 tok/s; unified 1.8168/1.8130; provisional means 1.8843 vs 1.8149, unified 3.7% lower. Second 2B unified and final 2B partitioned arms still pending before 4B starts.
+
+Second 2B unified ABBA arm first round completed at 1.8157 aggregate tok/s. Archived partial snapshot now eight JSONL rows. Strict 20-completion audit passed across the first partitioned arm, first unified arm, and first repeat of second unified arm; one token hash per prompt length, exact physical slot pinning. The second repeat and final 2B partitioned arm remain pending.
+
+Added campaign-specific audit-rotated-scheduling.py. It requires all four ABBA arms and both physical slot rotations for each selected model, exact 128-token output/hash agreement by prompt length, then reports aggregate means. Positive complete-fixture and negative changed-hash fixtures passed; the current partial snapshot correctly fails for missing 2B arm3 repeat1 and arm4. Use after the campaign finishes; do not interpret first-arm means as final.
+
+2026-09-27 completed queue audit: wrappers 152917 through 205793 have exited; no benchmark was active at the successful status check. Archived final JSONL for rotated scheduling (24 rows), thread sweep (50), OpenCL (24), windowed same-build controls (4), 4B KV ABBA (12), page-gather smoke (8) and full (24), RVV32 short (24) and 8k (16), fixed-code 4096-token soak (12), pinned code concurrency (16). See ../../2026-09-27-completed-gates.md for measurements and decisions. Campaign-specific scheduling audit passed 2B but rejected 4B because partitioned 2k output varied by first versus second round. Strict page-gather and RVV output audits passed. Code-long strict direct/MTP identity audit rejected reproducible mode-wise hash differences for both models. Pinned c4/c8 code slot audit passed.
+
+The isolated 256-bit RVV kernel activated, cut 2B/4B 2k and 8k TTFT materially, and preserved exact outputs. Applied /tmp/2026-09-26-wide-rvv-vlen256.patch to the clean integrated board checkout at a990751, rebuilt llama-server successfully, then ran /tmp/run-integrated-rvv-smoke.sh with SPINE_FA_WIDE_TILE=1. Both 128-token prompt smokes logged activation and exact-output audit passed against the isolated controls; result archived as lifecycle-integrated-rvv-smoke.jsonl. The board checkout now has three modified CPU files and remains opt-in through the environment variable.
+
+OpenCL build completed but backend rejected PowerVR BXE-2-32 and ignored -ngl 4. Page-gather negative config test exited with explicit validation error; on/off ABBA was exact but 2-3% slower and span telemetry was absent at default log verbosity. Same-build 12k windowed controls completed. 4B Q4_0 KV ABBA repeated its 2k speed and RSS gain with exact 32-token hashes. Fixed-code 4096-token direct/MTP repeats completed; mode-wise hashes differ for both models, so long-code MTP is not lossless on this workload.
+
+Packaged the measured RVV patch as optional spacemit/patches/0009-wide-rvv-vlen256.patch and added --rvv256 to apply-patches.sh. Tested full helper from clean official base 5ad05d8 in a disposable board worktree with --frspec --lowacc --q8-ime1 --m4-scale --rvv256; it passed git apply checks and git diff --check. The three CPU files matched the integrated patched checkout byte-for-byte; disposable worktree removed.
+
+243048 /tmp/run-code-divergence.sh -> running a fixed-code direct/MTP token-ID capture sweep at n=256/512/1024/2048/4096, stopping at the first mismatching length for each 2B/4B model. Uses /tmp/bench-lifecycle-capture.py (new optional --capture-token-ids) on patched integrated build with SPINE_FA_WIDE_TILE unset; no other benchmark overlaps. Goal: locate reproducible MTP first divergence seen at 4096 output tokens.
+
+243199 /tmp/run-integrated-rvv-12k.sh -> waits for code-divergence PID243048, then same integrated rebuilt binary, F16 KV, 2B/4B direct 12,288-prompt/32-output off/on pair, exact token hash and enabled activation gate; /tmp/lifecycle-integrated-rvv-12k.jsonl. Script staged, syntax checked, wrapper launched; no 12k result yet.
+
+243384 /tmp/run-code-specmax.sh -> waits for 12k RVV PID243199; selects each model's smallest direct/MTP divergent fixed-code output length from lifecycle-code-divergence.jsonl, then tests MTP --spec-draft-n-max 1 and 2 against captured direct token IDs. Runner gained optional --spec-draft-n-max (default remains 3) and --capture-token-ids. Script staged, syntax checked, wrapper launched; no result yet.
+
+243410 /tmp/run-page-gather-telemetry.sh -> waits for specmax PID243384; reruns 2B rotated uneven four-slot page-gather on mode with server -lv 5 to capture physical_span/gathered_span/occupied_page_rows telemetry and exact token audit. Adds optional --server-log-verbosity to runner; no result yet.
+
+243450 /tmp/run-4b-kv-long.sh -> waits for page telemetry PID243410; compares 4B F16 versus Q4_0 K/V at 2048-prompt/512 forced output tokens, same integrated binary with RVV flag unset, captures token IDs, TTFT/decode/RSS, reports first output difference; /tmp/lifecycle-4b-kv-long.jsonl. Script syntax checked, staged, wrapper launched.
+
+Code-divergence PID243048 completed. Archived lifecycle-code-divergence.jsonl (six completions, three model/length groups), audited exact token counts and captured token IDs. Fixed C++ prompt direct/MTP first mismatch: 2B n256 at zero-based generated index179 (direct ID745, MTP ID198); 4B n256 exact, n512 first mismatch at index303 (direct ID35585, MTP ID723). This localizes the earlier 4096-output mode-wise hash differences. PID243199 12k RVV off/on job started with 2B off arm active.
+2026-09-27 continuation: integrated 12k RVV off/on (PID 243199) active; 2B off first. Serialized follow-ups: MTP draft max 1/2 (PID 243384), page-gather verbose telemetry (PID 243410), 4B F16/Q4_0 512-output (PID 243450), target-logit divergence trace (PID 243809). The trace patch is opt-in, applies cleanly, and its script restores/rebuilds the integrated server after diagnostics.
+2026-09-27 continuation: a 2B/4B 12k full/window/window/full MTP repeat is queued behind the logit trace (wrapper PID 243886). It uses the prior same-binary windowed build and audits four exact outputs per model before any speed attribution.
+2026-09-27 continuation: RS rollback correctness sweep queued after 12k windowed ABBA (wrapper PID 244243); it compares 2B n256 and 4B n512 code outputs with saved direct token arrays. PowerVR probe confirms OpenCL C 1.2 and no subgroup extensions, so the existing OpenCL backend cannot perform real layer offload on this GPU without a port.
+2026-09-27 continuation: integrated same-binary 2B 12k RVV-off arm completed (32/32 tokens, strict single-arm audit passed), client TTFT 1653.703 s, prompt 7.431 tok/s, peak RSS 2522.20 MiB. RVV-on arm active; no paired 12k speed claim until its completion/hash audit.
+2026-09-27 continuation: integrated 2B 12k RVV off/on pair finished and strict two-arm exact token/text hash audit passed. TTFT 1653.703 -> 741.466 s (-55.16%); prompt 7.431 -> 16.573 tok/s (+123.04%); peak RSS 2522.20 -> 2522.48 MiB. One pair only; 4B 12k off arm now active.
+2026-09-27 continuation: optional windowed MTP patch copied into package as 0010 and exposed via --windowed-mtp; bash syntax/diff checks pass and git apply --check passes against current integrated RVV-enabled board checkout. Full clean-base helper application plus combined runtime benchmark remain unverified while 4B 12k is active.
+2026-09-27 continuation: combined integrated RVV+windowed MTP build/short+12k paired tests queued after RS sweep (PID 245391). On success it leaves the opt-in draft-window patch installed alongside RVV; on failure it restores/rebuilds integrated source. Clean 5ad05d8 all-options apply and model-source equality check queued after combined test (PID 245426). Neither result is claimed yet.

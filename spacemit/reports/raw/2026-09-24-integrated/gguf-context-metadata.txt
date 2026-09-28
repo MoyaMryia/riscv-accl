@@ -1,0 +1,9 @@
+Source: GGUF metadata parsed from the exact local board model files on 2026-09-24.
+2B Q4_0-embQ4_0: block_count=24, context_length=262144, head_count_kv=2, key_length=256, value_length=256, full_attention_interval=4.
+4B Q4_0-embQ4_0: block_count=32, context_length=262144, head_count_kv=4, key_length=256, value_length=256, full_attention_interval=4.
+Assuming one full-attention layer in four and f16 K/V:
+2B bytes per token = (24/4) * 2 * (256+256) * 2 = 12288.
+4B bytes per token = (32/4) * 4 * (256+256) * 2 = 32768.
+Attention KV at 8192 tokens: 96 MiB (2B), 256 MiB (4B).
+Attention KV at 16384 tokens: 192 MiB (2B), 512 MiB (4B).
+This is an estimate and excludes recurrent state, draft state, allocators, and other model/runtime memory.
