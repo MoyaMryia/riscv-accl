@@ -2,16 +2,24 @@
 # Apply the measured SpaceMiT X60 changes to an official-fork checkout.
 set -euo pipefail
 
-if [[ $# -lt 1 || $# -gt 3 ]]; then
-  echo "usage: $0 /path/to/spacemit-com/llama.cpp [--frspec] [--lowacc]" >&2
+if [[ $# -lt 1 || $# -gt 7 ]]; then
+  echo "usage: $0 /path/to/spacemit-com/llama.cpp [--frspec] [--lowacc] [--q8-ime1] [--m4-scale] [--rvv256] [--windowed-mtp]" >&2
   exit 2
 fi
 frspec=0
 lowacc=0
+q8_ime1=0
+m4_scale=0
+rvv256=0
+windowed_mtp=0
 for option in "${@:2}"; do
   case "$option" in
     --frspec) [[ $frspec -eq 0 ]] || exit 2; frspec=1 ;;
     --lowacc) [[ $lowacc -eq 0 ]] || exit 2; lowacc=1 ;;
+    --q8-ime1) [[ $q8_ime1 -eq 0 ]] || exit 2; q8_ime1=1 ;;
+    --m4-scale) [[ $m4_scale -eq 0 ]] || exit 2; m4_scale=1 ;;
+    --rvv256) [[ $rvv256 -eq 0 ]] || exit 2; rvv256=1 ;;
+    --windowed-mtp) [[ $windowed_mtp -eq 0 ]] || exit 2; windowed_mtp=1 ;;
     *) echo "unknown option: $option" >&2; exit 2 ;;
   esac
 done
@@ -37,6 +45,22 @@ fi
 if [[ $lowacc -eq 1 ]]; then
   git -C "$checkout" apply --check "$patches/0006-low-acceptance-fallback.patch"
   git -C "$checkout" apply "$patches/0006-low-acceptance-fallback.patch"
+fi
+if [[ $q8_ime1 -eq 1 ]]; then
+  git -C "$checkout" apply --check "$patches/0007-q8-ime1.patch"
+  git -C "$checkout" apply "$patches/0007-q8-ime1.patch"
+fi
+if [[ $m4_scale -eq 1 ]]; then
+  git -C "$checkout" apply --check "$patches/0008-ime-m4-scale.patch"
+  git -C "$checkout" apply "$patches/0008-ime-m4-scale.patch"
+fi
+if [[ $rvv256 -eq 1 ]]; then
+  git -C "$checkout" apply --check "$patches/0009-wide-rvv-vlen256.patch"
+  git -C "$checkout" apply "$patches/0009-wide-rvv-vlen256.patch"
+fi
+if [[ $windowed_mtp -eq 1 ]]; then
+  git -C "$checkout" apply --check "$patches/0010-windowed-mtp.patch"
+  git -C "$checkout" apply "$patches/0010-windowed-mtp.patch"
 fi
 git -C "$checkout" diff --check
 printf 'Applied SpaceMiT patches to %s\n' "$checkout"
