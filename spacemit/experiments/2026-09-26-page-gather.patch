@@ -1,0 +1,359 @@
+--- a/src/llama-kv-cache.h
++++ b/src/llama-kv-cache.h
+@@ -171,8 +171,8 @@
+     uint32_t get_n_kv(const slot_info & sinfo) const;
+ 
+     // get views of the current state of the cache
+-    ggml_tensor * get_k(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo) const;
+-    ggml_tensor * get_v(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo) const;
++    ggml_tensor * get_k(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo, ggml_tensor * page_rows = nullptr) const;
++    ggml_tensor * get_v(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo, ggml_tensor * page_rows = nullptr) const;
+ 
+     // store k_cur and v_cur in the cache based on the provided head location
+     ggml_tensor * cpy_k(ggml_context * ctx, ggml_tensor * k_cur, ggml_tensor * k_idxs, int32_t il, const slot_info & sinfo) const;
+@@ -200,6 +200,9 @@
+     // input API
+     //
+ 
++    ggml_tensor * build_input_page_rows(ggml_context * ctx, uint32_t n_kv) const;
++    void set_input_page_rows(ggml_tensor * dst) const;
++
+     ggml_tensor * build_input_k_idxs(ggml_context * ctx, const llama_ubatch & ubatch) const;
+     ggml_tensor * build_input_v_idxs(ggml_context * ctx, const llama_ubatch & ubatch) const;
+ 
+@@ -232,6 +235,12 @@
+         std::vector<ggml_tensor *> k_stream;
+         std::vector<ggml_tensor *> v_stream;
+     };
++
++    // Experimental page gather: existing storage remains preallocated.
++    bool page_gather = false;
++    std::vector<int32_t> page_row_map(uint32_t padded_size = 0) const;
++    mutable uint32_t page_last_span = 0;
++    mutable uint32_t page_last_compact = 0;
+ 
+     bool v_trans = true;  // the value tensor is transposed
+ 
+@@ -368,8 +377,8 @@
+     ggml_type type_v() const;
+ 
+     // get views of the current state of the cache
+-    ggml_tensor * get_k(ggml_context * ctx, int32_t il) const;
+-    ggml_tensor * get_v(ggml_context * ctx, int32_t il) const;
++    ggml_tensor * get_k(ggml_context * ctx, int32_t il, ggml_tensor * page_rows = nullptr) const;
++    ggml_tensor * get_v(ggml_context * ctx, int32_t il, ggml_tensor * page_rows = nullptr) const;
+ 
+     // store k_cur and v_cur in the cache based on the provided head location
+     // note: the heads in k_cur and v_cur should be laid out contiguously in memory
+@@ -383,6 +392,9 @@
+     // create destination indices for each head of the current batch for where it would be written in the KV cache
+     // the indices address the global KV cache (not per stream) - this is not relevant for the user of this API, but
+     //   helps understand the implementation logic of cpy_k and cpy_v
++    ggml_tensor * build_input_page_rows(ggml_context * ctx) const;
++    void set_input_page_rows(ggml_tensor * dst) const;
++
+     ggml_tensor * build_input_k_idxs(ggml_context * ctx, const llama_ubatch & ubatch) const;
+     ggml_tensor * build_input_v_idxs(ggml_context * ctx, const llama_ubatch & ubatch) const;
+ 
+--- a/src/llama-kv-cache.cpp
++++ b/src/llama-kv-cache.cpp
+@@ -1,4 +1,5 @@
+ #include "llama-kv-cache.h"
++#include "llama-kv-page-map.h"
+ 
+ #include "llama-impl.h"
+ #include "llama-io.h"
+@@ -9,6 +10,7 @@
+ #include <cassert>
+ #include <cmath>
+ #include <cstring>
++#include <cstdlib>
+ #include <limits>
+ #include <map>
+ #include <stdexcept>
+@@ -95,6 +97,17 @@
+         }
+     }
+ 
++    const char * page_env = std::getenv("SPINE_KV_PAGE_GATHER");
++    page_gather = page_env && std::strcmp(page_env, "1") == 0;
++    if (page_gather) {
++        if (model.arch != LLM_ARCH_QWEN35 || !unified || v_trans ||
++                type_k != GGML_TYPE_F16 || type_v != GGML_TYPE_F16 ||
++                swa_type != LLAMA_SWA_TYPE_NONE || other || hparams.is_mla()) {
++            throw std::runtime_error("SPINE_KV_PAGE_GATHER requires Qwen3.5 unified F16 K/V with flash attention and no shared/SWA cache");
++        }
++        LLAMA_LOG_INFO("SPINE_KV_PAGE_GATHER: 32-cell occupied-page gather enabled; backing allocation unchanged\n");
++    }
++
+     GGML_ASSERT(kv_size % n_pad == 0);
+ 
+     const uint32_t n_layer = hparams.n_layer_all;
+@@ -1224,6 +1237,35 @@
+     return layers[ikv].k;
+ }
+ 
++// Preserve physical order within and between pages. -1 marks masked padding;
++// gather inputs map it to row zero, but the attention mask never exposes it.
++std::vector<int32_t> llama_kv_cache::page_row_map(uint32_t padded_size) const {
++    GGML_ASSERT(page_gather && n_stream == 1);
++    const auto & cells = v_cells[0];
++    return llama_kv_page_rows(cells.size(), [&](uint32_t cell) {
++        return cells.is_empty(cell);
++    }, padded_size);
++}
++
++ggml_tensor * llama_kv_cache::build_input_page_rows(ggml_context * ctx, uint32_t n_kv) const {
++    if (!page_gather) {
++        return nullptr;
++    }
++    auto * rows = ggml_new_tensor_1d(ctx, GGML_TYPE_I32, n_kv);
++    ggml_set_name(rows, "kv_page_rows");
++    ggml_set_input(rows);
++    return rows;
++}
++
++void llama_kv_cache::set_input_page_rows(ggml_tensor * dst) const {
++    GGML_ASSERT(page_gather && ggml_backend_buffer_is_host(dst->buffer));
++    auto rows = page_row_map(dst->ne[0]);
++    for (auto & row : rows) {
++        row = std::max(row, 0);
++    }
++    ggml_backend_tensor_set(dst, rows.data(), 0, rows.size()*sizeof(int32_t));
++}
++
+ uint32_t llama_kv_cache::get_n_kv(const slot_info & sinfo) const {
+     uint32_t result = 0;
+ 
+@@ -1237,10 +1279,21 @@
+         result = std::max(std::min(cells.size(), std::max(n_pad_cur, GGML_PAD(cells.used_max_p1(), n_pad_cur))), result);
+     }
+ 
++    if (page_gather) {
++        const uint32_t occupied_rows = page_row_map().size();
++        const uint32_t compact = std::min(get_size(), std::max(n_pad_cur, GGML_PAD(occupied_rows, n_pad_cur)));
++        if (result != page_last_span || compact != page_last_compact) {
++            LLAMA_LOG_INFO("SPINE_KV_PAGE_GATHER: physical_span=%u gathered_span=%u occupied_page_rows=%u\n",
++                           result, compact, occupied_rows);
++            page_last_span = result;
++            page_last_compact = compact;
++        }
++        return compact;
++    }
+     return result;
+ }
+ 
+-ggml_tensor * llama_kv_cache::get_k(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo) const {
++ggml_tensor * llama_kv_cache::get_k(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo, ggml_tensor * page_rows) const {
+     const int32_t ikv = map_layer_ids.at(il);
+ 
+     auto * k = layers[ikv].k;
+@@ -1251,6 +1304,15 @@
+     assert(n_embd_k_gqa == hparams.n_embd_k_gqa(il));
+ 
+     const uint32_t ns = sinfo.s1 - sinfo.s0 + 1;
++    if (page_gather) {
++        GGML_ASSERT(page_rows && ns == 1 && sinfo.s0 == 0 && page_rows->ne[0] == n_kv);
++        // GET_ROWS yields F32; the round trip preserves every finite F16 value.
++        // Keep F16 attention kernels comparable with the control path.
++        auto * gathered = ggml_cast(ctx, ggml_get_rows(ctx, k, page_rows), GGML_TYPE_F16);
++        return ggml_reshape_4d(ctx, gathered, hparams.n_embd_head_k(il),
++                               hparams.n_head_kv(il), n_kv, 1);
++    }
++
+ 
+     return ggml_view_4d(ctx, k,
+             hparams.n_embd_head_k(il), hparams.n_head_kv(il), n_kv, ns,
+@@ -1260,7 +1322,7 @@
+             ggml_row_size(k->type, n_embd_k_gqa*kv_size)*sinfo.s0);
+ }
+ 
+-ggml_tensor * llama_kv_cache::get_v(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo) const {
++ggml_tensor * llama_kv_cache::get_v(ggml_context * ctx, int32_t il, uint32_t n_kv, const slot_info & sinfo, ggml_tensor * page_rows) const {
+     const int32_t ikv = map_layer_ids.at(il);
+ 
+     auto * v = layers[ikv].v;
+@@ -1272,6 +1334,15 @@
+     assert(n_embd_v_gqa >= hparams.n_embd_v_gqa(il));
+ 
+     const uint32_t ns = sinfo.s1 - sinfo.s0 + 1;
++    if (page_gather) {
++        GGML_ASSERT(page_rows && ns == 1 && sinfo.s0 == 0 && page_rows->ne[0] == n_kv);
++        // GET_ROWS yields F32; the round trip preserves every finite F16 value.
++        // Keep F16 attention kernels comparable with the control path.
++        auto * gathered = ggml_cast(ctx, ggml_get_rows(ctx, v, page_rows), GGML_TYPE_F16);
++        return ggml_reshape_4d(ctx, gathered, hparams.n_embd_head_v(il),
++                               hparams.n_head_kv(il), n_kv, 1);
++    }
++
+ 
+     if (!v_trans) {
+         // note: v->nb[1] <= v->nb[2]
+@@ -1526,6 +1597,7 @@
+     int64_t n_kv;
+     int64_t n_stream;
+     int64_t n_tps;
++    const std::vector<int32_t> * page_rows;
+ };
+ 
+ template<typename T, bool causal, bool swa, bool is_2d, bool alibi>
+@@ -1618,16 +1690,17 @@
+                     }
+                 }
+ 
+-                if (cells.is_empty(j)) {
++                const int32_t physical = args.page_rows ? (*args.page_rows)[j] : int32_t(j);
++                if (physical < 0 || cells.is_empty(physical)) {
+                     goto skip;
+                 }
+ 
+                 // mask the token if not the same sequence
+-                if (!cells.seq_has(j, seq_id)) {
++                if (!cells.seq_has(physical, seq_id)) {
+                     goto skip;
+                 }
+ 
+-                p0 = cells.pos_get(j);
++                p0 = cells.pos_get(physical);
+ 
+                 if (!alibi) {
+                     if (!prev) {
+@@ -1647,7 +1720,7 @@
+                     // M-RoPE causal mask
+                     if (is_2d) {
+                         if (p0 == p1) {
+-                            const auto & p0_ext = cells.ext_get(j);
++                            const auto & p0_ext = cells.ext_get(physical);
+ 
+                             if (p0_ext.is_2d_gt(p1_x, p1_y)) {
+                                 goto skip;
+@@ -1731,6 +1804,7 @@
+ 
+     //const int64_t t_start = ggml_time_us();
+ 
++    const auto page_rows = page_gather ? page_row_map(n_kv) : std::vector<int32_t>{};
+     const args_set_input_kq_mask args = {
+         /*.hparams          =*/ hparams,
+         /*.ubatch           =*/ ubatch,
+@@ -1741,6 +1815,7 @@
+         /*.n_kv             =*/ n_kv,
+         /*.n_stream         =*/ n_stream,
+         /*.n_tps            =*/ n_tps,
++        /*.page_rows        =*/ page_gather ? &page_rows : nullptr,
+     };
+ 
+     if (dst->type == GGML_TYPE_F16) {
+@@ -2575,12 +2650,20 @@
+     return kv->type_v();
+ }
+ 
+-ggml_tensor * llama_kv_cache_context::get_k(ggml_context * ctx, int32_t il) const {
+-    return kv->get_k(ctx, il, n_kv, sinfos[i_cur]);
+-}
+-
+-ggml_tensor * llama_kv_cache_context::get_v(ggml_context * ctx, int32_t il) const {
+-    return kv->get_v(ctx, il, n_kv, sinfos[i_cur]);
++ggml_tensor * llama_kv_cache_context::build_input_page_rows(ggml_context * ctx) const {
++    return kv->build_input_page_rows(ctx, n_kv);
++}
++
++void llama_kv_cache_context::set_input_page_rows(ggml_tensor * dst) const {
++    kv->set_input_page_rows(dst);
++}
++
++ggml_tensor * llama_kv_cache_context::get_k(ggml_context * ctx, int32_t il, ggml_tensor * page_rows) const {
++    return kv->get_k(ctx, il, n_kv, sinfos[i_cur], page_rows);
++}
++
++ggml_tensor * llama_kv_cache_context::get_v(ggml_context * ctx, int32_t il, ggml_tensor * page_rows) const {
++    return kv->get_v(ctx, il, n_kv, sinfos[i_cur], page_rows);
+ }
+ 
+ ggml_tensor * llama_kv_cache_context::cpy_k(ggml_context * ctx, ggml_tensor * k_cur, ggml_tensor * k_idxs, int32_t il) const {
+--- a/src/llama-graph.h
++++ b/src/llama-graph.h
+@@ -334,6 +334,7 @@
+ 
+     ggml_tensor * self_k_idxs = nullptr; // I64 [n_batch]
+     ggml_tensor * self_v_idxs = nullptr; // I64 [n_batch] or [n_batch*n_embd_v_gqa]
++    ggml_tensor * self_page_rows = nullptr; // I32 [n_kv], refreshed on graph reuse
+ 
+     ggml_tensor * self_kq_mask     = nullptr; // F32/F16 [n_kv, n_batch/n_stream, 1, n_stream]
+     ggml_tensor * self_kq_mask_cnv = nullptr; //         [n_kv, n_batch/n_stream, 1, n_stream]
+--- a/src/llama-graph.cpp
++++ b/src/llama-graph.cpp
+@@ -467,6 +467,9 @@
+ void llm_graph_input_attn_kv::set_input(const llama_ubatch * ubatch) {
+     mctx->set_input_k_idxs(self_k_idxs, ubatch);
+     mctx->set_input_v_idxs(self_v_idxs, ubatch);
++    if (self_page_rows) {
++        mctx->set_input_page_rows(self_page_rows);
++    }
+ 
+     // the mask is left unallocated when the graph only stores K/V without attending
+     // (e.g. DFlash's KV-injection pass)
+@@ -957,6 +960,9 @@
+ void llm_graph_input_mem_hybrid::set_input(const llama_ubatch * ubatch) {
+     mctx->get_attn()->set_input_k_idxs(inp_attn->self_k_idxs, ubatch);
+     mctx->get_attn()->set_input_v_idxs(inp_attn->self_v_idxs, ubatch);
++    if (inp_attn->self_page_rows) {
++        mctx->get_attn()->set_input_page_rows(inp_attn->self_page_rows);
++    }
+ 
+     mctx->get_attn()->set_input_kq_mask(inp_attn->self_kq_mask, ubatch, cparams.causal_attn);
+ 
+@@ -2607,6 +2613,7 @@
+ 
+         inp->self_k_idxs = mctx_cur->build_input_k_idxs(ctx0, ubatch);
+         inp->self_v_idxs = mctx_cur->build_input_v_idxs(ctx0, ubatch);
++        inp->self_page_rows = mctx_cur->build_input_page_rows(ctx0);
+ 
+         inp->self_kq_mask = build_attn_inp_kq_mask(ctx0, mctx_cur, ubatch, cparams);
+         inp->self_kq_mask_cnv = inp->self_kq_mask;
+@@ -2671,8 +2678,8 @@
+     const auto & kq_mask = inp->get_kq_mask();
+ 
+     ggml_tensor * q = q_cur;
+-    ggml_tensor * k = mctx_cur->get_k(ctx0, il);
+-    ggml_tensor * v = mctx_cur->get_v(ctx0, il);
++    ggml_tensor * k = mctx_cur->get_k(ctx0, il, inp->self_page_rows);
++    ggml_tensor * v = mctx_cur->get_v(ctx0, il, inp->self_page_rows);
+ 
+     ggml_tensor * cur = build_attn_mha(q, k, v, kq_b, kq_mask, sinks, v_mla, kq_scale, il);
+     cb(cur, "kqv_out", il);
+--- /dev/null
++++ b/src/llama-kv-page-map.h
+@@ -0,0 +1,33 @@
++#pragma once
++
++#include <algorithm>
++#include <cstdint>
++#include <stdexcept>
++#include <vector>
++
++// Expand occupied 32-cell pages in physical order. A negative row marks
++// logical padding and must be masked even though the gather reads row zero.
++template <typename IsEmpty>
++std::vector<int32_t> llama_kv_page_rows(uint32_t size, IsEmpty is_empty, uint32_t padded_size = 0) {
++    std::vector<int32_t> rows;
++    constexpr uint32_t page_size = 32;
++    for (uint32_t base = 0; base < size; base += page_size) {
++        const uint32_t end = std::min(base + page_size, size);
++        bool occupied = false;
++        for (uint32_t cell = base; cell < end; ++cell) {
++            occupied |= !is_empty(cell);
++        }
++        if (occupied) {
++            for (uint32_t cell = base; cell < end; ++cell) {
++                rows.push_back(cell);
++            }
++        }
++    }
++    if (padded_size) {
++        if (rows.size() > padded_size) {
++            throw std::runtime_error("KV page map exceeds attention span");
++        }
++        rows.resize(padded_size, -1);
++    }
++    return rows;
++}

@@ -1,0 +1,26 @@
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -75,6 +75,7 @@
+ // used by server_slot::can_speculate() to disable drafting when the server is busy.
+ static void * g_spec_slots_vec = nullptr;
+ static int    g_spec_max_active = -1; // lazy env read; <=0 means "unset"
++static int    g_spec_max_context = -1; // 0 disables the optional long-context gate
+ static int    g_spec_lowacc = -1; // opt-in per-request fallback after poor draft acceptance
+ 
+ struct server_batch {
+@@ -426,6 +427,15 @@
+         if (!spec || spec_lowacc_disabled) {
+             return false;
+         }
++        // At long contexts, an MTP draft can cost more than direct decoding.
++        // This opt-in gate skips new drafts while keeping target-model verification unchanged.
++        if (g_spec_max_context == -1) {
++            const char * e = getenv("SPINE_SPEC_MAX_CONTEXT");
++            g_spec_max_context = e ? std::max(0, atoi(e)) : 0;
++        }
++        if (g_spec_max_context > 0 && prompt.n_tokens() >= g_spec_max_context) {
++            return false;
++        }
+         // adaptive speculation: only draft when few slots are active. speculative decoding
+         // wins in the memory-bound regime (1-2 streams) but wastes IME compute when the
+         // batch is compute-bound (>=3-4 streams), so disable it under load.

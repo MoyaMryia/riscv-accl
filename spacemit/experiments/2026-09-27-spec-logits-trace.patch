@@ -1,0 +1,64 @@
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -24,6 +24,7 @@
+ 
+ #include <algorithm>
+ #include <cstddef>
++#include <cstdlib>
+ #include <cinttypes>
+ #include <exception>
+ #include <memory>
+@@ -3830,6 +3831,35 @@
+             }
+         });
+ 
++        // Optional raw-logit trace around a specified generated-token index. This
++        // samples no tokens and does not change either decode path.
++        auto trace_target_logits = [&](server_slot & slot, int32_t generated_index, int32_t batch_index, const char * path) {
++            const char * begin_env = std::getenv("SPINE_TRACE_LOGITS_BEGIN");
++            const char * end_env   = std::getenv("SPINE_TRACE_LOGITS_END");
++            if (!begin_env || !end_env || generated_index < std::atoi(begin_env) || generated_index > std::atoi(end_env)) {
++                return;
++            }
++            const float * logits = llama_get_logits_ith(slot.ctx_tgt, batch_index);
++            const int32_t n_vocab = llama_vocab_n_tokens(vocab);
++            if (!logits || n_vocab < 2) {
++                SLT_INF(slot, "SPINE_TRACE_LOGITS: path=%s generated_index=%d batch_index=%d unavailable\n",
++                        path, generated_index, batch_index);
++                return;
++            }
++            int32_t best = -1;
++            int32_t second = -1;
++            for (int32_t token = 0; token < n_vocab; ++token) {
++                if (best < 0 || logits[token] > logits[best]) {
++                    second = best;
++                    best = token;
++                } else if (second < 0 || logits[token] > logits[second]) {
++                    second = token;
++                }
++            }
++            SLT_INF(slot, "SPINE_TRACE_LOGITS: path=%s generated_index=%d batch_index=%d top1=%d logit1=%.9g top2=%d logit2=%.9g margin=%.9g\n",
++                    path, generated_index, batch_index, best, logits[best], second, logits[second], logits[best] - logits[second]);
++        };
++
+         auto accept_special_token = [&](server_slot & slot, llama_token token) {
+             return params_base.special ||
+                 slot.task->params.sampling.preserved_tokens.find(token) != slot.task->params.sampling.preserved_tokens.end();
+@@ -3886,6 +3916,7 @@
+             llama_token id;
+             {
+                 scoped_timer timer(t_sampl, n_sampl);
++                trace_target_logits(slot, slot.n_decoded, tok_idx, "direct");
+                 id = common_sampler_sample(slot.smpl.get(), slot.ctx_tgt, tok_idx);
+             }
+ 
+@@ -3947,6 +3978,9 @@
+                 common_sampler_ptr smpl_save(common_sampler_clone(slot.smpl.get()));
+ 
+                 GGML_ASSERT(slot.spec_i_batch.size() == n_draft + 1);
++                for (size_t i = 0; i < slot.spec_i_batch.size(); ++i) {
++                    trace_target_logits(slot, slot.n_decoded + i, slot.spec_i_batch[i], "mtp");
++                }
+                 auto accepted = common_sampler_sample_and_accept_n(slot.smpl.get(), slot.ctx_tgt, slot.spec_i_batch, slot.spec_draft);
+                 slot.spec_i_batch.clear();
+ 

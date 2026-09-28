@@ -1,0 +1,5 @@
+# MTP divergence target-logit diagnostic
+
+The fixed C++ prompt produced repeatable direct/MTP token-ID differences at generated index 179 for 2B and 303 for 4B. The [diagnostic patch](2026-09-27-spec-logits-trace.patch) adds `SPINE_TRACE_LOGITS_BEGIN` and `SPINE_TRACE_LOGITS_END` to print the target model's raw top-two logits at selected generated-token indices in direct sampling and speculative verification. It does not sample or alter logits. This permits inspection of the argmax margin where output first changes.
+
+The [serialized board script](../reports/raw/2026-09-25-lifecycle/run-spec-logits-trace.sh) waits for the current benchmark queue, applies the patch to the integrated server, rebuilds, repeats the captured 2B n256 and 4B n512 direct/MTP requests, checks each output against its uninstrumented baseline, and restores the source and binary. It archives JSONL and logs under `/tmp` on the board until copied into this report directory. A small raw-logit margin would support a batch-shape numerical explanation; a large margin would motivate checking target KV positions and rollback. Neither explanation is established before the trace is measured.

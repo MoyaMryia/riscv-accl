@@ -1,0 +1,77 @@
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -76,6 +76,7 @@
+ static void * g_spec_slots_vec = nullptr;
+ static int    g_spec_max_active = -1; // lazy env read; <=0 means "unset"
+ static int    g_spec_lowacc = -1; // opt-in per-request fallback after poor draft acceptance
++static double g_spec_direct_tps = -1.0; // measured direct rate for opt-in cost fallback
+ 
+ struct server_batch {
+     llama_batch batch;
+@@ -304,6 +305,10 @@
+     bool    spec_lowacc_disabled = false;
+     int32_t spec_lowacc_steps = 0;
+     int32_t spec_lowacc_accepted = 0;
++    int64_t spec_round_start_us = 0;
++    int32_t spec_cost_rounds = 0;
++    int64_t spec_cost_elapsed_us = 0;
++    int32_t spec_cost_tokens = 0;
+     std::vector<int32_t> n_accepted_per_pos; // Accepted tokens per draft position
+ 
+     void reset() {
+@@ -322,6 +327,10 @@
+         spec_lowacc_disabled = false;
+         spec_lowacc_steps = 0;
+         spec_lowacc_accepted = 0;
++        spec_round_start_us = 0;
++        spec_cost_rounds = 0;
++        spec_cost_elapsed_us = 0;
++        spec_cost_tokens = 0;
+         if (can_speculate()) {
+             spec_draft.clear();
+             spec_i_batch.clear();
+@@ -3113,10 +3122,12 @@
+             }
+         });
+ 
+-        // generate the actual drafts (if any)
+-        {
+-            common_speculative_draft(spec.get());
++        // Time a complete draft + verification round for the optional cost gate.
++        const int64_t t_draft_start = ggml_time_us();
++        for (auto * slot : drafting) {
++            slot->spec_round_start_us = t_draft_start;
+         }
++        common_speculative_draft(spec.get());
+ 
+         // make checkpoints if needed
+         iterate(drafting, [&](server_slot & slot) {
+@@ -4027,6 +4038,28 @@
+                 }
+             }
+ 
++            if (g_spec_direct_tps < 0.0) {
++                const char * e = getenv("SPINE_SPEC_DIRECT_TPS");
++                g_spec_direct_tps = e ? atof(e) : 0.0;
++            }
++            if (g_spec_direct_tps > 0.0 && slot.spec_round_start_us > 0) {
++                slot.spec_cost_rounds++;
++                slot.spec_cost_elapsed_us += t_now - slot.spec_round_start_us;
++                slot.spec_cost_tokens += ids.size();
++                slot.spec_round_start_us = 0;
++                if (slot.spec_cost_rounds >= 12) {
++                    const double spec_tps = 1e6 * slot.spec_cost_tokens / slot.spec_cost_elapsed_us;
++                    if (spec_tps < 0.95 * g_spec_direct_tps) {
++                        slot.spec_lowacc_disabled = true;
++                        SLT_INF(slot, "disable speculation after %d rounds: measured %.3f vs direct %.3f tok/s\n",
++                                slot.spec_cost_rounds, spec_tps, g_spec_direct_tps);
++                    }
++                    slot.spec_cost_rounds = 0;
++                    slot.spec_cost_elapsed_us = 0;
++                    slot.spec_cost_tokens = 0;
++                }
++            }
++
+             if (slot.n_accepted_per_pos.empty()) {
+                 slot.n_accepted_per_pos.resize(common_speculative_n_max(&params_base.speculative), 0);
+             }
