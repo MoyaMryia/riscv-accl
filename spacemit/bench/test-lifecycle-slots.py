@@ -4,13 +4,19 @@ import argparse
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 
 def serve(port):
+    # Windows 'a'-mode appends seek-then-write and two handler threads can
+    # clobber each other's lines; serialize the request log.
+    log_lock = threading.Lock()
+
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *args):
             pass
@@ -26,7 +32,7 @@ def serve(port):
             if self.path == '/tokenize':
                 self.wfile.write(json.dumps({'tokens': [1, 2, 3]}).encode())
                 return
-            with open(os.environ['SLOT_TEST_REQUESTS'], 'a') as output:
+            with log_lock, open(os.environ['SLOT_TEST_REQUESTS'], 'a') as output:
                 output.write(json.dumps(body) + '\n')
             assigned = body.get('id_slot', 1)
             if os.environ.get('SLOT_TEST_WRONG'):
@@ -46,9 +52,14 @@ def check():
     root = Path(__file__).resolve().parent
     with tempfile.TemporaryDirectory(prefix='lifecycle-slots-') as directory:
         tmp = Path(directory)
-        server = tmp / 'server'
-        server.write_text(f'#!/bin/sh\nexec {sys.executable} {Path(__file__).resolve()} --serve "$@"\n')
-        server.chmod(0o755)
+        serve_copy = tmp / 'slot-test-server.py'
+        shutil.copyfile(Path(__file__).resolve(), serve_copy)
+        server = tmp / ('server.bat' if os.name == 'nt' else 'server')
+        if os.name == 'nt':
+            server.write_text(f'@echo off\r\n"{sys.executable}" "{serve_copy}" --serve %*\r\n')
+        else:
+            server.write_text(f'#!/bin/sh\nexec {sys.executable} {serve_copy} --serve "$@"\n')
+            server.chmod(0o755)
         model = tmp / 'model.gguf'
         model.touch()
         for mode in ('pinned', 'wrong', 'automatic'):
