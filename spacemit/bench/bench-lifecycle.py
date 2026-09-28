@@ -293,6 +293,11 @@ def main():
                                                bool(args.slot_contexts), args.capture_token_ids) for slot in range(args.concurrency)]
                         results = [future.result() for future in futures]
                     after = time.monotonic()
+                    elapsed = after - before
+                    # Windows monotonic ticks at ~15.6 ms; a fast fake server can
+                    # finish the whole pool inside one tick, so guard the division.
+                    aggregate_tps = (round(sum(r['tokens_predicted'] or 0 for r in results)
+                                           / elapsed, 4) if elapsed > 0 else 0.0)
                     rss = [value for stamp, value, _ in samples if before <= stamp <= after]
                     available = [value for stamp, _, value in samples if before <= stamp <= after and value is not None]
                     decode_rss = [value for stamp, value, _ in samples if
@@ -311,20 +316,28 @@ def main():
                               'rss_decode_delta_kib': decode_rss_delta,
                               'mem_available_kib': stats(available),
                               'vms_after_kib': vmsize_kib(proc.pid),
-                              'elapsed_s': round(after - before, 3),
-                              'aggregate_tps': round(sum(r['tokens_predicted'] or 0 for r in results)
-                                                     / (after - before), 4)}
+                              'elapsed_s': round(elapsed, 3),
+                              'aggregate_tps': aggregate_tps}
                     print(json.dumps(record, sort_keys=True), flush=True)
                     output.write(json.dumps(record, sort_keys=True) + '\n')
                     output.flush()
         finally:
             stop.set()
             sampler.join()
-            proc.terminate()
+            if os.name == 'nt':
+                # .bat/child trees survive terminate(); kill the whole process tree
+                subprocess.run(['taskkill', '/F', '/T', '/PID', str(proc.pid)],
+                               capture_output=True)
+            else:
+                proc.terminate()
             try:
                 proc.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                proc.kill()
+                if os.name == 'nt':
+                    subprocess.run(['taskkill', '/F', '/T', '/PID', str(proc.pid)],
+                                   capture_output=True)
+                else:
+                    proc.kill()
                 proc.wait()
 
 

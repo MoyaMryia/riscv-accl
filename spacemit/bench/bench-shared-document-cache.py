@@ -109,11 +109,20 @@ def run(args):
                 write_record(output, record)
         finally:
             stop.set()
-            proc.terminate()
+            if os.name == 'nt':
+                # .bat/child trees survive terminate(); kill the whole process tree
+                subprocess.run(['taskkill', '/F', '/T', '/PID', str(proc.pid)],
+                               capture_output=True)
+            else:
+                proc.terminate()
             try:
                 proc.wait(timeout=10)
             except subprocess.TimeoutExpired:
-                proc.kill()
+                if os.name == 'nt':
+                    subprocess.run(['taskkill', '/F', '/T', '/PID', str(proc.pid)],
+                                   capture_output=True)
+                else:
+                    proc.kill()
                 proc.wait()
             sampler.join(timeout=2)
 

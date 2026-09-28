@@ -11,7 +11,8 @@ cd env/qemu
 ```
 
 启动后进入 `(none):~#`（或 `#`）busybox root shell。退出用 `Ctrl-A x`（QEMU
-`-nographic` 的默认停止快捷键），或 `Ctrl-C, quit`。
+`-nographic` 的默认停止快捷键）；也可 `Ctrl-A c` 切到 QEMU monitor 后输入 `quit`。
+（注意 `Ctrl-C` 会直接送达 guest shell，不能用来退出 QEMU。）
 
 启动来源：`qemu-system-riscv64 -M virt -m 512M -smp 2 -bios <OpenSBI> \
   -kernel vmlinux-rv64 -initrd initramfs.cpio.gz -append "console=ttyS0 rdinit=/init" \
@@ -45,14 +46,14 @@ cloud 镜像只在 `cloud.debian.org`，实测 ~210KB/s，慢且非教育网）�
 ## 四、验收标准
 
 满足：能用 `qemu-system-riscv64` 启动、落到一个干净可用的 root shell。
-自测（`/init` 打印后由 busybox init 在 ttyS0 上调起 `ash`，出现可交互提示符）：
+自测（`/init` 静默挂载 devtmpfs/proc/sysfs 后 `exec /sbin/init`，由 busybox
+init 在 ttyS0 上调起 `ash`，出现可交互提示符）：
 `uname -m` → `riscv64`，且启动日志里**没有** `can't access tty` 或双 prompt。
 
-实现细节：`/etc/inittab` 用 `::respawn:/bin/cttyhack /bin/ash`（而非
-`/bin/getty`+`login`）——`cttyhack` 给 ash 一个合法的 controlling tty，
-因此没有 `job control turned off` 警告，也不用 root 密码登录。之前用
-`:/bin/ash` 的裸写法会在同一串口挂两只 shell，出现双 `(none):~#` 与
-`can't access tty` 报错，已弃用。
+实现细节：`/etc/inittab` 用 `::sysinit:/sbin/mdev -s` 加
+`ttyS0::respawn:/bin/ash`，由 busybox init 直接在 ttyS0 上 respawn 一个
+root ash（而非 `/bin/getty`+`login`），因此没有 `job control turned off`
+警告，也不用 root 密码登录。
 
 ## 五、为什么用 initramfs 而非 qcow2
 

@@ -44,7 +44,7 @@
 | D | 标量 rv64gc | `xiangshan-kunminghu`, **-smp 8 / -t 8** | **1.41** | **1.17** | 墙钟 241s；**指标线 1.0 过线**，8 线程 4.7x 扩展 |
 | 参照 | x86 原生 AVX | 宿主 | 65.21 | 19.63 | 1 线程 |
 
-## 指令数测量（2026-09-04，plugin: insnsum.so，7 次引导差分法）
+## 指令数测量（2026-09-04，plugin: libinsnsum.so，7 次引导差分法）
 
 原始计数（insn_total，含 boot）：
 
