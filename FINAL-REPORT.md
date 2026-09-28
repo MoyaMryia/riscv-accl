@@ -41,7 +41,7 @@ export LD_LIBRARY_PATH=$HOME/Projects/llm-bench/.toolchain/spine-tcm:$PWD/spert/
 | llama-bench pp128（-ub 32） | 9.04 | |
 | server 单路 tg：非投机 → MTP 全词表 → **MTP+dv64k** | 2.23 → 2.88 → **3.20 t/s** | **+43%，128-token 样本一致** |
 | server conc=8 聚合（非投机） | 6.50 t/s | conc1/2/4: 2.21/2.97/5.48 |
-| 4B-Q8_0 对照 | pp128 1.11 / tg 0.87 | 无 IME 核，死路 |
+| 4B-Q8_0 对照 | pp128 1.11 / tg 0.87 | 当时无 IME 核；2026-09-24 起可选 patch 0007 提供 Q8_0 IME1 核（见 spacemit/README.md），不再是死路 |
 
 正确性：当时测试的所有投机配置在**多 prompt × 128 token** 范围内与非投机输出逐 token 一致；更长的固定代码输出见文首更新。
 
@@ -65,7 +65,7 @@ libspert 通过弱符号探测 `libspine_tcm.so`；不在 LD_LIBRARY_PATH 里就
   graph_mtp 自动探测形状、截断 logits 补 -inf 到全词表（**构造性无损**：verify 永远用全词表）。
   脚本：`gguf-add-dv32k.py`（参数化 N_ROWS/IL）。
 - **4B MTP 从零手术**（`gguf-add-mtp-4b.py`）：unsloth 4B GGUF 不含 nextn →
-  hf-mirror 拉 index.json → HTTP Range 精准提取 241MB `mtp.*` bf16 → 11 权重转 q4_0 +
+  hf-mirror 拉 index.json → HTTP Range 精准提取 241MB `mtp.*` bf16（共 15 个张量）→ 8 权重转 q4_0 +
   7 norm 转 f32（**+1，zero-centered RMSNorm**，conversion/qwen.py:303，漏了草稿全拒）+
   `block_count` 32→33 + `nextn_predict_layers=1`。
 - **n_max=3 最优**（2/4/5 均更差：草稿 launch 固定开销 vs verify M 增大）。
@@ -84,7 +84,7 @@ M≥64 的 BLOCK GEMM 调度效率骤降：pp128 @ ub=128 仅 13.03，**ub=32 �
 server/bench 一律用 `-ub 32 -b 32`（decode/verify 批量 ≤32 不受影响）。
 
 ### 6. 已排除的死路（勿再试）
-- 主权重低于 Q4_0 的量化：IME1 白名单仅 q4_0/q4_1/q4_K；Q8_0 实测 pp 慢 8 倍。
+- 主权重低于 Q4_0 的量化：IME1 白名单仅 q4_0/q4_1/q4_K；Q8_0 实测 pp 慢 8 倍。（更新：2026-09-24 起可选 patch 0007 增加 Q8_0 IME1 核，Q8_0 已不再是死路，见 spacemit/README.md。）
 - IME2/q2_k 核：板上 `use_ime2: 0` 不可用。
 - TCM tile staging 尺寸调整（A″）：中性；A′ 半相位锁步回退已证伪。
 - spert env 旋钮（HOT_SPIN/ARBITER/CTX_RVV/RT_PRIO）：全部无效果。

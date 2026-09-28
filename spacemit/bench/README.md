@@ -102,7 +102,7 @@ prompt-length rotations, exact physical slot IDs, complete outputs, and
 one token hash per prompt length. Use `--size 2B` to audit only a finished
 model while the other is still running.
 
-For the 256-head RVV attention experiment, `select-wide-fa-long.py` checks
+For the 256-dim-head RVV attention experiment, `select-wide-fa-long.py` checks
 that each model has four complete 128/2048-token arms with matching output
 token hashes and that both enabled server logs confirm the wide RVV kernel
 executed before its queued 8k comparison. It prints eligible model sizes
