@@ -282,6 +282,32 @@ within 0.5 points of cold, and every cached score at least 3/5. These thresholds
 are declared checks, not statistical proof of equivalence. Both answer-order
 passes and any order disagreements remain available in the summary.
 
+If the workstation collector stops, resume the same run without restarting
+board generation:
+
+```bash
+python3 spacemit/bench/run-all-document-quality.py --collect-only --detach \
+  --run-dir /absolute/path/to/existing/run
+```
+
+The collector reads the existing manifest, appends to its log, and skips
+already scored cases after verifying their input hashes and judge model.
+An existing local collector with the same tmux session name prevents a
+second detached collector from starting. Results from the original schedule
+retain their protocol; resume does not change the board's running code.
 
 `python3 spacemit/bench/test-document-quality-suite.py` checks both request
-schedules, completion/cache integrity, and independent target requests.
+schedules, completion/cache integrity, independent target requests, resumed
+judging without duplicate API calls, and collection without generation.
+
+The cloud credential is read only on the workstation from `~/.secret_ai_key`.
+Only public evidence, questions, required facts and generated answers go to
+the judge. The runner stages executable code to the board and uses documents
+already present there. It runs this cache-quality matrix; earlier hardware,
+MTP and GPU campaigns are separate experiments.
+
+Regression checks for completion integrity and blinding:
+
+```bash
+python3 spacemit/bench/test-document-quality-suite.py
+```

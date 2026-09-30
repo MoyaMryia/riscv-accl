@@ -8,6 +8,7 @@ key stays on the workstation. No existing result is overwritten.
 
 import argparse
 import datetime
+import hashlib
 import importlib.util
 import json
 import shlex
@@ -127,9 +128,34 @@ def summarize(run_dir, labels, errors):
     return result
 
 
+def judge_pending(cases, out, judge, url, model, key):
+    """Resume an interrupted judge without paying again for recorded cases."""
+    expected = {c['case_id']: hashlib.sha256(json.dumps(c, sort_keys=True).encode()).hexdigest()
+                for c in cases}
+    if len(expected) != len(cases):
+        raise ValueError('duplicate judge input case ID')
+    done = set()
+    if out.exists():
+        for line in out.read_text().splitlines():
+            mark = json.loads(line)
+            case_id = mark['case_id']
+            if (case_id in done or mark.get('input_sha256') != expected.get(case_id)
+                    or mark.get('judge_model') != model or len(mark.get('passes', [])) != 2):
+                raise ValueError('existing judgment does not match this input and judge')
+            done.add(case_id)
+    with out.open('a') as handle:
+        for case in cases:
+            if case['case_id'] in done:
+                continue
+            result = judge.grade_case(case, url, model, key, 120, 2, 1536, True)
+            handle.write(json.dumps(result) + '\n'); handle.flush()
+            print(f"{case['case_id']}: cold {result['cold_mean_score']}/5, "
+                  f"cached {result['warm_mean_score']}/5", flush=True)
+
+
 def run(args):
     run_dir = args.run_dir.resolve()
-    if (run_dir / 'manifest.json').exists():
+    if not args.collect_only and (run_dir / 'manifest.json').exists():
         raise ValueError('run directory already contains a benchmark')
     run_dir.mkdir(parents=True, exist_ok=True)
     judge = load_judge()
@@ -138,32 +164,38 @@ def run(args):
     if not key or '\n' in key:
         raise ValueError('key file must contain one nonempty key line')
     url = judge.endpoint(args.base_url, False)
-    board_home = remote(args.board, ['python3', '-c', 'from pathlib import Path; print(Path.home())'])
-    remote_root = f'{board_home}/Projects/riscv-accl-bench-2026-09-27/quality-suite/{run_dir.name}'
-    remote(args.board, ['mkdir', '-p', remote_root + '/bench', remote_root + '/serve'])
-    for directory, names in [('bench', ['bench-lifecycle.py', 'bench-shared-document-cache.py',
-                                        'document_quality_suite.py', 'run-all-document-quality-board.sh']),
-                             ('serve', ['cached-document-chat.py'])]:
-        paths = [str(HERE.parent / directory / name) for name in names]
-        command(['scp', *paths, f'{args.board}:{remote_root}/{directory}/'], timeout=60)
-    labels = [f'{model}-{context}' for model in args.models for context in args.contexts]
-    manifest = {'models': args.models, 'contexts': args.contexts, 'max_tokens': args.max_tokens,
-                'case_ids': args.case_id or ['routes', 'batches', 'cache', 'slot', 'health', 'tokenize'],
-                'remote_root': remote_root, 'board': args.board, 'judge_model': args.judge_model,
-                'base_url': args.base_url, 'quality_schedule': args.quality_schedule,
-                'expected_pairs': len(labels) * len(args.case_id or range(6))}
-    (run_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    (run_dir / 'summary.md').write_text(
-        '# Document cache quality benchmark\n\nRunning; final results are pending.\n\n'
-        f"Requested configurations: {', '.join(labels)}. Expected pairs: {manifest['expected_pairs']}.\n\n"
-        'The collector replaces this file as configurations complete and are judged.\n')
-    session = 'docq_' + run_dir.name
-    board_command = shlex.join(['bash', remote_root + '/bench/run-all-document-quality-board.sh',
-                               remote_root, ' '.join(args.models), ' '.join(map(str, args.contexts)),
-                               str(args.max_tokens), ' '.join(args.case_id or []), args.quality_schedule])
-    board_command += ' > ' + shlex.quote(remote_root + '/matrix.log') + ' 2>&1'
-    remote(args.board, ['tmux', 'new-session', '-d', '-s', session, board_command])
-    print(f'Board tmux {session}; results {run_dir}', flush=True)
+    if args.collect_only:
+        manifest = json.loads((run_dir / 'manifest.json').read_text())
+        args.board = manifest['board']
+        args.judge_model = manifest['judge_model']
+        url = judge.endpoint(manifest.get('base_url', args.base_url), False)
+        remote_root = manifest['remote_root']
+        print(f'Resuming collection only; results {run_dir}', flush=True)
+    else:
+        board_home = remote(args.board, ['python3', '-c', 'from pathlib import Path; print(Path.home())'])
+        remote_root = f'{board_home}/Projects/riscv-accl-bench-2026-09-27/quality-suite/{run_dir.name}'
+        remote(args.board, ['mkdir', '-p', remote_root + '/bench', remote_root + '/serve'])
+        for directory, names in [('bench', ['bench-lifecycle.py', 'bench-shared-document-cache.py',
+                                            'document_quality_suite.py', 'run-all-document-quality-board.sh']),
+                                 ('serve', ['cached-document-chat.py'])]:
+            paths = [str(HERE.parent / directory / name) for name in names]
+            command(['scp', *paths, f'{args.board}:{remote_root}/{directory}/'], timeout=60)
+        manifest = {'models': args.models, 'contexts': args.contexts, 'max_tokens': args.max_tokens,
+                    'case_ids': args.case_id or ['routes', 'batches', 'cache', 'slot', 'health', 'tokenize'],
+                    'remote_root': remote_root, 'board': args.board, 'judge_model': args.judge_model,
+                    'base_url': args.base_url, 'quality_schedule': args.quality_schedule,
+                    'expected_pairs': len(args.models) * len(args.contexts) * len(args.case_id or range(6))}
+        (run_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+        (run_dir / 'summary.md').write_text(
+            '# Document cache quality benchmark\n\nRunning; final results are pending.\n')
+        session = 'docq_' + run_dir.name
+        board_command = shlex.join(['bash', remote_root + '/bench/run-all-document-quality-board.sh',
+                                   remote_root, ' '.join(args.models), ' '.join(map(str, args.contexts)),
+                                   str(args.max_tokens), ' '.join(args.case_id or []), args.quality_schedule])
+        board_command += ' > ' + shlex.quote(remote_root + '/matrix.log') + ' 2>&1'
+        remote(args.board, ['tmux', 'new-session', '-d', '-s', session, board_command])
+        print(f'Board tmux {session}; results {run_dir}', flush=True)
+    labels = [f'{model}-{context}' for model in manifest['models'] for context in manifest['contexts']]
     remaining, errors = set(labels), {}
     deadline = time.monotonic() + args.suite_timeout
     while remaining:
@@ -190,12 +222,7 @@ def run(args):
                     cases = json.loads((run_dir / f'{label}.judge-input.json').read_text())
                     if cases:
                         out = run_dir / f'{label}.judge.jsonl'
-                        with out.open('x') as handle:
-                            for case in cases:
-                                result = judge.grade_case(case, url, args.judge_model, key, 120, 2, 1536, True)
-                                handle.write(json.dumps(result) + '\n'); handle.flush()
-                                print(f"{case['case_id']}: cold {result['cold_mean_score']}/5, "
-                                      f"cached {result['warm_mean_score']}/5", flush=True)
+                        judge_pending(cases, out, judge, url, args.judge_model, key)
                     else:
                         errors[label] = 'No completed pairs with verified cache reuse; judging skipped'
                 except (ValueError, RuntimeError, OSError) as exc:
@@ -219,6 +246,8 @@ def main():
     parser.add_argument('--max-tokens', type=int, default=512)
     parser.add_argument('--case-id', action='append', choices=['routes', 'batches', 'cache', 'slot', 'health', 'tokenize'])
     parser.add_argument('--quality-schedule', choices=['grouped', 'alternating'], default='grouped')
+    parser.add_argument('--collect-only', action='store_true',
+                        help='resume an existing manifest: collect and judge without launching generation')
     parser.add_argument('--base-url', default='https://api.xiaomimimo.com/v1')
     parser.add_argument('--judge-model', default='mimo-v2.6-flash')
     parser.add_argument('--key-file', type=Path, default=Path.home() / '.secret_ai_key')
@@ -235,13 +264,17 @@ def main():
         parser.error('duplicate case ID')
     if args.detach:
         args.run_dir = args.run_dir.resolve()
-        args.run_dir.mkdir(parents=True, exist_ok=False)
+        if args.collect_only:
+            if not (args.run_dir / 'manifest.json').is_file():
+                parser.error('--collect-only requires an existing run manifest')
+        else:
+            args.run_dir.mkdir(parents=True, exist_ok=False)
         session = 'docq_local_' + args.run_dir.name
         argv = [sys.executable, str(Path(__file__).resolve()),
                 *[a for a in sys.argv[1:] if a != '--detach']]
         if '--run-dir' not in sys.argv:
             argv += ['--run-dir', str(args.run_dir)]
-        invocation = shlex.join(argv) + ' > ' + shlex.quote(str(args.run_dir / 'collector.log')) + ' 2>&1'
+        invocation = shlex.join(argv) + ' >> ' + shlex.quote(str(args.run_dir / 'collector.log')) + ' 2>&1'
         command(['tmux', 'new-session', '-d', '-s', session, invocation])
         print(f'Started local tmux {session}. Read {args.run_dir}/summary.md after completion.')
         return 0

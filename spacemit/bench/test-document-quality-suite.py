@@ -92,7 +92,50 @@ class QualityChecks(unittest.TestCase):
                 else:
                     self.assertEqual([p['order'] for p in pairs], [['warm', 'cold'], ['cold', 'warm']] * 3)
 
+    def test_resumed_judge_skips_recorded_cases_and_rejects_changed_inputs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)/'marks.jsonl'
+            cases = [{'case_id': 'first', 'question': 'one'}, {'case_id': 'second', 'question': 'two'}]
+            def grade(case, *args):
+                return {'case_id': case['case_id'], 'judge_model': 'judge',
+                        'input_sha256': hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest(),
+                        'passes': [{}, {}], 'cold_mean_score': 4, 'warm_mean_score': 4}
+            judge = SimpleNamespace(grade_case=grade)
+            with contextlib.redirect_stdout(io.StringIO()):
+                RUNNER.judge_pending(cases[:1], out, judge, 'https://example.invalid', 'judge', 'mock')
+                with patch.object(judge, 'grade_case', side_effect=grade) as calls:
+                    RUNNER.judge_pending(cases, out, judge, 'https://example.invalid', 'judge', 'mock')
+                    self.assertEqual(calls.call_count, 1)
+                    self.assertEqual(calls.call_args.args[0]['case_id'], 'second')
+                    calls.reset_mock()
+                    RUNNER.judge_pending(cases, out, judge, 'https://example.invalid', 'judge', 'mock')
+                    calls.assert_not_called()
+            with self.assertRaisesRegex(ValueError, 'does not match'):
+                RUNNER.judge_pending([dict(c, question='changed') for c in cases], out, judge,
+                                     'https://example.invalid', 'judge', 'mock')
 
+    def test_collect_only_never_stages_or_launches_generation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'manifest.json').write_text(json.dumps({
+                'models': ['2B'], 'contexts': [2048], 'case_ids': ['cache'],
+                'remote_root': '/existing/run', 'board': 'existing-board', 'judge_model': 'judge'}))
+            (root/'2B-2048.jsonl').write_text(json.dumps({'kind': 'config'})+'\n')
+            (root/'2B-2048.judge-input.json').write_text('[]')
+            key_file = root/'mock-key'
+            key_file.write_text('mock')
+            args = SimpleNamespace(collect_only=True, run_dir=root, key_file=key_file,
+                                   base_url='https://example.invalid', judge_model='unused',
+                                   board='unused', suite_timeout=10)
+            judge = SimpleNamespace(endpoint=lambda *args: 'https://example.invalid/chat/completions')
+            with patch.object(RUNNER, 'load_judge', return_value=judge), \
+                    patch.object(RUNNER, 'remote', return_value='0') as remote, \
+                    patch.object(RUNNER, 'command') as command, contextlib.redirect_stdout(io.StringIO()):
+                RUNNER.run(args)
+            self.assertEqual(remote.call_args_list[0].args,
+                             ('existing-board', ['cat', '/existing/run/2B-2048.exit-status']))
+            self.assertEqual(remote.call_count, 1)
+            self.assertTrue(all(c.args[0][0] == 'scp' for c in command.call_args_list))
 
     def test_markdown_does_not_hide_required_facts(self):
         case = {'source_id': 'S3', 'fact_patterns': [r'not guaranteed', r'batch']}
