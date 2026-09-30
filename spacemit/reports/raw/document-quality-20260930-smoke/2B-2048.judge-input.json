@@ -1,0 +1,14 @@
+[
+  {
+    "case_id": "2B-2048-cache",
+    "question": "What does cache_prompt reuse, what gets reprocessed, and are identical logits guaranteed? Answer in at most 90 words and cite [S3].",
+    "evidence": "[S3] tools/server/README.md:514\n`cache_prompt`: Re-use KV cache from a previous request if possible. This way the common prefix does not have to be re-processed, only the suffix that differs between the requests. Because (depending on the backend) the logits are **not** guaranteed to be bit-for-bit identical for different batch sizes (prompt processing vs. token generation) enabling this option can cause nondeterministic results. Default: `true`",
+    "required_facts": [
+      "reuse the common prefix/KV cache",
+      "evaluate only the differing suffix",
+      "bit-for-bit identical logits are not guaranteed because batching can differ"
+    ],
+    "cold_answer": "`cache_prompt` reuses KV cache from a previous request. Only the suffix that differs between requests gets reprocessed. Identical logits are **not** guaranteed.",
+    "warm_answer": "`cache_prompt` reuses KV cache from a previous request. Only the suffix that differs between requests gets reprocessed. Identical logits are **not** guaranteed."
+  }
+]
