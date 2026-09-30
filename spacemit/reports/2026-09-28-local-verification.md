@@ -2,6 +2,9 @@
 
 Date: 2026-09-28. Scope: analysis of records already archived under `reports/raw/` on a workstation, with no board access. Nothing here is a new board measurement; every number below is reproduced by a committed script from the archived JSONL/log files, and the commands are listed so each can be re-run.
 
+Output-audit correction on 2026-09-30: valid token/text hashes and agreement
+across both comparison arms are now required by the matrix verifier.
+
 ## The compact results matrix reproduces from raw records
 
 [verify-results-matrix.py](../bench/verify-results-matrix.py) reparses the matrix table in [the resumed-measures report](2026-09-27-resumed-measures.md) and recomputes every TTFT, prefill, decode, end-to-end, and peak-RSS cell from the lifecycle records, including the two-launch means for the isolated 2k/8k arms and the weight-comparison arms. It also checks the exact-output claim per model and prompt length from the recorded token hashes.
