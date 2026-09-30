@@ -207,3 +207,75 @@ status 3 while it is still running; after completion it archives the board
 records, builds judge input from the captured text and public document excerpt,
 and posts the pair to MiMo. The local project reports are not sent to the
 board or cloud by this workflow.
+
+## Extended chat quality matrix
+
+The existing `bench-shared-document-cache.py` now supports `--quality-suite`.
+It uses the same system instruction, chat format, disabled thinking, slot 0,
+temperature 0 and seed 42 as `serve/cached-document-chat.py`. The legacy raw
+completion mode remains available for reproducing earlier results.
+
+Run the entire new matrix with one command from the workstation:
+
+```bash
+python3 spacemit/bench/run-all-document-quality.py --detach
+```
+
+Defaults are 2B and 4B at 4,096 and 8,192 document tokens, six questions each,
+and a 512-token answer cap. This means 24 cold/cached pairs plus distinct
+primer requests. Expect hours of board work. The command starts a workstation
+tmux collector; generation runs in a separate board tmux session. The collector
+downloads each completed configuration, scores eligible pairs using MiMo in
+both answer orders, and writes `summary.md`, `summary.json`, logs, exact
+documents, answer records and `exit-status` in the printed run directory.
+Status 0 means all descriptive pilot gates passed, 1 means an operational
+failure, and 2 means completed work requires quality/completion review.
+
+Use `--models`, `--contexts`, `--max-tokens`, `--case-id`, and a new `--run-dir`
+to select another matrix. For example, a bounded pipeline smoke:
+
+```bash
+python3 spacemit/bench/run-all-document-quality.py --detach \
+  --models 2B --contexts 2048 --case-id cache
+```
+
+The board assembles a document from six exact passages in its public server
+README and public corpus filler. Evidence is labelled `[S1]` through `[S6]`
+and placed in beginning/middle/end groups. The questions cover route types,
+batch defaults, prefix cache behavior, slot assignment, health status and
+tokenization. Records include source line numbers, source/document hashes,
+exact evidence, offsets, and required facts. This is a constructed public
+documentation pilot; it does not establish quality on arbitrary real documents.
+
+Cold/cached order alternates between questions. Before every cached target
+request, a different primer question is sent, so cold-first pairs cannot
+accidentally test an identical full-prompt repeat. All requests must fit their
+allocated context. Cache validation requires physical slot 0, at least 90%
+document-token reuse, and zero reuse in the cold control. Final streamed usage
+and timing events are saved, including events with no answer text.
+
+Only pairs where both answers finish with `stop`, contain answer text, and
+have no reasoning text/tags are eligible for completed-answer judging.
+Answers ending with `length` are retained and reported as incomplete; they
+cannot pass the pilot. Fact regex checks and citation checks are reported
+alongside cloud scores. Regex checks alone do not establish factual accuracy.
+Every eligible pair is judged against its exact included evidence and required
+facts. Truncated judge responses are rejected too.
+
+The descriptive pilot gate requires all pairs to complete and be judged,
+no required-fact or citation regression in cached answers, cached mean score
+within 0.5 points of cold, and every cached score at least 3/5. These thresholds
+are declared checks, not statistical proof of equivalence. Both answer-order
+passes and any order disagreements remain available in the summary.
+
+The cloud credential is read only on the workstation from `~/.secret_ai_key`.
+Only public evidence, questions, required facts and generated answers go to
+the judge. The runner stages executable code to the board and uses documents
+already present there. It runs this cache-quality matrix; earlier hardware,
+MTP and GPU campaigns are separate experiments.
+
+Regression checks for completion integrity and blinding:
+
+```bash
+python3 spacemit/bench/test-document-quality-suite.py
+```

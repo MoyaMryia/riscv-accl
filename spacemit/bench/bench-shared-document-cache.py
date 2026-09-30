@@ -143,9 +143,20 @@ def main():
     parser.add_argument('--port', type=int, default=18085)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--log', type=Path, required=True)
+    parser.add_argument('--quality-suite', action='store_true',
+                        help='six chat-formatted fact questions with blinded cold/warm pairs')
+    parser.add_argument('--source-readme', type=Path,
+                        help='public server README used to construct verified evidence')
+    parser.add_argument('--case-id', action='append', help='quality-suite case filter; repeat as needed')
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
-    run(args)
+    if args.quality_suite:
+        from document_quality_suite import run_chat_suite
+        if not args.source_readme:
+            parser.error('--quality-suite requires --source-readme')
+        run_chat_suite(args, bench)
+    else:
+        run(args)
 
 
 if __name__ == '__main__':
