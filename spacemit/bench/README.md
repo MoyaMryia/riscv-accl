@@ -1,5 +1,9 @@
 # X60 server benchmark runner
 
+See the [documentation guide](../DOCS.md) for current results and queued work.
+This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)
+is a design; its proposed modes are not implemented commands.
+
 `bench-server.py` starts the patched `llama-server` once per speculative mode, sends greedy completion requests, and writes one JSON record per result. It checks that all modes on the same model produce identical response text for each prompt. The recorded `tps` is the server's decode rate (`timings.predicted_per_second`), not end-to-end throughput. Server stdout and stderr go to `--log-dir`.
 
 The C++ near-copy prompt includes `fixtures/ngram-mod.cpp`, taken from `common/ngram-mod.cpp` in the official llama.cpp fork at base commit `5ad05d8` (MIT license). The fixture freezes the prompt across subsequent upstream edits. The Python edit and prose prompts are embedded in the runner. The FR-Spec set uses English, code, and Chinese prompts.
@@ -311,3 +315,25 @@ Regression checks for completion integrity and blinding:
 ```bash
 python3 spacemit/bench/test-document-quality-suite.py
 ```
+
+## Compact K1 layout experiment
+
+`start-k1-attention-layout.py` stages the isolated experiment and starts board
+tmux plus a local collector. It verifies baseline source hashes and waits for
+the shared quality-benchmark lock before building. Use a fresh run directory;
+the launcher refuses to reuse an existing directory for generation.
+
+```bash
+python3 spacemit/bench/start-k1-attention-layout.py
+```
+
+For an existing run with an interrupted collector:
+
+```bash
+python3 spacemit/bench/start-k1-attention-layout.py --collect-only \
+  --run-dir /absolute/path/to/existing/run
+```
+
+The [experiment specification](../experiments/2026-09-30-k1-attention-layout.md)
+documents the 235-case numerical gate and both-model pilot. The proposed
+faster operator timing and staged controller are still design work.

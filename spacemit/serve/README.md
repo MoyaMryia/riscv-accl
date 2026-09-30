@@ -1,5 +1,7 @@
 # Reuse a document prefix for follow-up questions
 
+See the [documentation guide](../DOCS.md) for current benchmark status.
+
 `llama-server` can retain a prompt prefix in a live slot. The client here sends the same system instruction and document for every question, appends the changing question last, and requests `cache_prompt: true` on `/v1/chat/completions`. It pins requests to slot 0 of a single-slot server. The first question still prefills the document; later questions can reuse the common prefix. No model weights or document contents are stored in this repository.
 
 ## Start the board server
@@ -47,3 +49,7 @@ On the board, `smoke-cached-document-board.sh` builds a public 8,000-character e
 In the 2B board smoke on 2026-09-30, the public excerpt produced 2,605/2,606 input tokens. The first answer started after 120.00 s; the changed-question answer started after 2.54 s (47.2× shorter). The server log reported 33 prompt tokens evaluated for the second request, and both answers completed with `stop`. This measures latency and cache reuse for one document, not answer quality across tasks.
 
 The longer 2B/4B changed-question measurements and their quality limits are in the [shared-document cache report](../reports/2026-09-29-shared-document-cache.md).
+
+For complete-answer quality checks, use the [chat quality benchmark](../reports/2026-09-30-chat-quality-benchmark.md)
+and [matrix runner](../bench/README.md#extended-chat-quality-matrix). The smoke
+test checks reuse and latency; its short output cap is not a quality gate.

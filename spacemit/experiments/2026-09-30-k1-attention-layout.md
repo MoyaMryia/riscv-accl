@@ -1,5 +1,9 @@
 # Compact attention layouts for SpacemiT K1
 
+See the [documentation guide](../DOCS.md) for the dated status snapshot.
+The [fast-test design](2026-09-30-fast-test-design.md) proposes a shorter
+future protocol; the queued run below uses its original pilot protocol.
+
 Date: 2026-09-30. This is an opt-in experiment based on the inspected
 integrated source at `a990751` with the existing wide RVV patch. It changes
 attention scratch packing and query blocking. Model head dimensions, KV

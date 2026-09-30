@@ -1,5 +1,7 @@
 # Faster K1 optimization test method
 
+See the [documentation guide](../DOCS.md) for related measurements and work.
+
 Date: 2026-09-30. Status: proposed test design, not an implemented runner.
 The existing compact-layout tmux job retains its current test protocol.
 

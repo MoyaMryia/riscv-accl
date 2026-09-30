@@ -1,5 +1,8 @@
 # SpaceMiT X60 llama.cpp integration
 
+Start with the [documentation guide](DOCS.md) for current status and work.
+This page gives deployment commands; dated reports retain campaign evidence.
+
 This directory packages the measured Qwen3.5 2B/4B work on MUSE-Pi-Pro (`musepipro-wg`). Source patches apply to the [official SpaceMiT llama.cpp fork](https://github.com/spacemit-com/llama.cpp) at commit `5ad05d8`. Patches 0001–0004 reproduce the tested `port-gdn` source at `6562c22`; patch 0005 adds the separately measured frequency-ranked 32k MTP prototype; patch 0006 adds an opt-in per-request low-acceptance fallback; patch 0007 adds Q8_0 IME1 kernels; patch 0008 improves the Q4_0 M4 scale path; optional patch 0009 adds the measured 256-bit RVV F16-KV prefill kernel; optional patch 0010 bounds the MTP draft KV history. For patches 0001–0005, we compared all 12 changed source files byte-for-byte with the board's experimental checkout; patch 0006 was built and benchmarked separately. The base optimization is not a replacement for upstream llama.cpp or a general RISC-V backend.
 
 ## Apply and build
@@ -10,9 +13,9 @@ Use a clean checkout of the official fork at `5ad05d8`. The helper checks the co
 git clone https://github.com/spacemit-com/llama.cpp.git ~/Projects/spacemit-llama/llama.cpp
 cd ~/Projects/spacemit-llama/llama.cpp
 git checkout 5ad05d8
-/path/to/riscv-accl/spacemit/apply-patches.sh "$PWD"
+/path/to/riscv-accl/spacemit/apply-patches.sh "$PWD" --m4-scale --rvv256
 # Optional: --frspec for the mapped 32k head, --lowacc for the acceptance fallback,
-# --q8-ime1 for Q8_0, --m4-scale for Q4_0, --rvv256 for F16-KV prefill,
+# --q8-ime1 for Q8_0; the command above selects M4 Q4_0 and RVV F16-KV prefill,
 # and --windowed-mtp for opt-in draft-KV windowing.
 ```
 
@@ -43,6 +46,19 @@ The repository contains no model weights. Start with legal local Qwen3.5 GGUFs: 
 
 ## Run
 
+For the current document workflow, start a single-slot server in direct mode:
+
+```bash
+SPINE_FA_WIDE_TILE=1 ./build/bin/llama-server \
+  -m "$HOME/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf" \
+  -t 4 -c 8192 --parallel 1 -b 32 -ub 32 -fa on \
+  --host 127.0.0.1 --port 18085
+```
+
+Use the corresponding 4B model for 4B. The [document client](serve/README.md)
+checks that prompt plus output fits the context. Optional speculative settings
+below reproduce earlier workload-specific experiments.
+
 For dedicated single-stream, copy-heavy editing with a 2B or 4B `-dv64k` model, the following is a measured throughput candidate for the short prompts described below. A later 4,096-token fixed-code test found repeatable direct/MTP token differences: the first generated mismatch was at index 179 for 2B and 303 for 4B. Use direct decoding when exact greedy agreement over arbitrary long code is required; the [lifecycle audit](reports/2026-09-27-completed-gates.md) gives the evidence and limits.
 
 ```bash
@@ -67,11 +83,11 @@ After applying optional patch 0006, set `SPINE_SPEC_LOWACC=1` on a dedicated sin
 
 On the board, optional Q8_0 IME1 patch 0007 raised 4B Q8_0 prefill from 1.117 to 7.472 tokens/s and decode from 0.866 to 1.349 tokens/s. Greedy English, Chinese, and code response hashes matched the saved baseline. Q4_0 remained faster overall. Optional M4 patch 0008 raised 4B Q4_0 prefill from 9.058 to 9.360 tokens/s and 2B mapped-head MTP from 6.944 to 7.066 tokens/s in English and 5.030 to 5.121 in Chinese, with matched hashes in interleaved runs.
 
-Use --q8-ime1 when serving Q8_0, --m4-scale when Q4_0 prefill or small speculative verification matters, and --rvv256 for the opt-in 256-bit wide-head RVV attention kernel. The optional --windowed-mtp patch adds `SPINE_MTP_WINDOW=2048` to bound only the draft cache. At 12k, it saved 68.5/135.3 MiB peak RSS for 2B/4B with exact 128-token hashes against full-history MTP; its speed effect is under a repeated ABBA test, and MTP is not exact for the separate long-code workload. After building with --rvv256, set `SPINE_FA_WIDE_TILE=1` for the tested Qwen3.5 F16-KV models. The new public Chinese map did not improve held-out acceptance; the experimental timing gate and hybrid IME/RVV dispatch regressed at least one important workload and are not part of the helper. The full A/B data, source links, and limits are in [the integrated K1 report](reports/2026-09-24-integrated-k1.md).
+Use --q8-ime1 when serving Q8_0, --m4-scale when Q4_0 prefill or small speculative verification matters, and --rvv256 for the opt-in 256-bit wide-head RVV attention kernel. The optional --windowed-mtp patch adds `SPINE_MTP_WINDOW=2048` to bound only the draft cache. At 12k, it saved 68.5/135.3 MiB peak RSS for 2B/4B with exact 128-token hashes against full-history MTP; its speed effect is based on one long pair per model and still needs fixed replication, and MTP is not exact for the separate long-code workload. After building with --rvv256, set `SPINE_FA_WIDE_TILE=1` for the tested Qwen3.5 F16-KV models. The new public Chinese map did not improve held-out acceptance; the experimental timing gate and hybrid IME/RVV dispatch regressed at least one important workload and are not part of the helper. The full A/B data, source links, and limits are in [the integrated K1 report](reports/2026-09-24-integrated-k1.md).
 
 ## Evidence and scope
 
-- [Final 2B/4B baseline and optimization report](reports/2026-09-21-final.md): 2B `llama-bench` tg128 5.19 tokens/s and pp128 22.07 tokens/s; 4B tg128 2.30 and pp128 9.04; model and runtime details.
+- [Historical 2B/4B short-prompt baseline](reports/2026-09-21-final.md): 2B `llama-bench` tg128 5.19 tokens/s and pp128 22.07 tokens/s; 4B tg128 2.30 and pp128 9.04; model and runtime details.
 - [Frequency-ranked MTP experiment](reports/2026-09-23-frspec.md): mapped 32k head improved the three tested prompts versus a prefix 64k head, but direct decoding was faster on the Chinese prompt.
 - [N-gram plus MTP experiment](reports/2026-09-24-ngram.md): 2B near-copy C++ editing improved from 7.994 to about 10.36 decode tokens/s with a full 16-token n-gram match; Python edit and prose were effectively tied. The 4B C++ result improved 3.390 to 3.634 tokens/s in one pass.
 - [Speculative settings sweep](reports/2026-09-24-spec-sweep.md) rules out longer n-gram bursts and a single global MTP confidence threshold on the tested prompts.

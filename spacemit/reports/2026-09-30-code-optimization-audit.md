@@ -1,5 +1,12 @@
 # Remaining inference optimization opportunities
 
+Follow-up: the [compact K1 layout experiment](../experiments/2026-09-30-k1-attention-layout.md)
+implements candidates 1 and 3 behind an opt-in flag. It is queued for native
+correctness and speed tests; no gain is established. The read-only audit below
+describes the source state before that experiment. See the
+[current guide](../DOCS.md) for status and the
+[faster test design](../experiments/2026-09-30-fast-test-design.md) for the proposed developer loop.
+
 Date: 2026-09-30, Asia/Singapore. Read-only source investigation of
 `musepipro-wg:~/Projects/spacemit-llama-integrated` at `a990751`, including
 its three existing modified CPU files. No inference implementation was
