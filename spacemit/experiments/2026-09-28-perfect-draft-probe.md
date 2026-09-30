@@ -1,5 +1,9 @@
 # Perfect-draft verify probe (x86 batch-shape mechanism)
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [experiments index](README.md) for later results and current status.
+
 Task A, step "x86 复现 + 机制定位". Isolates the mechanism behind the board's
 direct/MTP divergence (2B first mismatch at generated index 179, 4B at 303;
 margins in [2026-09-27-resumed-measures.md](../reports/2026-09-27-resumed-measures.md))

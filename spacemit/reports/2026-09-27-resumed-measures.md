@@ -1,5 +1,9 @@
 # Resumed MUSE-Pi-Pro measures
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Run dates: 2026-09-27–28 (Asia/Singapore).
 
 The 2026-09-27 board shutdown cleared `/tmp` and ended the previously queued wrappers. This report records only archived completed measurements and new runs started after the reboot. The restored run inputs and outputs live under `~/Projects/riscv-accl-bench-2026-09-27` on `musepipro-wg`.
@@ -66,7 +70,7 @@ The [instrumented trace patch](../experiments/2026-09-27-spec-logits-trace.patch
 | 2B | 179 | 745 (24.240017), 198 (24.170704) | 0.069313 | 198 (24.193840), 745 (24.190426) | 0.003414 |
 | 4B | 303 | 35585 (20.548761), 723 (20.546551) | 0.002211 | 723 (20.549353), 35585 (20.487862) | 0.061491 |
 
-Both paths rank the same two candidates at the first mismatch, in opposite order. This supports batch-dependent numerical sensitivity at these positions; it does not prove which kernel causes it or establish exactness for arbitrary inputs. Since one-token drafts and RS rollback preserved the mismatch, the practical exact-output setting remains direct decoding. A short flash-attention-off A/B is running to isolate that path further.
+Both paths rank the same two candidates at the first mismatch, in opposite order. This supports batch-dependent numerical sensitivity at these positions; it does not prove which kernel causes it or establish exactness for arbitrary inputs. Since one-token drafts and RS rollback preserved the mismatch, the practical exact-output setting remains direct decoding. The completed flash-attention-off diagnostic below tested that workaround.
 
 The [2B flash-attention-off diagnostic](raw/2026-09-25-lifecycle/lifecycle-code-fa-off.jsonl) completed 256 direct and MTP tokens with the same model, prompt, and batch settings but `-fa off`. Direct and MTP still diverged, now at generated index **99**. FA-off direct first differed from its FA-on direct control at index 99, and FA-off MTP first differed from FA-on MTP at 117. This setting changes the numerical output path and does not restore exact direct/MTP identity. It is one run per mode, so it isolates a failed workaround rather than a general causal attribution.
 

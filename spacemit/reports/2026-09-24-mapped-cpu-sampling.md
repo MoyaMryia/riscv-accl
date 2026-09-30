@@ -1,5 +1,9 @@
 # Mapped 32k MTP head with CPU draft sampling on K1/X60
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-24. Board: MUSE-Pi-Pro, SpaceMiT K1/X60. This experiment combines the existing frequency-ranked 32k `d2t` MTP head with the existing `--no-spec-draft-backend-sampling` flag. No source or GGUF was changed. It used the separately built `~/Projects/spacemit-llama-frspec/build/bin/llama-server` and `Qwen3.5-2B-MTP-Q4_0-embQ4_0-d2t32k.gguf`, not the general official-fork server build. The mapped checkout has a local modification to `src/models/qwen35.cpp`.
 
 ## Result

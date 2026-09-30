@@ -1,5 +1,9 @@
 # Local verification of archived measurements: matrix reproduction, small-effect intervals, and 32k microbatch scaling
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-28. Scope: analysis of records already archived under `reports/raw/` on a workstation, with no board access. Nothing here is a new board measurement; every number below is reproduced by a committed script from the archived JSONL/log files, and the commands are listed so each can be re-run.
 
 Correction on 2026-09-30: the output audit now requires valid token/text hashes
@@ -12,6 +16,7 @@ original rounded lookup changed whether the M4 pp128 interval included zero.
 [verify-results-matrix.py](../bench/verify-results-matrix.py) reparses the matrix table in [the resumed-measures report](2026-09-27-resumed-measures.md) and recomputes every TTFT, prefill, decode, end-to-end, and peak-RSS cell from the lifecycle records, including the two-launch means for the isolated 2k/8k arms and the weight-comparison arms. It also checks the exact-output claim per model and prompt length from the recorded token hashes.
 
 ```bash
+cd spacemit  # From the repository root; subsequent commands use this directory.
 python3 bench/verify-results-matrix.py reports/2026-09-27-resumed-measures.md reports/raw/2026-09-25-lifecycle
 ```
 

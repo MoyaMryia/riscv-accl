@@ -1,5 +1,9 @@
 # 2B/4B inference checklist: evidence audit
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-27. Board: MUSE-Pi-Pro K1/X60. The [completed-gates report](2026-09-27-completed-gates.md) contains the measurements and limitations; this file maps the original checklist to its current proof. A queued run is not evidence of its result.
 
 | Requested item | Current evidence | Status / remaining gate |

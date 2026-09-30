@@ -1,5 +1,9 @@
 # K1/X60 research scan and next measurements
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-24. Target: MUSE-Pi-Pro, SpaceMiT K1/X60, Bianbu 2.3.5, 16 GB. This is a research and experiment plan, with one new targeted board measurement linked below. The board's `~/Projects` contains `llm-bench`, `spacemit-llama`, `spacemit-llama-frspec`, and `ccode`. The measured official fork is at `~/Projects/spacemit-llama/llama.cpp`, currently on `codex/lowacc-fallback` (`f3e71c9`); the mapped-head prototype is a separate checkout with a local modification to `src/models/qwen35.cpp`.
 
 The [integrated K1 follow-up](2026-09-24-integrated-k1.md) builds and measures the ranked kernel and vocabulary candidates, tests a timing gate and hybrid dispatch, and records why the long-context routes were not ported for the current 8k workload.

@@ -1,5 +1,9 @@
 # CPU-side MTP draft sampling on SpaceMiT X60
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-24. The official SpaceMiT fork at `6562c22`, plus the opt-in low-acceptance patch with `SPINE_SPEC_LOWACC=0`, was used for both sides of this comparison. The server's default backend draft sampler was compared with `--no-spec-draft-backend-sampling`; no source, model, or other runtime setting changed. The flag uses the existing CPU sampler for MTP draft selection. The mechanism behind the gain was not profiled.
 
 All runs used Qwen3.5 Q4_0 MTP `-dv64k` GGUFs on `musepipro-wg`, spine-tcm in `LD_LIBRARY_PATH`, `SPINE_SPEC_RS=1`, four threads, context 8192, one slot, batch/microbatch 32, flash attention, MTP draft maximum 3, `temperature=0`, seed 42, and `cache_prompt=false`. The n-gram combination used match/min/max 16. Each setting started a fresh server. All paired outputs and draft acceptance counts matched exactly.

@@ -1,6 +1,10 @@
 # Next steps and requested measures: Qwen3.5 2B/4B on MUSE-Pi-Pro
 
-Date: 2026-09-27. This is the working list for the user's prefill, decode, long-context, and validation checklist. **Measured** means a board result exists for the stated scope; **partial** means the requested broader claim is still open; **pending** means a run is queued or active and has no result yet. A queued run must not be counted as evidence. Detailed results are in the [requirements audit](2026-09-27-requirements-audit.md) and [completed-gates report](2026-09-27-completed-gates.md).
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
+Date: 2026-09-27. This is the original 2026-09-27 working list for the user's prefill, decode, long-context, and validation checklist. **Measured** means a board result exists for the stated scope; **partial** means the requested broader claim is still open; **pending** means a run is queued or active and has no result yet. A queued run must not be counted as evidence. Detailed results are in the [requirements audit](2026-09-27-requirements-audit.md) and [completed-gates report](2026-09-27-completed-gates.md).
 
 Read this first:
 
@@ -75,7 +79,7 @@ The task is to deploy Qwen3.5 series models locally using SpacemiT’s open-sour
 | Output equality beyond three short greedy prompts | **Partial:** many fixed greedy runs have exact token-hash audits, but direct/MTP output diverges on long code at generated index 179 (2B) and 303 (4B). Arbitrary inputs and sampling settings are unverified. | Finish queued draft-length, target-logit, and rollback diagnostics; fix the divergence. Then test varied prompt families, long outputs, slot reuse, and specified sampling seeds/settings. Assess lossy KV quality separately from exact token equality. |
 | One integrated report linking each optimization to its effect | **Present** in the [completed-gates report](2026-09-27-completed-gates.md), with measured gains, negative findings, and limitations. | Update the report after each queued run, preserving raw JSONL/log links and marking unmeasured comparisons clearly. |
 
-## Ordered work queue
+## Historical work queue before the 2026-09-27 reboot
 
 1. **Already running on the board:** complete and audit the integrated 4B 12k RVV pair. Serialized behind it are MTP draft-length, page-gather telemetry, 4B long-output KV, target-logit, 12k windowed-MTP, rollback, combined RVV+window, and package-application checks. Do not overlap these board jobs.
 2. **Correctness gate:** locate and fix long-code MTP token divergence before recommending speculative decoding for arbitrary long outputs.

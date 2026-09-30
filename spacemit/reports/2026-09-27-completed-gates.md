@@ -1,5 +1,9 @@
 # Completed 2B/4B lifecycle gates on MUSE-Pi-Pro
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-27. This updates the [lifecycle baseline](2026-09-25-lifecycle.md). The [requirements audit](2026-09-27-requirements-audit.md) maps each original checklist item to its proof and remaining gate. The board is the K1/X60 MUSE-Pi-Pro; models, fixed prompts, F16 K/V defaults, and client-observed TTFT are defined there. Unless stated otherwise, each comparison uses the same binary in off/on/on/off or partition/unified/unified/partition order. All numbers below are measured board results, not projections.
 
 ## Cold prefill: activated 256-bit RVV attention

@@ -1,8 +1,12 @@
 # Qwen3.5 2B/4B inference lifecycle on MUSE-Pi-Pro
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-25. Board: `musepipro-wg`, SpaceMiT K1/X60, Bianbu 2.3.5, 16 GiB RAM. Source: official SpaceMiT llama.cpp fork with packaged project patches, isolated integrated checkout at `a990751`. The TCM library was first in `LD_LIBRARY_PATH`; the server log confirms `is_fake_tcm: 0`, `use_ime1: 1`. CPU governor was `performance`, current frequency 1.6 GHz, and thermal zones were 39–41 °C during the first sweep. All eight harts identify as X60, but only cores 0–3 advertise the IME extension; the SpaceMiT runtime selects these four as its preferred `cpu_mask: f` group.
 
-**Latest completion audit (2026-09-27):** [completed board gates](2026-09-27-completed-gates.md) supersede the queued-status statements in the chronological campaign notes below. The integrated board checkout now contains the opt-in 256-bit RVV attention patch; use `SPINE_FA_WIDE_TILE=1` with these Qwen3.5 F16-KV models.
+**Campaign completion audit (2026-09-27):** [completed board gates](2026-09-27-completed-gates.md) supersede the queued-status statements in the chronological campaign notes below. The integrated board checkout now contains the opt-in 256-bit RVV attention patch; use `SPINE_FA_WIDE_TILE=1` with these Qwen3.5 F16-KV models.
 
 ## Method
 

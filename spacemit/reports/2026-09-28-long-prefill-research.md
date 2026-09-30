@@ -1,5 +1,9 @@
 # Faster long-context prefill on MUSE-Pi-Pro: GitHub and Google Scholar scan
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-28. Scope: the required Qwen3.5 2B/4B GGUFs on the SpaceMiT K1/X60 board and the official SpaceMiT llama.cpp fork. Papers were located through Google Scholar and checked against their primary manuscripts; implementations and failure reports were checked on GitHub. External speedups below are **not** measured gains on this board.
 
 ## The measured bottleneck

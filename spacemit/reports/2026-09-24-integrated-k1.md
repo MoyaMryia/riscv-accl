@@ -1,5 +1,9 @@
 # Integrated K1/X60 result: draft maps, IME kernels, and fallback policy
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-24. Board: MUSE-Pi-Pro, SpaceMiT K1/X60, Bianbu 2.3.5, 16 GiB RAM. Source: official SpaceMiT llama.cpp base 5ad05d8 plus project patches 0001–0006, with the mapped-head prototype and the two kernel candidates tested in an isolated worktree. The final tested source matches the complete packaged patch set byte for byte and is committed on the isolated board branch codex/k1-integrated at a990751 (~/Projects/spacemit-llama-integrated). The experimental cost gate and hybrid dispatch were removed from the final build.
 
 All rate figures below are tokens/s. Server figures use greedy decoding, seed 42, an 8192-token context, one slot, four threads, batch and microbatch 32, flash attention, SPINE_SPEC_RS=1, the vendor spine-tcm library, and 128 requested tokens except for the explicitly marked Q8 correctness check. Kernel figures use llama-bench with four threads, batch and microbatch 32, flash attention, and the exact model named in each table. Every model/server arm starts in a separate process. Raw JSONL and fallback events are under [raw/2026-09-24-integrated](raw/2026-09-24-integrated/).

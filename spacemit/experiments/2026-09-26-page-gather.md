@@ -1,5 +1,9 @@
 # Occupied-page KV gathering experiment
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [experiments index](README.md) for later results and current status.
+
 This candidate evaluates page-addressed attention on the existing unified KV
 store. It is opt-in with `SPINE_KV_PAGE_GATHER=1`, and is **not adopted**. The
 [patch](2026-09-26-page-gather.patch) applies to the board's integrated checkout

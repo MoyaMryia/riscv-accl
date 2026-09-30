@@ -1,5 +1,9 @@
 # Speculative settings sweep on SpaceMiT X60
 
+> Dated campaign snapshot. Measurements apply to the stated workload and date.
+> Queued/running statements below are historical; use the
+> [current guide](../DOCS.md) and the [reports index](README.md) for later results and current status.
+
 Date: 2026-09-24. Board: `musepipro-wg`, official `spacemit-com/llama.cpp` fork at `6562c22`, Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k. All runs used spine-tcm in `LD_LIBRARY_PATH`, `SPINE_SPEC_RS=1`, four threads, context 8192, one slot, `-ub 32`, flash attention, `temperature=0`, seed 42, and `cache_prompt=false`. Each setting started a fresh server. The measured rate is server decode tokens/s; values are single runs, not confidence intervals. Greedy response hashes matched within each prompt family across settings.
 
 ## N-gram burst length
