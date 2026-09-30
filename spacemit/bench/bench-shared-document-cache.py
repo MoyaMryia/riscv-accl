@@ -43,8 +43,8 @@ def run(args):
         raise FileExistsError('refusing to overwrite an existing output or log')
     if not args.server.is_file() or not args.model.is_file() or not args.document.is_file():
         raise FileNotFoundError('server, model, or document is missing')
-    if args.context + 256 > args.ctx_size:
-        raise ValueError('context allocation must allow the document, question, and 32 outputs')
+    if args.context + args.n_predict + 128 > args.ctx_size:
+        raise ValueError('context allocation must allow the document, question, and output')
     with socket.socket() as probe:
         if probe.connect_ex(('127.0.0.1', args.port)) == 0:
             raise RuntimeError(f'port {args.port} is already in use')
@@ -56,7 +56,8 @@ def run(args):
                '--parallel', '1', '-b', '32', '-ub', '32', '-fa', 'on', '--host', '127.0.0.1',
                '--port', str(args.port), '-ctk', 'f16', '-ctv', 'f16']
     config = {'kind': 'config', 'model_size': args.model_size, 'context': args.context,
-              'ctx_size': args.ctx_size, 'n_predict': 32, 'questions': QUESTIONS,
+              'ctx_size': args.ctx_size, 'n_predict': args.n_predict,
+              'ignore_eos': not args.allow_eos, 'questions': QUESTIONS,
               'document': str(args.document), 'document_sha256': document_sha,
               'command': command, 'SPINE_FA_WIDE_TILE': os.environ.get('SPINE_FA_WIDE_TILE')}
     url = f'http://127.0.0.1:{args.port}'
@@ -79,7 +80,7 @@ def run(args):
             question_tokens = [without_special(url, '\n\n' + q) for q in QUESTIONS]
             assert question_tokens[0] != question_tokens[1]
             prompts = [prefix + suffix for suffix in question_tokens]
-            if max(map(len, prompts)) + 32 > args.ctx_size:
+            if max(map(len, prompts)) + args.n_predict > args.ctx_size:
                 raise ValueError('document and question exceed context allocation')
             config['document_tokens_available'] = len(document_tokens)
             config['prefix_token_sha256'] = hashlib.sha256(json.dumps(prefix).encode()).hexdigest()
@@ -94,8 +95,8 @@ def run(args):
                 ('question_b_cold_control', prompts[1], False),
             ):
                 before = time.monotonic()
-                result = bench.complete(url, prompt, 32, args.timeout, 0, True,
-                                        cache_prompt, True, True)
+                result = bench.complete(url, prompt, args.n_predict, args.timeout, 0,
+                                        not args.allow_eos, cache_prompt, True, True, True)
                 after = time.monotonic()
                 rss = [value for stamp, value, _ in samples if before <= stamp <= after]
                 available = [value for stamp, _, value in samples
@@ -134,6 +135,9 @@ def main():
     parser.add_argument('--model-size', choices=['2B', '4B'], required=True)
     parser.add_argument('--document', type=Path, required=True)
     parser.add_argument('--context', type=int, required=True)
+    parser.add_argument('--n-predict', type=int, default=32)
+    parser.add_argument('--allow-eos', action='store_true',
+                        help='let a complete answer stop before n-predict')
     parser.add_argument('--ctx-size', type=int, required=True)
     parser.add_argument('--timeout', type=int, required=True)
     parser.add_argument('--port', type=int, default=18085)

@@ -110,7 +110,7 @@ def sample_rss(pid, stop, values, interval):
         stop.wait(interval)
 
 
-def complete(url, prompt, n_predict, timeout, slot, ignore_eos, cache_prompt, pin_slot=False, capture_token_ids=False):
+def complete(url, prompt, n_predict, timeout, slot, ignore_eos, cache_prompt, pin_slot=False, capture_token_ids=False, capture_text=False):
     payload = {
         'prompt': prompt, 'n_predict': n_predict, 'temperature': 0,
         'seed': 42, 'cache_prompt': cache_prompt, 'stream': True, 'ignore_eos': ignore_eos,
@@ -174,6 +174,8 @@ def complete(url, prompt, n_predict, timeout, slot, ignore_eos, cache_prompt, pi
     }
     if capture_token_ids:
         record['token_ids'] = token_ids
+    if capture_text:
+        record['text'] = ''.join(parts)
     if n_predict >= 512 and first is not None:
         record['event_trace'] = [[round((stamp - first) * 1000, 3), count]
                                  for stamp, count in zip(arrivals, event_tokens)]

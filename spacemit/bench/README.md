@@ -176,3 +176,34 @@ set `MODEL_SIZE=2B` or `4B` and `PROMPT_TOKENS=32768` or `65536`, then run
 `run-bounded-long-context-board.sh`. It uses the same integrated RVV/F16
 path, a 12 GiB process address-space cap, and a three-hour default wall
 limit. A timeout is a failed attempt, not a throughput measurement.
+
+## Cloud answer-quality scoring for shared-prefix reuse
+
+`judge-shared-document-cache.py` makes a POST to the OpenAI-compatible
+`/v1/chat/completions` endpoint. Its default endpoint is
+`https://api.xiaomimimo.com/v1`, model `mimo-v2.6-flash`, and key file
+`~/.secret_ai_key` (or `.secret_ai_key` next to the script). It sends only each
+case's question, short evidence, and cold/warm answers. The API key is read at
+run time and is not included in records or logs. Supply `--base-url`, `--model`,
+and `--key-file` to use a different compatible service. Each case is judged
+twice with answer order reversed; scores are integers from 0 to 5 and the
+output retains both passes and API usage counts.
+
+The original 32-token 2B/16k responses were recovered without rerunning
+prefill by `recover-shared-document-answers.py`; MiMo scored both 0/5 because
+both answers stop mid-sentence. Those marks are an API smoke test, not a useful
+answer-quality comparison. A bounded 256-token run saves readable answers and
+allows EOS so the judge can score complete responses. Start it detached, then
+collect and judge it after the board run finishes:
+
+```bash
+bash spacemit/bench/start-shared-document-quality-tmux.sh
+bash spacemit/bench/finish-shared-document-quality.sh
+```
+
+The first command stages code and starts tmux session
+`shared_doc_quality_2b16k` on `musepipro-wg`. The second command exits with
+status 3 while it is still running; after completion it archives the board
+records, builds judge input from the captured text and public document excerpt,
+and posts the pair to MiMo. The local project reports are not sent to the
+board or cloud by this workflow.
