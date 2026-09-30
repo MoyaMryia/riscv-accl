@@ -47,6 +47,8 @@ def summarize(run_dir, labels, errors):
             rows.append({'label': label, 'status': 'generation failed or missing', 'error': errors.get(label)})
             continue
         records = list(map(json.loads, path.read_text().splitlines()))
+        config = next((r for r in records if r['kind'] == 'config'), {})
+        schedule = config.get('quality_schedule', 'alternating')
         pairs = [r for r in records if r['kind'] == 'pair']
         finishes = {f"{label}-{r['case_id']}": {} for r in records if r['kind'] == 'measurement'}
         for record in records:
@@ -84,6 +86,7 @@ def summarize(run_dir, labels, errors):
                 and not citation_regressions and warm >= cold - .5
                 and all(m['warm_mean_score'] >= 3 for m in judged))
         rows.append({'label': label, 'status': 'PILOT PASS' if gate else 'REVIEW REQUIRED',
+                     'quality_schedule': schedule,
                      'expected_pairs': expected, 'pairs': len(pairs),
                      'completed': sum(p['audit']['complete_pair'] for p in pairs),
                      'cache_verified': sum(p['audit']['cache_verified'] for p in pairs),
@@ -98,6 +101,7 @@ def summarize(run_dir, labels, errors):
     (run_dir / 'summary.json').write_text(json.dumps(result, indent=2) + '\n')
     lines = ['# Document cache quality benchmark', '', result['limitations'], '',
              'Completed answers require finish_reason=stop and no reasoning text. Only completed pairs with verified same-slot cache reuse are judged.', '',
+             'Grouped runs measure all cached answers before cold controls; time/order effects are not counterbalanced. Alternating runs use per-question primers and alternate arm order.', '',
              '| Configuration | Complete / recorded | Judged | Cold TTFT | Cached TTFT | Cold / cached score | Status |',
              '| --- | ---: | ---: | ---: | ---: | ---: | --- |']
     def number(value):
@@ -146,6 +150,7 @@ def run(args):
     manifest = {'models': args.models, 'contexts': args.contexts, 'max_tokens': args.max_tokens,
                 'case_ids': args.case_id or ['routes', 'batches', 'cache', 'slot', 'health', 'tokenize'],
                 'remote_root': remote_root, 'board': args.board, 'judge_model': args.judge_model,
+                'base_url': args.base_url, 'quality_schedule': args.quality_schedule,
                 'expected_pairs': len(labels) * len(args.case_id or range(6))}
     (run_dir / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     (run_dir / 'summary.md').write_text(
@@ -155,7 +160,7 @@ def run(args):
     session = 'docq_' + run_dir.name
     board_command = shlex.join(['bash', remote_root + '/bench/run-all-document-quality-board.sh',
                                remote_root, ' '.join(args.models), ' '.join(map(str, args.contexts)),
-                               str(args.max_tokens), ' '.join(args.case_id or [])])
+                               str(args.max_tokens), ' '.join(args.case_id or []), args.quality_schedule])
     board_command += ' > ' + shlex.quote(remote_root + '/matrix.log') + ' 2>&1'
     remote(args.board, ['tmux', 'new-session', '-d', '-s', session, board_command])
     print(f'Board tmux {session}; results {run_dir}', flush=True)
@@ -213,6 +218,7 @@ def main():
     parser.add_argument('--contexts', type=int, nargs='+', default=[4096, 8192])
     parser.add_argument('--max-tokens', type=int, default=512)
     parser.add_argument('--case-id', action='append', choices=['routes', 'batches', 'cache', 'slot', 'health', 'tokenize'])
+    parser.add_argument('--quality-schedule', choices=['grouped', 'alternating'], default='grouped')
     parser.add_argument('--base-url', default='https://api.xiaomimimo.com/v1')
     parser.add_argument('--judge-model', default='mimo-v2.6-flash')
     parser.add_argument('--key-file', type=Path, default=Path.home() / '.secret_ai_key')

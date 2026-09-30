@@ -127,6 +127,23 @@ def pair_audit(case, arms, prompt_tokens, document_tokens):
             'cold_facts': fact_check(case, cold.get('answer', ''))}
 
 
+def request_plan(cases, schedule):
+    """Cached targets follow different prompts; cold targets disable reuse."""
+    if schedule == 'grouped':
+        yield 'primer', cases[0]
+        for arm in ('warm', 'cold'):
+            for case in cases:
+                yield arm, case
+    elif schedule == 'alternating':
+        for index, case in enumerate(cases):
+            for arm in (('warm', 'cold') if index % 2 == 0 else ('cold', 'warm')):
+                if arm == 'warm':
+                    yield 'primer', case
+                yield arm, case
+    else:
+        raise ValueError('unknown quality schedule')
+
+
 def run_chat_suite(args, bench):
     if min(args.context, args.n_predict, args.timeout, args.ctx_size) < 1:
         raise ValueError('context, output cap, timeout and allocation must be positive')
@@ -141,6 +158,9 @@ def run_chat_suite(args, bench):
     selected = args.case_id or [c['case_id'] for c in all_cases]
     if len(set(selected)) != len(selected) or set(selected) - {c['case_id'] for c in all_cases}:
         raise ValueError('unknown or duplicate case ID')
+    cases = [c for c in all_cases if c['case_id'] in selected]
+    schedule = args.quality_schedule
+    plan = list(request_plan(cases, schedule))
     command = [str(args.server), '-m', str(args.model), '--alias', 'local', '-t', '4',
                '-c', str(args.ctx_size), '--parallel', '1', '-b', '32', '-ub', '32',
                '-fa', 'on', '--host', '127.0.0.1', '--port', str(args.port), '-ctk', 'f16', '-ctv', 'f16']
@@ -154,7 +174,10 @@ def run_chat_suite(args, bench):
             doc_file = args.output.with_suffix('.document.txt')
             doc_file.write_text(document)
             document_sha = hashlib.sha256(document.encode()).hexdigest()
-            config = {'kind': 'config', 'suite': 'chat-quality-v1', 'model_size': args.model_size,
+            config = {'kind': 'config', 'suite': 'chat-quality-v2', 'model_size': args.model_size,
+                      'quality_schedule': schedule,
+                      'primer_requests': sum(arm == 'primer' for arm, _ in plan),
+                      'requested_case_ids': [c['case_id'] for c in cases],
                       'document_budget': args.context, 'document_tokens': doc_tokens,
                       'document_sha256': document_sha, 'document_file': str(doc_file),
                       'source_readme_sha256': hashlib.sha256(args.source_readme.read_bytes()).hexdigest(),
@@ -166,32 +189,44 @@ def run_chat_suite(args, bench):
             config['code_sha256'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in code_files}
             config['server_sha256'] = hashlib.sha256(args.server.read_bytes()).hexdigest()
             output.write(json.dumps(config) + '\n'); output.flush()
-            for index, case in enumerate(c for c in all_cases if c['case_id'] in selected):
+            bases, counts, results, orders = {}, {}, {}, {}
+            for case in cases:
                 base = chat.request_body(chat.messages(document, case['question']), 'local', 0, args.n_predict)
                 base.update({'stream_options': {'include_usage': True}, 'verbose': True})
                 prompt_tokens = chat.count_prompt_tokens(url, base, args.timeout)
                 if prompt_tokens + args.n_predict > args.ctx_size:
                     raise ValueError('chat prompt plus output cap exceeds context allocation')
-                arms = {}
-                order = ['warm', 'cold'] if index % 2 == 0 else ['cold', 'warm']
-                for arm in order:
-                    if arm == 'warm':
-                        # Never warm with the target question itself, including cold-first pairs.
-                        primer = chat.request_body(chat.messages(document, 'Reply with the word Ready.'), 'local', 0, 24)
-                        primer.update({'stream_options': {'include_usage': True}, 'verbose': True})
-                        primer_result = chat.complete(url, primer, args.timeout, display=False)
-                        if primer_result['server_slot'] != 0:
-                            raise RuntimeError('primer did not use physical slot 0')
-                        output.write(json.dumps({'kind': 'primer', 'case_id': case['case_id'], 'result': primer_result}) + '\n')
-                    payload = dict(base, cache_prompt=arm == 'warm')
-                    result = chat.complete(url, payload, args.timeout, display=False)
-                    arms[arm] = result
-                    output.write(json.dumps({'kind': 'measurement', 'case_id': case['case_id'],
-                                             'arm': arm, 'cache_prompt': payload['cache_prompt'],
-                                             'prompt_tokens': prompt_tokens, 'result': result}) + '\n')
+                bases[case['case_id']], counts[case['case_id']] = base, prompt_tokens
+                results[case['case_id']], orders[case['case_id']] = {}, []
+            primer_wall_s = 0.0
+            for arm, case in plan:
+                if arm == 'primer':
+                    # A different question warms only the shared document prefix.
+                    primer = chat.request_body(chat.messages(document, 'Reply with the word Ready.'), 'local', 0, 24)
+                    primer.update({'stream_options': {'include_usage': True}, 'verbose': True})
+                    primer_result = chat.complete(url, primer, args.timeout, display=False)
+                    if primer_result['server_slot'] != 0:
+                        raise RuntimeError('primer did not use physical slot 0')
+                    primer_wall_s += primer_result['wall_s']
+                    output.write(json.dumps({'kind': 'primer', 'case_id': case['case_id'], 'result': primer_result}) + '\n')
                     output.flush()
-                    print(f"{args.model_size}/{args.context} {case['case_id']} {arm}: "
-                          f"TTFT {result['ttft_s']}s, finish {result['finish_reason']}", flush=True)
+                    continue
+                case_id = case['case_id']
+                payload = dict(bases[case_id], cache_prompt=arm == 'warm')
+                result = chat.complete(url, payload, args.timeout, display=False)
+                arms = results[case_id]
+                arms[arm] = result
+                order = orders[case_id]
+                order.append(arm)
+                prompt_tokens = counts[case_id]
+                output.write(json.dumps({'kind': 'measurement', 'case_id': case_id,
+                                         'arm': arm, 'cache_prompt': payload['cache_prompt'],
+                                         'prompt_tokens': prompt_tokens, 'result': result}) + '\n')
+                output.flush()
+                print(f"{args.model_size}/{args.context} {case_id} {arm}: "
+                      f"TTFT {result['ttft_s']}s, finish {result['finish_reason']}", flush=True)
+                if len(arms) < 2:
+                    continue
                 audit = pair_audit(case, arms, prompt_tokens, doc_tokens)
                 pair = {'kind': 'pair', 'case_id': f"{args.model_size}-{args.context}-{case['case_id']}",
                         'question': case['question'], 'evidence': case['evidence'],
@@ -214,6 +249,8 @@ def run_chat_suite(args, bench):
                    for p in pairs if p['audit']['eligible_for_judging']]
     args.output.with_suffix('.judge-input.json').write_text(json.dumps(judge_cases, indent=2) + '\n')
     summary = {'expected_pairs': len(selected), 'recorded_pairs': len(pairs),
+               'quality_schedule': schedule, 'primer_wall_s': round(primer_wall_s, 3),
+               'measurement_wall_s': round(sum(r['wall_s'] for arms in results.values() for r in arms.values()), 3),
                'completed_pairs': sum(p['audit']['complete_pair'] for p in pairs),
                'cache_verified_pairs': sum(p['audit']['cache_verified'] for p in pairs),
                'judge_eligible_pairs': len(judge_cases),

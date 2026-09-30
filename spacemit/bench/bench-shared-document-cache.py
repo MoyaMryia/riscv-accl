@@ -148,6 +148,9 @@ def main():
     parser.add_argument('--source-readme', type=Path,
                         help='public server README used to construct verified evidence')
     parser.add_argument('--case-id', action='append', help='quality-suite case filter; repeat as needed')
+    parser.add_argument('--quality-schedule', choices=['grouped', 'alternating'], default='grouped',
+                        help='grouped primes once and measures all cached targets before cold controls; '
+                             'alternating retains per-question primers and counterbalanced arm order')
     args = parser.parse_args()
     signal.signal(signal.SIGTERM, lambda *_: (_ for _ in ()).throw(KeyboardInterrupt()))
     if args.quality_suite:

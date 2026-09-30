@@ -222,8 +222,15 @@ python3 spacemit/bench/run-all-document-quality.py --detach
 ```
 
 Defaults are 2B and 4B at 4,096 and 8,192 document tokens, six questions each,
-and a 512-token answer cap. This means 24 cold/cached pairs plus distinct
-primer requests. Expect hours of board work. The command starts a workstation
+and a 512-token answer cap. The default `--quality-schedule grouped` primes
+each configuration once, measures all six cached answers, then measures all
+six forced-cold controls. This needs seven full document passes per
+configuration if prefix reuse succeeds, compared with up to twelve in
+`--quality-schedule alternating`. At the observed 4B/8k rate of about
+21 minutes per full pass, the processing portion is approximately 2.5 hours
+instead of 4.2 hours; answer generation adds time. This is an estimate, not
+a measured grouped-run speedup. Every cached request is still audited for
+actual token reuse. The command starts a workstation
 tmux collector; generation runs in a separate board tmux session. The collector
 downloads each completed configuration, scores eligible pairs using MiMo in
 both answer orders, and writes `summary.md`, `summary.json`, logs, exact
@@ -247,9 +254,16 @@ tokenization. Records include source line numbers, source/document hashes,
 exact evidence, offsets, and required facts. This is a constructed public
 documentation pilot; it does not establish quality on arbitrary real documents.
 
-Cold/cached order alternates between questions. Before every cached target
-request, a different primer question is sent, so cold-first pairs cannot
-accidentally test an identical full-prompt repeat. All requests must fit their
+Grouped runs send each cached target before its cold counterpart. Each
+request has an independent chat containing the system instruction, document,
+and one question; previous questions and answers are not added to its input.
+The primer differs from every target. Subsequent cached targets reuse the
+document from the preceding request. Grouping confounds arm order with time,
+so use `--quality-schedule alternating` for order-controlled comparisons.
+That mode alternates cold/cached order and sends a distinct primer before
+each cached target, preventing cold-first identical-prompt repeats.
+The schedule is recorded in configuration records, manifests, and summaries.
+All requests must fit their
 allocated context. Cache validation requires physical slot 0, at least 90%
 document-token reuse, and zero reuse in the cold control. Final streamed usage
 and timing events are saved, including events with no answer text.
@@ -268,14 +282,6 @@ within 0.5 points of cold, and every cached score at least 3/5. These thresholds
 are declared checks, not statistical proof of equivalence. Both answer-order
 passes and any order disagreements remain available in the summary.
 
-The cloud credential is read only on the workstation from `~/.secret_ai_key`.
-Only public evidence, questions, required facts and generated answers go to
-the judge. The runner stages executable code to the board and uses documents
-already present there. It runs this cache-quality matrix; earlier hardware,
-MTP and GPU campaigns are separate experiments.
 
-Regression checks for completion integrity and blinding:
-
-```bash
-python3 spacemit/bench/test-document-quality-suite.py
-```
+`python3 spacemit/bench/test-document-quality-suite.py` checks both request
+schedules, completion/cache integrity, and independent target requests.

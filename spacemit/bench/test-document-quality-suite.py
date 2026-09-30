@@ -2,11 +2,14 @@
 """Regression checks for completion integrity, cache validity and judge blinding."""
 
 import importlib.util
+import contextlib
+import hashlib
 import io
 import json
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import document_quality_suite as suite
@@ -25,6 +28,72 @@ RUNNER = module('runner', Path(__file__).with_name('run-all-document-quality.py'
 
 
 class QualityChecks(unittest.TestCase):
+    def test_grouped_and_alternating_runs_keep_valid_pairs_and_new_cached_targets(self):
+        cases = [{'case_id': f'case{i}', 'question': f'question{i}', 'source_id': f'S{i}',
+                  'evidence': f'evidence{i}', 'required_facts': ['answer'],
+                  'fact_patterns': ['answer'], 'position': 'middle'} for i in range(6)]
+        for schedule, full_passes in [('grouped', 7), ('alternating', 12)]:
+            with self.subTest(schedule=schedule), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                calls, seen, cached_document = [], set(), False
+                previous_question = None
+
+                def complete(url, payload, timeout, display):
+                    nonlocal cached_document, previous_question
+                    question = payload['messages'][1]['content'].split('Question: ')[1]
+                    reuse = payload['cache_prompt'] and cached_document
+                    if payload['cache_prompt'] and question != 'Reply with the word Ready.':
+                        # The cached arm must never be an identical target repeat.
+                        self.assertNotEqual(question, previous_question)
+                        if schedule == 'grouped':
+                            self.assertNotIn(question, seen)
+                    seen.add(question)
+                    previous_question = question
+                    calls.append((question, payload['cache_prompt'], reuse))
+                    cached_document = payload['cache_prompt']
+                    answer = 'answer [S0]'
+                    return {'server_slot': 0, 'ttft_s': 1 if reuse else 100,
+                            'wall_s': 2 if reuse else 101, 'finish_reason': 'stop',
+                            'reasoning_text': '', 'answer': answer,
+                            'answer_sha256': hashlib.sha256(answer.encode()).hexdigest(),
+                            'usage': {'prompt_tokens_details': {'cached_tokens': 1000 if reuse else 0}}}
+
+                chat = SimpleNamespace(SYSTEM_INSTRUCTION=CHAT.SYSTEM_INSTRUCTION,
+                                       messages=CHAT.messages, request_body=CHAT.request_body,
+                                       count_prompt_tokens=lambda *args: 1050, complete=complete)
+                args = SimpleNamespace(context=1000, n_predict=128, timeout=300,
+                                       ctx_size=2048, port=18085, model_size='2B', case_id=None,
+                                       quality_schedule=schedule, output=root/'results.jsonl',
+                                       log=root/'server.log')
+                for name in ('server', 'model', 'document', 'source_readme'):
+                    path = root/name
+                    path.write_text('public')
+                    setattr(args, name, path)
+                proc = SimpleNamespace(terminate=lambda: None, wait=lambda **kwargs: None)
+                def popen(command, stdout, **kwargs):
+                    stdout.write(b'SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads\n')
+                    stdout.flush()
+                    return proc
+                with patch.object(suite, 'load_chat', return_value=chat), \
+                        patch.object(suite, 'evidence_cases', return_value=cases), \
+                        patch.object(suite, 'make_document', return_value=('document', 1000)), \
+                        patch.object(suite.subprocess, 'Popen', side_effect=popen), \
+                        contextlib.redirect_stdout(io.StringIO()):
+                    suite.run_chat_suite(args, SimpleNamespace(wait_healthy=lambda *args: None))
+                records = list(map(json.loads, args.output.read_text().splitlines()))
+                pairs = [r for r in records if r['kind'] == 'pair']
+                self.assertEqual(len(pairs), 6)
+                self.assertTrue(all(p['audit']['eligible_for_judging'] for p in pairs))
+                self.assertEqual(sum(arm in ('primer', 'cold') for arm, _ in suite.request_plan(cases, schedule)),
+                                 full_passes)
+                self.assertLessEqual(sum(not reuse for _, _, reuse in calls), full_passes)
+                if schedule == 'grouped':
+                    self.assertEqual([cache for _, cache, _ in calls], [True] * 7 + [False] * 6)
+                else:
+                    self.assertEqual([p['order'] for p in pairs], [['warm', 'cold'], ['cold', 'warm']] * 3)
+
+
+
     def test_markdown_does_not_hide_required_facts(self):
         case = {'source_id': 'S3', 'fact_patterns': [r'not guaranteed', r'batch']}
         result = suite.fact_check(case, 'Identical logits are **not** guaranteed because batches differ. [S3]')

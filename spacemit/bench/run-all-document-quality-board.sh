@@ -6,6 +6,7 @@ MODELS=$2
 CONTEXTS=$3
 MAX_TOKENS=$4
 CASE_IDS=${5:-}
+QUALITY_SCHEDULE=${6:-grouped}
 exec 9> "$HOME/Projects/riscv-accl-bench-2026-09-27/document-quality-suite.lock"
 if ! flock -n 9; then
   echo 'another document quality suite holds the board lock' >&2
@@ -32,7 +33,7 @@ for model in $MODELS; do
       ulimit -v 12582912
       timeout --signal=TERM --kill-after=30s 43200s \
         python3 "$RUN_ROOT/bench/bench-shared-document-cache.py" \
-        --quality-suite --server "$SERVER_ROOT/build/bin/llama-server" \
+        --quality-suite --quality-schedule "$QUALITY_SCHEDULE" --server "$SERVER_ROOT/build/bin/llama-server" \
         --model "$MODEL_ROOT/Qwen3.5-$model-MTP-Q4_0-embQ4_0-dv64k.gguf" \
         --model-size "$model" --context "$context" --ctx-size "$((context + MAX_TOKENS + 1024))" \
         --document "$HOME/Projects/riscv-accl-bench-2026-09-27/shared-document-public-llamacpp.txt" \
