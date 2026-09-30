@@ -2,8 +2,10 @@
 
 Date: 2026-09-28. Scope: analysis of records already archived under `reports/raw/` on a workstation, with no board access. Nothing here is a new board measurement; every number below is reproduced by a committed script from the archived JSONL/log files, and the commands are listed so each can be re-run.
 
-Output-audit correction on 2026-09-30: valid token/text hashes and agreement
-across both comparison arms are now required by the matrix verifier.
+Correction on 2026-09-30: the output audit now requires valid token/text hashes
+and agreement across both comparison arms. Confidence intervals below now use
+the precise Student t quantile at fractional Welch degrees of freedom. The
+original rounded lookup changed whether the M4 pp128 interval included zero.
 
 ## The compact results matrix reproduces from raw records
 
@@ -15,7 +17,7 @@ python3 bench/verify-results-matrix.py reports/2026-09-27-resumed-measures.md re
 
 Result: all 21 rows reproduce within rounding tolerance (105 numeric cells, exits 0), and every row's launches share one complete 32-token token-hash, matching the reported `Exact`/`Complete` audit wording. The matrix is a faithful summary of the archived records; the script exits nonzero if a future report edit drifts from the archives.
 
-## Current small-effect claims have intervals that include zero
+## Corrected intervals for the current small-effect claims
 
 [paired-stats.py](../bench/paired-stats.py) extracts launch-level values from the three archived record shapes and reports a Welch 95% interval for the arm difference. Applied to the effects currently quoted as 1.8–3.3%:
 
@@ -28,14 +30,33 @@ python3 bench/paired-stats.py reports/raw/2026-09-24-integrated/codex-q4-scale-b
 
 | Comparison | Arms (launches) | Point estimate | Welch 95% interval |
 | --- | --- | ---: | ---: |
-| M4 scale, 4B pp128 | base vs scale (2/2) | +3.34% (+0.303 tok/s) | −0.055 to +0.661 tok/s |
-| M4 scale, 2B mapped MTP English | base vs scale (2/2) | +1.76% (+0.122 tok/s) | −0.097 to +0.341 tok/s |
-| M4 scale, 2B mapped MTP Chinese | base vs scale (2/2) | +1.81% (+0.091 tok/s) | −0.062 to +0.243 tok/s |
+| M4 scale, 4B pp128 | base vs scale (2/2) | +3.34% (+0.303 tok/s) | +0.095 to +0.511 tok/s |
+| M4 scale, 2B mapped MTP English | base vs scale (2/2) | +1.76% (+0.122 tok/s) | −0.031 to +0.275 tok/s |
+| M4 scale, 2B mapped MTP Chinese | base vs scale (2/2) | +1.81% (+0.091 tok/s) | −0.024 to +0.206 tok/s |
 | Windowed MTP 12k decode, 2B | full vs window (1/1) | +8.55% (+0.223 tok/s) | not estimable (single pair) |
 | Windowed MTP 12k decode, 4B | full vs window (1/1) | +15.50% (+0.119 tok/s) | not estimable (single pair) |
 | Q4_0 KV long output, 4B decode | F16 vs Q4_0 (1/1) | +13.77% (+0.161 tok/s) | not estimable (single pair) |
 
-All three two-launch point estimates reproduce the values quoted in the integrated-K1 report, and every interval contains zero: at two launches per arm, the Welch degrees of freedom are near one and the interval has almost no power. The single-pair rows stay point estimates, consistent with how the resumed-measures report already labels them. This quantifies, rather than changes, the requirements-audit finding that the 1.8–3.3% effects are open. If per-launch spread stays near the observed ~0.03 tok/s, roughly five alternating launches per arm would let a true +3.3% pp128 effect exclude zero; the spread estimate from two launches is itself unstable, so treat that as an order-of-magnitude planning number for the queued small-effect campaign, not a guarantee.
+All three two-launch point estimates reproduce the values quoted in the
+integrated-K1 report. The corrected M4 pp128 interval excludes zero under the
+independent-launch Welch assumptions; the English and Chinese MTP intervals
+include zero. The original script floored M4's df=1.311984 to one and used
+12.706 instead of the precise critical value 7.385864, producing the overly
+wide interval −0.055 to +0.661. Two launches per arm give an unstable variance
+estimate, so this corrected interval is conditional evidence for that workload,
+not a general performance recommendation. Repeat alternating launches before
+adopting small effects. Single-pair rows remain point estimates.
+
+For the two MTP rows, reproduce the corrected intervals with:
+
+```bash
+python3 bench/paired-stats.py reports/raw/2026-09-24-integrated/scale-mtp-abba.jsonl \
+  --candidate reports/raw/2026-09-24-integrated/scale-mtp-abba.jsonl \
+  --metric tps --select prompt=english --baseline-regex '^base-' --candidate-regex '^scale-'
+```
+
+Repeat with `--select prompt=chinese`. Confidence-interval calculation requires
+SciPy on the workstation; this dependency does not apply to board inference.
 
 ## 32k prefill cost is dominated by a linear-in-context term
 

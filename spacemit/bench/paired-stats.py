@@ -7,6 +7,7 @@ shapes: llama-bench JSONL (one launch per file, `avg_ts`), bench-server JSONL
 server timing metrics). Prints per-launch values, arm means, the difference, and
 a Welch 95% t-interval. Arms with a single launch get a point estimate only,
 with a note that no run-to-run variance is estimable.
+Confidence intervals require SciPy on the analysis machine.
 """
 
 import argparse
@@ -15,12 +16,6 @@ import math
 import re
 import statistics
 from pathlib import Path
-
-# Two-sided 95% t critical values by degrees of freedom; below 30 floors to the
-# conservative nearest listed value, above 30 to the normal approximation.
-T_975 = {1: 12.706, 2: 4.303, 3: 3.182, 4: 2.776, 5: 2.571, 6: 2.447, 7: 2.365,
-         8: 2.306, 9: 2.262, 10: 2.228, 12: 2.179, 15: 2.131, 20: 2.086,
-         25: 2.060, 30: 2.042}
 
 LIFECYCLE_METRICS = {
     'prompt_per_second': lambda r: r['results'][0]['timings']['prompt_per_second'],
@@ -31,13 +26,14 @@ LIFECYCLE_METRICS = {
 
 
 def t_critical(df):
-    keys = sorted(T_975)
-    if df >= keys[-1]:
-        return 1.960
-    for key in keys:
-        if df <= key:
-            return T_975[key]
-    raise AssertionError('unreachable')
+    if not math.isfinite(df) or df <= 0:
+        raise ValueError('Student t degrees of freedom must be positive and finite')
+    try:
+        from scipy.stats import t
+    except ImportError:
+        raise SystemExit('confidence intervals require SciPy on this machine: '
+                         'python -m pip install scipy') from None
+    return float(t.ppf(0.975, df))
 
 
 def parse_select(argument):
@@ -148,10 +144,11 @@ def main():
         return
     df = se_sq ** 2 / ((var_c / len(cand_vals)) ** 2 / (len(cand_vals) - 1)
                        + (var_b / len(base_vals)) ** 2 / (len(base_vals) - 1))
-    half = t_critical(math.floor(df)) * math.sqrt(se_sq)
+    half = t_critical(df) * math.sqrt(se_sq)
     print(f'Welch 95% interval for the difference: [{diff - half:.4f}, {diff + half:.4f}] '
           f'(df={df:.1f}); note: with n={len(base_vals)}/{len(cand_vals)} launches per arm '
-          f'this interval has almost no power to detect small effects')
+          f'treat this interval as conditional on independent launches and the '
+          f'Welch assumptions; small samples need replication')
 
 
 if __name__ == '__main__':
