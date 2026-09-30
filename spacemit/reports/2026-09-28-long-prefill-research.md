@@ -39,3 +39,7 @@ The [gated board runner](../bench/run-prefix-cache-gated-board.sh) sent three id
 The server evaluated four prompt tokens on each warm request. All three requests at each length produced the same 32 token IDs and text. The raw [8k](raw/2026-09-25-lifecycle/2B-prefix-cache-8192-rvv1.jsonl), [16k](raw/2026-09-25-lifecycle/2B-prefix-cache-16384-rvv1.jsonl), and [32k](raw/2026-09-25-lifecycle/2B-prefix-cache-32768-rvv1.jsonl) records and the [driver log](raw/2026-09-25-lifecycle/prefix-cache-gated-driver.log) are archived.
 
 **Practical decision:** Keep a 2B server process and its prompt cache alive when users revisit an identical long prefix. This removes almost all repeat-prefill delay, including at 32k. The first request still takes about 55 minutes, and this experiment does not establish reuse after restarting the server, changing the prefix, switching slots, or using 4B. Those are separate tests. For a unique full 32k input, source retrieval or cold-prefill profiling remains the relevant next optimization.
+
+## Follow-up: changed question on a cached document
+
+The [2026-09-29 changed-question test](2026-09-29-shared-document-cache.md) found a correctness limit that the identical-prompt experiment did not exercise. The 2B/8k and 4B/8k–16k warm requests reproduced their forced-cold answers with large TTFT reductions, but 2B/16k first differed at generated token index 5 despite caching 16,373 document tokens. The gate therefore skipped 2B/32k. Exact repeated-prompt success at 32k should not be generalized to arbitrary follow-up questions.
