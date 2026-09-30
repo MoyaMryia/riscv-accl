@@ -266,7 +266,8 @@ def main():
         config['prompt_sha256'] = hashlib.sha256(prompt_text.encode()).hexdigest()
     config['runtime_env'] = {key: os.environ.get(key) for key in (
         'SPINE_MTP_WINDOW', 'SPINE_SPEC_MAX_CONTEXT', 'SPINE_SPEC_MAX_ACTIVE',
-        'SPINE_SPEC_RS', 'SPINE_SPEC_LOWACC', 'SPINE_FA_WIDE_TILE', 'SPINE_KV_PAGE_GATHER') if os.environ.get(key) is not None}
+        'SPINE_SPEC_RS', 'SPINE_SPEC_LOWACC', 'SPINE_FA_WIDE_TILE', 'SPINE_FA_K1_LAYOUT',
+        'SPINE_KV_PAGE_GATHER') if os.environ.get(key) is not None}
     with args.log.open('wb') as log, args.output.open('a') as output:
         proc = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT,
                                 stdin=subprocess.DEVNULL, env=os.environ.copy())

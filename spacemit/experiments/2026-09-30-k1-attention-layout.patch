@@ -1,0 +1,169 @@
+--- a/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
++++ b/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+@@ -6,6 +6,9 @@
+ #include "string.h"
+ 
+ #include <algorithm>
++#include <atomic>
++#include <cstdlib>
++#include <cstdio>
+ #include <cmath>
+ #include <cstdint>
+ #include <stdexcept>
+@@ -1310,7 +1313,8 @@
+     }
+ }
+ 
+-void forward_flash_attn_ext_f16_tiled_vlen1024_vf16(const ggml_compute_params * params,
++template<int Q_TILE_SZ, bool Compact>
++static void forward_flash_attn_ext_f16_tiled_impl(const ggml_compute_params * params,
+                                                     ggml_tensor *               dst,
+                                                     int                         ir0,
+                                                     int                         ir1,
+@@ -1384,24 +1388,22 @@
+ 
+     int ith = params->ith;
+ 
+-    static constexpr int Q_TILE_SZ  = ggml_fa_tile_config::Q;
+     static constexpr int KV_TILE_SZ = ggml_fa_tile_config::KV;
+ 
+-    // Per-thread scratch layout:
+-    // Q_f32:   Q_TILE_SZ * DK
+-    // KQ:      Q_TILE_SZ * KV_TILE_SZ
+-    // mask32:  Q_TILE_SZ * KV_TILE_SZ
+-    // VKQ32:   Q_TILE_SZ * DV
+-    // V32:     KV_TILE_SZ * DV
+-    // K_f32:   DK * KV_TILE_SZ (transposed K tile)
+-    float *      base = (float *) params->wdata + ith * (Q_TILE_SZ * DK + 2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV +
+-                                                    KV_TILE_SZ * DV + KV_TILE_SZ * DK + CACHE_LINE_SIZE_F32);
+-    const size_t base_size =
+-        (Q_TILE_SZ * DK + 2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV + KV_TILE_SZ * DV + KV_TILE_SZ * DK) *
+-            sizeof(float) +
+-        CACHE_LINE_SIZE_F32;
+-
+-    if (base_size <= tcm_buffer_size && tcm_buffer != nullptr) {
++    const size_t legacy_floats = Q_TILE_SZ * DK + 2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV +
++                                 KV_TILE_SZ * DV + KV_TILE_SZ * DK + CACHE_LINE_SIZE_F32;
++    const size_t stride_bytes = Compact ?
++        sizeof(_Float16) * (Q_TILE_SZ * DK + KV_TILE_SZ * (DK + DV)) +
++        sizeof(float) * (2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV + CACHE_LINE_SIZE_F32) :
++        sizeof(float) * legacy_floats;
++    if constexpr (Compact) {
++        GGML_ASSERT(kv_type == GGML_TYPE_F16 && DK == 256 && DV == 256);
++        GGML_ASSERT(params->wsize >= (size_t) (ith + 1) * stride_bytes);
++    }
++    float * base = (float *) ((char *) params->wdata + ith * stride_bytes);
++    const size_t base_size = Compact ? stride_bytes :
++        (legacy_floats - CACHE_LINE_SIZE_F32) * sizeof(float) + CACHE_LINE_SIZE_F32;
++    if (!Compact && base_size <= tcm_buffer_size && tcm_buffer != nullptr) {
+         base = (float *) tcm_buffer;
+     }
+ 
+@@ -1432,17 +1434,33 @@
+             M[i] = -INFINITY;
+         }
+ 
+-        float *    Q_f32  = base;
+-        float *    KQ     = (float *) ((char *) base + Q_TILE_SZ * DK * sizeof(float));
+-        float *    mask32 = KQ + Q_TILE_SZ * KV_TILE_SZ;
+-        float *    VKQ32  = mask32 + Q_TILE_SZ * KV_TILE_SZ;
+-        float *    V32    = VKQ32 + Q_TILE_SZ * DV;
+-        float *    K_f32  = V32 + KV_TILE_SZ * DV;
+-        _Float16 * Q_f16  = (_Float16 *) Q_f32;
+-        _Float16 * V_f16  = (_Float16 *) V32;
+-        _Float16 * K_f16  = (_Float16 *) K_f32;
+-
+-        rvv_zero_f32(VKQ32, Q_TILE_SZ * DV);
++        float * Q_f32 = base;
++        float * KQ;
++        float * mask32;
++        float * VKQ32;
++        float * V32;
++        float * K_f32;
++        _Float16 * Q_f16 = (_Float16 *) base;
++        _Float16 * V_f16;
++        _Float16 * K_f16;
++        if constexpr (Compact) {
++            KQ = (float *) (Q_f16 + Q_TILE_SZ * DK);
++            mask32 = KQ + Q_TILE_SZ * KV_TILE_SZ;
++            VKQ32 = mask32 + Q_TILE_SZ * KV_TILE_SZ;
++            V_f16 = (_Float16 *) (VKQ32 + Q_TILE_SZ * DV);
++            K_f16 = V_f16 + KV_TILE_SZ * DV;
++            V32 = (float *) V_f16;
++            K_f32 = (float *) K_f16;
++        } else {
++            KQ = base + Q_TILE_SZ * DK;
++            mask32 = KQ + Q_TILE_SZ * KV_TILE_SZ;
++            VKQ32 = mask32 + Q_TILE_SZ * KV_TILE_SZ;
++            V32 = VKQ32 + Q_TILE_SZ * DV;
++            K_f32 = V32 + KV_TILE_SZ * DV;
++            V_f16 = (_Float16 *) V32;
++            K_f16 = (_Float16 *) K_f32;
++        }
++        rvv_zero_f32(VKQ32, (Compact ? tile_rows : Q_TILE_SZ) * DV);
+ 
+         // k indices
+         const int ik3 = iq3 / rk3;
+@@ -1463,8 +1481,10 @@
+         for (int64_t ic = 0; ic < nek1; ic += KV_TILE_SZ) {
+             const int kv_tile = (int) std::min((int64_t) KV_TILE_SZ, nek1 - ic);
+ 
+-            rvv_zero_f32(K_f32, DK * KV_TILE_SZ);
+-            rvv_zero_f32(V32, KV_TILE_SZ * DV);
++            if constexpr (!Compact) {
++                rvv_zero_f32(K_f32, DK * KV_TILE_SZ);
++                rvv_zero_f32(V32, KV_TILE_SZ * DV);
++            }
+ 
+             // skip the tile entirely if all the masks are -inf
+             if (mask) {
+@@ -1564,6 +1584,12 @@
+                 S[tq] += rvv_softmax_exp_inplace_f32(kq_row, KV_TILE_SZ, Mnew);
+             }
+ 
++            // PV still reads all 64 entries, including a partial tile's padding.
++            if constexpr (Compact) {
++                if (kv_tile < KV_TILE_SZ) {
++                    memset(V_f16 + kv_tile * DV, 0, (KV_TILE_SZ - kv_tile) * DV * sizeof(_Float16));
++                }
++            }
+             // Pack V as contiguous [KV_TILE_SZ][DV].
+             if (kv_type == GGML_TYPE_F16) {
+                 const char * v_data = (const char *) v->data + ic * nbv1 + iv2 * nbv2 + iv3 * nbv3;
+@@ -1632,6 +1658,36 @@
+         rvv_pack_scaled_f32_as_f32(dst_ptr, nb1 * ne1, VKQ32, DV * sizeof(float), tile_rows, DV, S);
+ 
+         ir += tile_rows;
++    }
++}
++
++void forward_flash_attn_ext_f16_tiled_vlen1024_vf16(const ggml_compute_params * params,
++                                                    ggml_tensor * dst, int ir0, int ir1,
++                                                    void * tcm_buffer, size_t tcm_buffer_size) {
++    static const int rows = [] {
++        const char * env = std::getenv("SPINE_FA_K1_LAYOUT");
++        if (!env || !env[0] || strcmp(env, "0") == 0) return 0;
++        if (strcmp(env, "16") == 0) return 16;
++        if (strcmp(env, "32") == 0) return 32;
++        GGML_ABORT("SPINE_FA_K1_LAYOUT must be 0, 16 or 32");
++    }();
++    const bool eligible = rows && !params->use_ref && __riscv_vlenb() == 32 &&
++        dst->src[0]->type == GGML_TYPE_F32 && dst->src[1]->type == GGML_TYPE_F16 &&
++        dst->src[2]->type == GGML_TYPE_F16 && dst->src[1]->ne[0] == 256 &&
++        dst->src[2]->ne[0] == 256 && dst->src[0]->ne[1] >= 16;
++    if (eligible) {
++        static std::atomic<bool> logged { false };
++        if (!logged.exchange(true)) {
++            fprintf(stderr, "SPINE_FA_K1_LAYOUT: compact Q=%d KV=64 F16 scratch enabled\n", rows);
++        }
++        if (rows == 16) {
++            forward_flash_attn_ext_f16_tiled_impl<16, true>(params, dst, ir0, ir1, nullptr, 0);
++        } else {
++            forward_flash_attn_ext_f16_tiled_impl<32, true>(params, dst, ir0, ir1, nullptr, 0);
++        }
++    } else {
++        forward_flash_attn_ext_f16_tiled_impl<ggml_fa_tile_config::Q, false>(
++            params, dst, ir0, ir1, tcm_buffer, tcm_buffer_size);
+     }
+ }
+ 
