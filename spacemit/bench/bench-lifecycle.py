@@ -77,6 +77,13 @@ def make_prompt(url, length, prompt_text=None):
     return seed[:1] + (body * ((length + len(body) - 2) // len(body)))[:length - 1]
 
 
+def verify_cold(result, length):
+    timings = result.get('timings', {})
+    if timings.get('cache_n') != 0 or timings.get('prompt_n') != length:
+        raise RuntimeError(f'cold prefill telemetry mismatch: expected {length} processed tokens '
+                           f'and zero reuse, got {timings.get("prompt_n")}/{timings.get("cache_n")}')
+
+
 def process_status_kib(pid, field):
     try:
         for line in Path(f'/proc/{pid}/status').read_text().splitlines():
@@ -207,6 +214,8 @@ def main():
     parser.add_argument('--spec-draft-n-max', type=int, default=3, help='maximum MTP draft tokens per verification step')
     parser.add_argument('--ignore-eos', action='store_true')
     parser.add_argument('--cache-prompt', action='store_true')
+    parser.add_argument('--verify-cold', action='store_true',
+                        help='require zero cache reuse and the exact processed prompt length')
     parser.add_argument('--kv-unified', action='store_true')
     parser.add_argument('--cache-type-k', default='f16')
     parser.add_argument('--cache-type-v', default='f16')
@@ -216,6 +225,8 @@ def main():
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--log', type=Path, required=True)
     args = parser.parse_args()
+    if args.verify_cold and args.cache_prompt:
+        parser.error('--verify-cold cannot be combined with --cache-prompt')
     if min(args.contexts) < 1 or args.n_predict < 1 or args.repeats < 1 or args.threads < 1:
         parser.error('contexts, n-predict, repeats, and threads must be positive')
     if args.server_log_verbosity is not None and args.server_log_verbosity < 0:
@@ -276,7 +287,9 @@ def main():
         sampler = threading.Thread(target=sample_rss, args=(proc.pid, stop, samples, args.sample_interval))
         sampler.start()
         try:
+            load_start = time.monotonic()
             wait_healthy(proc, url, args.timeout)
+            config['startup_s'] = time.monotonic() - load_start
             config['rss_loaded_kib'] = vmrss_kib(proc.pid)
             config['vms_loaded_kib'] = vmsize_kib(proc.pid)
             output.write(json.dumps({'kind': 'config', **config}, sort_keys=True) + '\n')
@@ -295,6 +308,9 @@ def main():
                                                args.timeout, slot, args.ignore_eos, args.cache_prompt,
                                                bool(args.slot_contexts), args.capture_token_ids) for slot in range(args.concurrency)]
                         results = [future.result() for future in futures]
+                    if args.verify_cold:
+                        for result, prompt in zip(results, prompts):
+                            verify_cold(result, len(prompt))
                     after = time.monotonic()
                     elapsed = after - before
                     # Windows monotonic ticks at ~15.6 ms; a fast fake server can
@@ -321,6 +337,9 @@ def main():
                               'vms_after_kib': vmsize_kib(proc.pid),
                               'elapsed_s': round(elapsed, 3),
                               'aggregate_tps': aggregate_tps}
+                    record['prompt_token_sha256'] = [
+                        hashlib.sha256(json.dumps(prompt, separators=(',', ':')).encode()).hexdigest()
+                        for prompt in prompts]
                     print(json.dumps(record, sort_keys=True), flush=True)
                     output.write(json.dumps(record, sort_keys=True) + '\n')
                     output.flush()
