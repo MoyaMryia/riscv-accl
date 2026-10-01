@@ -1,0 +1,73 @@
+[
+  {
+    "case_id": "4B-4096-routes",
+    "question": "Which three OpenAI-compatible route types are listed? Answer in at most 90 words and cite [S1].",
+    "evidence": "[S1] tools/server/README.md:9\n* [OpenAI API](https://github.com/openai/openai-openapi) compatible chat completions, responses, and embeddings routes",
+    "required_facts": [
+      "chat completions",
+      "responses",
+      "embeddings"
+    ],
+    "cold_answer": "The three OpenAI-compatible route types listed are: chat completions, responses, and embeddings. [S1]",
+    "warm_answer": "The three OpenAI-compatible route types listed are: chat completions, responses, and embeddings. [S1]"
+  },
+  {
+    "case_id": "4B-4096-batches",
+    "question": "Give the logical batch and physical microbatch flags and their documented defaults. Answer in at most 90 words and cite [S2].",
+    "evidence": "[S2] tools/server/README.md:52\n| `-b, --batch-size N` | logical maximum batch size (default: 2048)<br/>(env: LLAMA_ARG_BATCH) |\n| `-ub, --ubatch-size N` | physical maximum batch size (default: 512)<br/>(env: LLAMA_ARG_UBATCH) |",
+    "required_facts": [
+      "--batch-size default 2048",
+      "--ubatch-size default 512"
+    ],
+    "cold_answer": "The logical batch size flag is `-b` with a default of 2048. The physical microbatch size flag is `-ub` with a default of 512.",
+    "warm_answer": "The logical batch size flag is `-b` with a default of 2048. The physical microbatch size flag is `-ub` with a default of 512."
+  },
+  {
+    "case_id": "4B-4096-cache",
+    "question": "What does cache_prompt reuse, what gets reprocessed, and are identical logits guaranteed? Answer in at most 90 words and cite [S3].",
+    "evidence": "[S3] tools/server/README.md:514\n`cache_prompt`: Re-use KV cache from a previous request if possible. This way the common prefix does not have to be re-processed, only the suffix that differs between the requests. Because (depending on the backend) the logits are **not** guaranteed to be bit-for-bit identical for different batch sizes (prompt processing vs. token generation) enabling this option can cause nondeterministic results. Default: `true`",
+    "required_facts": [
+      "reuse the common prefix/KV cache",
+      "evaluate only the differing suffix",
+      "bit-for-bit identical logits are not guaranteed because batching can differ"
+    ],
+    "cold_answer": "`cache_prompt` reuses the KV cache from a previous request if possible. Only the suffix that differs between requests needs to be reprocessed. Identical logits are not guaranteed to be bit-for-bit identical for different batch sizes, as prompt processing and token generation may differ.",
+    "warm_answer": "`cache_prompt` reuses the KV cache from a previous request if possible. Only the suffix that differs between requests needs to be reprocessed. Identical logits are not guaranteed to be bit-for-bit identical for different batch sizes, as prompt processing and token generation may differ."
+  },
+  {
+    "case_id": "4B-4096-slot",
+    "question": "What does id_slot do, and what is its default value and default assignment behavior? Answer in at most 90 words and cite [S4].",
+    "evidence": "[S4] tools/server/README.md:512\n`id_slot`: Assign the completion task to an specific slot. If is -1 the task will be assigned to a Idle slot.  Default: `-1`",
+    "required_facts": [
+      "assign a completion to a specific slot",
+      "default -1 selects an idle slot"
+    ],
+    "cold_answer": "`id_slot` assigns the completion task to a specific slot; if set to -1, the task is assigned to an Idle slot. Its default value is -1.",
+    "warm_answer": "`id_slot` assigns the completion task to a specific slot; if set to -1, the task is assigned to an Idle slot. Its default value is -1."
+  },
+  {
+    "case_id": "4B-4096-health",
+    "question": "Does /health require an API key? Give its alternative path and the loading and ready HTTP codes. Answer in at most 90 words and cite [S5].",
+    "evidence": "[S5] tools/server/README.md:397\n### GET `/health`: Returns health check result\n\nThis endpoint is public (no API key check). `/v1/health` also works.\n\n**Response format**\n\n- HTTP status code 503\n  - Body: `{\"error\": {\"code\": 503, \"message\": \"Loading model\", \"type\": \"unavailable_error\"}}`\n  - Explanation: the model is still being loaded.\n- HTTP status code 200\n  - Body: `{\"status\": \"ok\" }`\n  - Explanation: the model is successfully loaded and the server is ready.\n\n### POST `/completion`: Given a `prompt`, it returns the predicted completion.",
+    "required_facts": [
+      "no API key check",
+      "/v1/health also works",
+      "503 while loading",
+      "200 when ready"
+    ],
+    "cold_answer": "No, `/health` does not require an API key as it is a public endpoint. The alternative path is `/v1/health`. The HTTP codes are 503 (Loading model) and 200 (Ready). [S5]",
+    "warm_answer": "No, `/health` does not require an API key as it is a public endpoint. The alternative path is `/v1/health`. The HTTP codes are 503 (Loading model) and 200 (Ready). [S5]"
+  },
+  {
+    "case_id": "4B-4096-tokenize",
+    "question": "What field supplies text to /tokenize? What does add_special control and what is its default? Answer in at most 90 words and cite [S6].",
+    "evidence": "[S6] tools/server/README.md:604\n### POST `/tokenize`: Tokenize a given text\n\n*Options:*\n\n`content`: (Required) The text to tokenize.\n\n`add_special`: (Optional) Boolean indicating if special tokens, i.e. `BOS`, should be inserted.  Default: `false`\n\n`parse_special`: (Optional) Boolean indicating if special tokens should be tokenized. When `false` special tokens are treated as plaintext.  Default: `true`",
+    "required_facts": [
+      "content is required",
+      "add_special inserts special tokens such as BOS",
+      "default false"
+    ],
+    "cold_answer": "The `content` field supplies text to `/tokenize`. The `add_special` field controls whether special tokens (e.g., `BOS`) are inserted, and its default is `false`.",
+    "warm_answer": "The `content` field supplies text to `/tokenize`. The `add_special` field controls whether special tokens (e.g., `BOS`) are inserted, and its default is `false`."
+  }
+]
