@@ -1,6 +1,6 @@
 # Current documentation guide
 
-Last status check: 2026-09-30, approximately 16:00 Asia/Singapore.
+Last status check: 2026-10-01, approximately 22:52 Asia/Singapore.
 This is a dated snapshot. Read a run's `phase`, logs, and final exit status
 for live progress. A queued experiment is not a measured optimization.
 
@@ -13,9 +13,9 @@ for live progress. A queued experiment is not a measured optimization.
 | Run and collect benchmarks | [Benchmark commands](bench/README.md) |
 | Verified measurements through 16k, plus 2B 32k feasibility | [Resumed measurements](reports/2026-09-27-resumed-measures.md) |
 | Matrix verification and corrected small-effect intervals | [Local analysis](reports/2026-09-28-local-verification.md) |
-| Complete-answer quality protocol and partial results | [Chat quality benchmark](reports/2026-09-30-chat-quality-benchmark.md) |
-| Compact attention layout code and queued tests | [K1 layout experiment](experiments/2026-09-30-k1-attention-layout.md) |
-| Proposed faster developer test loop | [Fast-test design](experiments/2026-09-30-fast-test-design.md) |
+| Complete-answer quality protocol and completed matrix | [Chat quality benchmark](reports/2026-09-30-chat-quality-benchmark.md) |
+| Compact attention layout code and completed pilot | [K1 layout experiment](experiments/2026-09-30-k1-attention-layout.md) |
+| Implemented staged developer test loop | [Fast-test design](experiments/2026-09-30-fast-test-design.md) |
 | Other candidates and source provenance | [Code audit](reports/2026-09-30-code-optimization-audit.md) |
 
 ## Implemented and measured
@@ -39,19 +39,22 @@ for live progress. A queued experiment is not a measured optimization.
 - Small M4 effects have corrected Welch intervals. Two launches per arm remain
   a limitation; the interval tool does not implement a paired-block test.
 
-## Active work at the status check
+## Latest results and active work
 
 | Work | State | Evidence boundary |
 | --- | --- | --- |
-| Chat quality matrix, `document-quality-20260930-full-v2` | 2B/4k, 2B/8k and 4B/4k collected and judged; 4B/8k generation active | 18 of 24 pairs collected/judged. 2B/4k needs review; other completed configurations pass descriptive pilot gates. No full-matrix pass. |
-| Compact layout, `k1-layout-20260930-153134` | Code committed and staged; board tmux waits for the quality lock | Q16/Q32 scratch spans are 96/128 KiB per worker vs 288 KiB. Native compilation, numerical gates and timing are pending; planner reservation is unchanged. |
-| Faster test method | Design committed; runner not implemented | Proposed 15-30 minute screen estimate excludes build/queue time and is unmeasured. |
+| Chat quality, `document-quality-20260930-full-v2` | Completed: 24/24 pairs verified and judged | 2B/4k requires review because one question scores 2/5 in both arms. Three descriptive pilot passes; no full-matrix pass. |
+| Compact layout, `k1-layout-20260930-153134` | Completed: 235 numerical cases/layout and 24 model requests pass | Q32 2k TTFT reductions: 0.89% on 2B, 1.98% on 4B. Small pilot effects; no adoption or 8k claim. |
+| Fast method, `k1-fast-20261001-224957` | Implemented; corrected screen running in tmux | First run passed 241 concurrent cases/layout but timed out in operator timing. Corrected budget is 300 seconds; model conclusions pending. |
 
-The active quality matrix retains its original **alternating** protocol.
+See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
+run identities, timeout evidence and decision boundaries.
+
+The completed quality matrix retained its original **alternating** protocol.
 New quality runs default to **grouped**: one primer, six cached answers, then
-six cold controls. Collection-only recovery resumes existing records and does
-not alter board generation or its schedule. Grouping reduces full document
-passes from up to twelve to seven; its speedup has not been measured.
+six cold controls. Grouping reduces full document passes from up to twelve to
+seven; its speedup has not been measured. Collection-only recovery resumes
+existing records without changing board generation or its schedule.
 
 Full model inference is local. The optional answer judge uses a cloud API;
 its scores supplement facts/citations and completion checks. One- or 32-token
@@ -60,10 +63,10 @@ pass the complete-answer quality gate.
 
 ## Next work
 
-1. Finish and audit the current quality matrix and queued layout pilot.
-2. Implement concurrent operator timing and the staged fast-test controller.
-3. Confirm a promising layout at 8k before adoption; retain the control when
+1. Collect the corrected fast screen and inspect its completed stage gates.
+2. Confirm a qualifying layout at 8k before adoption; retain the control when
    results are inconclusive. Do not rerun the full quality matrix per edit.
+3. Review the low-scoring 2B/4k cache answer separately from kernel timing.
 4. Profile remaining cold-prefill cost, then test eligible recurrent fusion
    and K/V packing reuse as separate changes.
 

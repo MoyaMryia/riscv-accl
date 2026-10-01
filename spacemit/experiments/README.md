@@ -14,8 +14,8 @@ Follow individual base and patch-order instructions.
 | [Page gathering](2026-09-26-page-gather.md) | Evaluated negatively; not full paged allocation or adopted acceleration |
 | [Target-logit trace](2026-09-27-spec-logits-trace.md) | Completed diagnostic; traced source removed and original server rebuilt |
 | [Perfect-draft probe](2026-09-28-perfect-draft-probe.md) | x86 mechanism evidence; no K1 optimization or implemented tie guard |
-| [Compact K1 layout](2026-09-30-k1-attention-layout.md) | Implemented experiment, queued for native correctness/timing; no demonstrated gain |
-| [Fast-test method](2026-09-30-fast-test-design.md) | Design only; controller/timing mode not implemented |
+| [Compact K1 layout](2026-09-30-k1-attention-layout.md) | Completed native/model pilot; small effects, no adoption; staged fast screen follows |
+| [Fast-test method](2026-09-30-fast-test-design.md) | Implemented controller and concurrent timing; first corrected screen running |
 
 Older queued-run instructions explain historical procedures. Consult completed
 reports before repeating them. Experimental and rejected patches remain as

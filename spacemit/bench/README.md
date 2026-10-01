@@ -2,7 +2,7 @@
 
 See the [documentation guide](../DOCS.md) for current results and queued work.
 This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)
-is a design; its proposed modes are not implemented commands.
+now has native correctness, operator timing and gated model-screen modes.
 
 `bench-server.py` starts the patched `llama-server` once per speculative mode, sends greedy completion requests, and writes one JSON record per result. It checks that all modes on the same model produce identical response text for each prompt. The recorded `tps` is the server's decode rate (`timings.predicted_per_second`), not end-to-end throughput. Server stdout and stderr go to `--log-dir`.
 
@@ -335,5 +335,54 @@ python3 spacemit/bench/start-k1-attention-layout.py --collect-only \
 ```
 
 The [experiment specification](../experiments/2026-09-30-k1-attention-layout.md)
-documents the 235-case numerical gate and both-model pilot. The proposed
-faster operator timing and staged controller are still design work.
+documents the 235-case numerical gate and both-model pilot. The faster operator timing and staged controller are documented below.
+
+## Fast optimization screens
+
+Run the staged screen using the completed isolated layout build:
+
+```bash
+python3 spacemit/bench/start-k1-fast-test.py --mode screen \
+  --reuse-run spacemit/reports/raw/k1-layout-20260930-153134
+```
+
+The launcher uses board/local tmux, the shared board lock, a fresh run directory,
+and verified source hashes. The controller performs an incremental no-change
+build, compiles the harness, records full model/library hashes and actual GGUF
+head shapes, then runs 241 concurrent correctness cases per layout. Operator
+measurement has six balanced arm-order blocks, four workers pinned to CPUs 0-3,
+and a 300-second cap. Numerical dumps stay on the board.
+
+The model screen sends six 2B/512-token requests with one output token. Every
+request must prove zero prefix reuse, complete output, and matching input/output
+hashes. A candidate must exceed both 3% and the observed control range to proceed
+to 2B/2k and 4B/1k confirmation. Model screening has a 45-minute budget.
+An inconclusive result stops further work and retains the control.
+
+`--mode smoke` runs numerical checks only. `--mode confirm-long` adds a gated
+8k pilot on both models. To advance a completed eligible screen without repeating
+its valid stages:
+
+```bash
+python3 spacemit/bench/start-k1-fast-test.py --resume --mode confirm-long \
+  --run-dir /absolute/path/to/eligible/screen
+```
+
+For an interrupted run, `--resume` with its original mode validates fingerprints
+and completed-stage artifacts. Changed code requires a new run. Resume preserves
+partial model files as attempts before retrying an incomplete stage.
+To restore collection alone:
+
+```bash
+python3 spacemit/bench/start-k1-fast-test.py --collect-only \
+  --run-dir /absolute/path/to/run
+```
+
+Put collection-only recovery in local tmux if the board is still working.
+An exit status of 0 means the controller completed; read `summary.json` for
+`inconclusive`, `screen eligible`, or long-pilot status. It does not imply a
+speedup. Nonzero exit indicates a failed/incomplete gate or operation. One-token
+measurements do not establish decode throughput or answer quality. Use the
+existing grouped quality runner for complete-answer validation.
+
+Local gate checks: `python3 spacemit/bench/test-k1-fast-test.py`.

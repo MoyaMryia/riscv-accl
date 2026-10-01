@@ -2,8 +2,18 @@
 
 See the [documentation guide](../DOCS.md) for related measurements and work.
 
-Date: 2026-09-30. Status: proposed test design, not an implemented runner.
-The existing compact-layout tmux job retains its current test protocol.
+Design date: 2026-09-30. Implementation update: 2026-10-01.
+The `smoke`, `screen`, and gated `confirm-long` modes are now implemented in
+[start-k1-fast-test.py](../bench/start-k1-fast-test.py), with the
+[board controller](../bench/k1-fast-test.py). The corrected fast screen is
+`k1-fast-20261001-224957`. The original layout pilot completed with exact outputs
+and only small short-context gains; its protocol remains archived separately.
+
+The sections below retain the design rationale and planning estimates.
+Quality generation and cloud scoring use the existing grouped quality runner;
+there is no separate fast-runner `quality` mode. The implementation has a
+300-second operator budget (revised after the first timing timeout), a 45-minute model-screen budget, and no claim that
+one-token requests establish answer quality.
 
 ## Objective
 
@@ -21,7 +31,7 @@ produce a comparable whole-model speedup.
 - The original quality protocol alternates cold and cached answers. Every
   cold request processes the document again. The new grouped protocol already
   reduces six questions from twelve document passes to seven.
-- The queued layout pilot runs twelve server launches, each with 128- and
+- The completed original layout pilot ran twelve server launches, each with 128- and
   2048-token requests: 24 whole-model requests before any 8k confirmation.
 - A kernel-only change still pays for all model layers, recurrent state,
   weights, tokenization, server startup, and generation in those requests.
@@ -37,7 +47,7 @@ the proposed shorter tests. Queue time and build time are separate costs.
 | --- | --- | --- | --- |
 | 0. Build and provenance | Reuse an isolated build directory; incrementally rebuild changed objects and link. Save source/build/model hashes and flags. | Build succeeds; requested kernel activates. | Build dependent |
 | 1. Correctness | Existing 235 boundary/mask cases per layout; add selected 2048/8192-key cases. | Outputs match the control bit for bit for this layout change; no non-finite values or guard damage. | Target under 2 minutes; measure first |
-| 2. Operator speed | Direct attention calls with Q=32, head=256, KV=128/2048/8192, actual model head counts and masks, four concurrent workers. Compare control and both candidates. | Rank candidates; retain both if tied within noise. | Cap at 90 seconds |
+| 2. Operator speed | Direct attention calls with Q=32, head=256, KV=128/2048/8192, actual model head counts and masks, four concurrent workers. Compare control and both candidates. | Rank candidates; retain both if tied within noise. | Cap at 300 seconds |
 | 3. Small model screen | 2B, 512 prompt tokens, 1 output token; layouts 0/16/32/32/16/0. | No correctness/activation failure; select a provisional winner. | About 2-5 minutes |
 | 4. Model confirmation | Winner vs control: 2B/2048 and 4B/1024, A/B/B/A for each; 1 output token. | Benefit survives full-model tests, with no clear regression on either model. | About 10-20 minutes |
 | 5. Long-context pilot | Control and winner, one uncached 8192-token request each on each model; 1 output token. Reverse arm order between models. | No regression or output failure; long-context point estimate recorded. | Roughly 60 minutes plus overhead |
@@ -54,9 +64,9 @@ pass. Do not start the full quality matrix for every code edit.
 
 ## Operator benchmark requirements
 
-Extend the existing C++ harness with a separate timing mode. Its current
-worker calls are sequential and suitable for numerical checks; timing them
-would not represent the four-worker production execution.
+The original design called for extending the sequential C++ harness. The
+implemented harness now uses four concurrent workers for numerical and timing
+cases. Requirements below explain that implementation and future diagnostics.
 
 - Use the same dispatcher, compact scratch, and packing loops as production.
   Check the activation marker for each candidate process.
@@ -72,7 +82,7 @@ would not represent the four-worker production execution.
   K/V packing, and the attention calculation inside it. Reuse allocations.
 - Warm up each shape. Use at least five complete order-balanced timing blocks;
   each arm targets at least 100 ms of accumulated work. Record individual
-  block wall times, medians, and spread. Cap the entire stage at 90 seconds;
+  block wall times, medians, and spread. Cap the entire stage at 300 seconds;
   missing required blocks yields an incomplete result.
 - Rotate deterministic input buffers when practical and report the repeated
   input policy. Repeated operator inputs can become more cache friendly than
@@ -157,13 +167,19 @@ dispatch before quality scoring can justify adoption. Cloud scores supplement
 numerical checks; they cannot excuse a memory error or unexplained arithmetic
 change in an intended exact layout transformation.
 
-## Proposed runner interface and execution
+## Runner interface and execution
 
-Future modes: `smoke`, `screen`, `confirm-long`, and `quality`.
-`screen` executes stages 0-4 and emits an eligible candidate or an inconclusive
-result. `confirm-long` requires that exact source/configuration manifest;
-`quality` consumes complete generated answers. These names are a proposed
-interface, not currently callable commands.
+Available modes: `smoke`, `screen`, and `confirm-long`. `smoke` runs native
+correctness. `screen` adds operator timing and model screening, stopping if
+no candidate exceeds both 3% and control variation. `confirm-long` executes the
+same gated pipeline and runs the 8k pairs only for an eligible winner.
+An eligible completed screen may advance with `--resume --mode confirm-long`;
+completed stages are reused only after provenance and artifact checks.
+
+For complete-answer generation/judging, use `run-all-document-quality.py`
+with its grouped schedule. It is a separate quality gate; the fast runner does
+not automatically spend cloud or long-document time after an inconclusive
+screen. Candidate-vs-control quality still needs an explicitly matched setup.
 
 Each stage writes inputs, source/model/runtime hashes, activation evidence,
 raw timings, outputs, decision, and exit status into its own directory.
@@ -175,17 +191,27 @@ timeouts and a separate local collector. On timeout, terminate the server and
 record failure before releasing the lock. Report initial queue status and
 final summary, so the user can wait without an open blocking tool call.
 
-## Implementation order
+## Implemented components and next work
 
-1. Add real concurrent operator timing and selected long-key correctness cases
-   to `test-k1-attention-layout.cpp`.
-2. Add cold-token-count verification and the one-token screen protocol to
-   the lifecycle runner, plus explicit stage/arm completeness checks.
-3. Add the staged controller, noise-aware screening decisions, resume hashes,
-   and wall-time budgets. Extend the summary with separate evidence levels.
-4. Measure actual stage durations once, then adjust estimates and budgets.
-5. Use the grouped quality runner and existing resumable cloud judge for
-   finalists. Keep the full final matrix as a deliberate release operation.
+1. The C++ harness now has persistent concurrent workers for timing and
+   concurrent numerical checks. `--long` adds six cases for 241 total per mode.
+   Timing reads actual model head counts from GGUF metadata and records CPU
+   affinity, slowest-worker and wall time for dense/causal 128/2048/8192-key shapes.
+2. The lifecycle runner has `--verify-cold`, exact input-token hashes, and separate
+   startup timing. One-token screens require completed streams and matching
+   input/output hashes across all expected arms.
+3. The controller records source, model, compiler, build, harness and runtime
+   fingerprints, stage artifact hashes, raw block timings, decisions and budgets.
+   Incomplete stages fail; valid completed stages can resume without rerunning.
+4. Five local gate tests and the existing fake-server slot regression passed.
+   Native compilation and 241 concurrent numerical cases per layout passed.
+   The first operator run exceeded its 90-second budget and failed. The corrected
+   run uses 300 seconds, preserving all shapes and blocks; model results are pending.
+5. Model screens retain separate server launches because layout selection is
+   cached per process. The current implementation does not keep a server loaded
+   across arm switches. It reuses the isolated build and resident weight pages.
+6. Record completed screen duration before promising a developer-loop time. Additional
+   independent replication and full-answer quality are release gates.
 
 Related: [layout experiment](2026-09-30-k1-attention-layout.md),
 [code audit](../reports/2026-09-30-code-optimization-audit.md),

@@ -1,8 +1,8 @@
 # Compact attention layouts for SpacemiT K1
 
 See the [documentation guide](../DOCS.md) for the dated status snapshot.
-The [fast-test design](2026-09-30-fast-test-design.md) proposes a shorter
-future protocol; the queued run below uses its original pilot protocol.
+The [fast-test design](2026-09-30-fast-test-design.md) now implements a shorter
+staged protocol; the completed run below used its original pilot protocol.
 
 Date: 2026-09-30. This is an opt-in experiment based on the inspected
 integrated source at `a990751` with the existing wide RVV patch. It changes
@@ -33,7 +33,7 @@ The table omits cache-line padding and small stack arrays. Layout span is
 not a measured cache working set. Q16 leaves more nominal L2 space, but
 splitting a 32-query microbatch into two tiles repeats K/V packing and scans.
 Q32 avoids that extra split but leaves less cache capacity for other data.
-Neither layout is known to be fastest until the board measurements finish.
+The completed pilot below found small effects; neither layout has been adopted.
 
 The existing planner still reserves the larger generic workspace so fallback
 paths have sufficient memory. The compact kernel packs worker buffers into
@@ -80,7 +80,7 @@ The launcher verifies the baseline commit and source hashes, stages the
 code, starts a board tmux job, and starts a local tmux collector. The board
 job waits up to 12 hours for the document-quality lock, then checks that no
 other server is active. It builds a separate checkout under the printed
-run directory. The running quality benchmark keeps its existing binary.
+run directory. A concurrent quality benchmark retains its existing binary.
 
 The numerical and model tests have explicit timeouts and stop on failure.
 The collector downloads logs and summaries after the board exits. Numeric
@@ -98,22 +98,29 @@ Until an exit status and successful gates exist, this is a queued or active
 experiment, not a demonstrated optimization. If a layout helps the short
 test, confirm its effect at 8k before adopting it for long documents.
 
-## Preparation checks
+## Completed pilot
 
-The harness passed a host C++17 syntax check against the board headers.
-Shell syntax and Python compilation checks passed. The patch is applied
-against an exact local copy of the audited kernel. Native RVV compilation,
-bitwise comparison, and model timing remain board gates.
+Completion verified on 2026-10-01. The original run
+[`k1-layout-20260930-153134`](../reports/raw/k1-layout-20260930-153134/summary.md)
+exited **0**. Native compilation passed and all 235 cases per layout matched
+bit for bit. All 24 model completions matched token and text hashes within
+each model/context group, with two launches per arm.
 
-## Queued run
+| Model | Prompt | Control TTFT | Q16 reduction | Q32 reduction |
+| --- | ---: | ---: | ---: | ---: |
+| 2B | 128 | 5.691 s | 0.40% | 0.28% |
+| 2B | 2048 | 95.357 s | 0.32% | 0.89% |
+| 4B | 128 | 14.634 s | 0.88% | 1.29% |
+| 4B | 2048 | 248.249 s | -0.29% | 1.98% |
 
-The experiment was queued on `musepipro-wg` on 2026-09-30 at 15:31
-Asia/Singapore. Board tmux session:
-`k1_layout_k1-layout-20260930-153134`. Local collector session:
-`k1_layout_collect_k1-layout-20260930-153134`.
+These are small pilot effects, without statistical significance or an 8k
+comparison. Retain the original layout. The completed isolated build is
+reused by the [fast controller](../bench/start-k1-fast-test.py), after source,
+build and model verification.
 
-Results directory: `spacemit/reports/raw/k1-layout-20260930-153134`.
-Initial phase was `waiting for document quality benchmark`. Allow roughly
-40-60 minutes plus build time after that benchmark releases the board;
-this is a planning estimate, not a measured duration. Correctness failure
-stops the run before the model measurements.
+The new harness runs four numerical workers concurrently and adds long KV
+cases for **241 cases per layout**. The first fast run passed that gate but
+exceeded the initial 90-second operator budget; it is an incomplete timing
+run. The corrected run uses a 300-second budget and retains all six balanced
+blocks and all model shapes. See the [October 1 update](../reports/2026-10-01-fast-method.md)
+for its status.

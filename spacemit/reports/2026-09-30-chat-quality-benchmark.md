@@ -1,6 +1,6 @@
 # Chat-formatted cache quality benchmark
 
-Status snapshot: 2026-09-30, approximately 16:00 Asia/Singapore.
+Completion update: 2026-10-01, Asia/Singapore.
 See the [documentation guide](../DOCS.md) for related work.
 
 The existing `bench-shared-document-cache.py` has a new `--quality-suite` mode.
@@ -21,7 +21,7 @@ New runs default to `--quality-schedule grouped`: one distinct primer,
 all six cached targets, then six forced-cold controls. This reduces full
 document passes from up to twelve to seven if reuse succeeds. Use
 `--quality-schedule alternating` for the original order-controlled protocol,
-with a different primer before each cached target. The active matrix below
+with a different primer before each cached target. The completed matrix below
 retains that original alternating schedule. Completed-answer scoring excludes
 length-capped
 answers, interrupted streams, reasoning output, wrong-slot responses, unverified
@@ -41,9 +41,9 @@ It identified an omitted batching explanation and missing source citation in
 both answers. This demonstrates the generation/collection/judging pipeline;
 it is one pair and does not establish quality across documents or questions.
 
-## Full matrix running
+## Completed full matrix
 
-At the status check, the active matrix is **2B/4B × 4k/8k documents × six questions = 24 pairs**, with
+The completed matrix is **2B/4B × 4k/8k documents × six questions = 24 pairs**, with
 a 512-token output cap. Board generation and workstation cloud scoring run in
 tmux. The [completed 2B/4k snapshot](raw/document-quality-20260930-full-v2/2B-4096.audit.md)
 records six naturally completed, cache-verified pairs: mean cold/cached scores
@@ -52,23 +52,27 @@ The configuration requires quality review because the cache-behavior question
 scored 2/5 in both arms; the other five questions scored 5/5 in both arms.
 This does not establish a cache-specific quality regression.
 
-The collector has also completed and judged 2B/8k and 4B/4k, six pairs each.
-Both have mean cold/cached scores of 4.83/5 and pass the descriptive pilot
-gates. In total, 18 of 24 pairs have been collected and judged; 4B/8k board
-generation is still active. These are partial-matrix results, not a full pass.
+All **24 of 24 pairs** completed naturally, passed cache/slot checks, and were
+judged in both answer orders. The [combined report](raw/document-quality-20260930-full-v2/summary.md)
+records the final results:
 
-The collector updates `summary.md` and `summary.json` in the same run directory
-as configurations finish. Changing collector output is kept outside the
-completed-result snapshot. If collection stops, resume with
-`python3 spacemit/bench/run-all-document-quality.py --collect-only --detach --run-dir /absolute/path/to/run`
-from the repository root. This does not restart inference or change the
-schedule. Detailed answers, exact documents, evidence,
-timing/cache fields, hashes, scores, both judge orders, and driver logs are
-saved there.
+| Model / document | Cold / cached mean score | Median cold / cached TTFT | Descriptive gate |
+| --- | ---: | ---: | --- |
+| 2B / 4k | 4.50 / 4.50 | 211.11 / 3.90 s | Review required |
+| 2B / 8k | 4.83 / 4.83 | 474.31 / 5.01 s | Pilot pass |
+| 4B / 4k | 4.83 / 4.83 | 551.91 / 10.80 s | Pilot pass |
+| 4B / 8k | 4.83 / 5.00 | 1271.37 / 14.65 s | Pilot pass |
 
-The initial `document-quality-20260930-full` launch was stopped before scoring
-to fix a Markdown-sensitive fact-check false negative; it is superseded by
-`document-quality-20260930-full-v2`. No full-matrix result is claimed here.
+Board generation exited successfully. Collector exit status **2** means quality
+review is required for the 2B/4k cache question; it is not an inference failure.
+The matrix does not pass every descriptive gate. One judge and six questions
+per configuration cannot establish general answer-quality equivalence.
+
+Detailed answers, exact documents, evidence, timing/cache fields, hashes,
+scores, both judge orders and driver logs are saved in the completed directory.
+The original alternating schedule was retained throughout. The earlier
+`document-quality-20260930-full` launch was stopped before scoring to fix a
+Markdown-sensitive fact-check false negative and is superseded by this v2 run.
 
 The descriptive pilot gate requires all requested pairs to complete and be
 judged, no required-fact or citation regression, cached mean score no more than
