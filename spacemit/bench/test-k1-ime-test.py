@@ -31,6 +31,8 @@ class Isolation(unittest.TestCase):
                     old.replace('untouched.o', 'extra/spacemit/ime1_kernels.cpp.o'),
                     old.replace(': && ', '')):
             with self.assertRaises(ValueError): ime.link_argv(bad, Path('/new.so'), Path('/new.o'))
+        generic=old.replace('cpu/spacemit/ime1_kernels.cpp.o','cpu/ops.cpp.o')
+        self.assertIn('/new.o',ime.link_argv(generic,Path('/new.so'),Path('/new.o'),'/ops.cpp.o'))
 
     def test_model_shapes_skip_vocabulary_and_reject_invalid_dimension(self):
         def string(value):

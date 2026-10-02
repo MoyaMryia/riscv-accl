@@ -278,7 +278,8 @@ def main():
     config['runtime_env'] = {key: os.environ.get(key) for key in (
         'SPINE_MTP_WINDOW', 'SPINE_SPEC_MAX_CONTEXT', 'SPINE_SPEC_MAX_ACTIVE',
         'SPINE_SPEC_RS', 'SPINE_SPEC_LOWACC', 'SPINE_FA_WIDE_TILE', 'SPINE_FA_K1_LAYOUT',
-        'SPINE_KV_PAGE_GATHER', 'SPINE_IME_M4_SCHEDULE') if os.environ.get(key) is not None}
+        'SPINE_KV_PAGE_GATHER', 'SPINE_IME_M4_SCHEDULE', 'SPINE_GDN_RVV',
+        'SPINE_GDN_PREFILL') if os.environ.get(key) is not None}
     with args.log.open('wb') as log, args.output.open('a') as output:
         proc = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT,
                                 stdin=subprocess.DEVNULL, env=os.environ.copy())

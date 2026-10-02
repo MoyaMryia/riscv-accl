@@ -21,7 +21,7 @@ def module(name):
 fast, patcher = module('k1-fast-test'), module('make-k1-ime-candidate')
 
 
-def dimensions(path):
+def dimensions(path, keys=('qwen35.embedding_length','qwen35.feed_forward_length')):
     formats={0:'B',1:'b',2:'H',3:'h',4:'I',5:'i',6:'f',7:'?',10:'Q',11:'q',12:'d'}
     with Path(path).open('rb') as f:
         def number(fmt):
@@ -49,10 +49,12 @@ def dimensions(path):
         number('Q'); count=number('Q'); found={}
         if count>100000: raise ValueError('invalid metadata count')
         for _ in range(count):
-            key=string(); wanted=key in ('qwen35.embedding_length','qwen35.feed_forward_length')
+            key=string(); wanted=key in keys
             v=value(number('I'),wanted)
             if wanted: found[key.split('.')[-1]]=v
-    if set(found)!={'embedding_length','feed_forward_length'} or any(v<=0 or v%32 for v in found.values()):
+    if set(found)!={k.split('.')[-1] for k in keys} or any(not isinstance(v,int) or v<=0 for v in found.values()):
+        raise ValueError('invalid model GEMM dimensions')
+    if any(v%32 for k,v in found.items() if k in ('embedding_length','feed_forward_length')):
         raise ValueError('invalid model GEMM dimensions')
     return found
 
@@ -66,19 +68,30 @@ def compile_argv(line, source, output, include):
     return new+['-I'+str(include),'-o',str(output),'-c',str(source)]
 
 
-def link_argv(line, output, object_file):
+def link_argv(line, output, object_file, object_suffix='/spacemit/ime1_kernels.cpp.o'):
     segments=line.split(' && ')
     if len(segments)!=3 or segments[0]!=':' or segments[-1]!=':': raise ValueError('unexpected link recipe')
     args=shlex.split(segments[1]); replaced=0
     for i,arg in enumerate(args):
         if i and args[i-1]=='-o': args[i]=str(output)
-        if arg.endswith('/spacemit/ime1_kernels.cpp.o'):
+        if arg.endswith(object_suffix):
             args[i]=str(object_file); replaced+=1
     if replaced!=1: raise ValueError('kernel object not unique')
     return args
 
 
 class Run:
+    kernel_relative='ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp'
+    tag='ime1'
+    harness='test-k1-ime.cpp'
+    binary='test-ime'
+    switch='SPINE_IME_M4_SCHEDULE'
+    title='K1 IME scheduling screen'
+    def generate(self,text): return patcher.generate(text)
+    def model_dimensions(self,path): return dimensions(path)
+    def activation(self,text,mode):
+        if f'SPINE_IME_M4_SCHEDULE: mode={mode} Q4_0 M4 K32 enabled' not in text:
+            raise ValueError('candidate/control activation missing')
     def __init__(self,root):
         self.root=root; self.expected=json.loads((root/'expected-provenance.json').read_text())
         self.started=time.monotonic(); self.summary={'status':'running','stages':{},
@@ -94,7 +107,7 @@ class Run:
     def save(self):
         self.summary['elapsed_s']=time.monotonic()-self.started
         fast.write_json(self.root/'summary.json',self.summary)
-        lines=['# K1 IME scheduling screen','','Status: '+self.summary['status'],'',self.summary['limitations'],'']
+        lines=['# '+self.title,'','Status: '+self.summary['status'],'',self.summary['limitations'],'']
         for name,result in self.summary['stages'].items():
             lines += ['## '+name,'',json.dumps(result,indent=2),'']
         lines += [self.summary.get('reason','')]
@@ -116,22 +129,22 @@ class Run:
         self.shapes={}
         for model,info in self.expected['models'].items():
             if fast.digest(info['path'])!=info['sha256']: raise ValueError('model changed')
-            self.shapes[model]=dimensions(info['path'])
-        original=self.source/'ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp'
+            self.shapes[model]=self.model_dimensions(info['path'])
+        original=self.source/self.kernel_relative
         text=original.read_text()
-        if hashlib.sha256(subprocess.check_output(['git','-C',self.source,'show','HEAD:ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp'])).hexdigest()!=fast.digest(original):
+        if hashlib.sha256(subprocess.check_output(['git','-C',self.source,'show','HEAD:'+self.kernel_relative])).hexdigest()!=fast.digest(original):
             raise ValueError('kernel differs from committed baseline')
-        (self.root/'baseline-ime1.cpp').write_text(text)
-        candidate=self.root/'candidate-ime1.cpp'; candidate.write_text(patcher.generate(text))
+        (self.root/f'baseline-{self.tag}.cpp').write_text(text)
+        candidate=self.root/f'candidate-{self.tag}.cpp'; candidate.write_text(self.generate(text))
         import difflib
-        (self.root/'candidate-ime1.patch').write_text(''.join(difflib.unified_diff(text.splitlines(True),candidate.read_text().splitlines(True),
-            fromfile='a/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp',tofile='b/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp')))
+        (self.root/f'candidate-{self.tag}.patch').write_text(''.join(difflib.unified_diff(text.splitlines(True),candidate.read_text().splitlines(True),
+            fromfile='a/'+self.kernel_relative,tofile='b/'+self.kernel_relative)))
         recipes=subprocess.check_output(['ninja','-C',self.build,'-t','commands','bin/libggml-cpu.so.0.16.0'],text=True).splitlines()
         compile_line=next(s for s in recipes if ' -c '+str(original) in s)
         link_line=next(s for s in recipes if ' -shared ' in s and ' -o bin/libggml-cpu.so.0.16.0 ' in s)
         overlay=self.root/'lib'; overlay.mkdir()
-        obj=self.root/'candidate-ime1.o'; library=overlay/'libggml-cpu.so.0.16.0'
-        c=compile_argv(compile_line,candidate,obj,original.parent); l=link_argv(link_line,library,obj)
+        obj=self.root/f'candidate-{self.tag}.o'; library=overlay/'libggml-cpu.so.0.16.0'
+        c=compile_argv(compile_line,candidate,obj,original.parent); l=link_argv(link_line,library,obj,'/'+original.name+'.o')
         original_objects=[self.build/p for p in shlex.split(link_line.split(' && ')[1]) if p.endswith('.o')]
         object_hashes={str(p):fast.digest(p) for p in original_objects}
         self.command(c,'compile.log',180,cwd=self.build); self.command(l,'link.log',120,cwd=self.build)
@@ -139,8 +152,8 @@ class Run:
         self.env=dict(os.environ,LD_LIBRARY_PATH=str(overlay)+':'+self.expected['runtime']['LD_LIBRARY_PATH'],SPINE_FA_WIDE_TILE='1',SPINE_FA_K1_LAYOUT='0')
         tool=c[0]
         self.command([tool,'-O3','-std=c++17','-march=rv64gcv_zfh_zvfh_zicbop_zihintpause_zba','-mabi=lp64d',
-            '-I'+str(self.source/'ggml/include'),'-I'+str(original.parent),HERE/'test-k1-ime.cpp','-L'+str(overlay),
-            '-L'+str(self.server.parent),'-lggml-cpu','-lggml-base','-pthread','-o',self.root/'test-ime'],
+            '-I'+str(self.source/'ggml/include'),'-I'+str(original.parent),HERE/self.harness,'-L'+str(overlay),
+            '-L'+str(self.server.parent),'-lggml-cpu','-lggml-base','-pthread','-o',self.root/self.binary],
             'harness-build.log',120,env=self.env)
         self.provenance={'source_revision':'a990751','baseline_kernel_sha256':fast.digest(original),
             'candidate_source_sha256':fast.digest(candidate),'candidate_library_sha256':fast.digest(library),
@@ -184,13 +197,13 @@ class Run:
         rows=[]; labels=[]
         for i,mode in enumerate((0,winner,winner,0)):
             label=f'{model}-{tokens}-q{mode}-pass{i+1}'; out=self.root/(label+'.jsonl'); labels.append(label)
-            env=dict(self.env,SPINE_IME_M4_SCHEDULE=str(mode))
+            env=dict(self.env,**{self.switch:str(mode)})
             self.command([sys.executable,HERE/'bench-lifecycle.py','--server',self.server,'--model',self.expected['models'][model]['path'],
                 '--label',label,'--mode','plain','--contexts',tokens,'--n-predict',1,'--ignore-eos','--verify-cold',
                 '--capture-token-ids','--gpu-layers',0,'--ctx-size',4096,'--timeout',600,'--output',out,
                 '--log',self.root/(label+'.server.log')],label+'.driver.log',700,env)
             text=(self.root/(label+'.server.log')).read_text()
-            if f'SPINE_IME_M4_SCHEDULE: mode={mode} Q4_0 M4 K32 enabled' not in text: raise ValueError('candidate/control activation missing')
+            self.activation(text,mode)
             if 'SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads' not in text: raise ValueError('attention activation missing')
             rows += [json.loads(l) for l in out.read_text().splitlines()]
         requests=fast.check_model_records(rows,labels,tokens)
