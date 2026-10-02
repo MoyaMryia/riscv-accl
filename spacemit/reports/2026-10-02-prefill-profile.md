@@ -127,3 +127,5 @@ Eligible recurrent prefill fusion remains a separate secondary candidate,
 with output and final-state correctness checks. The current evidence does not
 justify prioritizing another attention layout or shared K/V packing cache.
 No new optimization is implemented or speedup claimed by this profile.
+The follow-up [IME scheduling screen](2026-10-02-ime-scheduling.md) implements
+three isolated candidates with numerical and staged timing gates.

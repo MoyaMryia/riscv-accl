@@ -422,3 +422,35 @@ python3 spacemit/bench/start-k1-prefill-profile.py --collect-only \
 Local attribution checks: `python3 spacemit/bench/test-k1-prefill-profile.py`.
 See the [profiling protocol](../reports/2026-10-02-prefill-profile.md) for the
 measured tool limitations and decision boundaries.
+
+## IME M4 scheduling screen
+
+Build and screen isolated IME M4 variants in board tmux:
+
+```bash
+python3 spacemit/bench/start-k1-ime-test.py
+```
+
+The launcher uses the completed fast screen as provenance. It leaves the old
+source/build intact, compiles one new IME object and links a separate CPU
+library. The numerical gate checks 288 cases against control, output/input
+guards, and a scalar reference for full M4 tiles. The first three scheduling
+variants completed their speed screen without qualifying. The current screen
+times scale gathering and gathering plus unrolling (modes 4/5), using six
+balanced operator blocks, actual GGUF embedding/feed-forward dimensions, and
+four workers on cores 0-3. All five modes retain numerical coverage.
+Only candidates clearing the 3%/control-range gate on at least two
+shapes without a clear regression advance to cold model checks: 2B/512, then
+2B/2k, then 4B/1k. Each model stage has four ABBA requests and the same gate.
+
+The board job has a 45-minute limit after acquiring the shared lock. The
+workstation collector also runs in tmux. Recover collection with:
+
+```bash
+python3 spacemit/bench/start-k1-ime-test.py --collect-only \
+  --run-dir /absolute/path/to/existing/ime-run
+```
+
+Local recipe/metadata checks: `python3 spacemit/bench/test-k1-ime-test.py`.
+See the [IME experiment](../reports/2026-10-02-ime-scheduling.md) for dispatch
+limits, the initial harness correction and the evidence needed for adoption.

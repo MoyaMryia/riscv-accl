@@ -12,6 +12,7 @@ Historical queue statements describe the report's date.
 | [Chat quality](2026-09-30-chat-quality-benchmark.md) | Completed 24-pair matrix; 2B/4k requires review; three descriptive pilot passes |
 | [Shared document cache](2026-09-29-shared-document-cache.md) | Changed-question tests; truncated-answer judge marks are not complete-answer quality evidence |
 | [October 2 profile](2026-10-02-prefill-profile.md) | Completed cold-prefill profile, resolved IME GEMM hotspots and collection recovery |
+| [IME scheduling](2026-10-02-ime-scheduling.md) | First three variants did not qualify; scale-gather follow-up passes native checks and is running |
 | [October 1 update](2026-10-01-fast-method.md) | Completed layout/quality evidence and implementation of the staged fast method |
 | [Code audit](2026-09-30-code-optimization-audit.md) | Source hypotheses and provenance; compact layout is a later experiment |
 | [PR #1 review](2026-09-30-pr1-review.md) | Historical findings; PR merged and local fixes completed |

@@ -17,6 +17,7 @@ for live progress. A queued experiment is not a measured optimization.
 | Compact attention layout code and completed pilot | [K1 layout experiment](experiments/2026-09-30-k1-attention-layout.md) |
 | Implemented staged developer test loop | [Fast-test design](experiments/2026-09-30-fast-test-design.md) |
 | Cold-prefill sampling and next bottleneck | [Profiling protocol](reports/2026-10-02-prefill-profile.md) |
+| IME M4 scheduling candidates and isolated tests | [IME screen](reports/2026-10-02-ime-scheduling.md) |
 | Other candidates and source provenance | [Code audit](reports/2026-09-30-code-optimization-audit.md) |
 
 ## Implemented and measured
@@ -48,6 +49,8 @@ for live progress. A queued experiment is not a measured optimization.
 | Compact layout, `k1-layout-20260930-153134` | Completed: 235 numerical cases/layout and 24 model requests pass | Q32 2k TTFT reductions: 0.89% on 2B, 1.98% on 4B. Small pilot effects; no adoption or 8k claim. |
 | Fast method, `k1-fast-20261001-224957` | Completed in 8.45 minutes; inconclusive | 241 concurrent cases/layout passed; 216 operator records; Q16/Q32 model gains 0.32%/0.53%, below threshold. Longer stages skipped. |
 | Prefill profile, `k1-profile-20261002-154340` | Completed in 8.51 minutes; collection recovered | Three verified IME GEMM labels: 43-44% self CPU; visible recurrent/attention: 7%/3.3%. CPU shares are not wall-time or gain estimates. |
+| IME scheduling, `k1-ime-20261002-183608` | Completed in 4.20 minutes; no candidate qualified | 288 numerical cases and 256 operator arms pass. Unrolling averages +0.67%; scheduled loads regress. Model stages skipped. |
+| IME scale gathering, `k1-ime-20261002-184503` | Running in tmux | Two further variants; native diagnostic passes 288 cases and scalar M4 reference. Model speed is not established. |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.
@@ -65,8 +68,9 @@ pass the complete-answer quality gate.
 
 ## Next work
 
-1. Investigate the measured IME GEMM hot loop; add representative operator
-   checks before changing its instruction scheduling or packing.
+1. Finish the isolated IME scheduling screen. Advance only candidates clearing
+   representative operator and cold model gates; require longer-context and
+   complete-answer confirmation before adoption.
 2. Keep layout 0; the fast screen did not qualify either compact layout. Do not
    run an 8k layout comparison or repeat the quality matrix for this result.
 3. Review the low-scoring 2B/4k cache answer separately from kernel timing.
