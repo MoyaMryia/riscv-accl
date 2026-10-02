@@ -136,11 +136,12 @@ struct Team {
 
 int main(int argc,char ** argv) {
     if (argc>2 && strcmp(argv[1],"--bench")==0) {
-        const int order[8][4]={{0,1,2,3},{3,2,1,0},{1,0,3,2},{2,3,0,1},
-                              {2,1,0,3},{3,0,1,2},{0,3,2,1},{1,2,3,0}};
+        // Screen only the new gather candidates: the first three have already
+        // completed their operator screen. All five retain numerical coverage.
+        const int order[6][3]={{0,4,5},{5,4,0},{4,0,5},{5,0,4},{0,5,4},{4,5,0}};
         for (int ki=2;ki<argc;++ki) for (int n:{16,32}) {
             const int k=atoi(argv[ki]); require(k>0 && k%32==0,"K shape"); Team team(k,n);
-            for (int block=0;block<8;++block) for (int mode:order[block]) {
+            for (int block=0;block<6;++block) for (int mode:order[block]) {
                 team.run(mode,1); int it=1;
                 do {
                     team.run(mode,it);
@@ -163,7 +164,7 @@ int main(int argc,char ** argv) {
         for(int m:{1,4,7}) for(bool zp:{false,true}) {
             Data control(bl,kb,n,m,zp,cases), candidate=control;
             auto processed=control.call(0); control.check(); control.reference();
-            for(int mode:{1,2,3}) {
+            for(int mode:{1,2,3,4,5}) {
                 candidate=Data(bl,kb,n,m,zp,cases);
                 const auto a=candidate.qa, b=candidate.qb;
                 require(candidate.call(mode)==processed,"processed rows"); candidate.check(mode);
@@ -172,5 +173,5 @@ int main(int argc,char ** argv) {
             }
             ++cases;
         }
-    printf("PASS: %d cases; three modes bitwise equal; input/stride guards intact\n",cases);
+    printf("PASS: %d cases; five modes bitwise equal; scalar M4 reference and input/stride guards intact\n",cases);
 }

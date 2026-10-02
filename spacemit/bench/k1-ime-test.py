@@ -153,7 +153,8 @@ class Run:
         self.phase('native numerical gate')
         self.command([self.root/'test-ime'],'numeric.log',120,self.env)
         if 'PASS: 288 cases;' not in (self.root/'numeric.log').read_text(): raise ValueError('numerical gate incomplete')
-        self.summary['stages']['numeric']={'cases':288,'bitwise_equal':True,'modes':[1,2,3]}; self.save()
+        self.summary['stages']['numeric']={'cases':288,'bitwise_equal':True,'modes':[1,2,3,4,5],
+            'scalar_m4_reference':True}; self.save()
         self.phase('operator timing')
         ks=sorted({v for s in self.shapes.values() for v in s.values()})
         log=self.root/'operator.jsonl'
@@ -161,7 +162,7 @@ class Run:
             subprocess.run([str(self.root/'test-ime'),'--bench',*map(str,ks)],stdout=output,stderr=err,
                            check=True,timeout=300,env=self.env)
         rows=[json.loads(l) for l in log.read_text().splitlines()]
-        expected={(k,n,b,m) for k in ks for n in (16,32) for b in range(8) for m in range(4)}
+        expected={(k,n,b,m) for k in ks for n in (16,32) for b in range(6) for m in (0,4,5)}
         if len(rows)!=len(expected) or {(r['k'],r['n'],r['block'],r['mode']) for r in rows}!=expected:
             raise ValueError('missing operator arms')
         if any(r['slowest_ms']<50 or r['cpus']!=[0,1,2,3] or not math.isfinite(r['ms_per_call']) or r['ms_per_call']<=0 for r in rows):
@@ -169,11 +170,11 @@ class Run:
         comparisons=[]
         for k in ks:
             for n in (16,32):
-                arm={m:[r['ms_per_call'] for r in rows if (r['k'],r['n'],r['mode'])==(k,n,m)] for m in range(4)}
-                for mode in (1,2,3): comparisons.append({'k':k,'n':n,'mode':mode,**fast.gate(arm[0],arm[mode])})
+                arm={m:[r['ms_per_call'] for r in rows if (r['k'],r['n'],r['mode'])==(k,n,m)] for m in (0,4,5)}
+                for mode in (4,5): comparisons.append({'k':k,'n':n,'mode':mode,**fast.gate(arm[0],arm[mode])})
         self.summary['stages']['operators']={'records':len(rows),'comparisons':comparisons}; self.save()
         eligible=[]
-        for mode in (1,2,3):
+        for mode in (4,5):
             c=[r for r in comparisons if r['mode']==mode]
             if not any(r['clear_regression'] for r in c) and sum(r['advance'] for r in c)>=2:
                 eligible.append((statistics.mean(r['reduction_pct'] for r in c),mode))

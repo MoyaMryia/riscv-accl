@@ -25,6 +25,21 @@ def step(scheduled):
     return result + high_dots
 
 
+def gathered_scale():
+    # Four M4 rows x four columns occupy 16 F32 lanes per IME accumulator.
+    # Load all 16 B scales once; gather each quartet four times, and gather
+    # the four saved A scales into [a0*4, a1*4, a2*4, a3*4].
+    ops = ['vsetvli t0, zero, e16, m1', 'vle16.v v2, (s5)',
+           'vfwcvt.f.f.v v4, v2', 'vsetvli t0, zero, e32, mf2',
+           'vle32.v v0, (s7)', 'vsetvli t0, zero, e32, m2',
+           'vid.v v2', 'vsrl.vi v2, v2, 2', 'vrgather.vv v6, v0, v2',
+           'vid.v v2', 'vand.vi v2, v2, 3']
+    for i in range(4):
+        if i: ops += ['vadd.vi v2, v2, 4']
+        ops += [f'vrgather.vv v{8+2*i}, v4, v2', f'vfmul.vv v{8+2*i}, v{8+2*i}, v6']
+    return assembly(ops)
+
+
 def generate(original):
     begin = original.index('template <bool HasZeroPoint>\nvoid SQ4BitGemmM4Kernel_')
     end = original.index('template <bool HasZeroPoint>\nvoid SQ4BitGemmM1Kernel_', begin)
@@ -37,13 +52,19 @@ def generate(original):
     decl = region[region.index('void SQ4BitGemmM4Kernel_'):region.index(' {', region.index('void SQ4BitGemmM4Kernel_'))]
     prefix = '\n    const size_t INNER = BlkLen / 16;\n    size_t LDC = ldc * sizeof(float);\n    float tmp[4 * 16];\n'
     helpers = []
-    for mode in (1, 2, 3):
+    for mode in (1, 2, 3, 4, 5):
         ops = ['vsetvli t0, zero, e8, m1']
-        if mode == 1:
-            ops = ['BLOCK_INNER_LOOP%=:'] + ops + step(True) + ['addi t2, t2, -1', 'bnez t2, BLOCK_INNER_LOOP%=']
+        if mode in (1, 4):
+            ops = ['BLOCK_INNER_LOOP%=:'] + ops + step(mode == 1) + ['addi t2, t2, -1', 'bnez t2, BLOCK_INNER_LOOP%=']
         else:
             ops += step(mode == 3) * 2
         candidate = body[:loop_start] + assembly(ops) + body[loop_end:]
+        if mode >= 4:
+            start = candidate.index('                "flw                f1, (a1)')
+            stop = candidate.index('                "addi               a1, a1, 16', start)
+            candidate = candidate[:start] + assembly(['addi s7, a1, 0']) + '\n' + candidate[stop:]
+            candidate = candidate.replace('                LOAD_SCALE_4x16_FP16_OPT', gathered_scale())
+            candidate = candidate.replace('"s5", "s6");', '"s5", "s6", "s7");')
         signature = decl.replace('SQ4BitGemmM4Kernel_CompInt8_ScaleFp16_Impl', f'k1_ime_m4_mode{mode}')
         helpers.append('static ' + signature + ' {' + prefix + candidate + '\n}\n')
     result = original[:end] + '\n// K32 experiments retain each accumulator\'s dot and scale order.\n' + '\n'.join(helpers) + '\n' + original[end:]
@@ -55,10 +76,12 @@ def generate(original):
     args = 'blk_len, quant_a_ptr, quant_b_data, quant_b_zp, c_ptr, count_m, count_n, k_blks, ldc'
     api = signature.replace('size_t gemm_kernel_i8i4(', 'extern "C" size_t spine_k1_ime_m4_test(int mode, ')
     api += ''' {
-    if (blk_len == 32 && count_m >= 4 && count_n > 0 && count_n % 16 == 0 && quant_b_zp == nullptr && mode > 0 && mode <= 3) {
+    if (blk_len == 32 && count_m >= 4 && count_n > 0 && count_n % 16 == 0 && quant_b_zp == nullptr && mode > 0 && mode <= 5) {
         if (mode == 1) k1_ime_m4_mode1(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
         if (mode == 2) k1_ime_m4_mode2(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
         if (mode == 3) k1_ime_m4_mode3(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
+        if (mode == 4) k1_ime_m4_mode4(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
+        if (mode == 5) k1_ime_m4_mode5(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
         return 4;
     }
     return k1_original_gemm_kernel_i8i4(''' + args + ''');
@@ -67,7 +90,7 @@ def generate(original):
     wrapper = signature + ''' {
     static const int mode = [] {
         const char * value = getenv("SPINE_IME_M4_SCHEDULE");
-        return value && value[0] >= '1' && value[0] <= '3' && value[1] == 0 ? value[0] - '0' : 0;
+        return value && value[0] >= '1' && value[0] <= '5' && value[1] == 0 ? value[0] - '0' : 0;
     }();
     if (blk_len == 32 && count_m >= 4 && count_n > 0 && count_n % 16 == 0 && quant_b_zp == nullptr) {
         static const bool logged = [] {
