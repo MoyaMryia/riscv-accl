@@ -1,0 +1,729 @@
+--- a/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp
+@@ -4,6 +4,8 @@
+ #include "rvv_kernels.h"
+ 
+ #include <algorithm>
++#include <cstdio>
++#include <cstdlib>
+ #include <cmath>
+ #include <stdexcept>
+ 
+@@ -795,6 +797,658 @@
+                   "s5", "s6");
+         }
+     }
++}
++
++
++// K32 experiments retain each accumulator's dot and scale order.
++static void k1_ime_m4_mode1(size_t          BlkLen,
++                                                const uint8_t * QuantA,
++                                                const uint8_t * QuantBData,
++                                                float *         C,
++                                                size_t          CountN,
++                                                size_t          BlockCountK,
++                                                const size_t    ldc) {
++    const size_t INNER = BlkLen / 16;
++    size_t LDC = ldc * sizeof(float);
++    float tmp[4 * 16];
++
++        for (size_t n = 0; n < CountN; n += 16) {
++            size_t    NBLKS         = (CountN - n) > 16 ? 16 : CountN - n;
++            uint8_t * QuantBDataPtr = (uint8_t *) QuantBData +             //
++                                      n * BlockCountK * BlkLen / 2 +       // b data
++                                      n * BlockCountK * sizeof(_Float16);  // scale
++            float * CPtr = C + n;
++            if (NBLKS < 16) {
++                CPtr = tmp;
++                LDC  = 16 * sizeof(float);
++            }
++
++            __asm__ volatile(
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v24, v24, v24               \n\t"
++                "addi               t3, %[BlockCountK], 0       \n\t"
++                "addi               a1, %[A], 0                 \n\t"
++                "addi               s1, %[B], 0                 \n\t"
++                "BLOCK_COUNTK_LOOP%=:                           \n\t"
++                "addi               s5, s1, 0                   \n\t"
++                "addi               s1, s5, 32                  \n\t"
++                "addi               s2, s1, 32                  \n\t"
++                "addi               s3, s1, 32*2                \n\t"
++                "addi               s4, s1, 32*3                \n\t"
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v16, v16, v16               \n\t"
++                // load a scale
++                "flw                f1, (a1)                    \n\t"
++                "flw                f2, 4(a1)                   \n\t"
++                "flw                f3, 8(a1)                   \n\t"
++                "flw                f4, 12(a1)                  \n\t"
++                "addi               a1, a1, 16                  \n\t"
++                "addi               t2, %[INNER], 0             \n\t"
++                "BLOCK_INNER_LOOP%=:                          \n\t"
++                "vsetvli t0, zero, e8, m1                     \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++                "addi t2, t2, -1                              \n\t"
++                "bnez t2, BLOCK_INNER_LOOP%=                  \n\t"
++
++                LOAD_SCALE_4x16_FP16_OPT
++
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vfcvt.f.x.v        v16, v16                    \n\t"
++                "vfmacc.vv          v24, v16, v8                \n\t"
++                "addi               t3, t3, -1                  \n\t"
++                "bnez               t3, BLOCK_COUNTK_LOOP%=     \n\t"
++                "RESULT_SAVE%=:                                 \n\t"
++
++                SAVE_RESULT_4x16
++
++                :
++                : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [LDC] "r"(LDC),
++                  [BlockCountK] "r"(BlockCountK), [C] "r"(CPtr)
++                : "cc", "t0", "t1", "t2", "t3", "a1", "a2", "a3", "a4", "f1", "f2", "f3", "f4", "s1", "s2", "s3", "s4",
++                  "s5", "s6");
++        }
++}
++
++static void k1_ime_m4_mode2(size_t          BlkLen,
++                                                const uint8_t * QuantA,
++                                                const uint8_t * QuantBData,
++                                                float *         C,
++                                                size_t          CountN,
++                                                size_t          BlockCountK,
++                                                const size_t    ldc) {
++    const size_t INNER = BlkLen / 16;
++    size_t LDC = ldc * sizeof(float);
++    float tmp[4 * 16];
++
++        for (size_t n = 0; n < CountN; n += 16) {
++            size_t    NBLKS         = (CountN - n) > 16 ? 16 : CountN - n;
++            uint8_t * QuantBDataPtr = (uint8_t *) QuantBData +             //
++                                      n * BlockCountK * BlkLen / 2 +       // b data
++                                      n * BlockCountK * sizeof(_Float16);  // scale
++            float * CPtr = C + n;
++            if (NBLKS < 16) {
++                CPtr = tmp;
++                LDC  = 16 * sizeof(float);
++            }
++
++            __asm__ volatile(
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v24, v24, v24               \n\t"
++                "addi               t3, %[BlockCountK], 0       \n\t"
++                "addi               a1, %[A], 0                 \n\t"
++                "addi               s1, %[B], 0                 \n\t"
++                "BLOCK_COUNTK_LOOP%=:                           \n\t"
++                "addi               s5, s1, 0                   \n\t"
++                "addi               s1, s5, 32                  \n\t"
++                "addi               s2, s1, 32                  \n\t"
++                "addi               s3, s1, 32*2                \n\t"
++                "addi               s4, s1, 32*3                \n\t"
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v16, v16, v16               \n\t"
++                // load a scale
++                "flw                f1, (a1)                    \n\t"
++                "flw                f2, 4(a1)                   \n\t"
++                "flw                f3, 8(a1)                   \n\t"
++                "flw                f4, 12(a1)                  \n\t"
++                "addi               a1, a1, 16                  \n\t"
++                "addi               t2, %[INNER], 0             \n\t"
++                "vsetvli t0, zero, e8, m1                     \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++
++                LOAD_SCALE_4x16_FP16_OPT
++
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vfcvt.f.x.v        v16, v16                    \n\t"
++                "vfmacc.vv          v24, v16, v8                \n\t"
++                "addi               t3, t3, -1                  \n\t"
++                "bnez               t3, BLOCK_COUNTK_LOOP%=     \n\t"
++                "RESULT_SAVE%=:                                 \n\t"
++
++                SAVE_RESULT_4x16
++
++                :
++                : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [LDC] "r"(LDC),
++                  [BlockCountK] "r"(BlockCountK), [C] "r"(CPtr)
++                : "cc", "t0", "t1", "t2", "t3", "a1", "a2", "a3", "a4", "f1", "f2", "f3", "f4", "s1", "s2", "s3", "s4",
++                  "s5", "s6");
++        }
++}
++
++static void k1_ime_m4_mode3(size_t          BlkLen,
++                                                const uint8_t * QuantA,
++                                                const uint8_t * QuantBData,
++                                                float *         C,
++                                                size_t          CountN,
++                                                size_t          BlockCountK,
++                                                const size_t    ldc) {
++    const size_t INNER = BlkLen / 16;
++    size_t LDC = ldc * sizeof(float);
++    float tmp[4 * 16];
++
++        for (size_t n = 0; n < CountN; n += 16) {
++            size_t    NBLKS         = (CountN - n) > 16 ? 16 : CountN - n;
++            uint8_t * QuantBDataPtr = (uint8_t *) QuantBData +             //
++                                      n * BlockCountK * BlkLen / 2 +       // b data
++                                      n * BlockCountK * sizeof(_Float16);  // scale
++            float * CPtr = C + n;
++            if (NBLKS < 16) {
++                CPtr = tmp;
++                LDC  = 16 * sizeof(float);
++            }
++
++            __asm__ volatile(
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v24, v24, v24               \n\t"
++                "addi               t3, %[BlockCountK], 0       \n\t"
++                "addi               a1, %[A], 0                 \n\t"
++                "addi               s1, %[B], 0                 \n\t"
++                "BLOCK_COUNTK_LOOP%=:                           \n\t"
++                "addi               s5, s1, 0                   \n\t"
++                "addi               s1, s5, 32                  \n\t"
++                "addi               s2, s1, 32                  \n\t"
++                "addi               s3, s1, 32*2                \n\t"
++                "addi               s4, s1, 32*3                \n\t"
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v16, v16, v16               \n\t"
++                // load a scale
++                "flw                f1, (a1)                    \n\t"
++                "flw                f2, 4(a1)                   \n\t"
++                "flw                f3, 8(a1)                   \n\t"
++                "flw                f4, 12(a1)                  \n\t"
++                "addi               a1, a1, 16                  \n\t"
++                "addi               t2, %[INNER], 0             \n\t"
++                "vsetvli t0, zero, e8, m1                     \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++
++                LOAD_SCALE_4x16_FP16_OPT
++
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vfcvt.f.x.v        v16, v16                    \n\t"
++                "vfmacc.vv          v24, v16, v8                \n\t"
++                "addi               t3, t3, -1                  \n\t"
++                "bnez               t3, BLOCK_COUNTK_LOOP%=     \n\t"
++                "RESULT_SAVE%=:                                 \n\t"
++
++                SAVE_RESULT_4x16
++
++                :
++                : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [LDC] "r"(LDC),
++                  [BlockCountK] "r"(BlockCountK), [C] "r"(CPtr)
++                : "cc", "t0", "t1", "t2", "t3", "a1", "a2", "a3", "a4", "f1", "f2", "f3", "f4", "s1", "s2", "s3", "s4",
++                  "s5", "s6");
++        }
++}
++
++static void k1_ime_m4_mode4(size_t          BlkLen,
++                                                const uint8_t * QuantA,
++                                                const uint8_t * QuantBData,
++                                                float *         C,
++                                                size_t          CountN,
++                                                size_t          BlockCountK,
++                                                const size_t    ldc) {
++    const size_t INNER = BlkLen / 16;
++    size_t LDC = ldc * sizeof(float);
++    float tmp[4 * 16];
++
++        for (size_t n = 0; n < CountN; n += 16) {
++            size_t    NBLKS         = (CountN - n) > 16 ? 16 : CountN - n;
++            uint8_t * QuantBDataPtr = (uint8_t *) QuantBData +             //
++                                      n * BlockCountK * BlkLen / 2 +       // b data
++                                      n * BlockCountK * sizeof(_Float16);  // scale
++            float * CPtr = C + n;
++            if (NBLKS < 16) {
++                CPtr = tmp;
++                LDC  = 16 * sizeof(float);
++            }
++
++            __asm__ volatile(
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v24, v24, v24               \n\t"
++                "addi               t3, %[BlockCountK], 0       \n\t"
++                "addi               a1, %[A], 0                 \n\t"
++                "addi               s1, %[B], 0                 \n\t"
++                "BLOCK_COUNTK_LOOP%=:                           \n\t"
++                "addi               s5, s1, 0                   \n\t"
++                "addi               s1, s5, 32                  \n\t"
++                "addi               s2, s1, 32                  \n\t"
++                "addi               s3, s1, 32*2                \n\t"
++                "addi               s4, s1, 32*3                \n\t"
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v16, v16, v16               \n\t"
++                // load a scale
++                "addi s7, a1, 0                               \n\t"
++                "addi               a1, a1, 16                  \n\t"
++                "addi               t2, %[INNER], 0             \n\t"
++                "BLOCK_INNER_LOOP%=:                          \n\t"
++                "vsetvli t0, zero, e8, m1                     \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++                "addi t2, t2, -1                              \n\t"
++                "bnez t2, BLOCK_INNER_LOOP%=                  \n\t"
++
++                "vsetvli t0, zero, e16, m1                    \n\t"
++                "vle16.v v2, (s5)                             \n\t"
++                "vfwcvt.f.f.v v4, v2                          \n\t"
++                "vsetvli t0, zero, e32, mf2                   \n\t"
++                "vle32.v v0, (s7)                             \n\t"
++                "vsetvli t0, zero, e32, m2                    \n\t"
++                "vid.v v2                                     \n\t"
++                "vsrl.vi v2, v2, 2                            \n\t"
++                "vrgather.vv v6, v0, v2                       \n\t"
++                "vid.v v2                                     \n\t"
++                "vand.vi v2, v2, 3                            \n\t"
++                "vrgather.vv v8, v4, v2                       \n\t"
++                "vfmul.vv v8, v8, v6                          \n\t"
++                "vadd.vi v2, v2, 4                            \n\t"
++                "vrgather.vv v10, v4, v2                      \n\t"
++                "vfmul.vv v10, v10, v6                        \n\t"
++                "vadd.vi v2, v2, 4                            \n\t"
++                "vrgather.vv v12, v4, v2                      \n\t"
++                "vfmul.vv v12, v12, v6                        \n\t"
++                "vadd.vi v2, v2, 4                            \n\t"
++                "vrgather.vv v14, v4, v2                      \n\t"
++                "vfmul.vv v14, v14, v6                        \n\t"
++
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vfcvt.f.x.v        v16, v16                    \n\t"
++                "vfmacc.vv          v24, v16, v8                \n\t"
++                "addi               t3, t3, -1                  \n\t"
++                "bnez               t3, BLOCK_COUNTK_LOOP%=     \n\t"
++                "RESULT_SAVE%=:                                 \n\t"
++
++                SAVE_RESULT_4x16
++
++                :
++                : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [LDC] "r"(LDC),
++                  [BlockCountK] "r"(BlockCountK), [C] "r"(CPtr)
++                : "cc", "t0", "t1", "t2", "t3", "a1", "a2", "a3", "a4", "f1", "f2", "f3", "f4", "s1", "s2", "s3", "s4",
++                  "s5", "s6", "s7");
++        }
++}
++
++static void k1_ime_m4_mode5(size_t          BlkLen,
++                                                const uint8_t * QuantA,
++                                                const uint8_t * QuantBData,
++                                                float *         C,
++                                                size_t          CountN,
++                                                size_t          BlockCountK,
++                                                const size_t    ldc) {
++    const size_t INNER = BlkLen / 16;
++    size_t LDC = ldc * sizeof(float);
++    float tmp[4 * 16];
++
++        for (size_t n = 0; n < CountN; n += 16) {
++            size_t    NBLKS         = (CountN - n) > 16 ? 16 : CountN - n;
++            uint8_t * QuantBDataPtr = (uint8_t *) QuantBData +             //
++                                      n * BlockCountK * BlkLen / 2 +       // b data
++                                      n * BlockCountK * sizeof(_Float16);  // scale
++            float * CPtr = C + n;
++            if (NBLKS < 16) {
++                CPtr = tmp;
++                LDC  = 16 * sizeof(float);
++            }
++
++            __asm__ volatile(
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v24, v24, v24               \n\t"
++                "addi               t3, %[BlockCountK], 0       \n\t"
++                "addi               a1, %[A], 0                 \n\t"
++                "addi               s1, %[B], 0                 \n\t"
++                "BLOCK_COUNTK_LOOP%=:                           \n\t"
++                "addi               s5, s1, 0                   \n\t"
++                "addi               s1, s5, 32                  \n\t"
++                "addi               s2, s1, 32                  \n\t"
++                "addi               s3, s1, 32*2                \n\t"
++                "addi               s4, s1, 32*3                \n\t"
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vxor.vv            v16, v16, v16               \n\t"
++                // load a scale
++                "addi s7, a1, 0                               \n\t"
++                "addi               a1, a1, 16                  \n\t"
++                "addi               t2, %[INNER], 0             \n\t"
++                "vsetvli t0, zero, e8, m1                     \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++                "vle8.v v6, (s1)                              \n\t"
++                "addi s1, s1, 128                             \n\t"
++                "vle8.v v7, (s2)                              \n\t"
++                "addi s2, s2, 128                             \n\t"
++                "vle8.v v8, (s3)                              \n\t"
++                "addi s3, s3, 128                             \n\t"
++                "vle8.v v9, (s4)                              \n\t"
++                "addi s4, s4, 128                             \n\t"
++                "vand.vi v2, v6, 15                           \n\t"
++                "vand.vi v3, v7, 15                           \n\t"
++                "vand.vi v4, v8, 15                           \n\t"
++                "vand.vi v5, v9, 15                           \n\t"
++                "vsrl.vi v6, v6, 4                            \n\t"
++                "vsrl.vi v7, v7, 4                            \n\t"
++                "vsrl.vi v8, v8, 4                            \n\t"
++                "vsrl.vi v9, v9, 4                            \n\t"
++                "vle8.v v10, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vle8.v v11, (a1)                             \n\t"
++                "addi a1, a1, 32                              \n\t"
++                "vadd.vi v2, v2, -8                           \n\t"
++                "vadd.vi v3, v3, -8                           \n\t"
++                "vadd.vi v4, v4, -8                           \n\t"
++                "vadd.vi v5, v5, -8                           \n\t"
++                "vadd.vi v6, v6, -8                           \n\t"
++                "vadd.vi v7, v7, -8                           \n\t"
++                "vadd.vi v8, v8, -8                           \n\t"
++                "vadd.vi v9, v9, -8                           \n\t"
++                "vmadot v16, v10, v2                          \n\t"
++                "vmadot v18, v10, v3                          \n\t"
++                "vmadot v20, v10, v4                          \n\t"
++                "vmadot v22, v10, v5                          \n\t"
++                "vmadot v16, v11, v6                          \n\t"
++                "vmadot v18, v11, v7                          \n\t"
++                "vmadot v20, v11, v8                          \n\t"
++                "vmadot v22, v11, v9                          \n\t"
++
++                "vsetvli t0, zero, e16, m1                    \n\t"
++                "vle16.v v2, (s5)                             \n\t"
++                "vfwcvt.f.f.v v4, v2                          \n\t"
++                "vsetvli t0, zero, e32, mf2                   \n\t"
++                "vle32.v v0, (s7)                             \n\t"
++                "vsetvli t0, zero, e32, m2                    \n\t"
++                "vid.v v2                                     \n\t"
++                "vsrl.vi v2, v2, 2                            \n\t"
++                "vrgather.vv v6, v0, v2                       \n\t"
++                "vid.v v2                                     \n\t"
++                "vand.vi v2, v2, 3                            \n\t"
++                "vrgather.vv v8, v4, v2                       \n\t"
++                "vfmul.vv v8, v8, v6                          \n\t"
++                "vadd.vi v2, v2, 4                            \n\t"
++                "vrgather.vv v10, v4, v2                      \n\t"
++                "vfmul.vv v10, v10, v6                        \n\t"
++                "vadd.vi v2, v2, 4                            \n\t"
++                "vrgather.vv v12, v4, v2                      \n\t"
++                "vfmul.vv v12, v12, v6                        \n\t"
++                "vadd.vi v2, v2, 4                            \n\t"
++                "vrgather.vv v14, v4, v2                      \n\t"
++                "vfmul.vv v14, v14, v6                        \n\t"
++
++                "vsetvli            t0, zero, e32, m8           \n\t"
++                "vfcvt.f.x.v        v16, v16                    \n\t"
++                "vfmacc.vv          v24, v16, v8                \n\t"
++                "addi               t3, t3, -1                  \n\t"
++                "bnez               t3, BLOCK_COUNTK_LOOP%=     \n\t"
++                "RESULT_SAVE%=:                                 \n\t"
++
++                SAVE_RESULT_4x16
++
++                :
++                : [INNER] "r"(INNER), [A] "r"(QuantA), [B] "r"(QuantBDataPtr), [LDC] "r"(LDC),
++                  [BlockCountK] "r"(BlockCountK), [C] "r"(CPtr)
++                : "cc", "t0", "t1", "t2", "t3", "a1", "a2", "a3", "a4", "f1", "f2", "f3", "f4", "s1", "s2", "s3", "s4",
++                  "s5", "s6", "s7");
++        }
+ }
+ 
+ template <bool HasZeroPoint>
+@@ -1248,7 +1902,7 @@
+ }  // namespace
+ 
+ namespace ime1 {
+-size_t gemm_kernel_i8i4(size_t          blk_len,
++static size_t k1_original_gemm_kernel_i8i4(size_t          blk_len,
+                         const uint8_t * quant_a_ptr,
+                         const uint8_t * quant_b_data,
+                         const uint8_t * quant_b_zp,
+@@ -1278,6 +1932,49 @@
+     }
+ }
+ 
++extern "C" size_t spine_k1_ime_m4_test(int mode, size_t          blk_len,
++                        const uint8_t * quant_a_ptr,
++                        const uint8_t * quant_b_data,
++                        const uint8_t * quant_b_zp,
++                        float *         c_ptr,
++                        size_t          count_m,
++                        size_t          count_n,
++                        size_t          k_blks,
++                        size_t          ldc) {
++    if (blk_len == 32 && count_m >= 4 && count_n > 0 && count_n % 16 == 0 && quant_b_zp == nullptr && mode > 0 && mode <= 5) {
++        if (mode == 1) k1_ime_m4_mode1(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
++        if (mode == 2) k1_ime_m4_mode2(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
++        if (mode == 3) k1_ime_m4_mode3(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
++        if (mode == 4) k1_ime_m4_mode4(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
++        if (mode == 5) k1_ime_m4_mode5(blk_len, quant_a_ptr, quant_b_data, c_ptr, count_n, k_blks, ldc);
++        return 4;
++    }
++    return k1_original_gemm_kernel_i8i4(blk_len, quant_a_ptr, quant_b_data, quant_b_zp, c_ptr, count_m, count_n, k_blks, ldc);
++}
++
++size_t gemm_kernel_i8i4(size_t          blk_len,
++                        const uint8_t * quant_a_ptr,
++                        const uint8_t * quant_b_data,
++                        const uint8_t * quant_b_zp,
++                        float *         c_ptr,
++                        size_t          count_m,
++                        size_t          count_n,
++                        size_t          k_blks,
++                        size_t          ldc) {
++    static const int mode = [] {
++        const char * value = getenv("SPINE_IME_M4_SCHEDULE");
++        return value && value[0] >= '1' && value[0] <= '5' && value[1] == 0 ? value[0] - '0' : 0;
++    }();
++    if (blk_len == 32 && count_m >= 4 && count_n > 0 && count_n % 16 == 0 && quant_b_zp == nullptr) {
++        static const bool logged = [] {
++            fprintf(stderr, "SPINE_IME_M4_SCHEDULE: mode=%d Q4_0 M4 K32 enabled\n", mode);
++            return true;
++        }();
++        (void) logged;
++    }
++    return spine_k1_ime_m4_test(mode, blk_len, quant_a_ptr, quant_b_data, quant_b_zp, c_ptr, count_m, count_n, k_blks, ldc);
++}
++
+ size_t gemm_kernel_i8i8(size_t          blk_len,
+                         const uint8_t * quant_a_ptr,
+                         const uint8_t * quant_b_data,
