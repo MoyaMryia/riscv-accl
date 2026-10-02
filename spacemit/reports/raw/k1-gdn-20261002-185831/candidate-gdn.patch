@@ -1,0 +1,28 @@
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -9,6 +9,9 @@
+ #include "vec.h"
+ 
+ #include <algorithm>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
+ #include <cfloat>
+ #include <cmath>
+ 
+@@ -10896,7 +10899,14 @@
+             // so row j of s_out = column j of S (contiguous access)
+ 
+ #if defined(__riscv_v_intrinsic)
+-            if (!kda && K == 1 && n_tokens == 1 && !(getenv("SPINE_GDN_RVV") != nullptr && getenv("SPINE_GDN_RVV")[0] == "0"[0])) {
++            if (!kda && K == 1 && (n_tokens == 1 || (getenv("SPINE_GDN_PREFILL") != nullptr && strcmp(getenv("SPINE_GDN_PREFILL"), "1") == 0)) && !(getenv("SPINE_GDN_RVV") != nullptr && getenv("SPINE_GDN_RVV")[0] == "0"[0])) {
++                if (n_tokens > 1) {
++                    static const bool logged = [] {
++                        fprintf(stderr, "SPINE_GDN_PREFILL: scalar-gate K1 RVV fusion enabled\n");
++                        return true;
++                    }();
++                    (void) logged;
++                }
+                 ggml_gdn_decode_step_rvv(s_out, k_d, v_d, q_d, expf(g_d[0]), beta_val, scale, S_v, attn_data);
+             } else
+ #endif
