@@ -54,7 +54,17 @@ Collector: `k1_gdn_collect_k1-gdn-20261002-185831`.
 
 The isolated build completed and the 158-case numerical gate passed with
 bitwise-equal attention/state and intact fallbacks/input/guards. Operator
-timing is running. The controller stages model timing only if that qualifies.
+timing completed with 48 records and qualified all four shapes:
+
+| Value heads | Tokens | Mean reduction | Control range |
+| --- | --- | --- | --- |
+| 16 | 8 | 24.28% | 2.83% |
+| 16 | 32 | 26.45% | 2.65% |
+| 32 | 8 | 26.14% | 1.53% |
+| 32 | 32 | 27.82% | 1.27% |
+
+This is an operator graph result. The cold 2B/512 model stage is now running
+in the same tmux job; no full-model gain or adoption decision is established.
 It has a 45-minute limit after the shared board lock; the collector verifies
 archive and individual artifact hashes. No recurrent speedup is established
 yet. Read the run's `phase`, logs and final `summary.json` for progress.

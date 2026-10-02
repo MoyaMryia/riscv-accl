@@ -52,7 +52,7 @@ for live progress. A queued experiment is not a measured optimization.
 | Prefill profile, `k1-profile-20261002-154340` | Completed in 8.51 minutes; collection recovered | Three verified IME GEMM labels: 43-44% self CPU; visible recurrent/attention: 7%/3.3%. CPU shares are not wall-time or gain estimates. |
 | IME scheduling, `k1-ime-20261002-183608` | Completed in 4.20 minutes; no candidate qualified | 288 numerical cases and 256 operator arms pass. Unrolling averages +0.67%; scheduled loads regress. Model stages skipped. |
 | IME scale gathering, `k1-ime-20261002-184503` | Completed in 3.98 minutes; no candidate qualified | All five variants pass 288 numerical cases; gathering regresses seven of eight operator shapes. Model stages skipped. |
-| Recurrent prefill fusion, `k1-gdn-20261002-185831` | Operator timing in tmux | Isolated build and 158 attention/state/fallback numerical cases pass bit for bit. No speed claim yet. |
+| Recurrent prefill fusion, `k1-gdn-20261002-185831` | Cold 2B/512 model stage in tmux | 158 attention/state/fallback cases pass bit for bit; all four operator shapes qualify with 24.28-27.82% reductions. Full-model speed remains pending. |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.
