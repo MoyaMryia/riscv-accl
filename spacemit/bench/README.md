@@ -454,3 +454,26 @@ python3 spacemit/bench/start-k1-ime-test.py --collect-only \
 Local recipe/metadata checks: `python3 spacemit/bench/test-k1-ime-test.py`.
 See the [IME experiment](../reports/2026-10-02-ime-scheduling.md) for dispatch
 limits, the initial harness correction and the evidence needed for adoption.
+
+## Recurrent prefill fusion screen
+
+```bash
+python3 spacemit/bench/start-k1-gdn-test.py
+```
+
+This builds an isolated CPU library with an opt-in multi-token dispatch to the
+existing scalar-gate K1 RVV step. A 158-case numerical gate compares attention
+and recurrent states, including unchanged vector-gate/snapshot/external-state
+fallbacks. Operator timing uses actual recurrent model dimensions, six balanced
+AB/BA blocks and four persistent workers on cores 0-3. Eligible candidates
+advance through the same cold 2B/512, 2B/2k and 4B/1k model gates as the IME
+screen. Board execution and workstation collection use tmux, with a 45-minute
+limit after lock acquisition. Recover collection with:
+
+```bash
+python3 spacemit/bench/start-k1-gdn-test.py --collect-only \
+  --run-dir /absolute/path/to/existing/gdn-run
+```
+
+See the [recurrent experiment](../reports/2026-10-02-recurrent-prefill.md) for
+the narrow dispatch, state correctness checks and adoption boundary.

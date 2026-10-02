@@ -101,5 +101,20 @@ This is an engineering screen, not a significance test. The job has a
 the compressed archive and individual artifact hashes. Long-context and
 complete-answer confirmation remain necessary before adoption.
 
-No candidate has qualified for model testing yet. See the new run's `phase` and final
-`summary.json` for progress and results.
+## Completed scale-gather screen
+
+Run `k1-ime-20261002-184503` completed with exit 0 in **238.60 seconds**.
+All five variants passed the 288-case numerical gate and scalar reference.
+The new two variants produced 144 balanced operator records. Neither qualified;
+model stages were skipped.
+
+| Mode | Mean reduction across eight shapes | Range across shapes | Clear regressions |
+| --- | --- | --- | --- |
+| Gathered scales, 4 | -23.62% | -30.73% to -2.43% | 7/8 |
+| Gathering plus unrolling, 5 | -23.53% | -32.18% to -2.10% | 7/8 |
+
+See [summary](raw/k1-ime-20261002-184503/summary.json) and
+[raw timing arms](raw/k1-ime-20261002-184503/operator.jsonl).
+Reducing source instruction/load counts did not improve these measurements.
+Keep the original M4 kernel. The follow-up target is the existing
+[recurrent RVV step](2026-10-02-recurrent-prefill.md).
