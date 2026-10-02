@@ -55,7 +55,7 @@ def collect(root):
     # Compress repeated stack text before transferring it over the board link.
     code = ('import hashlib,json,sys,tarfile; from pathlib import Path; '
             'p=Path(sys.argv[1]); files=[f for f in p.iterdir() if f.is_file() and '
-            '(f.suffix in (".json", ".log", ".md", ".txt", ".err", ".data") '
+            '(f.suffix in (".json", ".jsonl", ".log", ".md", ".txt", ".err", ".data", ".cpp", ".patch") '
             'or f.name in ("phase", "exit-status"))]; '
             'out=p/"profile-artifacts.tar.gz"; temp=p/"profile-artifacts.tar.gz.tmp"; '
             't=tarfile.open(temp,"w:gz",compresslevel=1); '
@@ -76,7 +76,7 @@ def collect(root):
     print(f'Profile exit {status}; results {root}', flush=True)
 
 
-def start(root, evidence):
+def start(root, evidence, files=FILES, board_script='run-k1-prefill-profile-board.sh', session_prefix='k1_profile_'):
     root.mkdir(parents=True, exist_ok=False)
     if (evidence / 'exit-status').read_text().strip() != '0':
         raise ValueError('requires completed fast-test provenance')
@@ -87,15 +87,15 @@ def start(root, evidence):
     target = home + '/Projects/riscv-accl-bench-2026-09-27/' + root.name
     (root / 'expected-provenance.json').write_text(json.dumps(expected, indent=2) + '\n')
     launch.remote(board, ['mkdir', target])
-    subprocess.run(['scp', *[str(HERE / n) for n in FILES], str(root / 'expected-provenance.json'),
+    subprocess.run(['scp', *[str(HERE / n) for n in files], str(root / 'expected-provenance.json'),
                     f'{board}:{target}/'], check=True, timeout=90)
     run = {'board': board, 'remote_root': target, 'evidence': str(evidence),
-           'board_session': 'k1_profile_' + root.name, 'tokens': 2048,
-           'code_sha256': {n: hashlib.sha256((HERE / n).read_bytes()).hexdigest() for n in FILES}}
+           'board_session': session_prefix + root.name,
+           'code_sha256': {n: hashlib.sha256((HERE / n).read_bytes()).hexdigest() for n in files}}
     (root / 'run.json').write_text(json.dumps(run, indent=2) + '\n')
     launch.remote(board, ['tmux', 'new-session', '-d', '-s', run['board_session'],
-                         shlex.join(['bash', target + '/run-k1-prefill-profile-board.sh', target])])
-    session = 'k1_profile_collect_' + root.name
+                         shlex.join(['bash', target + '/' + board_script, target])])
+    session = session_prefix + 'collect_' + root.name
     invocation = shlex.join([sys.executable, str(Path(__file__).resolve()), '--collect-only', '--run-dir', str(root)])
     invocation += ' >> ' + shlex.quote(str(root / 'collector.log')) + ' 2>&1'
     subprocess.run(['tmux', 'new-session', '-d', '-s', session, invocation], check=True)
