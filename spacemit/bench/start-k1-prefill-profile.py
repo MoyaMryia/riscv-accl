@@ -9,6 +9,7 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
+import tarfile
 import time
 from zoneinfo import ZoneInfo
 
@@ -16,6 +17,28 @@ HERE = Path(__file__).resolve().parent
 FILES = ('profile-k1-prefill.py', 'run-k1-prefill-profile-board.sh', 'bench-lifecycle.py', 'k1-fast-test.py')
 spec = importlib.util.spec_from_file_location('launch', HERE / 'start-k1-fast-test.py')
 launch = importlib.util.module_from_spec(spec); spec.loader.exec_module(launch)
+
+
+def unpack_artifacts(archive, root, receipt):
+    expected = receipt['files_sha256']
+    with tarfile.open(archive, 'r:gz') as bundle:
+        members = bundle.getmembers()
+        names = [m.name for m in members]
+        if len(set(names)) != len(names) or set(names) != set(expected):
+            raise ValueError('archive file list differs from receipt')
+        if any(not m.isfile() or Path(m.name).name != m.name or m.size > 512 * 1024 * 1024 for m in members):
+            raise ValueError('unsafe artifact archive member')
+        if sum(m.size for m in members) > 1024 * 1024 * 1024:
+            raise ValueError('artifact archive too large')
+        for member in members:
+            temporary = root / (member.name + '.download')
+            h = hashlib.sha256()
+            with bundle.extractfile(member) as source, temporary.open('wb') as output:
+                for chunk in iter(lambda: source.read(4 * 1024 * 1024), b''):
+                    output.write(chunk); h.update(chunk)
+            if h.hexdigest() != expected[member.name]:
+                temporary.unlink(); raise ValueError('artifact checksum mismatch')
+            temporary.replace(root / member.name)
 
 
 def collect(root):
@@ -29,14 +52,26 @@ def collect(root):
             time.sleep(60)
     else:
         raise TimeoutError('collector deadline exceeded')
-    names = json.loads(launch.remote(board, ['python3', '-c',
-        'import json,sys; from pathlib import Path; print(json.dumps([p.name for p in Path(sys.argv[1]).iterdir() '
-        'if p.is_file() and (p.suffix in (".json", ".log", ".md", ".txt", ".err", ".data") '
-        'or p.name in ("phase", "exit-status"))]))', target]))
-    for name in names:
-        if Path(name).name != name:
-            raise ValueError('invalid artifact name')
-        subprocess.run(['scp', f'{board}:{target}/{name}', str(root)], check=True, timeout=180)
+    # Compress repeated stack text before transferring it over the board link.
+    code = ('import hashlib,json,sys,tarfile; from pathlib import Path; '
+            'p=Path(sys.argv[1]); files=[f for f in p.iterdir() if f.is_file() and '
+            '(f.suffix in (".json", ".log", ".md", ".txt", ".err", ".data") '
+            'or f.name in ("phase", "exit-status"))]; '
+            'out=p/"profile-artifacts.tar.gz"; temp=p/"profile-artifacts.tar.gz.tmp"; '
+            't=tarfile.open(temp,"w:gz",compresslevel=1); '
+            '[t.add(f,arcname=f.name,recursive=False) for f in files]; t.close(); temp.replace(out); '
+            'print(json.dumps({"archive_sha256":hashlib.sha256(out.read_bytes()).hexdigest(), '
+            '"archive_bytes":out.stat().st_size,"files_sha256":'
+            '{f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in files}}))')
+    receipt = json.loads(launch.remote(board, ['python3', '-c', code, target]))
+    archive = root / 'profile-artifacts.tar.gz'
+    temporary = root / 'profile-artifacts.tar.gz.download'
+    subprocess.run(['scp', f'{board}:{target}/{archive.name}', str(temporary)], check=True, timeout=900)
+    if hashlib.sha256(temporary.read_bytes()).hexdigest() != receipt['archive_sha256']:
+        raise ValueError('archive checksum mismatch')
+    temporary.replace(archive)
+    unpack_artifacts(archive, root, receipt)
+    (root / 'collection-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
     (root / 'exit-status').write_text(status + '\n')
     print(f'Profile exit {status}; results {root}', flush=True)
 
