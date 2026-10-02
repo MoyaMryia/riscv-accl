@@ -52,7 +52,7 @@ for live progress. A queued experiment is not a measured optimization.
 | Prefill profile, `k1-profile-20261002-154340` | Completed in 8.51 minutes; collection recovered | Three verified IME GEMM labels: 43-44% self CPU; visible recurrent/attention: 7%/3.3%. CPU shares are not wall-time or gain estimates. |
 | IME scheduling, `k1-ime-20261002-183608` | Completed in 4.20 minutes; no candidate qualified | 288 numerical cases and 256 operator arms pass. Unrolling averages +0.67%; scheduled loads regress. Model stages skipped. |
 | IME scale gathering, `k1-ime-20261002-184503` | Completed in 3.98 minutes; no candidate qualified | All five variants pass 288 numerical cases; gathering regresses seven of eight operator shapes. Model stages skipped. |
-| Recurrent prefill fusion, `k1-gdn-20261002-185831` | Cold 2B/512 model stage in tmux | 158 attention/state/fallback cases pass bit for bit; all four operator shapes qualify with 24.28-27.82% reductions. Full-model speed remains pending. |
+| Recurrent prefill fusion, `k1-gdn-20261002-185831` | Completed in 7.36 minutes; inconclusive | 158 numerical cases pass; operator time falls 24.28-27.82%. Cold 2B/512 prefill falls 2.38% (22.06 to 21.54 s), below the 3% gate. Longer model stages skipped. |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.
@@ -70,9 +70,10 @@ pass the complete-answer quality gate.
 
 ## Next work
 
-1. Finish the isolated recurrent prefill screen. Advance only candidates clearing
-   representative operator and cold model gates; require longer-context and
-   complete-answer confirmation before adoption.
+1. Keep recurrent prefill fusion opt-in: its small 2B/512 pilot gain did not
+   clear the preset model gate. Establish a separate replication protocol if
+   this size of benefit warrants adoption; longer-context and complete-answer
+   confirmation remain necessary.
 2. Keep layout 0; the fast screen did not qualify either compact layout. Do not
    run an 8k layout comparison or repeat the quality matrix for this result.
 3. Review the low-scoring 2B/4k cache answer separately from kernel timing.

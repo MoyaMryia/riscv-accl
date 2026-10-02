@@ -13,7 +13,7 @@ Historical queue statements describe the report's date.
 | [Shared document cache](2026-09-29-shared-document-cache.md) | Changed-question tests; truncated-answer judge marks are not complete-answer quality evidence |
 | [October 2 profile](2026-10-02-prefill-profile.md) | Completed cold-prefill profile, resolved IME GEMM hotspots and collection recovery |
 | [IME scheduling](2026-10-02-ime-scheduling.md) | Five variants pass native checks; neither operator screen qualifies for model testing |
-| [Recurrent prefill](2026-10-02-recurrent-prefill.md) | Opt-in reuse of the existing RVV step for multi-token input; staged screen running |
+| [Recurrent prefill](2026-10-02-recurrent-prefill.md) | Completed: 158 numerical cases pass; operator time falls 24-28%, 2B/512 prefill falls 2.38%, below the 3% gate |
 | [October 1 update](2026-10-01-fast-method.md) | Completed layout/quality evidence and implementation of the staged fast method |
 | [Code audit](2026-09-30-code-optimization-audit.md) | Source hypotheses and provenance; compact layout is a later experiment |
 | [PR #1 review](2026-09-30-pr1-review.md) | Historical findings; PR merged and local fixes completed |

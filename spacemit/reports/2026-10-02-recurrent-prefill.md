@@ -46,7 +46,7 @@ token, matching outputs and the selected candidate activation. Settings stay
 direct, four threads, batch/microbatch 32, F16 KV, wide attention and layout 0.
 Long-context and complete-answer checks remain necessary before adoption.
 
-## Active run
+## Completed run
 
 Run: `k1-gdn-20261002-185831`.
 Board tmux: `k1_gdn_k1-gdn-20261002-185831`.
@@ -63,8 +63,41 @@ timing completed with 48 records and qualified all four shapes:
 | 32 | 8 | 26.14% | 1.53% |
 | 32 | 32 | 27.82% | 1.27% |
 
-This is an operator graph result. The cold 2B/512 model stage is now running
-in the same tmux job; no full-model gain or adoption decision is established.
-It has a 45-minute limit after the shared board lock; the collector verifies
-archive and individual artifact hashes. No recurrent speedup is established
-yet. Read the run's `phase`, logs and final `summary.json` for progress.
+The run completed with **exit 0** in **441.59 seconds (7.36 minutes)**.
+The collector completed; the archive and all 29 collected artifact hashes
+were verified locally. The final screen status is **inconclusive**, because
+the model gain fell below the preset 3% promotion threshold.
+
+### Full-model result
+
+Four balanced cold 2B/512 requests produced the following prefill timings:
+
+| Arm | Individual prompt times | Mean | Prompt throughput |
+| --- | --- | --- | --- |
+| Control | 22.064222 s, 22.060098 s | 22.062160 s | 23.207 tokens/s |
+| Recurrent fusion | 21.560296 s, 21.513857 s | 21.537077 s | 23.773 tokens/s |
+
+The observed prompt-time reduction is **2.380%**, or **0.525 seconds** per
+512-token prompt. Throughput rises 2.44%. Mean first-token time similarly
+falls from 22.066584 s to 21.541556 s. Control prompt-time range was 0.0187%.
+All four requests proved zero cache reuse and matching prompt token hashes;
+the generated token and output hashes matched between arms.
+
+This is a small positive pilot result, not a statistically established or
+generalized model speedup. There are only two launches per arm, and each
+request generates one token. The preset gate required a reduction above both
+3% and the full control range, so it did not advance to 2B/2k or 4B/1k.
+No long-context, 4B full-model, decode or complete-answer claim follows.
+
+Keep this candidate opt-in. The 24-28% operator reductions apply to the
+recurrent operator; most full-model work remains outside that operator.
+A separate small-effect replication would be needed to establish whether
+the 2.38% model reduction is worth adoption. The current run does not justify
+lowering its gate after seeing the result.
+
+Evidence: [summary](raw/k1-gdn-20261002-185831/summary.json),
+[numerical gate](raw/k1-gdn-20261002-185831/numeric.log),
+[operator arms](raw/k1-gdn-20261002-185831/operator.jsonl),
+[control request](raw/k1-gdn-20261002-185831/2B-512-q0-pass1.jsonl),
+[candidate request](raw/k1-gdn-20261002-185831/2B-512-q1-pass2.jsonl), and
+[collection receipt](raw/k1-gdn-20261002-185831/collection-receipt.json).
