@@ -1,6 +1,6 @@
 # Completed pilots and applied fast test method
 
-Status snapshot: 2026-10-01, approximately 22:52 Asia/Singapore.
+Completion update: 2026-10-02, Asia/Singapore.
 Read live `phase` and final `exit-status` before treating a run as completed.
 
 ## Completed evidence
@@ -46,14 +46,18 @@ control block; warmups and calibration also consume time.
 The corrected run is `k1-fast-20261001-224957`, using a **300-second operator
 budget**, with all shapes and six blocks retained. Board session:
 `k1_fast_k1-fast-20261001-224957`; local collector:
-`k1_fast_collect_k1-fast-20261001-224957`. The corrected run has also passed all 241 numerical cases per layout and is
-in operator timing at this snapshot.
+`k1_fast_collect_k1-fast-20261001-224957`. The corrected run completed at 22:58:26 on October 1 with exit 0 and status
+**inconclusive**. All 241 numerical cases/layout passed. Operator timing took
+136.21 seconds for 216 records; the model screen took 214.50 seconds. Q16/Q32
+prompt-time reductions were 0.32%/0.53%, below the advancement threshold.
+Longer model/quality stages were skipped.
 
 Results directory:
 `spacemit/reports/raw/k1-fast-20261001-224957`.
 The model screen has a separate 45-minute upper bound. Build, full-file
-provenance hashing and lock waiting are additional costs; a typical completion
-time has not yet been measured. A completed inconclusive screen is exit 0,
+provenance hashing and lock waiting are additional costs; this screen completed
+in 507.14 seconds (8.45 minutes) for this inconclusive screen, including
+preparation; this is one observed duration, not a general estimate. A completed inconclusive screen is exit 0,
 which means the protocol completed, not that a candidate is faster.
 
 ## Next decision
@@ -63,3 +67,5 @@ If the result is inconclusive, avoid a costly 8k layout comparison and profile
 remaining recurrent/prefill work before changing another operator. Treat
 recurrent fusion and shared K/V packing as separate candidates with their own
 correctness cases and source fingerprints.
+
+The next measured step is the [October 2 cold-prefill profile](2026-10-02-prefill-profile.md).

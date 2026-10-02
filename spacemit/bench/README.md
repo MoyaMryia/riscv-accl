@@ -386,3 +386,38 @@ measurements do not establish decode throughput or answer quality. Use the
 existing grouped quality runner for complete-answer validation.
 
 Local gate checks: `python3 spacemit/bench/test-k1-fast-test.py`.
+
+
+## Cold-prefill profiling
+
+Profile the existing verified binary with one cold 2k request per model:
+
+```bash
+python3 spacemit/bench/start-k1-prefill-profile.py
+```
+
+Board and workstation collection run in tmux under the shared benchmark lock.
+The profiler verifies the completed fast screen's source/model/runtime hashes,
+uses layout 0, and attaches after startup/tokenization. Acknowledged perf
+commands bracket the request. It uses `cpu-clock:u` at 199 Hz and frame-pointer
+stacks: hardware cycle sampling and DWARF unwinding did not work on this board.
+
+Every request must complete with one output token and prove zero prefix reuse.
+Each model must provide at least 100 decoded samples. Reports contain disjoint
+period-weighted CPU shares, top self symbols, frame coverage, unknown leaves,
+visible attention-copy samples and selected assembly annotations. Missing
+parents leave work unattributed. Inlined K transpose is not separated by the
+copy metric. These are CPU-time diagnostics, not wall-time shares or speedups.
+
+The controller has a 30-minute limit after lock acquisition. Final perf data,
+stack text, summaries and logs are collected automatically. To recover a
+collector, run the following in local tmux if profiling is still active:
+
+```bash
+python3 spacemit/bench/start-k1-prefill-profile.py --collect-only \
+  --run-dir /absolute/path/to/existing/profile
+```
+
+Local attribution checks: `python3 spacemit/bench/test-k1-prefill-profile.py`.
+See the [profiling protocol](../reports/2026-10-02-prefill-profile.md) for the
+measured tool limitations and decision boundaries.

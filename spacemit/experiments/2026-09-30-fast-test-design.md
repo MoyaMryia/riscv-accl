@@ -206,7 +206,8 @@ final summary, so the user can wait without an open blocking tool call.
 4. Five local gate tests and the existing fake-server slot regression passed.
    Native compilation and 241 concurrent numerical cases per layout passed.
    The first operator run exceeded its 90-second budget and failed. The corrected
-   run uses 300 seconds, preserving all shapes and blocks; model results are pending.
+   run completed all six blocks in 136.21 seconds and the model screen in 214.50
+   seconds. Q16/Q32 gains were 0.32%/0.53%, below threshold; total run 507.14 seconds.
 5. Model screens retain separate server launches because layout selection is
    cached per process. The current implementation does not keep a server loaded
    across arm switches. It reuses the isolated build and resident weight pages.
@@ -216,3 +217,5 @@ final summary, so the user can wait without an open blocking tool call.
 Related: [layout experiment](2026-09-30-k1-attention-layout.md),
 [code audit](../reports/2026-09-30-code-optimization-audit.md),
 [quality benchmark](../reports/2026-09-30-chat-quality-benchmark.md).
+
+Completed result: [October 2 update](../reports/2026-10-02-prefill-profile.md).

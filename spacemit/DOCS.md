@@ -1,6 +1,6 @@
 # Current documentation guide
 
-Last status check: 2026-10-01, approximately 22:52 Asia/Singapore.
+Last status check: 2026-10-02 Asia/Singapore.
 This is a dated snapshot. Read a run's `phase`, logs, and final exit status
 for live progress. A queued experiment is not a measured optimization.
 
@@ -16,6 +16,7 @@ for live progress. A queued experiment is not a measured optimization.
 | Complete-answer quality protocol and completed matrix | [Chat quality benchmark](reports/2026-09-30-chat-quality-benchmark.md) |
 | Compact attention layout code and completed pilot | [K1 layout experiment](experiments/2026-09-30-k1-attention-layout.md) |
 | Implemented staged developer test loop | [Fast-test design](experiments/2026-09-30-fast-test-design.md) |
+| Cold-prefill sampling and next bottleneck | [Profiling protocol](reports/2026-10-02-prefill-profile.md) |
 | Other candidates and source provenance | [Code audit](reports/2026-09-30-code-optimization-audit.md) |
 
 ## Implemented and measured
@@ -45,7 +46,8 @@ for live progress. A queued experiment is not a measured optimization.
 | --- | --- | --- |
 | Chat quality, `document-quality-20260930-full-v2` | Completed: 24/24 pairs verified and judged | 2B/4k requires review because one question scores 2/5 in both arms. Three descriptive pilot passes; no full-matrix pass. |
 | Compact layout, `k1-layout-20260930-153134` | Completed: 235 numerical cases/layout and 24 model requests pass | Q32 2k TTFT reductions: 0.89% on 2B, 1.98% on 4B. Small pilot effects; no adoption or 8k claim. |
-| Fast method, `k1-fast-20261001-224957` | Implemented; corrected screen running in tmux | First run passed 241 concurrent cases/layout but timed out in operator timing. Corrected budget is 300 seconds; model conclusions pending. |
+| Fast method, `k1-fast-20261001-224957` | Completed in 8.45 minutes; inconclusive | 241 concurrent cases/layout passed; 216 operator records; Q16/Q32 model gains 0.32%/0.53%, below threshold. Longer stages skipped. |
+| Prefill profile, `k1-profile-20261002-154340` | Running in board/local tmux | One cold 2k request/model, software CPU sampling, frame-pointer stacks. No bottleneck percentage claimed yet. |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.
@@ -63,12 +65,12 @@ pass the complete-answer quality gate.
 
 ## Next work
 
-1. Collect the corrected fast screen and inspect its completed stage gates.
-2. Confirm a qualifying layout at 8k before adoption; retain the control when
-   results are inconclusive. Do not rerun the full quality matrix per edit.
+1. Collect both cold-prefill profiles and inspect stack coverage and top symbols.
+2. Keep layout 0; the fast screen did not qualify either compact layout. Do not
+   run an 8k layout comparison or repeat the quality matrix for this result.
 3. Review the low-scoring 2B/4k cache answer separately from kernel timing.
-4. Profile remaining cold-prefill cost, then test eligible recurrent fusion
-   and K/V packing reuse as separate changes.
+4. Choose a measured bottleneck, then test eligible recurrent fusion or K/V
+   packing reuse as separate changes with representative correctness cases.
 
 ## Older documents
 
