@@ -1,0 +1,43 @@
+{
+  "status": "complete",
+  "scope": "Selected assembly labels resolved to enclosing ELF function; subset of total GEMM CPU samples.",
+  "elf_symbols_sha256": "5a1c748c4addf684d13f20cf557f27234ce7f97cf8f085e8c2f08cadf6d18db5",
+  "labels": {
+    "BLOCK_INNER_LOOP435": {
+      "address": "0x14747e",
+      "owner": "spacemit_kernels::ime1::gemm_kernel_i8i4(unsigned long, unsigned char const*, unsigned char const*, unsigned char const*, float*, unsigned long, unsigned long, unsigned long, unsigned long)",
+      "owner_start": "0x146a46",
+      "owner_end": "0x14786e"
+    },
+    "BLOCK_COUNTK_LOOP435": {
+      "address": "0x147450",
+      "owner": "spacemit_kernels::ime1::gemm_kernel_i8i4(unsigned long, unsigned char const*, unsigned char const*, unsigned char const*, float*, unsigned long, unsigned long, unsigned long, unsigned long)",
+      "owner_start": "0x146a46",
+      "owner_end": "0x14786e"
+    },
+    "RESULT_SAVE435": {
+      "address": "0x1475b2",
+      "owner": "spacemit_kernels::ime1::gemm_kernel_i8i4(unsigned long, unsigned char const*, unsigned char const*, unsigned char const*, float*, unsigned long, unsigned long, unsigned long, unsigned long)",
+      "owner_start": "0x146a46",
+      "owner_end": "0x14786e"
+    }
+  },
+  "models": {
+    "2B": {
+      "verified_gemm_labels_cpu_pct": 43.233433016946215,
+      "spert_sync_self_cpu_pct": 20.03423915398951,
+      "recurrent_visible_cpu_pct": 7.197806960516621,
+      "attention_visible_cpu_pct": 3.2332163134399514,
+      "multi_frame_samples_pct": 32.06345078663373
+    },
+    "4B": {
+      "verified_gemm_labels_cpu_pct": 44.08242361061485,
+      "spert_sync_self_cpu_pct": 20.032535635769023,
+      "recurrent_visible_cpu_pct": 7.462598731362419,
+      "attention_visible_cpu_pct": 3.3557103403631046,
+      "multi_frame_samples_pct": 31.12786000428764
+    }
+  },
+  "decision": "Investigate the existing IME int8/int4 GEMM loop first. Recurrent fusion is a separate secondary candidate. Do not prioritize K/V packing based on this capture.",
+  "limitations": "Sampled user CPU shares are not wall-time shares or achievable gains. Only about one third of samples have multiple frames; visible operator totals are lower bounds. Raw name-based matmul category misses local assembly labels."
+}

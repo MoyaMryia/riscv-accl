@@ -1,0 +1,896 @@
+ Percent |	Source code & Disassembly of libggml-cpu.so.0.16.0 for cpu-clock:u (12067 samples, percent: local period)
+-------------------------------------------------------------------------------------------------------------------------
+         :
+         :
+         :
+         : 3     Disassembly of section .text:
+         :
+         : 5     00000000000fdf12 <ggml_compute_forward_gated_delta_net>:
+         : 6     ggml_compute_forward_gated_delta_net():
+    0.00 :   fdf12:  ld      a5,152(a1)
+    0.00 :   fdf14:  addi    sp,sp,-672
+    0.00 :   fdf18:  sd      s11,568(sp)
+    0.00 :   fdf1c:  lw      a5,0(a5)
+    0.00 :   fdf1e:  auipc   s11,0x12c
+    0.00 :   fdf22:  ld      s11,1858(s11) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   fdf26:  sd      ra,664(sp)
+    0.00 :   fdf2a:  ld      a4,0(s11)
+    0.00 :   fdf2e:  sd      a4,520(sp)
+    0.00 :   fdf32:  li      a4,0
+    0.00 :   fdf34:  bnez    a5,fe6c0 <ggml_compute_forward_gated_delta_net+0x7ae>
+    0.00 :   fdf38:  ld      a5,168(a1)
+    0.00 :   fdf3a:  sd      s0,656(sp)
+    0.00 :   fdf3e:  sd      s3,632(sp)
+    0.00 :   fdf42:  ld      a4,24(a5)
+    0.00 :   fdf44:  ld      a5,40(a5)
+    0.00 :   fdf46:  sd      s5,616(sp)
+    0.00 :   fdf4a:  sd      s10,576(sp)
+    0.00 :   fdf4e:  mul     a2,a4,a5
+    0.01 :   fdf52:  mv      s5,a0
+    0.00 :   fdf54:  mv      s10,a1
+    0.00 :   fdf56:  mv      s0,a2
+    0.00 :   fdf58:  sd      a2,336(sp)
+    0.00 :   fdf5a:  jal     851f0 <ggml_is_numa@plt>
+    0.00 :   fdf5e:  lw      a1,4(s5)
+    0.00 :   fdf62:  li      a5,1
+    0.00 :   fdf64:  lw      s3,0(s5)
+    0.00 :   fdf68:  sd      a1,216(sp)
+    0.00 :   fdf6a:  beq     a1,a5,fdf8a <ggml_compute_forward_gated_delta_net+0x78>
+    0.00 :   fdf6e:  slliw   a5,a1,0x2
+    0.00 :   fdf72:  add     a4,s0,a5
+    0.00 :   fdf76:  addi    a4,a4,-1
+    0.00 :   fdf78:  div     a4,a4,a5
+    0.00 :   fdf7c:  add     a5,s0,a4
+    0.00 :   fdf80:  addi    a5,a5,-1
+    0.00 :   fdf82:  div     a5,a5,a4
+    0.00 :   fdf86:  bge     a5,a1,fe6b8 <ggml_compute_forward_gated_delta_net+0x7a6>
+    0.00 :   fdf8a:  beqz    s3,fe6ae <ggml_compute_forward_gated_delta_net+0x79c>
+    0.00 :   fdf8e:  ld      a0,24(s5)
+    0.00 :   fdf92:  jal     863a0 <ggml_barrier@plt>
+    0.00 :   fdf96:  ld      a4,216(sp)
+    0.00 :   fdf98:  ld      a5,336(sp)
+    0.00 :   fdf9a:  add     a5,a5,a4
+    0.00 :   fdf9c:  addi    a5,a5,-1
+    0.00 :   fdf9e:  div     a5,a5,a4
+    0.00 :   fdfa2:  sd      a5,448(sp)
+    0.00 :   fdfa4:  bge     s3,a4,fe4e6 <ggml_compute_forward_gated_delta_net+0x5d4>
+    0.00 :   fdfa8:  fsd     fs1,544(sp)
+    0.00 :   fdfac:  auipc   a5,0xcb
+    0.00 :   fdfb0:  flw     fs1,-888(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   fdfb4:  sd      s1,648(sp)
+    0.00 :   fdfb8:  csrr    a5,vlenb
+    0.00 :   fdfbc:  addi    a5,a5,-8
+    0.00 :   fdfbe:  sd      s2,640(sp)
+    0.00 :   fdfc2:  sd      s4,624(sp)
+    0.00 :   fdfc6:  sd      s6,608(sp)
+    0.00 :   fdfca:  sd      s7,600(sp)
+    0.00 :   fdfce:  sd      s8,592(sp)
+    0.00 :   fdfd2:  sd      s9,584(sp)
+    0.00 :   fdfd6:  fsd     fs0,552(sp)
+    0.00 :   fdfda:  fsd     fs2,536(sp)
+    0.00 :   fdfde:  fsd     fs3,528(sp)
+    0.00 :   fdfe2:  sd      a5,480(sp)
+    0.00 :   fdfe4:  ld      a4,448(sp)
+    0.00 :   fdfe6:  mul     a5,a4,s3
+    0.00 :   fdfea:  mv      s6,a5
+    0.00 :   fdfec:  add     a5,a5,a4
+    0.00 :   fdfee:  ld      a4,336(sp)
+    0.00 :   fdff0:  sd      a5,136(sp)
+    0.00 :   fdff2:  bge     a4,a5,fdff8 <ggml_compute_forward_gated_delta_net+0xe6>
+    0.00 :   fdff6:  sd      a4,136(sp)
+    0.00 :   fdff8:  ld      a5,168(s10)
+    0.00 :   fdffc:  ld      a4,160(s10)
+    0.00 :   fe000:  ld      a0,152(s10)
+    0.00 :   fe004:  ld      s3,16(a5)
+    0.00 :   fe008:  sd      a4,224(sp)
+    0.00 :   fe00a:  ld      a4,24(a5)
+    0.00 :   fe00c:  ld      s1,40(a5)
+    0.00 :   fe00e:  sd      a5,232(sp)
+    0.00 :   fe010:  sd      a4,80(sp)
+    0.01 :   fe012:  ld      a4,32(a5)
+    0.00 :   fe014:  ld      a5,176(s10)
+    0.00 :   fe018:  ld      s0,192(s10)
+    0.00 :   fe01c:  sd      a0,344(sp)
+    0.00 :   fe01e:  sd      a5,144(sp)
+    0.00 :   fe020:  ld      a5,184(s10)
+    0.00 :   fe024:  sd      a4,40(sp)
+    0.00 :   fe026:  sd      a5,152(sp)
+    0.00 :   fe028:  jal     85530 <ggml_is_contiguous_rows@plt>
+    0.00 :   fe02c:  beqz    a0,fe928 <ggml_compute_forward_gated_delta_net+0xa16>
+    0.00 :   fe030:  ld      a0,224(sp)
+    0.00 :   fe032:  jal     85530 <ggml_is_contiguous_rows@plt>
+    0.00 :   fe036:  beqz    a0,fe8f6 <ggml_compute_forward_gated_delta_net+0x9e4>
+    0.00 :   fe03a:  ld      a0,232(sp)
+    0.00 :   fe03c:  jal     85530 <ggml_is_contiguous_rows@plt>
+    0.00 :   fe040:  beqz    a0,fe8c4 <ggml_compute_forward_gated_delta_net+0x9b2>
+    0.00 :   fe044:  ld      a0,144(sp)
+    0.00 :   fe046:  jal     835a0 <ggml_is_contiguous@plt>
+    0.00 :   fe04a:  beqz    a0,fe892 <ggml_compute_forward_gated_delta_net+0x980>
+    0.00 :   fe04e:  ld      a0,152(sp)
+    0.00 :   fe050:  jal     835a0 <ggml_is_contiguous@plt>
+    0.00 :   fe054:  beqz    a0,fe860 <ggml_compute_forward_gated_delta_net+0x94e>
+    0.00 :   fe058:  mv      a0,s0
+    0.00 :   fe05a:  jal     835a0 <ggml_is_contiguous@plt>
+    0.00 :   fe05e:  mv      a1,a0
+    0.00 :   fe060:  beqz    a0,fe82e <ggml_compute_forward_gated_delta_net+0x91c>
+    0.00 :   fe064:  ld      a5,144(sp)
+    0.00 :   fe066:  li      a4,1
+    0.00 :   fe068:  ld      a5,16(a5)
+    0.00 :   fe06a:  sd      a5,456(sp)
+    0.00 :   fe06c:  beq     a5,a4,fe074 <ggml_compute_forward_gated_delta_net+0x162>
+    0.00 :   fe070:  bne     s3,a5,fe7fe <ggml_compute_forward_gated_delta_net+0x8ec>
+    0.00 :   fe074:  ld      a5,152(sp)
+    0.00 :   fe076:  li      a4,1
+    0.00 :   fe078:  ld      a5,16(a5)
+    0.00 :   fe07a:  bne     a5,a4,fe7ce <ggml_compute_forward_gated_delta_net+0x8bc>
+    0.00 :   fe07e:  ld      a5,344(sp)
+    0.00 :   fe080:  beqz    a5,fe698 <ggml_compute_forward_gated_delta_net+0x786>
+    0.00 :   fe084:  ld      a4,24(a5)
+    0.00 :   fe086:  ld      a7,40(a5)
+    0.00 :   fe08a:  sd      a4,240(sp)
+    0.00 :   fe08c:  ld      a4,56(a5)
+    0.00 :   fe08e:  sd      a4,248(sp)
+    0.00 :   fe090:  ld      a4,64(a5)
+    0.00 :   fe092:  ld      a5,72(a5)
+    0.00 :   fe094:  sd      a4,104(sp)
+    0.00 :   fe096:  sd      a5,256(sp)
+    0.00 :   fe098:  ld      a5,224(sp)
+    0.00 :   fe09a:  beqz    a5,fe68c <ggml_compute_forward_gated_delta_net+0x77a>
+    0.00 :   fe09e:  ld      a4,24(a5)
+    0.00 :   fe0a0:  ld      a3,40(a5)
+    0.00 :   fe0a2:  sd      a4,264(sp)
+    0.00 :   fe0a4:  ld      a4,56(a5)
+    0.00 :   fe0a6:  sd      a4,272(sp)
+    0.00 :   fe0a8:  ld      a4,64(a5)
+    0.00 :   fe0aa:  ld      a5,72(a5)
+    0.00 :   fe0ac:  sd      a4,112(sp)
+    0.00 :   fe0ae:  sd      a5,280(sp)
+    0.00 :   fe0b0:  ld      a5,232(sp)
+    0.01 :   fe0b2:  lw      s9,84(s10)
+    0.00 :   fe0b6:  ld      a4,56(a5)
+    0.00 :   fe0b8:  ld      a0,40(a5)
+    0.00 :   fe0ba:  sd      a4,352(sp)
+    0.00 :   fe0bc:  ld      a4,64(a5)
+    0.00 :   fe0be:  ld      a5,72(a5)
+    0.00 :   fe0c0:  sd      a4,160(sp)
+    0.02 :   fe0c2:  sd      a5,360(sp)
+    0.00 :   fe0c4:  ld      a5,144(sp)
+    0.00 :   fe0c6:  ld      a4,56(a5)
+    0.00 :   fe0c8:  sd      a4,368(sp)
+    0.00 :   fe0ca:  ld      a4,64(a5)
+    0.00 :   fe0cc:  ld      a5,72(a5)
+    0.00 :   fe0ce:  sd      a4,168(sp)
+    0.00 :   fe0d0:  sd      a5,376(sp)
+    0.00 :   fe0d2:  ld      a5,152(sp)
+    0.00 :   fe0d4:  ld      a4,56(a5)
+    0.00 :   fe0d6:  sd      a4,384(sp)
+    0.00 :   fe0d8:  ld      a4,64(a5)
+    0.00 :   fe0da:  ld      a5,72(a5)
+    0.00 :   fe0dc:  sd      a4,176(sp)
+    0.00 :   fe0de:  sd      a5,392(sp)
+    0.00 :   fe0e0:  li      a5,1
+    0.00 :   fe0e2:  beq     s9,a5,fe624 <ggml_compute_forward_gated_delta_net+0x712>
+    0.00 :   fe0e6:  blez    s9,fe79e <ggml_compute_forward_gated_delta_net+0x88c>
+    0.00 :   fe0ea:  ld      t4,80(sp)
+    0.00 :   fe0ec:  mul     a2,s3,s3
+    0.00 :   fe0f0:  ld      a5,72(s0)
+    0.00 :   fe0f2:  ld      a4,248(s0)
+    0.00 :   fe0f4:  lw      t3,0(s5)
+    0.00 :   fe0f8:  srli    a5,a5,0x2
+    0.00 :   fe0fa:  sd      a5,192(sp)
+    0.00 :   fe0fc:  ld      a5,40(sp)
+    0.00 :   fe0fe:  sd      a4,288(sp)
+    0.00 :   fe100:  ld      t1,16(s5)
+    0.00 :   fe104:  ld      a6,248(s10)
+    0.00 :   fe108:  mul     s2,s3,t4
+    0.00 :   fe10c:  li      a1,0
+    0.00 :   fe10e:  sd      zero,312(sp)
+    0.00 :   fe110:  sd      zero,304(sp)
+    0.00 :   fe112:  mul     a4,a5,s2
+    0.00 :   fe116:  add     a5,s3,a2
+    0.00 :   fe11a:  mul     s0,t4,a2
+    0.00 :   fe11e:  mul     a5,a5,t3
+    0.00 :   fe122:  mul     a4,a4,s1
+    0.00 :   fe126:  addi    a5,a5,16
+    0.00 :   fe128:  sh2add  s4,a5,t1
+    0.00 :   fe12c:  sh2add  a5,s3,s4
+    0.00 :   fe130:  sd      a5,184(sp)
+    0.00 :   fe132:  mul     s0,s0,s1
+    0.00 :   fe136:  sh2add  a5,a4,a6
+    0.00 :   fe13a:  sd      a5,296(sp)
+    0.00 :   fe13c:  fcvt.s.l        fa0,s3
+    0.00 :   fe140:  fmv.w.x fa5,zero
+    0.00 :   fe144:  div     a5,a0,a7
+    0.00 :   fe148:  sd      a5,400(sp)
+    0.00 :   fe14a:  div     a5,a0,a3
+    0.00 :   fe14e:  sd      a5,408(sp)
+    0.00 :   fe150:  frflags a4
+    0.00 :   fe154:  flt.s   a5,fa0,fa5
+    0.00 :   fe158:  fsflags a4
+    0.00 :   fe15c:  bnez    a5,fe78c <ggml_compute_forward_gated_delta_net+0x87a>
+    0.00 :   fe160:  fsqrt.s fa0,fa0
+    0.00 :   fe164:  ld      a4,136(sp)
+    0.00 :   fe166:  fdiv.s  fs0,fs1,fa0
+    0.00 :   fe16a:  bge     s6,a4,fe4a8 <ggml_compute_forward_gated_delta_net+0x596>
+    0.00 :   fe16e:  ld      a5,40(sp)
+    0.00 :   fe170:  neg     a4,s0
+    0.00 :   fe174:  slli    a3,s2,0x2
+    0.00 :   fe178:  addi    a7,a5,-1
+    0.00 :   fe17c:  mulw    a5,s3,s3
+    0.00 :   fe180:  sd      a3,464(sp)
+    0.00 :   fe182:  sext.w  s7,s3
+    0.00 :   fe186:  mv      s8,s6
+    0.00 :   fe188:  sd      a6,424(sp)
+    0.00 :   fe18a:  sd      a1,488(sp)
+    0.00 :   fe18c:  sd      a7,432(sp)
+    0.00 :   fe18e:  sd      s5,496(sp)
+    0.00 :   fe190:  sd      s10,504(sp)
+    0.00 :   fe192:  sd      a2,440(sp)
+    0.00 :   fe194:  sd      a5,200(sp)
+    0.00 :   fe196:  addiw   a5,s3,-1
+    0.00 :   fe19a:  slli.uw a5,a5,0x2
+    0.00 :   fe19e:  addi    a5,a5,4
+    0.00 :   fe1a0:  add     a5,a5,s4
+    0.00 :   fe1a2:  sd      a5,472(sp)
+    0.00 :   fe1a4:  slli    a5,a4,0x2
+    0.00 :   fe1a8:  sh2add  a4,s3,s4
+    0.00 :   fe1ac:  sd      a4,328(sp)
+    0.00 :   fe1ae:  addi    a4,sp,516
+    0.00 :   fe1b0:  sd      a4,96(sp)
+    0.00 :   fe1b2:  mul     a4,s6,a2
+    0.00 :   fe1b6:  sd      a5,208(sp)
+    0.00 :   fe1b8:  slli    a5,a2,0x2
+    0.00 :   fe1bc:  sd      a5,320(sp)
+    0.00 :   fe1be:  mul     a5,a7,s0
+    0.00 :   fe1c2:  sd      a4,56(sp)
+    0.00 :   fe1c4:  ld      a4,296(sp)
+    0.00 :   fe1c6:  slli    s0,s3,0x2
+    0.00 :   fe1ca:  sh2add  a5,a5,a4
+    0.00 :   fe1ce:  sd      a5,416(sp)
+    0.00 :   fe1d0:  ld      a5,80(sp)
+    0.00 :   fe1d2:  ld      a3,240(sp)
+    0.00 :   fe1d4:  ld      s1,184(sp)
+    0.00 :   fe1d6:  rem     a4,s8,a5
+    0.00 :   fe1da:  div     a5,s8,a5
+    0.00 :   fe1de:  rem     a0,a4,a3
+    0.00 :   fe1e2:  ld      a3,264(sp)
+    0.00 :   fe1e4:  mul     a2,s3,a4
+    0.00 :   fe1e8:  rem     a1,a4,a3
+    0.00 :   fe1ec:  ld      a3,400(sp)
+    0.00 :   fe1ee:  div     s5,a5,a3
+    0.00 :   fe1f2:  ld      a3,408(sp)
+    0.00 :   fe1f4:  div     s2,a5,a3
+    0.00 :   fe1f8:  li      a3,1
+    0.00 :   fe1fa:  mul     a2,a2,s3
+    0.00 :   fe1fe:  beq     s9,a3,fe606 <ggml_compute_forward_gated_delta_net+0x6f4>
+    0.00 :   fe202:  ld      a3,192(sp)
+    0.00 :   fe204:  mul     a3,a5,a3
+    0.00 :   fe208:  add     a3,a3,a2
+    0.00 :   fe20a:  ld      a2,288(sp)
+    0.00 :   fe20c:  sh2add  a3,a3,a2
+    0.00 :   fe210:  beq     a3,s1,fe230 <ggml_compute_forward_gated_delta_net+0x31e>
+    0.00 :   fe214:  ld      a6,320(sp)
+    0.00 :   fe216:  mv      a7,s1
+    0.00 :   fe218:  vsetvli a2,a6,e8,m8,ta,ma
+    0.03 :   fe21c:  vle8.v  v8,(a3)
+    1.73 :   fe220:  sub     a6,a6,a2
+    0.00 :   fe224:  add     a3,a3,a2
+    0.01 :   fe226:  vse8.v  v8,(a7)
+    3.58 :   fe22a:  add     a7,a7,a2
+    0.00 :   fe22c:  bnez    a6,fe218 <ggml_compute_forward_gated_delta_net+0x306>
+    0.00 :   fe230:  ld      a2,40(sp)
+    0.00 :   fe232:  ld      a6,80(sp)
+    0.00 :   fe234:  mul     a3,a2,a5
+    0.00 :   fe238:  mul     a3,a3,a6
+    0.02 :   fe23c:  ld      a6,424(sp)
+    0.00 :   fe23e:  add     a3,a3,a4
+    0.00 :   fe240:  mul     a3,a3,s3
+    0.00 :   fe244:  sh2add  a3,a3,a6
+    0.01 :   fe248:  sd      a3,8(sp)
+    0.00 :   fe24a:  blez    a2,fe494 <ggml_compute_forward_gated_delta_net+0x582>
+    0.00 :   fe24e:  ld      a3,256(sp)
+    0.00 :   fe250:  ld      a2,416(sp)
+    0.00 :   fe252:  fmv.w.x fs2,zero
+    0.00 :   fe256:  mul     s5,s5,a3
+    0.01 :   fe25a:  ld      a3,56(sp)
+    0.00 :   fe25c:  ld      s6,432(sp)
+    0.00 :   fe25e:  sd      s8,120(sp)
+    0.00 :   fe260:  sh2add  s10,a3,a2
+    0.00 :   fe264:  ld      a3,248(sp)
+    0.00 :   fe266:  ld      a2,280(sp)
+    0.00 :   fe268:  mul     a3,a0,a3
+    0.00 :   fe26c:  add     s5,s5,a3
+    0.00 :   fe26e:  mul     s2,s2,a2
+    0.02 :   fe272:  ld      a3,272(sp)
+    0.00 :   fe274:  ld      a2,360(sp)
+    0.00 :   fe276:  mul     a3,a1,a3
+    0.00 :   fe27a:  add     s2,s2,a3
+    0.00 :   fe27c:  mul     a1,a2,a5
+    0.00 :   fe280:  ld      a3,352(sp)
+    0.00 :   fe282:  ld      a2,392(sp)
+    0.00 :   fe284:  mul     a3,a3,a4
+    0.00 :   fe288:  add     a3,a3,a1
+    0.00 :   fe28a:  mul     a2,a2,a5
+    0.00 :   fe28e:  sd      a3,32(sp)
+    0.00 :   fe290:  ld      a3,376(sp)
+    0.00 :   fe292:  ld      a1,368(sp)
+    0.00 :   fe294:  mul     a5,a3,a5
+    0.00 :   fe298:  ld      a3,384(sp)
+    0.00 :   fe29a:  mul     a3,a3,a4
+    0.00 :   fe29e:  mul     a4,a1,a4
+    0.00 :   fe2a2:  add     a3,a3,a2
+    0.00 :   fe2a4:  sd      a3,24(sp)
+    0.00 :   fe2a6:  add     a5,a5,a4
+    0.00 :   fe2a8:  sd      a5,16(sp)
+    0.00 :   fe2aa:  ld      a5,152(sp)
+    0.01 :   fe2ac:  ld      a0,24(sp)
+    0.00 :   fe2ae:  ld      a4,248(a5)
+    0.00 :   fe2b0:  ld      a5,344(sp)
+    0.02 :   fe2b2:  add     a4,a4,a0
+    0.17 :   fe2b4:  ld      a1,248(a5)
+    0.05 :   fe2b6:  ld      a5,224(sp)
+    0.01 :   fe2b8:  flw     fs3,0(a4)
+    0.08 :   fe2bc:  add     a4,a1,s5
+    0.09 :   fe2c0:  ld      a2,248(a5)
+    0.00 :   fe2c2:  ld      a5,232(sp)
+    0.01 :   fe2c4:  sd      a4,88(sp)
+    0.00 :   fe2c6:  add     a4,a2,s2
+    0.00 :   fe2ca:  ld      a3,248(a5)
+    0.01 :   fe2cc:  sd      a4,48(sp)
+    0.00 :   fe2ce:  ld      a4,32(sp)
+    0.00 :   fe2d0:  ld      a5,144(sp)
+    0.07 :   fe2d2:  add     a4,a4,a3
+    0.16 :   fe2d4:  ld      a5,248(a5)
+    0.00 :   fe2d6:  sd      a4,0(sp)
+    0.00 :   fe2d8:  ld      a4,16(sp)
+    0.00 :   fe2da:  add     s8,a5,a4
+    0.17 :   fe2de:  ld      a5,456(sp)
+    0.00 :   fe2e0:  beq     s3,a5,fe514 <ggml_compute_forward_gated_delta_net+0x602>
+    0.11 :   fe2e4:  li      a5,1
+    0.00 :   fe2e6:  bne     s9,a5,fe2f0 <ggml_compute_forward_gated_delta_net+0x3de>
+    0.00 :   fe2ea:  ld      a5,40(sp)
+    0.00 :   fe2ec:  beq     a5,s9,fe44a <ggml_compute_forward_gated_delta_net+0x538>
+    0.00 :   fe2f0:  flw     fa0,0(s8)
+    0.01 :   fe2f4:  jal     841f0 <expf@plt>
+    0.00 :   fe2f8:  ld      a5,200(sp)
+    0.00 :   fe2fa:  blez    a5,fe320 <ggml_compute_forward_gated_delta_net+0x40e>
+    0.00 :   fe2fe:  li      a4,0
+    0.00 :   fe300:  ld      a2,200(sp)
+   15.79 :   fe302:  sh2add  a3,a4,s1
+    0.00 :   fe306:  subw    a5,a2,a4
+    0.80 :   fe30a:  vsetvli a5,a5,e32,m8,ta,ma
+    2.04 :   fe30e:  vle32.v v8,(a3)
+    2.17 :   fe312:  addw    a4,a4,a5
+    0.39 :   fe314:  vfmul.vf        v8,v8,fa0
+    0.06 :   fe318:  vse32.v v8,(a3)
+   14.51 :   fe31c:  blt     a4,a2,fe300 <ggml_compute_forward_gated_delta_net+0x3ee>
+    0.00 :   fe320:  blez    s3,fe40c <ggml_compute_forward_gated_delta_net+0x4fa>
+    0.07 :   fe324:  ld      t4,0(sp)
+    0.01 :   fe326:  mv      t3,s4
+    0.00 :   fe328:  sd      s1,0(sp)
+    0.00 :   fe32a:  mv      a3,s1
+    0.00 :   fe32c:  sd      s2,64(sp)
+    0.00 :   fe32e:  sd      s5,72(sp)
+    0.00 :   fe330:  mv      s2,s0
+    0.00 :   fe332:  mv      s5,s4
+    0.00 :   fe334:  li      s8,0
+    0.00 :   fe336:  mv      s4,s1
+    0.00 :   fe338:  mv      s0,t3
+    0.00 :   fe33a:  mv      s1,t4
+    0.07 :   fe33c:  ld      a5,48(sp)
+    0.22 :   fe33e:  ld      a1,96(sp)
+    0.04 :   fe340:  li      a7,1
+    0.39 :   fe342:  li      a6,0
+    0.01 :   fe344:  li      a4,0
+    0.17 :   fe346:  li      a2,0
+    0.01 :   fe348:  mv      a0,s7
+    0.12 :   fe34a:  sd      a3,128(sp)
+    0.02 :   fe34c:  fsw     fs2,516(sp)
+    2.47 :   fe350:  jal     851b0 <ggml_vec_dot_f32@plt>
+    0.00 :   fe354:  flw     fa5,0(s1)
+    0.41 :   fe358:  flw     fa4,516(sp)
+    0.47 :   fe35c:  ld      a3,128(sp)
+    3.56 :   fe35e:  addi    s8,s8,1
+    0.00 :   fe360:  fsub.s  fa5,fa5,fa4
+    0.17 :   fe364:  add     a3,a3,s2
+    0.20 :   fe366:  addi    s1,s1,4
+    0.00 :   fe368:  addi    s0,s0,4
+    0.28 :   fe36a:  fmul.s  fa5,fa5,fs3
+    0.00 :   fe36e:  fsw     fa5,-4(s0)
+    0.26 :   fe372:  bne     s3,s8,fe33c <ggml_compute_forward_gated_delta_net+0x42a>
+    0.00 :   fe376:  mv      s1,s4
+    0.01 :   fe378:  mv      s0,s2
+    0.00 :   fe37a:  mv      s4,s5
+    0.00 :   fe37c:  ld      s2,64(sp)
+    0.00 :   fe37e:  ld      s5,72(sp)
+    0.00 :   fe380:  blez    s7,fe3c2 <ggml_compute_forward_gated_delta_net+0x4b0>
+    0.00 :   fe384:  ld      a6,48(sp)
+    0.00 :   fe386:  mv      a5,s4
+    0.00 :   fe388:  li      a2,0
+    0.46 :   fe38a:  flw     fa5,0(a5)
+    0.05 :   fe38e:  li      a3,0
+    0.12 :   fe390:  subw    a4,s7,a3
+    0.21 :   fe394:  sh2add  a1,a3,a2
+    0.22 :   fe398:  vsetvli a4,a4,e32,m8,ta,ma
+    1.42 :   fe39c:  sh2add  a0,a3,a6
+    0.41 :   fe3a0:  add     a1,a1,s1
+    0.00 :   fe3a2:  vle32.v v8,(a0)
+    7.10 :   fe3a6:  vle32.v v16,(a1)
+   10.48 :   fe3aa:  addw    a3,a3,a4
+    0.00 :   fe3ac:  vfmadd.vf       v8,fa5,v16
+    0.54 :   fe3b0:  vse32.v v8,(a1)
+   11.99 :   fe3b4:  blt     a3,s7,fe390 <ggml_compute_forward_gated_delta_net+0x47e>
+    0.00 :   fe3b8:  ld      a4,328(sp)
+    8.52 :   fe3ba:  addi    a5,a5,4
+    0.00 :   fe3bc:  add     a2,a2,s0
+    0.19 :   fe3be:  bne     a5,a4,fe38a <ggml_compute_forward_gated_delta_net+0x478>
+    0.00 :   fe3c2:  ld      t3,8(sp)
+    0.01 :   fe3c4:  li      s8,0
+    0.00 :   fe3c6:  sd      s5,48(sp)
+    0.01 :   fe3c8:  mv      s5,s2
+    0.00 :   fe3ca:  mv      s2,s1
+    0.01 :   fe3cc:  mv      s1,s0
+    0.00 :   fe3ce:  mv      s0,s8
+    0.00 :   fe3d0:  mv      s8,t3
+    0.09 :   fe3d2:  ld      a5,88(sp)
+    0.17 :   fe3d4:  ld      a3,0(sp)
+    0.75 :   fe3d6:  ld      a1,96(sp)
+    0.22 :   fe3d8:  li      a7,1
+    0.00 :   fe3da:  li      a6,0
+    0.23 :   fe3dc:  li      a4,0
+    0.00 :   fe3de:  li      a2,0
+    0.20 :   fe3e0:  mv      a0,s7
+    0.00 :   fe3e2:  fsw     fs2,516(sp)
+    0.28 :   fe3e6:  jal     851b0 <ggml_vec_dot_f32@plt>
+    0.00 :   fe3ea:  flw     fa5,516(sp)
+    0.26 :   fe3ee:  ld      a5,0(sp)
+    3.84 :   fe3f0:  addi    s0,s0,1
+    0.00 :   fe3f2:  fmul.s  fa5,fa5,fs0
+    0.27 :   fe3f6:  add     a5,a5,s1
+    0.19 :   fe3f8:  sd      a5,0(sp)
+    0.00 :   fe3fa:  addi    s8,s8,4
+    0.00 :   fe3fc:  fsw     fa5,-4(s8)
+    0.40 :   fe400:  bne     s3,s0,fe3d2 <ggml_compute_forward_gated_delta_net+0x4c0>
+    0.00 :   fe404:  mv      s0,s1
+    0.01 :   fe406:  mv      s1,s2
+    0.00 :   fe408:  mv      s2,s5
+    0.00 :   fe40a:  ld      s5,48(sp)
+    0.00 :   fe40c:  ld      a5,8(sp)
+    0.00 :   fe40e:  ld      a4,464(sp)
+    0.00 :   fe410:  add     a5,a5,a4
+    0.00 :   fe412:  sd      a5,8(sp)
+    0.00 :   fe414:  li      a5,1
+    0.00 :   fe416:  beq     s9,a5,fe5d6 <ggml_compute_forward_gated_delta_net+0x6c4>
+    0.00 :   fe41a:  bltz    s6,fe422 <ggml_compute_forward_gated_delta_net+0x510>
+    0.00 :   fe41e:  blt     s6,s9,fe5bc <ggml_compute_forward_gated_delta_net+0x6aa>
+    0.00 :   fe422:  ld      a5,104(sp)
+    0.00 :   fe424:  ld      a4,160(sp)
+    0.00 :   fe426:  addi    s6,s6,-1
+    0.00 :   fe428:  add     s5,s5,a5
+    0.00 :   fe42a:  ld      a5,112(sp)
+    0.00 :   fe42c:  add     s2,s2,a5
+    0.00 :   fe42e:  ld      a5,32(sp)
+    0.00 :   fe430:  add     a5,a5,a4
+    0.00 :   fe432:  sd      a5,32(sp)
+    0.00 :   fe434:  ld      a4,176(sp)
+    0.00 :   fe436:  ld      a5,24(sp)
+    0.00 :   fe438:  add     a5,a5,a4
+    0.00 :   fe43a:  sd      a5,24(sp)
+    0.00 :   fe43c:  ld      a4,168(sp)
+    0.00 :   fe43e:  ld      a5,16(sp)
+    0.00 :   fe440:  add     a5,a5,a4
+    0.00 :   fe442:  sd      a5,16(sp)
+    0.00 :   fe444:  ld      a5,208(sp)
+    0.00 :   fe446:  add     s10,s10,a5
+    0.00 :   fe448:  j       fe2aa <ggml_compute_forward_gated_delta_net+0x398>
+    0.00 :   fe44a:  auipc   a0,0xc7
+    0.00 :   fe44e:  addi    a0,a0,1158 # 1c58d0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2790>
+    0.00 :   fe452:  jal     85de0 <getenv@plt>
+    0.00 :   fe456:  beqz    a0,fe470 <ggml_compute_forward_gated_delta_net+0x55e>
+    0.00 :   fe458:  auipc   a0,0xc7
+    0.00 :   fe45c:  addi    a0,a0,1144 # 1c58d0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2790>
+    0.00 :   fe460:  jal     85de0 <getenv@plt>
+    0.00 :   fe464:  lbu     a4,0(a0)
+    0.00 :   fe468:  li      a5,48
+    0.00 :   fe46c:  beq     a4,a5,fe2f0 <ggml_compute_forward_gated_delta_net+0x3de>
+    0.00 :   fe470:  mv      a5,s8
+    0.00 :   fe472:  flw     fa0,0(a5)
+    0.00 :   fe476:  ld      s8,120(sp)
+    0.00 :   fe478:  jal     841f0 <expf@plt>
+    0.00 :   fe47c:  ld      a5,8(sp)
+    0.00 :   fe47e:  fmv.s   fa2,fs0
+    0.00 :   fe482:  fmv.s   fa1,fs3
+    0.00 :   fe486:  ld      a3,88(sp)
+    0.00 :   fe488:  ld      a2,0(sp)
+    0.00 :   fe48a:  ld      a1,48(sp)
+    0.00 :   fe48c:  mv      a4,s3
+    0.00 :   fe48e:  mv      a0,s1
+    0.00 :   fe490:  jal     e19e0 <ggml_gdn_decode_step_rvv(float*, float const*, float const*, float const*, float, float, float, long, float*)>
+    0.00 :   fe494:  ld      a5,56(sp)
+    0.00 :   fe496:  ld      a4,440(sp)
+    0.00 :   fe498:  addi    s8,s8,1
+    0.00 :   fe49a:  add     a5,a5,a4
+    0.00 :   fe49c:  sd      a5,56(sp)
+    0.00 :   fe49e:  ld      a5,136(sp)
+    0.00 :   fe4a0:  bne     a5,s8,fe1d0 <ggml_compute_forward_gated_delta_net+0x2be>
+    0.00 :   fe4a4:  ld      s5,496(sp)
+    0.00 :   fe4a6:  ld      s10,504(sp)
+    0.00 :   fe4a8:  ld      a0,24(s5)
+    0.00 :   fe4ac:  li      a1,1
+    0.00 :   fe4ae:  jal     83760 <ggml_threadpool_chunk_add@plt>
+    0.00 :   fe4b2:  ld      a5,216(sp)
+    0.00 :   fe4b4:  mv      s3,a0
+    0.00 :   fe4b6:  blt     a0,a5,fdfe4 <ggml_compute_forward_gated_delta_net+0xd2>
+    0.00 :   fe4ba:  ld      s1,648(sp)
+    0.00 :   fe4be:  ld      s2,640(sp)
+    0.00 :   fe4c2:  ld      s4,624(sp)
+    0.00 :   fe4c6:  ld      s6,608(sp)
+    0.00 :   fe4ca:  ld      s7,600(sp)
+    0.00 :   fe4ce:  ld      s8,592(sp)
+    0.00 :   fe4d2:  ld      s9,584(sp)
+    0.00 :   fe4d6:  fld     fs0,552(sp)
+    0.00 :   fe4da:  fld     fs1,544(sp)
+    0.00 :   fe4de:  fld     fs2,536(sp)
+    0.00 :   fe4e2:  fld     fs3,528(sp)
+    0.00 :   fe4e6:  ld      a4,520(sp)
+    0.00 :   fe4ea:  ld      a5,0(s11)
+    0.00 :   fe4ee:  xor     a5,a5,a4
+    0.00 :   fe4f0:  li      a4,0
+    0.00 :   fe4f2:  bnez    a5,fe724 <ggml_compute_forward_gated_delta_net+0x812>
+    0.00 :   fe4f6:  ld      s0,656(sp)
+    0.00 :   fe4fa:  ld      ra,664(sp)
+    0.00 :   fe4fe:  ld      s3,632(sp)
+    0.00 :   fe502:  ld      s5,616(sp)
+    0.00 :   fe506:  ld      s10,576(sp)
+    0.00 :   fe50a:  ld      s11,568(sp)
+    0.00 :   fe50e:  addi    sp,sp,672
+    0.00 :   fe512:  ret
+    0.00 :   fe514:  add     a3,s8,s0
+    0.00 :   fe518:  blez    s3,fe40c <ggml_compute_forward_gated_delta_net+0x4fa>
+    0.00 :   fe51c:  sd      s1,64(sp)
+    0.00 :   fe51e:  sd      s0,72(sp)
+    0.00 :   fe520:  mv      s1,s4
+    0.00 :   fe522:  mv      s0,a3
+    0.00 :   fe524:  flw     fa0,0(s8)
+    0.00 :   fe528:  addi    s8,s8,4
+    0.00 :   fe52a:  addi    s1,s1,4
+    0.00 :   fe52c:  jal     841f0 <expf@plt>
+    0.00 :   fe530:  fsw     fa0,-4(s1)
+    0.00 :   fe534:  bne     s0,s8,fe524 <ggml_compute_forward_gated_delta_net+0x612>
+    0.00 :   fe538:  ld      s1,64(sp)
+    0.00 :   fe53a:  ld      s0,72(sp)
+    0.00 :   fe53c:  blez    s7,fe324 <ggml_compute_forward_gated_delta_net+0x412>
+    0.00 :   fe540:  ld      a3,480(sp)
+    0.00 :   fe542:  mv      a5,s1
+    0.00 :   fe544:  addi    a7,s4,4
+    0.00 :   fe548:  sub     a4,a5,a7
+    0.00 :   fe54c:  li      a0,0
+    0.00 :   fe54e:  mv      a6,a5
+    0.00 :   fe550:  bgeu    a3,a4,fe594 <ggml_compute_forward_gated_delta_net+0x682>
+    0.00 :   fe554:  zext.w  a2,s3
+    0.00 :   fe558:  mv      a3,a5
+    0.00 :   fe55a:  mv      a1,s4
+    0.00 :   fe55c:  vsetvli a4,a2,e32,m1,ta,ma
+    0.00 :   fe560:  vle32.v v2,(a6)
+    0.00 :   fe564:  sub     a2,a2,a4
+    0.00 :   fe566:  vle32.v v1,(a1)
+    0.00 :   fe56a:  sh2add  a6,a4,a6
+    0.00 :   fe56e:  sh2add  a1,a4,a1
+    0.00 :   fe572:  vfmul.vv        v1,v1,v2
+    0.00 :   fe576:  vse32.v v1,(a3)
+    0.00 :   fe57a:  sh2add  a3,a4,a3
+    0.00 :   fe57e:  bnez    a2,fe55c <ggml_compute_forward_gated_delta_net+0x64a>
+    0.00 :   fe580:  addi    a0,a0,1
+    0.00 :   fe582:  add     a5,a5,s0
+    0.00 :   fe584:  beq     s3,a0,fe324 <ggml_compute_forward_gated_delta_net+0x412>
+    0.00 :   fe588:  ld      a3,480(sp)
+    0.00 :   fe58a:  sub     a4,a5,a7
+    0.00 :   fe58e:  mv      a6,a5
+    0.00 :   fe590:  bltu    a3,a4,fe554 <ggml_compute_forward_gated_delta_net+0x642>
+    0.00 :   fe594:  mv      a3,s4
+    0.00 :   fe596:  mv      a4,a5
+    0.00 :   fe598:  flw     fa5,0(a4)
+    0.00 :   fe59c:  flw     fa4,0(a3)
+    0.00 :   fe5a0:  ld      a2,472(sp)
+    0.00 :   fe5a2:  addi    a3,a3,4
+    0.00 :   fe5a4:  fmul.s  fa5,fa5,fa4
+    0.00 :   fe5a8:  addi    a4,a4,4
+    0.00 :   fe5aa:  fsw     fa5,-4(a4)
+    0.00 :   fe5ae:  bne     a2,a3,fe598 <ggml_compute_forward_gated_delta_net+0x686>
+    0.00 :   fe5b2:  addi    a0,a0,1
+    0.00 :   fe5b4:  add     a5,a5,s0
+    0.00 :   fe5b6:  bne     s3,a0,fe588 <ggml_compute_forward_gated_delta_net+0x676>
+    0.00 :   fe5ba:  j       fe324 <ggml_compute_forward_gated_delta_net+0x412>
+    0.00 :   fe5bc:  ld      a4,320(sp)
+    0.00 :   fe5be:  mv      a3,s10
+    0.00 :   fe5c0:  mv      a2,s1
+    0.00 :   fe5c2:  vsetvli a5,a4,e8,m8,ta,ma
+    0.00 :   fe5c6:  vle8.v  v8,(a2)
+    0.00 :   fe5ca:  sub     a4,a4,a5
+    0.00 :   fe5cc:  add     a2,a2,a5
+    0.00 :   fe5ce:  vse8.v  v8,(a3)
+    0.00 :   fe5d2:  add     a3,a3,a5
+    0.00 :   fe5d4:  bnez    a4,fe5c2 <ggml_compute_forward_gated_delta_net+0x6b0>
+    0.00 :   fe5d6:  ld      a4,104(sp)
+    0.01 :   fe5d8:  ld      a3,160(sp)
+    0.00 :   fe5da:  addi    s6,s6,-1
+    0.01 :   fe5dc:  add     s5,s5,a4
+    0.08 :   fe5de:  ld      a4,112(sp)
+    0.00 :   fe5e0:  li      a5,-1
+    0.00 :   fe5e2:  add     s2,s2,a4
+    0.00 :   fe5e4:  ld      a4,32(sp)
+    0.00 :   fe5e6:  add     a4,a4,a3
+    0.07 :   fe5e8:  sd      a4,32(sp)
+    0.00 :   fe5ea:  ld      a3,176(sp)
+    0.00 :   fe5ec:  ld      a4,24(sp)
+    0.00 :   fe5ee:  add     a4,a4,a3
+    0.02 :   fe5f0:  sd      a4,24(sp)
+    0.00 :   fe5f2:  ld      a3,168(sp)
+    0.00 :   fe5f4:  ld      a4,16(sp)
+    0.00 :   fe5f6:  add     a4,a4,a3
+    0.00 :   fe5f8:  sd      a4,16(sp)
+    0.00 :   fe5fa:  ld      a4,208(sp)
+    0.00 :   fe5fc:  add     s10,s10,a4
+    0.01 :   fe5fe:  bne     s6,a5,fe2aa <ggml_compute_forward_gated_delta_net+0x398>
+    0.00 :   fe602:  ld      s8,120(sp)
+    0.01 :   fe604:  j       fe494 <ggml_compute_forward_gated_delta_net+0x582>
+    0.00 :   fe606:  ld      a3,56(sp)
+    0.00 :   fe608:  ld      s1,296(sp)
+    0.00 :   fe60a:  sh2add  s1,a3,s1
+    0.00 :   fe60e:  ld      a3,488(sp)
+    0.00 :   fe610:  beqz    a3,fe202 <ggml_compute_forward_gated_delta_net+0x2f0>
+    0.00 :   fe614:  ld      a3,304(sp)
+    0.00 :   fe616:  mul     s1,a5,a3
+    0.00 :   fe61a:  ld      a3,312(sp)
+    0.00 :   fe61c:  add     s1,s1,a2
+    0.00 :   fe61e:  sh2add  s1,s1,a3
+    0.00 :   fe622:  j       fe202 <ggml_compute_forward_gated_delta_net+0x2f0>
+    0.00 :   fe624:  lw      a5,88(s10)
+    0.00 :   fe628:  andi    a5,a5,1
+    0.00 :   fe62a:  beqz    a5,fe6a4 <ggml_compute_forward_gated_delta_net+0x792>
+    0.00 :   fe62c:  ld      a5,200(s10)
+    0.00 :   fe630:  beqz    a5,fe75c <ggml_compute_forward_gated_delta_net+0x84a>
+    0.00 :   fe634:  ld      a5,72(s0)
+    0.00 :   fe636:  srli    a5,a5,0x2
+    0.00 :   fe638:  sd      a5,192(sp)
+    0.00 :   fe63a:  ld      t3,80(sp)
+    0.00 :   fe63c:  mul     a2,s3,s3
+    0.00 :   fe640:  ld      a4,248(s0)
+    0.00 :   fe642:  lw      a5,0(s5)
+    0.00 :   fe646:  ld      a6,248(s10)
+    0.00 :   fe64a:  sd      a4,288(sp)
+    0.00 :   fe64c:  ld      a4,40(sp)
+    0.00 :   fe64e:  ld      t1,16(s5)
+    0.00 :   fe652:  mul     s2,s3,t3
+    0.00 :   fe656:  mul     a4,a4,s2
+    0.01 :   fe65a:  mul     a5,a5,s3
+    0.00 :   fe65e:  mul     a4,a4,s1
+    0.00 :   fe662:  addi    a5,a5,16
+    0.00 :   fe664:  sh2add  s4,a5,t1
+    0.00 :   fe668:  mul     s0,t3,a2
+    0.00 :   fe66c:  sh2add  a5,a4,a6
+    0.00 :   fe670:  sd      a5,296(sp)
+    0.00 :   fe672:  mul     s0,s0,s1
+    0.00 :   fe676:  beqz    a1,fe754 <ggml_compute_forward_gated_delta_net+0x842>
+    0.00 :   fe678:  ld      a5,200(s10)
+    0.00 :   fe67c:  sd      zero,184(sp)
+    0.00 :   fe67e:  ld      a4,72(a5)
+    0.00 :   fe680:  ld      a5,248(a5)
+    0.00 :   fe682:  sd      a5,312(sp)
+    0.00 :   fe684:  srli    a5,a4,0x2
+    0.00 :   fe688:  sd      a5,304(sp)
+    0.00 :   fe68a:  j       fe13c <ggml_compute_forward_gated_delta_net+0x22a>
+    0.00 :   fe68c:  sd      zero,112(sp)
+    0.00 :   fe68e:  sd      zero,272(sp)
+    0.00 :   fe690:  li      a3,0
+    0.00 :   fe692:  sd      zero,264(sp)
+    0.00 :   fe694:  sd      zero,280(sp)
+    0.00 :   fe696:  j       fe0b0 <ggml_compute_forward_gated_delta_net+0x19e>
+    0.00 :   fe698:  sd      zero,104(sp)
+    0.00 :   fe69a:  sd      zero,248(sp)
+    0.00 :   fe69c:  li      a7,0
+    0.00 :   fe69e:  sd      zero,240(sp)
+    0.00 :   fe6a0:  sd      zero,256(sp)
+    0.00 :   fe6a2:  j       fe098 <ggml_compute_forward_gated_delta_net+0x186>
+    0.00 :   fe6a4:  ld      a5,72(s0)
+    0.00 :   fe6a6:  li      a1,0
+    0.00 :   fe6a8:  srli    a5,a5,0x2
+    0.00 :   fe6aa:  sd      a5,192(sp)
+    0.00 :   fe6ac:  j       fe63a <ggml_compute_forward_gated_delta_net+0x728>
+    0.00 :   fe6ae:  ld      a0,24(s5)
+    0.00 :   fe6b2:  jal     84ee0 <ggml_threadpool_chunk_set@plt>
+    0.00 :   fe6b6:  j       fdf8e <ggml_compute_forward_gated_delta_net+0x7c>
+    0.00 :   fe6b8:  bnez    a0,fdf8a <ggml_compute_forward_gated_delta_net+0x78>
+    0.00 :   fe6bc:  sd      a5,216(sp)
+    0.00 :   fe6be:  j       fdf8a <ggml_compute_forward_gated_delta_net+0x78>
+    0.00 :   fe6c0:  ld      a4,520(sp)
+    0.00 :   fe6c4:  ld      a5,0(s11)
+    0.00 :   fe6c8:  xor     a5,a5,a4
+    0.00 :   fe6ca:  li      a4,0
+    0.00 :   fe6cc:  sd      s0,656(sp)
+    0.00 :   fe6d0:  sd      s1,648(sp)
+    0.00 :   fe6d4:  sd      s2,640(sp)
+    0.00 :   fe6d8:  sd      s3,632(sp)
+    0.00 :   fe6dc:  sd      s4,624(sp)
+    0.00 :   fe6e0:  sd      s5,616(sp)
+    0.00 :   fe6e4:  sd      s6,608(sp)
+    0.00 :   fe6e8:  sd      s7,600(sp)
+    0.00 :   fe6ec:  sd      s8,592(sp)
+    0.00 :   fe6f0:  sd      s9,584(sp)
+    0.00 :   fe6f4:  sd      s10,576(sp)
+    0.00 :   fe6f8:  fsd     fs0,552(sp)
+    0.00 :   fe6fc:  fsd     fs1,544(sp)
+    0.00 :   fe700:  fsd     fs2,536(sp)
+    0.00 :   fe704:  fsd     fs3,528(sp)
+    0.00 :   fe708:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe70a:  lui     a1,0x3
+    0.00 :   fe70c:  addi    a1,a1,-1282 # 2afe <std::__once_callable+0x2a3e>
+    0.00 :   fe710:  auipc   a2,0xc5
+    0.00 :   fe714:  addi    a2,a2,-1136 # 1c32a0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x160>
+    0.00 :   fe718:  auipc   a0,0xc6
+    0.00 :   fe71c:  addi    a0,a0,-960 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe720:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe724:  sd      s1,648(sp)
+    0.00 :   fe728:  sd      s2,640(sp)
+    0.00 :   fe72c:  sd      s4,624(sp)
+    0.00 :   fe730:  sd      s6,608(sp)
+    0.00 :   fe734:  sd      s7,600(sp)
+    0.00 :   fe738:  sd      s8,592(sp)
+    0.00 :   fe73c:  sd      s9,584(sp)
+    0.00 :   fe740:  fsd     fs0,552(sp)
+    0.00 :   fe744:  fsd     fs1,544(sp)
+    0.00 :   fe748:  fsd     fs2,536(sp)
+    0.00 :   fe74c:  fsd     fs3,528(sp)
+    0.00 :   fe750:  jal     86380 <__stack_chk_fail@plt>
+    0.00 :   fe754:  sd      zero,184(sp)
+    0.00 :   fe756:  sd      zero,312(sp)
+    0.00 :   fe758:  sd      zero,304(sp)
+    0.00 :   fe75a:  j       fe13c <ggml_compute_forward_gated_delta_net+0x22a>
+    0.00 :   fe75c:  ld      a4,520(sp)
+    0.00 :   fe760:  ld      a5,0(s11)
+    0.00 :   fe764:  xor     a5,a5,a4
+    0.00 :   fe766:  li      a4,0
+    0.00 :   fe768:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe76a:  lui     a1,0x3
+    0.00 :   fe76c:  addi    a1,a1,-1467 # 2a45 <std::__once_callable+0x2985>
+    0.00 :   fe770:  auipc   a3,0xc7
+    0.00 :   fe774:  addi    a3,a3,296 # 1c5898 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2758>
+    0.00 :   fe778:  auipc   a2,0xc5
+    0.00 :   fe77c:  addi    a2,a2,-1080 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe780:  auipc   a0,0xc6
+    0.00 :   fe784:  addi    a0,a0,-1064 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe788:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe78c:  sd      a2,16(sp)
+    0.00 :   fe78e:  sd      a1,8(sp)
+    0.00 :   fe790:  sd      a6,0(sp)
+    0.00 :   fe792:  jal     83f00 <sqrtf@plt>
+    0.00 :   fe796:  ld      a2,16(sp)
+    0.00 :   fe798:  ld      a1,8(sp)
+    0.00 :   fe79a:  ld      a6,0(sp)
+    0.00 :   fe79c:  j       fe164 <ggml_compute_forward_gated_delta_net+0x252>
+    0.00 :   fe79e:  ld      a4,520(sp)
+    0.00 :   fe7a2:  ld      a5,0(s11)
+    0.00 :   fe7a6:  xor     a5,a5,a4
+    0.00 :   fe7a8:  li      a4,0
+    0.00 :   fe7aa:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe7ac:  lui     a1,0x3
+    0.00 :   fe7ae:  addi    a1,a1,-1466 # 2a46 <std::__once_callable+0x2986>
+    0.00 :   fe7b2:  auipc   a3,0xc7
+    0.00 :   fe7b6:  addi    a3,a3,278 # 1c58c8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2788>
+    0.00 :   fe7ba:  auipc   a2,0xc5
+    0.00 :   fe7be:  addi    a2,a2,-1146 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe7c2:  auipc   a0,0xc6
+    0.00 :   fe7c6:  addi    a0,a0,-1130 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe7ca:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe7ce:  ld      a4,520(sp)
+    0.00 :   fe7d2:  ld      a5,0(s11)
+    0.00 :   fe7d6:  xor     a5,a5,a4
+    0.00 :   fe7d8:  li      a4,0
+    0.00 :   fe7da:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe7dc:  lui     a1,0x3
+    0.00 :   fe7de:  addi    a1,a1,-1485 # 2a33 <std::__once_callable+0x2973>
+    0.00 :   fe7e2:  auipc   a3,0xc7
+    0.00 :   fe7e6:  addi    a3,a3,158 # 1c5880 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2740>
+    0.00 :   fe7ea:  auipc   a2,0xc5
+    0.00 :   fe7ee:  addi    a2,a2,-1194 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe7f2:  auipc   a0,0xc6
+    0.00 :   fe7f6:  addi    a0,a0,-1178 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe7fa:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe7fe:  ld      a4,520(sp)
+    0.00 :   fe802:  ld      a5,0(s11)
+    0.00 :   fe806:  xor     a5,a5,a4
+    0.00 :   fe808:  li      a4,0
+    0.00 :   fe80a:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe80c:  lui     a1,0x3
+    0.00 :   fe80e:  addi    a1,a1,-1486 # 2a32 <std::__once_callable+0x2972>
+    0.00 :   fe812:  auipc   a3,0xc7
+    0.00 :   fe816:  addi    a3,a3,62 # 1c5850 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2710>
+    0.00 :   fe81a:  auipc   a2,0xc5
+    0.00 :   fe81e:  addi    a2,a2,-1242 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe822:  auipc   a0,0xc6
+    0.00 :   fe826:  addi    a0,a0,-1226 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe82a:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe82e:  ld      a4,520(sp)
+    0.00 :   fe832:  ld      a5,0(s11)
+    0.00 :   fe836:  xor     a5,a5,a4
+    0.00 :   fe838:  li      a4,0
+    0.00 :   fe83a:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe83e:  lui     a1,0x3
+    0.00 :   fe840:  addi    a1,a1,-1488 # 2a30 <std::__once_callable+0x2970>
+    0.00 :   fe844:  auipc   a3,0xc7
+    0.00 :   fe848:  addi    a3,a3,-20 # 1c5830 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x26f0>
+    0.00 :   fe84c:  auipc   a2,0xc5
+    0.00 :   fe850:  addi    a2,a2,-1292 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe854:  auipc   a0,0xc6
+    0.00 :   fe858:  addi    a0,a0,-1276 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe85c:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe860:  ld      a4,520(sp)
+    0.00 :   fe864:  ld      a5,0(s11)
+    0.00 :   fe868:  xor     a5,a5,a4
+    0.00 :   fe86a:  li      a4,0
+    0.00 :   fe86c:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe870:  lui     a1,0x3
+    0.00 :   fe872:  addi    a1,a1,-1489 # 2a2f <std::__once_callable+0x296f>
+    0.00 :   fe876:  auipc   a3,0xc7
+    0.00 :   fe87a:  addi    a3,a3,-102 # 1c5810 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x26d0>
+    0.00 :   fe87e:  auipc   a2,0xc5
+    0.00 :   fe882:  addi    a2,a2,-1342 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe886:  auipc   a0,0xc6
+    0.00 :   fe88a:  addi    a0,a0,-1326 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe88e:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe892:  ld      a4,520(sp)
+    0.00 :   fe896:  ld      a5,0(s11)
+    0.00 :   fe89a:  xor     a5,a5,a4
+    0.00 :   fe89c:  li      a4,0
+    0.00 :   fe89e:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe8a2:  lui     a1,0x3
+    0.00 :   fe8a4:  addi    a1,a1,-1490 # 2a2e <std::__once_callable+0x296e>
+    0.00 :   fe8a8:  auipc   a3,0xc7
+    0.00 :   fe8ac:  addi    a3,a3,-184 # 1c57f0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x26b0>
+    0.00 :   fe8b0:  auipc   a2,0xc5
+    0.00 :   fe8b4:  addi    a2,a2,-1392 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe8b8:  auipc   a0,0xc6
+    0.00 :   fe8bc:  addi    a0,a0,-1376 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe8c0:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe8c4:  ld      a4,520(sp)
+    0.00 :   fe8c8:  ld      a5,0(s11)
+    0.00 :   fe8cc:  xor     a5,a5,a4
+    0.00 :   fe8ce:  li      a4,0
+    0.00 :   fe8d0:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe8d4:  lui     a1,0x3
+    0.00 :   fe8d6:  addi    a1,a1,-1491 # 2a2d <std::__once_callable+0x296d>
+    0.00 :   fe8da:  auipc   a3,0xc7
+    0.00 :   fe8de:  addi    a3,a3,-266 # 1c57d0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2690>
+    0.00 :   fe8e2:  auipc   a2,0xc5
+    0.00 :   fe8e6:  addi    a2,a2,-1442 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe8ea:  auipc   a0,0xc6
+    0.00 :   fe8ee:  addi    a0,a0,-1426 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe8f2:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe8f6:  ld      a4,520(sp)
+    0.00 :   fe8fa:  ld      a5,0(s11)
+    0.00 :   fe8fe:  xor     a5,a5,a4
+    0.00 :   fe900:  li      a4,0
+    0.00 :   fe902:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe906:  lui     a1,0x3
+    0.00 :   fe908:  addi    a1,a1,-1492 # 2a2c <std::__once_callable+0x296c>
+    0.00 :   fe90c:  auipc   a3,0xc7
+    0.00 :   fe910:  addi    a3,a3,-348 # 1c57b0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2670>
+    0.00 :   fe914:  auipc   a2,0xc5
+    0.00 :   fe918:  addi    a2,a2,-1492 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe91c:  auipc   a0,0xc6
+    0.00 :   fe920:  addi    a0,a0,-1476 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe924:  jal     84470 <ggml_abort@plt>
+    0.00 :   fe928:  ld      a4,520(sp)
+    0.00 :   fe92c:  ld      a5,0(s11)
+    0.00 :   fe930:  xor     a5,a5,a4
+    0.00 :   fe932:  li      a4,0
+    0.00 :   fe934:  bnez    a5,fe750 <ggml_compute_forward_gated_delta_net+0x83e>
+    0.00 :   fe938:  lui     a1,0x3
+    0.00 :   fe93a:  addi    a1,a1,-1493 # 2a2b <std::__once_callable+0x296b>
+    0.00 :   fe93e:  auipc   a3,0xc7
+    0.00 :   fe942:  addi    a3,a3,-430 # 1c5790 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2650>
+    0.00 :   fe946:  auipc   a2,0xc5
+    0.00 :   fe94a:  addi    a2,a2,-1542 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   fe94e:  auipc   a0,0xc6
+    0.00 :   fe952:  addi    a0,a0,-1526 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   fe956:  jal     84470 <ggml_abort@plt>

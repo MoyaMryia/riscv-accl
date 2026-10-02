@@ -1,0 +1,1225 @@
+ Percent |	Source code & Disassembly of libggml-cpu.so.0.16.0 for cpu-clock:u (215 samples, percent: local period)
+-----------------------------------------------------------------------------------------------------------------------
+         :
+         :
+         :
+         : 3     Disassembly of section .text:
+         :
+         : 5     00000000000e0ba8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)>:
+         : 6     ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long):
+    0.00 :   e0ba8:  addi    sp,sp,-640
+    0.00 :   e0bac:  sd      s0,624(sp)
+    0.00 :   e0bb0:  sd      a5,0(sp)
+    0.00 :   e0bb2:  ld      s0,152(a1)
+    0.00 :   e0bb4:  ld      a5,184(a1)
+    0.00 :   e0bb6:  sd      s1,616(sp)
+    0.00 :   e0bba:  auipc   s1,0x14a
+    0.00 :   e0bbe:  ld      s1,-1370(s1) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e0bc2:  sd      s2,608(sp)
+    0.00 :   e0bc6:  sd      s3,600(sp)
+    0.00 :   e0bca:  sd      s5,584(sp)
+    0.00 :   e0bce:  sd      s6,576(sp)
+    0.00 :   e0bd2:  sd      s9,552(sp)
+    0.00 :   e0bd6:  sd      ra,632(sp)
+    0.00 :   e0bda:  sd      s4,592(sp)
+    0.00 :   e0bde:  sd      s7,568(sp)
+    0.00 :   e0be2:  sd      s8,560(sp)
+    0.00 :   e0be6:  sd      s10,544(sp)
+    0.00 :   e0bea:  sd      s11,536(sp)
+    0.00 :   e0bee:  sd      s0,176(sp)
+    0.00 :   e0bf0:  ld      t1,0(s1)
+    0.00 :   e0bf4:  sd      t1,424(sp)
+    0.00 :   e0bf6:  li      t1,0
+    0.00 :   e0bf8:  sd      a0,184(sp)
+    0.00 :   e0bfa:  sd      a4,128(sp)
+    0.00 :   e0bfc:  sd      a6,168(sp)
+    0.00 :   e0bfe:  sd      a5,144(sp)
+    0.00 :   e0c00:  mv      s3,a7
+    0.00 :   e0c02:  ld      s9,160(a1)
+    0.00 :   e0c06:  ld      s2,168(a1)
+    0.00 :   e0c0a:  ld      a7,176(a1)
+    0.00 :   e0c0e:  mv      s5,a2
+    0.00 :   e0c10:  mv      s6,a3
+    0.00 :   e0c12:  beqz    s0,e1626 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xa7e>
+    0.00 :   e0c16:  ld      a5,24(s0)
+    0.00 :   e0c18:  ld      a3,56(s0)
+    0.00 :   e0c1a:  ld      a4,72(s0)
+    0.00 :   e0c1c:  sd      a5,136(sp)
+    0.00 :   e0c1e:  ld      a5,32(s0)
+    0.00 :   e0c20:  sd      a3,232(sp)
+    0.00 :   e0c22:  ld      a3,64(s0)
+    0.00 :   e0c24:  sd      a5,152(sp)
+    0.00 :   e0c26:  ld      s10,16(s0)
+    0.00 :   e0c2a:  ld      s1,40(s0)
+    0.00 :   e0c2c:  ld      a5,48(s0)
+    0.00 :   e0c2e:  sd      a3,240(sp)
+    0.00 :   e0c30:  sd      a4,224(sp)
+    0.00 :   e0c32:  beqz    s9,e1614 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xa6c>
+    0.00 :   e0c36:  ld      a4,16(s9)
+    0.00 :   e0c3a:  ld      s11,32(s9)
+    0.00 :   e0c3e:  ld      s8,48(s9)
+    0.00 :   e0c42:  sd      a4,32(sp)
+    0.00 :   e0c44:  ld      a4,40(s9)
+    0.00 :   e0c48:  sd      a4,24(sp)
+    0.00 :   e0c4a:  ld      a4,56(s9)
+    0.00 :   e0c4e:  sd      a4,8(sp)
+    0.00 :   e0c50:  ld      a4,64(s9)
+    0.00 :   e0c54:  sd      a4,328(sp)
+    0.00 :   e0c56:  ld      a4,72(s9)
+    0.00 :   e0c5a:  sd      a4,312(sp)
+    0.00 :   e0c5c:  beqz    s2,e1602 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xa5a>
+    0.00 :   e0c60:  ld      a4,16(s2)
+    0.00 :   e0c64:  sd      a4,72(sp)
+    0.00 :   e0c66:  ld      a4,32(s2)
+    0.00 :   e0c6a:  sd      a4,48(sp)
+    0.00 :   e0c6c:  ld      a4,40(s2)
+    0.00 :   e0c70:  sd      a4,56(sp)
+    0.00 :   e0c72:  ld      a4,48(s2)
+    0.00 :   e0c76:  sd      a4,40(sp)
+    0.00 :   e0c78:  ld      a4,56(s2)
+    0.00 :   e0c7c:  sd      a4,16(sp)
+    0.00 :   e0c7e:  ld      a4,64(s2)
+    0.00 :   e0c82:  sd      a4,336(sp)
+    0.00 :   e0c84:  ld      a4,72(s2)
+    0.00 :   e0c88:  sd      a4,320(sp)
+    0.00 :   e0c8a:  ld      a4,24(a1)
+    0.00 :   e0c8c:  ld      a2,16(a1)
+    0.00 :   e0c8e:  ld      a3,32(a1)
+    0.00 :   e0c90:  sd      a4,384(sp)
+    0.00 :   e0c92:  ld      a4,56(a1)
+    0.00 :   e0c94:  ld      s7,48(a1)
+    0.00 :   e0c98:  ld      s0,64(a1)
+    0.00 :   e0c9a:  sd      a4,368(sp)
+    0.00 :   e0c9c:  ld      a4,72(sp)
+    0.00 :   e0c9e:  ld      s4,72(a1)
+    0.00 :   e0ca2:  bne     a2,a4,e16f8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xb50>
+    0.00 :   e0ca6:  ld      a4,136(sp)
+    0.00 :   e0ca8:  bne     a3,a4,e1748 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xba0>
+    0.00 :   e0cac:  sd      a5,80(sp)
+    0.00 :   e0cae:  ld      a5,176(sp)
+    0.00 :   e0cb0:  sd      a1,88(sp)
+    0.00 :   e0cb2:  sd      a7,64(sp)
+    0.00 :   e0cb4:  lw      a0,0(a5)
+    0.00 :   e0cb6:  jal     831f0 <ggml_type_size@plt>
+    0.00 :   e0cba:  ld      a5,80(sp)
+    0.00 :   e0cbc:  ld      a7,64(sp)
+    0.00 :   e0cbe:  ld      a1,88(sp)
+    0.00 :   e0cc0:  bne     a5,a0,e1666 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xabe>
+    0.00 :   e0cc4:  lw      a0,0(s9)
+    0.00 :   e0cc8:  sd      a1,80(sp)
+    0.00 :   e0cca:  sd      a7,64(sp)
+    0.00 :   e0ccc:  jal     831f0 <ggml_type_size@plt>
+    0.00 :   e0cd0:  ld      a7,64(sp)
+    0.00 :   e0cd2:  ld      a1,80(sp)
+    0.00 :   e0cd4:  bne     s8,a0,e17f8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xc50>
+    0.00 :   e0cd8:  lw      a0,0(s2)
+    0.00 :   e0cdc:  sd      a1,80(sp)
+    0.00 :   e0cde:  sd      a7,64(sp)
+    0.00 :   e0ce0:  jal     831f0 <ggml_type_size@plt>
+    0.00 :   e0ce4:  ld      a5,40(sp)
+    0.00 :   e0ce6:  ld      a7,64(sp)
+    0.00 :   e0ce8:  ld      a1,80(sp)
+    0.00 :   e0cea:  bne     a5,a0,e17a8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xc00>
+    0.00 :   e0cee:  ld      a5,32(sp)
+    0.00 :   e0cf0:  bne     a5,s10,e1898 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xcf0>
+    0.00 :   e0cf4:  li      a5,4
+    0.00 :   e0cf6:  bne     s7,a5,e1848 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xca0>
+    0.00 :   e0cfa:  ld      a4,368(sp)
+    0.00 :   e0cfc:  li      a5,3
+    0.00 :   e0cfe:  bgeu    a5,a4,e198e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xde6>
+    0.00 :   e0d02:  bltu    s0,a4,e193c <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xd94>
+    0.00 :   e0d06:  bltu    s4,s0,e18ea <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xd42>
+    0.00 :   e0d0a:  ld      a4,152(sp)
+    0.00 :   e0d0c:  fsd     fs2,504(sp)
+    0.00 :   e0d0e:  fsd     fs0,520(sp)
+    0.00 :   e0d12:  div     a5,a4,s11
+    0.00 :   e0d16:  fsd     fs1,512(sp)
+    0.00 :   e0d1a:  fsd     fs3,496(sp)
+    0.00 :   e0d1c:  fsd     fs7,464(sp)
+    0.00 :   e0d1e:  fsd     fs8,456(sp)
+    0.00 :   e0d20:  lw      a3,92(a1)
+    0.00 :   e0d22:  fmv.w.x fa5,zero
+    0.00 :   e0d26:  lw      s0,88(a1)
+    0.00 :   e0d28:  fmv.w.x fs2,a3
+    0.00 :   e0d2c:  sd      a5,248(sp)
+    0.00 :   e0d2e:  lw      a5,84(a1)
+    0.00 :   e0d30:  mv      a2,a5
+    0.00 :   e0d32:  sw      a5,40(sp)
+    0.00 :   e0d34:  ld      a5,24(sp)
+    0.00 :   e0d36:  div     a5,s1,a5
+    0.00 :   e0d3a:  sd      a5,256(sp)
+    0.00 :   e0d3c:  ld      a5,48(sp)
+    0.00 :   e0d3e:  div     a5,a4,a5
+    0.00 :   e0d42:  sd      a5,264(sp)
+    0.00 :   e0d44:  ld      a5,56(sp)
+    0.00 :   e0d46:  div     a5,s1,a5
+    0.00 :   e0d4a:  sd      a5,272(sp)
+    0.00 :   e0d4c:  feq.s   a5,fs2,fa5
+    0.00 :   e0d50:  beqz    a5,e15e4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xa3c>
+    0.00 :   e0d54:  ld      a5,152(sp)
+    0.00 :   e0d56:  sd      a1,64(sp)
+    0.00 :   e0d58:  sd      a7,24(sp)
+    0.00 :   e0d5a:  fcvt.d.wu       fa0,a5
+    0.00 :   e0d5e:  sext.w  s1,a5
+    0.00 :   e0d62:  fmv.w.x fs0,s0
+    0.00 :   e0d66:  jal     83e60 <log2@plt>
+    0.00 :   e0d6a:  jal     85ed0 <floor@plt>
+    0.00 :   e0d6e:  fcvt.wu.d       a5,fa0,rtz
+    0.00 :   e0d72:  fmv.w.x fa5,s0
+    0.00 :   e0d76:  li      a3,1
+    0.00 :   e0d78:  sllw    a5,a3,a5
+    0.00 :   e0d7c:  fcvt.s.wu       fs1,a5
+    0.00 :   e0d80:  fneg.s  fa1,fa5
+    0.00 :   e0d84:  auipc   a4,0xe8
+    0.00 :   e0d88:  flw     fs3,-224(a4) # 1c8ca4 <__func__.1+0x94>
+    0.00 :   e0d8c:  sd      a5,360(sp)
+    0.00 :   e0d8e:  fdiv.s  fa1,fa1,fs1
+    0.00 :   e0d92:  fmv.s   fa0,fs3
+    0.00 :   e0d96:  jal     82b30 <powf@plt>
+    0.00 :   e0d9a:  auipc   a5,0xe8
+    0.00 :   e0d9e:  flw     fa5,-322(a5) # 1c8c58 <__func__.1+0x48>
+    0.00 :   e0da2:  fmv.s   fs7,fa0
+    0.00 :   e0da6:  fmv.s   fa0,fs3
+    0.00 :   e0daa:  fmul.s  fa1,fs0,fa5
+    0.00 :   e0dae:  fdiv.s  fa1,fa1,fs1
+    0.00 :   e0db2:  jal     82b30 <powf@plt>
+    0.00 :   e0db6:  lw      a0,0(s9)
+    0.00 :   e0dba:  fmv.s   fs8,fa0
+    0.00 :   e0dbe:  jal     86230 <ggml_get_type_traits_cpu@plt>
+    0.00 :   e0dc2:  lw      a0,16(a0)
+    0.00 :   e0dc4:  jal     86230 <ggml_get_type_traits_cpu@plt>
+    0.00 :   e0dc8:  mv      a5,a0
+    0.00 :   e0dca:  ld      s0,0(a5)
+    0.00 :   e0dcc:  lw      a0,0(s9)
+    0.00 :   e0dd0:  sd      s0,280(sp)
+    0.00 :   e0dd2:  jal     86230 <ggml_get_type_traits_cpu@plt>
+    0.00 :   e0dd6:  mv      a5,a0
+    0.00 :   e0dd8:  ld      a5,8(a5)
+    0.00 :   e0dda:  lw      a0,0(s2)
+    0.00 :   e0dde:  sd      a5,48(sp)
+    0.00 :   e0de0:  jal     84330 <ggml_get_type_traits@plt>
+    0.00 :   e0de4:  ld      a5,40(a0)
+    0.00 :   e0de6:  ld      a7,24(sp)
+    0.00 :   e0de8:  ld      a1,64(sp)
+    0.00 :   e0dea:  sd      a5,56(sp)
+    0.00 :   e0dec:  beqz    s0,e16b8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xb10>
+    0.00 :   e0df0:  lw      a5,0(s2)
+    0.00 :   e0df4:  bnez    a5,e159c <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x9f4>
+    0.00 :   e0df8:  ld      a5,184(sp)
+    0.00 :   e0dfa:  lw      a3,0(a5)
+    0.00 :   e0dfc:  bge     s5,s6,e1172 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x5ca>
+    0.00 :   e0e00:  ld      a0,136(sp)
+    0.00 :   e0e02:  ld      a5,32(sp)
+    0.00 :   e0e04:  subw    s6,s6,s5
+    0.00 :   e0e08:  mulw    a4,a0,s1
+    0.00 :   e0e0c:  add.uw  s0,s6,s5
+    0.00 :   e0e10:  addi    a5,a5,16
+    0.00 :   e0e12:  fsd     fs4,488(sp)
+    0.00 :   e0e14:  fsd     fs5,480(sp)
+    0.00 :   e0e16:  fsd     fs6,472(sp)
+    0.00 :   e0e18:  sd      s0,288(sp)
+    0.00 :   e0e1a:  fsw     fs7,408(sp)
+    0.00 :   e0e1e:  slli    s0,s3,0x2
+    0.00 :   e0e22:  auipc   a2,0xe8
+    0.00 :   e0e26:  flw     fs5,-494(a2) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e0e2a:  auipc   a2,0xe8
+    0.00 :   e0e2e:  flw     fs4,-394(a2) # 1c8ca0 <__func__.1+0x90>
+    0.00 :   e0e32:  sd      a4,304(sp)
+    0.00 :   e0e34:  ld      a4,72(sp)
+    0.00 :   e0e36:  auipc   a2,0xf1
+    0.00 :   e0e3a:  flh     fs6,-750(a2) # 1d1b48 <typeinfo name for ggml::cpu::extra_buffer_type+0x90>
+    0.00 :   e0e3e:  fmv.s   fs7,fs0
+    0.00 :   e0e42:  sh1add  a5,a4,a5
+    0.00 :   e0e46:  mul     a5,a5,a3
+    0.00 :   e0e4a:  mv      a3,a4
+    0.00 :   e0e4c:  slli    a4,a4,0x1
+    0.00 :   e0e4e:  sext.w  s6,a3
+    0.00 :   e0e52:  sd      a4,376(sp)
+    0.00 :   e0e54:  slli    a4,a3,0x2
+    0.00 :   e0e58:  sd      a4,112(sp)
+    0.00 :   e0e5a:  sd      s0,296(sp)
+    0.00 :   e0e5c:  sext.w  s0,a0
+    0.00 :   e0e60:  fsd     fs9,448(sp)
+    0.00 :   e0e62:  fsd     fs10,440(sp)
+    0.00 :   e0e64:  add     a3,a3,a5
+    0.00 :   e0e66:  mul     a4,s3,s5
+    0.00 :   e0e6a:  slli    a5,a5,0x2
+    0.00 :   e0e6c:  sd      a5,216(sp)
+    0.00 :   e0e6e:  ld      a5,152(sp)
+    0.00 :   e0e70:  slli    a3,a3,0x2
+    0.00 :   e0e72:  fsd     fs11,432(sp)
+    0.00 :   e0e74:  sd      s5,80(sp)
+    0.00 :   e0e76:  sd      s0,208(sp)
+    0.00 :   e0e78:  sd      a3,400(sp)
+    0.00 :   e0e7a:  mv      s11,s6
+    0.00 :   e0e7c:  mul     a5,a5,a0
+    0.00 :   e0e80:  sd      a1,392(sp)
+    0.00 :   e0e82:  sd      a5,200(sp)
+    0.00 :   e0e84:  addi    a5,a4,2
+    0.00 :   e0e88:  ld      a4,168(sp)
+    0.00 :   e0e8a:  sh2add  a5,a5,a4
+    0.00 :   e0e8e:  sd      a5,104(sp)
+    0.00 :   e0e90:  ld      a4,16(sp)
+    0.00 :   e0e92:  ld      a5,128(sp)
+    0.00 :   e0e94:  mul     a4,a4,a5
+    0.00 :   e0e98:  sd      a4,352(sp)
+    0.00 :   e0e9a:  ld      a4,8(sp)
+    0.00 :   e0e9c:  mul     a5,a4,a5
+    0.00 :   e0ea0:  sd      a5,344(sp)
+    0.00 :   e0ea2:  ld      a3,80(sp)
+    0.00 :   e0ea4:  ld      a5,200(sp)
+    0.00 :   e0ea6:  ld      a2,304(sp)
+    0.00 :   e0ea8:  fmv.w.x fa5,zero
+    0.00 :   e0eac:  div     a5,a3,a5
+    0.00 :   e0eb0:  fmv.s   fs3,fs5
+    0.00 :   e0eb4:  sext.w  a4,a5
+    0.00 :   e0eb8:  mulw    a5,a5,a2
+    0.00 :   e0ebc:  ld      a2,152(sp)
+    0.00 :   e0ebe:  sd      a4,88(sp)
+    0.00 :   e0ec0:  mul     a4,a4,a2
+    0.00 :   e0ec4:  ld      a2,136(sp)
+    0.00 :   e0ec6:  subw    a5,a3,a5
+    0.00 :   e0eca:  mul     a4,a4,a2
+    0.00 :   e0ece:  sub     a4,a3,a4
+    0.00 :   e0ed2:  div     a3,a4,a2
+    0.00 :   e0ed6:  ld      a4,208(sp)
+    0.00 :   e0ed8:  mulw    a4,a3,a4
+    0.00 :   e0edc:  sd      a3,160(sp)
+    0.00 :   e0ede:  sext.w  a3,a3
+    0.00 :   e0ee0:  sd      a3,64(sp)
+    0.00 :   e0ee2:  subw    a5,a5,a4
+    0.00 :   e0ee4:  sd      a5,96(sp)
+    0.00 :   e0ee6:  flt.s   a5,fa5,fs7
+    0.00 :   e0eea:  beqz    a5,e0f0a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x362>
+    0.00 :   e0eec:  ld      a4,360(sp)
+    0.00 :   e0eee:  sd      a7,24(sp)
+    0.00 :   e0ef0:  bgeu    a3,a4,e1438 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x890>
+    0.00 :   e0ef4:  addiw   a5,a3,1
+    0.00 :   e0ef8:  fcvt.s.wu       fa1,a5
+    0.00 :   e0efc:  flw     fa0,408(sp)
+    0.00 :   e0f00:  jal     82b30 <powf@plt>
+    0.00 :   e0f04:  fmv.s   fs3,fa0
+    0.00 :   e0f08:  ld      a7,24(sp)
+    0.00 :   e0f0a:  ld      a5,184(sp)
+    0.00 :   e0f0c:  ld      a2,216(sp)
+    0.00 :   e0f0e:  lw      a4,0(s2)
+    0.00 :   e0f12:  ld      a5,16(a5)
+    0.00 :   e0f14:  sd      a7,120(sp)
+    0.00 :   e0f16:  mv      a3,a5
+    0.00 :   e0f18:  add     s7,a3,a2
+    0.00 :   e0f1c:  ld      a3,112(sp)
+    0.00 :   e0f1e:  sd      a5,192(sp)
+    0.00 :   e0f20:  li      a5,1
+    0.00 :   e0f22:  add     s6,s7,a3
+    0.00 :   e0f26:  sh1add  a3,a3,s7
+    0.00 :   e0f2a:  sd      a3,24(sp)
+    0.00 :   e0f2c:  beq     a4,a5,e142a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x882>
+    0.00 :   e0f30:  ld      a2,112(sp)
+    0.00 :   e0f32:  li      a1,0
+    0.00 :   e0f34:  mv      a0,s7
+    0.00 :   e0f36:  jal     85980 <memset@plt>
+    0.00 :   e0f3a:  ld      a7,120(sp)
+    0.00 :   e0f3c:  li      s4,0
+    0.00 :   e0f3e:  beqz    a7,e0f7a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x3d2>
+    0.00 :   e0f42:  ld      a3,64(sp)
+    0.00 :   e0f44:  ld      a5,32(a7)
+    0.00 :   e0f48:  ld      a4,40(a7)
+    0.00 :   e0f4c:  ld      a2,72(a7)
+    0.00 :   e0f50:  rem     a5,a3,a5
+    0.00 :   e0f54:  ld      a3,88(sp)
+    0.00 :   e0f56:  ld      a1,64(a7)
+    0.00 :   e0f5a:  ld      s4,248(a7)
+    0.00 :   e0f5e:  rem     a4,a3,a4
+    0.00 :   e0f62:  ld      a3,56(a7)
+    0.00 :   e0f66:  mul     a4,a4,a2
+    0.00 :   e0f6a:  ld      a2,96(sp)
+    0.00 :   e0f6c:  mul     a5,a5,a1
+    0.00 :   e0f70:  mul     a3,a2,a3
+    0.00 :   e0f74:  add     a5,a5,a4
+    0.00 :   e0f76:  add     a5,a5,a3
+    0.00 :   e0f78:  add     s4,s4,a5
+    0.00 :   e0f7a:  ld      a4,88(sp)
+    0.00 :   e0f7c:  ld      a5,256(sp)
+    0.00 :   e0f7e:  ld      a3,248(sp)
+    0.00 :   e0f80:  ld      a6,96(sp)
+    0.00 :   e0f82:  div     s0,a4,a5
+    0.00 :   e0f86:  ld      a5,176(sp)
+    0.00 :   e0f88:  ld      a2,32(sp)
+    0.00 :   e0f8a:  ld      a1,24(sp)
+    0.00 :   e0f8c:  ld      a0,248(a5)
+    0.00 :   e0f8e:  ld      a5,64(sp)
+    0.00 :   e0f90:  sd      a7,120(sp)
+    0.00 :   e0f92:  div     s10,a5,a3
+    0.00 :   e0f96:  ld      a3,272(sp)
+    0.00 :   e0f98:  sext.w  s0,s0
+    0.00 :   e0f9a:  div     s3,a4,a3
+    0.00 :   e0f9e:  ld      a3,264(sp)
+    0.00 :   e0fa0:  sext.w  s10,s10
+    0.00 :   e0fa2:  div     s1,a5,a3
+    0.00 :   e0fa6:  ld      a3,240(sp)
+    0.00 :   e0fa8:  sext.w  s3,s3
+    0.00 :   e0faa:  mul     a5,a5,a3
+    0.00 :   e0fae:  ld      a3,224(sp)
+    0.00 :   e0fb0:  sext.w  s1,s1
+    0.00 :   e0fb2:  mul     a3,a4,a3
+    0.00 :   e0fb6:  ld      a4,232(sp)
+    0.00 :   e0fb8:  mul     a4,a4,a6
+    0.00 :   e0fbc:  add     a5,a5,a3
+    0.00 :   e0fbe:  add     a5,a5,a4
+    0.00 :   e0fc0:  add     a0,a0,a5
+    0.00 :   e0fc2:  ld      a5,280(sp)
+    0.00 :   e0fc4:  jalr    a5
+    0.00 :   e0fc6:  ld      a2,128(sp)
+    0.00 :   e0fc8:  ld      a5,0(sp)
+    0.00 :   e0fca:  frrm    a3
+    0.00 :   e0fce:  ld      a7,120(sp)
+    0.00 :   e0fd0:  bge     a2,a5,e1524 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x97c>
+    0.00 :   e0fd4:  ld      a5,320(sp)
+    0.00 :   e0fd6:  vsetvli s8,zero,e8,m2,ta,ma
+    0.00 :   e0fda:  ld      a1,328(sp)
+    0.00 :   e0fdc:  fmv.s   fs10,fs4
+    0.00 :   e0fe0:  mul     a4,s3,a5
+    0.00 :   e0fe4:  ld      a5,312(sp)
+    0.00 :   e0fe6:  fmv.w.x fs11,zero
+    0.00 :   e0fea:  mv      s5,s6
+    0.00 :   e0fec:  slliw   s3,s8,0x1
+    0.00 :   e0ff0:  mv      s6,s8
+    0.00 :   e0ff2:  mul     s0,s0,a5
+    0.00 :   e0ff6:  ld      a5,352(sp)
+    0.00 :   e0ff8:  add     a4,a4,a5
+    0.00 :   e0ffa:  ld      a5,336(sp)
+    0.00 :   e0ffc:  mul     s10,s10,a1
+    0.00 :   e1000:  mul     s1,s1,a5
+    0.00 :   e1004:  ld      a5,344(sp)
+    0.00 :   e1006:  add     a5,a5,s0
+    0.00 :   e1008:  add     s10,s10,a5
+    0.00 :   e100a:  mv      s0,a2
+    0.00 :   e100c:  add     s1,s1,a4
+    0.00 :   e100e:  beqz    s4,e11ee <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x646>
+    0.00 :   e1012:  sh1add  a5,s0,s4
+    0.00 :   e1016:  lhu     a5,0(a5)
+    0.00 :   e101a:  fmv.h.x fa5,a5
+    2.33 :   e101e:  fcvt.s.h        fs0,fa5
+    0.00 :   e1022:  fmul.s  fs0,fs0,fs3
+    0.00 :   e1026:  feq.s   a5,fs0,fs4
+    0.93 :   e102a:  bnez    a5,e131e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x776>
+    0.47 :   e102e:  ld      a3,248(s9)
+    0.00 :   e1032:  ld      a5,24(sp)
+    0.00 :   e1034:  lw      a0,32(sp)
+    0.00 :   e1036:  ld      t1,48(sp)
+    0.00 :   e1038:  li      a7,1
+    0.00 :   e103a:  li      a6,0
+    0.00 :   e103c:  add     a3,a3,s10
+    0.00 :   e103e:  li      a4,0
+    0.00 :   e1040:  li      a2,0
+    0.00 :   e1042:  addi    a1,sp,420
+    0.00 :   e1044:  jalr    t1
+    0.00 :   e1046:  fmv.w.x fa5,zero
+    0.00 :   e104a:  flw     fa0,420(sp)
+    0.00 :   e104e:  flw     fa4,40(sp)
+    0.93 :   e1052:  feq.s   a5,fs2,fa5
+    0.00 :   e1056:  fmul.s  fa0,fa4,fa0
+    0.00 :   e105a:  bnez    a5,e1064 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x4bc>
+    0.00 :   e105c:  jal     82f90 <tanhf@plt>
+    0.00 :   e1060:  fmul.s  fa0,fa0,fs2
+    0.93 :   e1064:  fadd.s  fs0,fs0,fa0
+    0.00 :   e1068:  ld      a0,248(s2)
+    0.00 :   e106c:  lw      a4,0(s2)
+    0.00 :   e1070:  li      a5,1
+    0.00 :   e1072:  add     s8,a0,s1
+    0.00 :   e1076:  fsw     fs0,420(sp)
+    0.00 :   e107a:  beq     a4,a5,e11f4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x64c>
+    0.00 :   e107e:  flt.s   a5,fs10,fs0
+    0.00 :   e1082:  bnez    a5,e1368 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x7c0>
+    0.00 :   e1086:  fsub.s  fa0,fs0,fs10
+    0.00 :   e108a:  jal     841f0 <expf@plt>
+    0.00 :   e108e:  ld      a5,56(sp)
+    0.00 :   e1090:  frrm    a3
+    0.00 :   e1094:  fmv.s   fs1,fa0
+    0.00 :   e1098:  beqz    a5,e13e0 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x838>
+    0.00 :   e109c:  ld      a2,72(sp)
+    0.00 :   e109e:  mv      a0,s8
+    0.00 :   e10a0:  mv      a1,s5
+    0.00 :   e10a2:  jalr    a5
+    0.00 :   e10a4:  frrm    a3
+    0.00 :   e10a8:  fmv.s   fs9,fs5
+    0.00 :   e10ac:  blez    s11,e11d0 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x628>
+    0.00 :   e10b0:  li      a4,0
+    0.00 :   e10b2:  subw    a5,s11,a4
+    0.00 :   e10b6:  vsetvli a5,a5,e32,m8,ta,ma
+    0.00 :   e10ba:  sh2add  a2,a4,s7
+    0.00 :   e10be:  sh2add  a1,a4,s5
+    0.00 :   e10c2:  vle32.v v16,(a2)
+    0.00 :   e10c6:  vle32.v v8,(a1)
+    0.00 :   e10ca:  addw    a4,a4,a5
+    0.00 :   e10cc:  vfmadd.vf       v8,fs1,v16
+    0.00 :   e10d0:  vse32.v v8,(a2)
+    0.00 :   e10d4:  blt     a4,s11,e10b2 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x50a>
+    0.00 :   e10d8:  ld      a5,16(sp)
+    0.00 :   e10da:  addi    s0,s0,1
+    0.00 :   e10dc:  fmadd.s fs11,fs9,fs11,fs1
+    0.00 :   e10e0:  add     s1,s1,a5
+    0.00 :   e10e2:  ld      a5,8(sp)
+    0.00 :   e10e4:  add     s10,s10,a5
+    0.00 :   e10e6:  ld      a5,0(sp)
+    0.00 :   e10e8:  bne     a5,s0,e100e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x466>
+    0.00 :   e10ec:  lw      a4,0(s2)
+    0.00 :   e10f0:  li      a5,1
+    0.00 :   e10f2:  ld      a7,120(sp)
+    0.00 :   e10f4:  beq     a4,a5,e133a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x792>
+    0.00 :   e10f8:  ld      a5,144(sp)
+    0.00 :   e10fa:  beqz    a5,e112a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x582>
+    0.00 :   e10fc:  ld      a5,128(sp)
+    0.00 :   e10fe:  bnez    a5,e112a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x582>
+    0.00 :   e1100:  ld      a5,144(sp)
+    0.00 :   e1102:  ld      a4,160(sp)
+    0.00 :   e1104:  sd      a7,24(sp)
+    0.00 :   e1106:  ld      a5,248(a5)
+    0.00 :   e1108:  sh2add.uw       a5,a4,a5
+    0.00 :   e110c:  flw     fs1,0(a5)
+    0.00 :   e1110:  flt.s   a5,fs10,fs1
+    0.00 :   e1114:  bnez    a5,e1546 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x99e>
+    0.00 :   e1118:  fsub.s  fa0,fs1,fs10
+    0.00 :   e111c:  jal     841f0 <expf@plt>
+    0.00 :   e1120:  fadd.s  fs11,fs11,fa0
+    0.00 :   e1124:  frrm    a3
+    0.00 :   e1128:  ld      a7,24(sp)
+    0.00 :   e112a:  ld      a5,168(sp)
+    0.00 :   e112c:  beqz    a5,e1464 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8bc>
+    0.00 :   e1130:  ld      a3,104(sp)
+    0.00 :   e1132:  ld      a4,112(sp)
+    0.00 :   e1134:  mv      t5,s7
+    0.00 :   e1136:  fsw     fs10,-8(a3)
+    0.00 :   e113a:  fsw     fs11,-4(a3)
+    0.00 :   e113e:  vsetvli a5,a4,e8,m8,ta,ma
+    0.00 :   e1142:  vle8.v  v8,(t5)
+    0.00 :   e1146:  sub     a4,a4,a5
+    0.00 :   e1148:  add     t5,t5,a5
+    0.00 :   e114a:  vse8.v  v8,(a3)
+    0.00 :   e114e:  add     a3,a3,a5
+    0.00 :   e1150:  bnez    a4,e113e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x596>
+    0.00 :   e1152:  ld      a4,104(sp)
+    0.00 :   e1154:  ld      a3,296(sp)
+    0.00 :   e1156:  ld      a5,80(sp)
+    0.00 :   e1158:  add     a4,a4,a3
+    0.00 :   e115a:  sd      a4,104(sp)
+    0.00 :   e115c:  ld      a4,288(sp)
+    0.00 :   e115e:  addi    a5,a5,1
+    0.00 :   e1160:  sd      a5,80(sp)
+    0.00 :   e1162:  bne     a4,a5,e0ea2 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x2fa>
+    0.00 :   e1166:  fld     fs4,488(sp)
+    0.00 :   e1168:  fld     fs5,480(sp)
+    0.00 :   e116a:  fld     fs6,472(sp)
+    0.00 :   e116c:  fld     fs9,448(sp)
+    0.00 :   e116e:  fld     fs10,440(sp)
+    0.00 :   e1170:  fld     fs11,432(sp)
+    0.00 :   e1172:  auipc   a5,0x149
+    0.00 :   e1176:  ld      a5,1262(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e117a:  ld      a4,424(sp)
+    0.00 :   e117c:  ld      a5,0(a5)
+    0.00 :   e117e:  xor     a5,a5,a4
+    0.00 :   e1180:  li      a4,0
+    0.00 :   e1182:  bnez    a5,e1798 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbf0>
+    0.47 :   e1186:  ld      ra,632(sp)
+    0.00 :   e118a:  ld      s0,624(sp)
+    0.00 :   e118e:  fld     fs0,520(sp)
+    0.00 :   e1192:  fld     fs1,512(sp)
+    0.00 :   e1196:  fld     fs2,504(sp)
+    0.00 :   e1198:  fld     fs3,496(sp)
+    0.00 :   e119a:  fld     fs7,464(sp)
+    0.00 :   e119c:  fld     fs8,456(sp)
+    0.00 :   e119e:  ld      s1,616(sp)
+    0.00 :   e11a2:  ld      s2,608(sp)
+    0.00 :   e11a6:  ld      s3,600(sp)
+    0.00 :   e11aa:  ld      s4,592(sp)
+    0.00 :   e11ae:  ld      s5,584(sp)
+    0.00 :   e11b2:  ld      s6,576(sp)
+    0.00 :   e11b6:  ld      s7,568(sp)
+    0.00 :   e11ba:  ld      s8,560(sp)
+    0.00 :   e11be:  ld      s9,552(sp)
+    0.00 :   e11c2:  ld      s10,544(sp)
+    0.00 :   e11c6:  ld      s11,536(sp)
+    0.00 :   e11ca:  addi    sp,sp,640
+    0.00 :   e11ce:  ret
+    0.00 :   e11d0:  auipc   a5,0xe8
+    0.00 :   e11d4:  flw     fs9,-1436(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e11d8:  ld      a5,16(sp)
+    0.00 :   e11da:  addi    s0,s0,1
+    0.00 :   e11dc:  fmadd.s fs11,fs9,fs11,fs1
+    0.00 :   e11e0:  add     s1,s1,a5
+    0.00 :   e11e2:  ld      a5,8(sp)
+    0.00 :   e11e4:  add     s10,s10,a5
+    0.00 :   e11e6:  ld      a5,0(sp)
+    0.00 :   e11e8:  bne     a5,s0,e100e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x466>
+    0.00 :   e11ec:  j       e10ec <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x544>
+    0.00 :   e11ee:  fmv.w.x fs0,zero
+    0.00 :   e11f2:  j       e102e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x486>
+    0.47 :   e11f4:  flt.s   a5,fs10,fs0
+    0.00 :   e11f8:  beqz    a5,e13ba <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x812>
+    0.00 :   e11fc:  fsub.s  fa0,fs10,fs0
+    0.00 :   e1200:  jal     841f0 <expf@plt>
+    0.00 :   e1204:  negw    a5,s3
+    0.00 :   e1208:  and     a5,s11,a5
+    0.00 :   e120c:  frrm    a3
+    0.00 :   e1210:  fmv.s   fs9,fa0
+    0.00 :   e1214:  fcvt.h.s        fa5,fa0
+    0.00 :   e1218:  blez    a5,e1518 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x970>
+    0.00 :   e121c:  slli    a6,s3,0x1
+    0.00 :   e1220:  vsetvli zero,s6,e16,m4,ta,ma
+    0.00 :   e1224:  mv      a4,s5
+    0.00 :   e1226:  slli    a7,s6,0x1
+    0.00 :   e122a:  li      a1,0
+    0.00 :   e122c:  vle16.v v4,(a4)
+    0.00 :   e1230:  vfmul.vf        v4,v4,fa5
+    0.00 :   e1234:  vse16.v v4,(a4)
+    0.00 :   e1238:  add     a2,a7,a4
+    0.00 :   e123c:  vle16.v v4,(a2)
+    0.00 :   e1240:  vfmul.vf        v4,v4,fa5
+    0.00 :   e1244:  vse16.v v4,(a2)
+    0.00 :   e1248:  addw    a1,s3,a1
+    0.00 :   e124c:  add     a4,a4,a6
+    0.00 :   e124e:  blt     a1,a5,e122c <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x684>
+    0.00 :   e1252:  bge     a5,s11,e130c <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x764>
+    0.00 :   e1256:  mv      a2,a5
+    0.00 :   e1258:  subw    a4,s11,a2
+    0.00 :   e125c:  vsetvli a4,a4,e16,m4,ta,ma
+    0.00 :   e1260:  sh1add  a1,a2,s5
+    0.00 :   e1264:  vle16.v v4,(a1)
+    0.00 :   e1268:  addw    a2,a2,a4
+    0.00 :   e126a:  vfmul.vf        v4,v4,fa5
+    0.00 :   e126e:  vse16.v v4,(a1)
+    0.00 :   e1272:  blt     a2,s11,e1258 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x6b0>
+    0.00 :   e1276:  fmv.h   fa5,fs6
+    0.00 :   e127a:  fmv.s   fs1,fs5
+    0.00 :   e127e:  slli    a7,s6,0x1
+    0.00 :   e1282:  blez    a5,e12c8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x720>
+    0.00 :   e1286:  vsetvli zero,s6,e16,m4,ta,ma
+    0.00 :   e128a:  slli    t6,s3,0x1
+    0.00 :   e128e:  mv      a2,s8
+    0.00 :   e1290:  mv      a4,s5
+    0.00 :   e1292:  li      a6,0
+    0.47 :   e1294:  vle16.v v8,(a2)
+    0.93 :   e1298:  vle16.v v4,(a4)
+   44.65 :   e129c:  vfmacc.vf       v4,fa5,v8
+    0.00 :   e12a0:  vse16.v v4,(a4)
+    1.86 :   e12a4:  add     a1,a4,a7
+    0.00 :   e12a8:  add     a0,a7,a2
+    0.47 :   e12ac:  vle16.v v4,(a1)
+    1.86 :   e12b0:  vle16.v v8,(a0)
+    6.05 :   e12b4:  vfmacc.vf       v4,fa5,v8
+    0.00 :   e12b8:  vse16.v v4,(a1)
+   32.09 :   e12bc:  addw    a6,a6,s3
+    0.00 :   e12c0:  add     a2,a2,t6
+    0.00 :   e12c2:  add     a4,a4,t6
+    0.00 :   e12c4:  blt     a6,a5,e1294 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x6ec>
+    0.00 :   e12c8:  bge     a5,s11,e12f2 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x74a>
+    0.00 :   e12cc:  subw    a4,s11,a5
+    0.00 :   e12d0:  vsetvli a4,a4,e16,m4,ta,ma
+    0.00 :   e12d4:  sh1add  a2,a5,s5
+    0.00 :   e12d8:  sh1add  a1,a5,s8
+    0.00 :   e12dc:  vle16.v v4,(a2)
+    0.00 :   e12e0:  vle16.v v8,(a1)
+    0.00 :   e12e4:  addw    a5,a5,a4
+    0.00 :   e12e6:  vfmacc.vf       v4,fa5,v8
+    0.00 :   e12ea:  vse16.v v4,(a2)
+    0.00 :   e12ee:  blt     a5,s11,e12cc <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x724>
+    0.00 :   e12f2:  ld      a5,16(sp)
+    0.00 :   e12f4:  addi    s0,s0,1
+    0.00 :   e12f6:  fmadd.s fs11,fs9,fs11,fs1
+    0.00 :   e12fa:  add     s1,s1,a5
+    0.00 :   e12fc:  ld      a5,8(sp)
+    0.00 :   e12fe:  fmv.s   fs10,fs0
+    0.93 :   e1302:  add     s10,s10,a5
+    0.00 :   e1304:  ld      a5,0(sp)
+    0.00 :   e1306:  bne     a5,s0,e100e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x466>
+    0.00 :   e130a:  j       e10ec <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x544>
+    0.00 :   e130c:  auipc   a4,0xf1
+    0.00 :   e1310:  flh     fa5,-1988(a4) # 1d1b48 <typeinfo name for ggml::cpu::extra_buffer_type+0x90>
+    0.00 :   e1314:  auipc   a4,0xe8
+    0.00 :   e1318:  flw     fs1,-1760(a4) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e131c:  j       e128a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x6e2>
+    0.00 :   e131e:  ld      a5,16(sp)
+    0.00 :   e1320:  addi    s0,s0,1
+    0.00 :   e1322:  add     s1,s1,a5
+    0.00 :   e1324:  ld      a5,8(sp)
+    0.00 :   e1326:  add     s10,s10,a5
+    0.00 :   e1328:  ld      a5,0(sp)
+    0.00 :   e132a:  bne     s0,a5,e1012 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x46a>
+    0.00 :   e132e:  lw      a4,0(s2)
+    0.00 :   e1332:  li      a5,1
+    0.00 :   e1334:  ld      a7,120(sp)
+    0.00 :   e1336:  bne     a4,a5,e10f8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x550>
+    0.00 :   e133a:  ld      a5,72(sp)
+    0.00 :   e133c:  blez    a5,e10f8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x550>
+    0.00 :   e1340:  ld      a5,192(sp)
+    0.00 :   e1342:  ld      a4,400(sp)
+    0.00 :   e1344:  ld      a1,72(sp)
+    0.00 :   e1346:  mv      a2,s7
+    0.00 :   e1348:  add     a4,a4,a5
+    0.00 :   e134a:  vsetvli a5,a1,e16,mf2,ta,ma
+    0.00 :   e134e:  vle16.v v2,(a4)
+    0.00 :   e1352:  sub     a1,a1,a5
+    0.00 :   e1354:  sh1add  a4,a5,a4
+    0.00 :   e1358:  vfwcvt.f.f.v    v1,v2
+    0.00 :   e135c:  vse32.v v1,(a2)
+    0.00 :   e1360:  sh2add  a2,a5,a2
+    0.00 :   e1364:  bnez    a1,e134a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x7a2>
+    0.00 :   e1366:  j       e10f8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x550>
+    0.00 :   e1368:  fsub.s  fa0,fs10,fs0
+    0.00 :   e136c:  jal     841f0 <expf@plt>
+    0.00 :   e1370:  frrm    a3
+    0.00 :   e1374:  fmv.s   fs9,fa0
+    0.00 :   e1378:  blez    s11,e14e2 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x93a>
+    0.00 :   e137c:  li      a4,0
+    0.00 :   e137e:  subw    a5,s11,a4
+    0.00 :   e1382:  vsetvli a5,a5,e32,m8,ta,ma
+    0.00 :   e1386:  sh2add  a2,a4,s7
+    0.00 :   e138a:  vle32.v v8,(a2)
+    0.00 :   e138e:  addw    a4,a4,a5
+    0.00 :   e1390:  vfmul.vf        v8,v8,fs9
+    0.00 :   e1394:  vse32.v v8,(a2)
+    0.00 :   e1398:  blt     a4,s11,e137e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x7d6>
+    0.00 :   e139c:  ld      a5,56(sp)
+    0.00 :   e139e:  beqz    a5,e1456 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8ae>
+    0.00 :   e13a0:  ld      a2,72(sp)
+    0.00 :   e13a2:  mv      a0,s8
+    0.00 :   e13a4:  mv      a1,s5
+    0.00 :   e13a6:  jalr    a5
+    0.00 :   e13a8:  frrm    a3
+    0.00 :   e13ac:  fmv.s   fs10,fs0
+    0.00 :   e13b0:  auipc   a5,0xe8
+    0.00 :   e13b4:  flw     fs1,-1916(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e13b8:  j       e10b0 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x508>
+    0.47 :   e13ba:  fsub.s  fa0,fs0,fs10
+    0.00 :   e13be:  fmv.s   fs9,fs5
+    0.00 :   e13c2:  fmv.s   fs0,fs10
+    0.00 :   e13c6:  jal     841f0 <expf@plt>
+    0.00 :   e13ca:  negw    a5,s3
+    0.00 :   e13ce:  frrm    a3
+    3.26 :   e13d2:  fmv.s   fs1,fa0
+    0.47 :   e13d6:  fcvt.h.s        fa5,fa0
+    0.00 :   e13da:  and     a5,s11,a5
+    0.00 :   e13de:  j       e127e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x6d6>
+    0.00 :   e13e0:  blez    s11,e11d0 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x628>
+    0.00 :   e13e4:  auipc   a5,0xe8
+    0.00 :   e13e8:  flw     fs9,-1968(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e13ec:  li      a4,0
+    0.00 :   e13ee:  subw    a5,s11,a4
+    0.00 :   e13f2:  vsetvli a5,a5,e32,m8,ta,ma
+    0.00 :   e13f6:  sh2add  a2,a4,s7
+    0.00 :   e13fa:  sh2add  a1,a4,s8
+    0.00 :   e13fe:  vle32.v v16,(a2)
+    0.00 :   e1402:  vle32.v v8,(a1)
+    0.00 :   e1406:  addw    a4,a4,a5
+    0.00 :   e1408:  vfmadd.vf       v8,fs1,v16
+    0.00 :   e140c:  vse32.v v8,(a2)
+    0.00 :   e1410:  blt     a4,s11,e13ee <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x846>
+    0.00 :   e1414:  ld      a5,16(sp)
+    0.00 :   e1416:  addi    s0,s0,1
+    0.00 :   e1418:  fmadd.s fs11,fs9,fs11,fs1
+    0.00 :   e141c:  add     s1,s1,a5
+    0.00 :   e141e:  ld      a5,8(sp)
+    0.00 :   e1420:  add     s10,s10,a5
+    0.00 :   e1422:  ld      a5,0(sp)
+    0.00 :   e1424:  bne     a5,s0,e100e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x466>
+    0.00 :   e1428:  j       e10ec <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x544>
+    0.00 :   e142a:  ld      a2,376(sp)
+    0.00 :   e142c:  li      a1,0
+    0.00 :   e142e:  mv      a0,s6
+    0.00 :   e1430:  jal     85980 <memset@plt>
+    0.00 :   e1434:  ld      a7,120(sp)
+    0.00 :   e1436:  j       e0f3c <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x394>
+    0.00 :   e1438:  subw    a5,a3,a4
+    0.00 :   e143c:  slliw   a5,a5,0x1
+    0.00 :   e1440:  addiw   a5,a5,1
+    0.00 :   e1442:  fcvt.s.wu       fa1,a5
+    0.00 :   e1446:  fmv.s   fa0,fs8
+    0.00 :   e144a:  jal     82b30 <powf@plt>
+    0.00 :   e144e:  fmv.s   fs3,fa0
+    0.00 :   e1452:  ld      a7,24(sp)
+    0.00 :   e1454:  j       e0f0a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x362>
+    0.00 :   e1456:  fmv.s   fs10,fs0
+    0.00 :   e145a:  auipc   a5,0xe7
+    0.00 :   e145e:  flw     fs1,2010(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e1462:  j       e13ec <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x844>
+    0.00 :   e1464:  fmv.w.x fa5,zero
+    0.00 :   e1468:  feq.s   a5,fs11,fa5
+    0.00 :   e146c:  bnez    a5,e151e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x976>
+    0.00 :   e146e:  auipc   a5,0xe7
+    0.00 :   e1472:  flw     fa5,1990(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e1476:  fdiv.s  fa5,fa5,fs11
+    0.00 :   e147a:  fsrm    a3
+    0.00 :   e147e:  blez    s11,e14a2 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8fa>
+    0.00 :   e1482:  li      a4,0
+    0.00 :   e1484:  subw    a5,s11,a4
+    0.00 :   e1488:  sh2add  a3,a4,s7
+    0.00 :   e148c:  vsetvli a5,a5,e32,m8,ta,ma
+    0.00 :   e1490:  vle32.v v8,(a3)
+    0.00 :   e1494:  addw    a4,a4,a5
+    0.00 :   e1496:  vfmul.vf        v8,v8,fa5
+    0.00 :   e149a:  vse32.v v8,(a3)
+    0.00 :   e149e:  blt     a4,s11,e1484 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8dc>
+    0.00 :   e14a2:  ld      a4,136(sp)
+    0.00 :   e14a4:  ld      a5,88(sp)
+    0.00 :   e14a6:  ld      a3,384(sp)
+    0.00 :   e14a8:  ld      a2,96(sp)
+    0.00 :   e14aa:  mul     a5,a5,a4
+    0.00 :   e14ae:  ld      a1,368(sp)
+    0.00 :   e14b0:  ld      a4,392(sp)
+    0.00 :   e14b2:  mv      t5,s7
+    0.00 :   e14b4:  ld      a4,248(a4)
+    0.00 :   e14b6:  mul     a5,a5,a3
+    0.00 :   e14ba:  mul     a2,a2,a3
+    0.00 :   e14be:  ld      a3,64(sp)
+    0.00 :   e14c0:  add     a5,a5,a3
+    0.00 :   e14c2:  mv      a3,a1
+    0.00 :   e14c4:  add     a5,a5,a2
+    0.00 :   e14c6:  mul     a5,a5,a1
+    0.00 :   e14ca:  add     a5,a5,a4
+    0.00 :   e14cc:  vsetvli a4,a3,e8,m8,ta,ma
+    0.00 :   e14d0:  vle8.v  v8,(t5)
+    0.00 :   e14d4:  sub     a3,a3,a4
+    0.00 :   e14d6:  add     t5,t5,a4
+    0.00 :   e14d8:  vse8.v  v8,(a5)
+    0.00 :   e14dc:  add     a5,a5,a4
+    0.00 :   e14de:  bnez    a3,e14cc <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x924>
+    0.00 :   e14e0:  j       e1152 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x5aa>
+    0.00 :   e14e2:  ld      a5,56(sp)
+    0.00 :   e14e4:  beqz    a5,e14f6 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x94e>
+    0.00 :   e14e6:  ld      a2,72(sp)
+    0.00 :   e14e8:  sw      a3,412(sp)
+    0.00 :   e14ec:  mv      a0,s8
+    0.00 :   e14ee:  mv      a1,s5
+    0.00 :   e14f0:  jalr    a5
+    0.00 :   e14f2:  lw      a3,412(sp)
+    0.00 :   e14f6:  auipc   a5,0xe7
+    0.00 :   e14fa:  flw     fs1,1854(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e14fe:  ld      a5,16(sp)
+    0.00 :   e1500:  addi    s0,s0,1
+    0.00 :   e1502:  fmadd.s fs11,fs9,fs11,fs1
+    0.00 :   e1506:  add     s1,s1,a5
+    0.00 :   e1508:  ld      a5,8(sp)
+    0.00 :   e150a:  fmv.s   fs10,fs0
+    0.00 :   e150e:  add     s10,s10,a5
+    0.00 :   e1510:  ld      a5,0(sp)
+    0.00 :   e1512:  bne     a5,s0,e100e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x466>
+    0.00 :   e1516:  j       e10ec <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x544>
+    0.00 :   e1518:  blt     a5,s11,e1256 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x6ae>
+    0.00 :   e151c:  j       e14f6 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x94e>
+    0.00 :   e151e:  fmv.w.x fa5,zero
+    0.00 :   e1522:  j       e147a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8d2>
+    0.00 :   e1524:  lw      a4,0(s2)
+    0.00 :   e1528:  li      a5,1
+    0.00 :   e152a:  beq     a4,a5,e163a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xa92>
+    0.00 :   e152e:  ld      a5,144(sp)
+    0.00 :   e1530:  beqz    a5,e1534 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x98c>
+    0.00 :   e1532:  beqz    a2,e15f4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xa4c>
+    0.00 :   e1534:  ld      a5,168(sp)
+    0.00 :   e1536:  beqz    a5,e151e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x976>
+    0.00 :   e1538:  auipc   a5,0xe7
+    0.00 :   e153c:  flw     fs10,1896(a5) # 1c8ca0 <__func__.1+0x90>
+    0.00 :   e1540:  fmv.w.x fs11,zero
+    0.00 :   e1544:  j       e1130 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x588>
+    0.00 :   e1546:  fsub.s  fa0,fs10,fs1
+    0.00 :   e154a:  jal     841f0 <expf@plt>
+    0.00 :   e154e:  ld      a7,24(sp)
+    0.00 :   e1550:  li      a4,0
+    0.00 :   e1552:  blez    s11,e164e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xaa6>
+    0.00 :   e1556:  subw    a5,s11,a4
+    0.00 :   e155a:  vsetvli a5,a5,e32,m8,ta,ma
+    0.00 :   e155e:  sh2add  a3,a4,s7
+    0.00 :   e1562:  vle32.v v8,(a3)
+    0.00 :   e1566:  addw    a4,a4,a5
+    0.00 :   e1568:  vfmul.vf        v8,v8,fa0
+    0.00 :   e156c:  vse32.v v8,(a3)
+    0.00 :   e1570:  blt     a4,s11,e1556 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x9ae>
+    0.00 :   e1574:  auipc   a5,0xe7
+    0.00 :   e1578:  flw     fa4,1728(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e157c:  ld      a5,168(sp)
+    0.00 :   e157e:  fmv.s   fs10,fs1
+    0.00 :   e1582:  fmadd.s fs11,fa0,fs11,fa4
+    0.00 :   e1586:  bnez    a5,e1130 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x588>
+    0.00 :   e158a:  fmv.w.x fa5,zero
+    0.00 :   e158e:  feq.s   a5,fs11,fa5
+    0.00 :   e1592:  bnez    a5,e1482 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8da>
+    0.00 :   e1596:  fdiv.s  fa5,fa4,fs11
+    0.00 :   e159a:  j       e1482 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8da>
+    0.00 :   e159c:  ld      a5,56(sp)
+    0.00 :   e159e:  bnez    a5,e0df8 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x250>
+    0.00 :   e15a2:  auipc   a5,0x149
+    0.00 :   e15a6:  ld      a5,190(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e15aa:  ld      a4,424(sp)
+    0.00 :   e15ac:  ld      a5,0(a5)
+    0.00 :   e15ae:  xor     a5,a5,a4
+    0.00 :   e15b0:  li      a4,0
+    0.00 :   e15b2:  fsd     fs4,488(sp)
+    0.00 :   e15b4:  fsd     fs5,480(sp)
+    0.00 :   e15b6:  fsd     fs6,472(sp)
+    0.00 :   e15b8:  fsd     fs9,448(sp)
+    0.00 :   e15ba:  fsd     fs10,440(sp)
+    0.00 :   e15bc:  fsd     fs11,432(sp)
+    0.00 :   e15be:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e15c2:  lui     a1,0x2
+    0.00 :   e15c4:  addi    a1,a1,356 # 2164 <std::__once_callable+0x20a4>
+    0.00 :   e15c8:  auipc   a3,0xe3
+    0.00 :   e15cc:  addi    a3,a3,-72 # 1c4580 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1440>
+    0.00 :   e15d0:  auipc   a2,0xe2
+    0.00 :   e15d4:  addi    a2,a2,-656 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e15d8:  auipc   a0,0xe3
+    0.00 :   e15dc:  addi    a0,a0,-640 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e15e0:  jal     84470 <ggml_abort@plt>
+    0.00 :   e15e4:  fmv.w.x fa5,a2
+    0.00 :   e15e8:  fdiv.s  fa5,fa5,fs2
+    0.00 :   e15ec:  fsw     fa5,40(sp)
+    0.00 :   e15f0:  j       e0d54 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x1ac>
+    0.00 :   e15f4:  auipc   a5,0xe7
+    0.00 :   e15f8:  flw     fs10,1708(a5) # 1c8ca0 <__func__.1+0x90>
+    0.00 :   e15fc:  fmv.w.x fs11,zero
+    0.00 :   e1600:  j       e1100 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x558>
+    0.00 :   e1602:  sd      zero,336(sp)
+    0.00 :   e1604:  sd      zero,16(sp)
+    0.00 :   e1606:  sd      zero,40(sp)
+    0.00 :   e1608:  sd      zero,56(sp)
+    0.00 :   e160a:  sd      zero,48(sp)
+    0.00 :   e160c:  sd      zero,72(sp)
+    0.00 :   e160e:  sd      zero,320(sp)
+    0.00 :   e1610:  j       e0c8a <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xe2>
+    0.00 :   e1614:  sd      zero,328(sp)
+    0.00 :   e1616:  sd      zero,8(sp)
+    0.00 :   e1618:  li      s8,0
+    0.00 :   e161a:  sd      zero,24(sp)
+    0.00 :   e161c:  li      s11,0
+    0.00 :   e161e:  sd      zero,32(sp)
+    0.00 :   e1620:  sd      zero,312(sp)
+    0.00 :   e1622:  j       e0c5c <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xb4>
+    0.00 :   e1626:  sd      zero,240(sp)
+    0.00 :   e1628:  sd      zero,232(sp)
+    0.00 :   e162a:  li      a5,0
+    0.00 :   e162c:  li      s1,0
+    0.00 :   e162e:  sd      zero,152(sp)
+    0.00 :   e1630:  sd      zero,136(sp)
+    0.00 :   e1632:  li      s10,0
+    0.00 :   e1634:  sd      zero,224(sp)
+    0.00 :   e1636:  j       e0c32 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8a>
+    0.00 :   e163a:  ld      a5,72(sp)
+    0.00 :   e163c:  blez    a5,e152e <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x986>
+    0.00 :   e1640:  auipc   a5,0xe7
+    0.00 :   e1644:  flw     fs10,1632(a5) # 1c8ca0 <__func__.1+0x90>
+    0.00 :   e1648:  fmv.w.x fs11,zero
+    0.00 :   e164c:  j       e1340 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x798>
+    0.00 :   e164e:  auipc   a5,0xe7
+    0.00 :   e1652:  flw     fa5,1510(a5) # 1c8c34 <__func__.1+0x24>
+    0.00 :   e1656:  ld      a5,168(sp)
+    0.00 :   e1658:  fmv.s   fs10,fs1
+    0.00 :   e165c:  fmadd.s fs11,fa0,fs11,fa5
+    0.00 :   e1660:  bnez    a5,e1130 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x588>
+    0.00 :   e1664:  j       e14a2 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0x8fa>
+    0.00 :   e1666:  auipc   a5,0x149
+    0.00 :   e166a:  ld      a5,-6(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e166e:  ld      a4,424(sp)
+    0.00 :   e1670:  ld      a5,0(a5)
+    0.00 :   e1672:  xor     a5,a5,a4
+    0.00 :   e1674:  li      a4,0
+    0.00 :   e1676:  fsd     fs0,520(sp)
+    0.00 :   e167a:  fsd     fs1,512(sp)
+    0.00 :   e167e:  fsd     fs2,504(sp)
+    0.00 :   e1680:  fsd     fs3,496(sp)
+    0.00 :   e1682:  fsd     fs4,488(sp)
+    0.00 :   e1684:  fsd     fs5,480(sp)
+    0.00 :   e1686:  fsd     fs6,472(sp)
+    0.00 :   e1688:  fsd     fs7,464(sp)
+    0.00 :   e168a:  fsd     fs8,456(sp)
+    0.00 :   e168c:  fsd     fs9,448(sp)
+    0.00 :   e168e:  fsd     fs10,440(sp)
+    0.00 :   e1690:  fsd     fs11,432(sp)
+    0.00 :   e1692:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e1696:  lui     a1,0x2
+    0.00 :   e1698:  addi    a1,a1,307 # 2133 <std::__once_callable+0x2073>
+    0.00 :   e169c:  auipc   a3,0xe3
+    0.00 :   e16a0:  addi    a3,a3,-444 # 1c44e0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x13a0>
+    0.00 :   e16a4:  auipc   a2,0xe2
+    0.00 :   e16a8:  addi    a2,a2,-868 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e16ac:  auipc   a0,0xe3
+    0.00 :   e16b0:  addi    a0,a0,-852 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e16b4:  jal     84470 <ggml_abort@plt>
+    0.00 :   e16b8:  auipc   a5,0x149
+    0.00 :   e16bc:  ld      a5,-88(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e16c0:  ld      a4,424(sp)
+    0.00 :   e16c2:  ld      a5,0(a5)
+    0.00 :   e16c4:  xor     a5,a5,a4
+    0.00 :   e16c6:  li      a4,0
+    0.00 :   e16c8:  fsd     fs4,488(sp)
+    0.00 :   e16ca:  fsd     fs5,480(sp)
+    0.00 :   e16cc:  fsd     fs6,472(sp)
+    0.00 :   e16ce:  fsd     fs9,448(sp)
+    0.00 :   e16d0:  fsd     fs10,440(sp)
+    0.00 :   e16d2:  fsd     fs11,432(sp)
+    0.00 :   e16d4:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e16d6:  lui     a1,0x2
+    0.00 :   e16d8:  addi    a1,a1,355 # 2163 <std::__once_callable+0x20a3>
+    0.00 :   e16dc:  auipc   a3,0xe3
+    0.00 :   e16e0:  addi    a3,a3,-396 # 1c4550 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1410>
+    0.00 :   e16e4:  auipc   a2,0xe2
+    0.00 :   e16e8:  addi    a2,a2,-932 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e16ec:  auipc   a0,0xe3
+    0.00 :   e16f0:  addi    a0,a0,-916 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e16f4:  jal     84470 <ggml_abort@plt>
+    0.00 :   e16f8:  auipc   a5,0x149
+    0.00 :   e16fc:  ld      a5,-152(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e1700:  ld      a4,424(sp)
+    0.00 :   e1702:  ld      a5,0(a5)
+    0.00 :   e1704:  xor     a5,a5,a4
+    0.00 :   e1706:  li      a4,0
+    0.00 :   e1708:  fsd     fs0,520(sp)
+    0.00 :   e170c:  fsd     fs1,512(sp)
+    0.00 :   e1710:  fsd     fs2,504(sp)
+    0.00 :   e1712:  fsd     fs3,496(sp)
+    0.00 :   e1714:  fsd     fs4,488(sp)
+    0.00 :   e1716:  fsd     fs5,480(sp)
+    0.00 :   e1718:  fsd     fs6,472(sp)
+    0.00 :   e171a:  fsd     fs7,464(sp)
+    0.00 :   e171c:  fsd     fs8,456(sp)
+    0.00 :   e171e:  fsd     fs9,448(sp)
+    0.00 :   e1720:  fsd     fs10,440(sp)
+    0.00 :   e1722:  fsd     fs11,432(sp)
+    0.00 :   e1724:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e1726:  lui     a1,0x2
+    0.00 :   e1728:  addi    a1,a1,303 # 212f <std::__once_callable+0x206f>
+    0.00 :   e172c:  auipc   a3,0xe3
+    0.00 :   e1730:  addi    a3,a3,-620 # 1c44c0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1380>
+    0.00 :   e1734:  auipc   a2,0xe2
+    0.00 :   e1738:  addi    a2,a2,-1012 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e173c:  auipc   a0,0xe3
+    0.00 :   e1740:  addi    a0,a0,-996 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e1744:  jal     84470 <ggml_abort@plt>
+    0.00 :   e1748:  auipc   a5,0x149
+    0.00 :   e174c:  ld      a5,-232(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e1750:  ld      a4,424(sp)
+    0.00 :   e1752:  ld      a5,0(a5)
+    0.00 :   e1754:  xor     a5,a5,a4
+    0.00 :   e1756:  li      a4,0
+    0.00 :   e1758:  fsd     fs0,520(sp)
+    0.00 :   e175c:  fsd     fs1,512(sp)
+    0.00 :   e1760:  fsd     fs2,504(sp)
+    0.00 :   e1762:  fsd     fs3,496(sp)
+    0.00 :   e1764:  fsd     fs4,488(sp)
+    0.00 :   e1766:  fsd     fs5,480(sp)
+    0.00 :   e1768:  fsd     fs6,472(sp)
+    0.00 :   e176a:  fsd     fs7,464(sp)
+    0.00 :   e176c:  fsd     fs8,456(sp)
+    0.00 :   e176e:  fsd     fs9,448(sp)
+    0.00 :   e1770:  fsd     fs10,440(sp)
+    0.00 :   e1772:  fsd     fs11,432(sp)
+    0.00 :   e1774:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e1776:  lui     a1,0x2
+    0.00 :   e1778:  addi    a1,a1,304 # 2130 <std::__once_callable+0x2070>
+    0.00 :   e177c:  auipc   a3,0xe3
+    0.00 :   e1780:  addi    a3,a3,-684 # 1c44d0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1390>
+    0.00 :   e1784:  auipc   a2,0xe2
+    0.00 :   e1788:  addi    a2,a2,-1092 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e178c:  auipc   a0,0xe3
+    0.00 :   e1790:  addi    a0,a0,-1076 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e1794:  jal     84470 <ggml_abort@plt>
+    0.00 :   e1798:  fsd     fs4,488(sp)
+    0.00 :   e179a:  fsd     fs5,480(sp)
+    0.00 :   e179c:  fsd     fs6,472(sp)
+    0.00 :   e179e:  fsd     fs9,448(sp)
+    0.00 :   e17a0:  fsd     fs10,440(sp)
+    0.00 :   e17a2:  fsd     fs11,432(sp)
+    0.00 :   e17a4:  jal     86380 <__stack_chk_fail@plt>
+    0.00 :   e17a8:  auipc   a5,0x149
+    0.00 :   e17ac:  ld      a5,-328(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e17b0:  ld      a4,424(sp)
+    0.00 :   e17b2:  ld      a5,0(a5)
+    0.00 :   e17b4:  xor     a5,a5,a4
+    0.00 :   e17b6:  li      a4,0
+    0.00 :   e17b8:  fsd     fs0,520(sp)
+    0.00 :   e17bc:  fsd     fs1,512(sp)
+    0.00 :   e17c0:  fsd     fs2,504(sp)
+    0.00 :   e17c2:  fsd     fs3,496(sp)
+    0.00 :   e17c4:  fsd     fs4,488(sp)
+    0.00 :   e17c6:  fsd     fs5,480(sp)
+    0.00 :   e17c8:  fsd     fs6,472(sp)
+    0.00 :   e17ca:  fsd     fs7,464(sp)
+    0.00 :   e17cc:  fsd     fs8,456(sp)
+    0.00 :   e17ce:  fsd     fs9,448(sp)
+    0.00 :   e17d0:  fsd     fs10,440(sp)
+    0.00 :   e17d2:  fsd     fs11,432(sp)
+    0.00 :   e17d4:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e17d6:  lui     a1,0x2
+    0.00 :   e17d8:  addi    a1,a1,309 # 2135 <std::__once_callable+0x2075>
+    0.00 :   e17dc:  auipc   a3,0xe3
+    0.00 :   e17e0:  addi    a3,a3,-700 # 1c4520 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x13e0>
+    0.00 :   e17e4:  auipc   a2,0xe2
+    0.00 :   e17e8:  addi    a2,a2,-1188 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e17ec:  auipc   a0,0xe3
+    0.00 :   e17f0:  addi    a0,a0,-1172 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e17f4:  jal     84470 <ggml_abort@plt>
+    0.00 :   e17f8:  auipc   a5,0x149
+    0.00 :   e17fc:  ld      a5,-408(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e1800:  ld      a4,424(sp)
+    0.00 :   e1802:  ld      a5,0(a5)
+    0.00 :   e1804:  xor     a5,a5,a4
+    0.00 :   e1806:  li      a4,0
+    0.00 :   e1808:  fsd     fs0,520(sp)
+    0.00 :   e180c:  fsd     fs1,512(sp)
+    0.00 :   e1810:  fsd     fs2,504(sp)
+    0.00 :   e1812:  fsd     fs3,496(sp)
+    0.00 :   e1814:  fsd     fs4,488(sp)
+    0.00 :   e1816:  fsd     fs5,480(sp)
+    0.00 :   e1818:  fsd     fs6,472(sp)
+    0.00 :   e181a:  fsd     fs7,464(sp)
+    0.00 :   e181c:  fsd     fs8,456(sp)
+    0.00 :   e181e:  fsd     fs9,448(sp)
+    0.00 :   e1820:  fsd     fs10,440(sp)
+    0.00 :   e1822:  fsd     fs11,432(sp)
+    0.00 :   e1824:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e1826:  lui     a1,0x2
+    0.00 :   e1828:  addi    a1,a1,308 # 2134 <std::__once_callable+0x2074>
+    0.00 :   e182c:  auipc   a3,0xe3
+    0.00 :   e1830:  addi    a3,a3,-812 # 1c4500 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x13c0>
+    0.00 :   e1834:  auipc   a2,0xe2
+    0.00 :   e1838:  addi    a2,a2,-1268 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e183c:  auipc   a0,0xe3
+    0.00 :   e1840:  addi    a0,a0,-1252 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e1844:  jal     84470 <ggml_abort@plt>
+    0.00 :   e1848:  auipc   a5,0x149
+    0.00 :   e184c:  ld      a5,-488(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e1850:  ld      a4,424(sp)
+    0.00 :   e1852:  ld      a5,0(a5)
+    0.00 :   e1854:  xor     a5,a5,a4
+    0.00 :   e1856:  li      a4,0
+    0.00 :   e1858:  fsd     fs0,520(sp)
+    0.00 :   e185c:  fsd     fs1,512(sp)
+    0.00 :   e1860:  fsd     fs2,504(sp)
+    0.00 :   e1862:  fsd     fs3,496(sp)
+    0.00 :   e1864:  fsd     fs4,488(sp)
+    0.00 :   e1866:  fsd     fs5,480(sp)
+    0.00 :   e1868:  fsd     fs6,472(sp)
+    0.00 :   e186a:  fsd     fs7,464(sp)
+    0.00 :   e186c:  fsd     fs8,456(sp)
+    0.00 :   e186e:  fsd     fs9,448(sp)
+    0.00 :   e1870:  fsd     fs10,440(sp)
+    0.00 :   e1872:  fsd     fs11,432(sp)
+    0.00 :   e1874:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e1876:  lui     a1,0x2
+    0.00 :   e1878:  addi    a1,a1,318 # 213e <std::__once_callable+0x207e>
+    0.00 :   e187c:  auipc   a3,0xe2
+    0.00 :   e1880:  addi    a3,a3,-948 # 1c34c8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x388>
+    0.00 :   e1884:  auipc   a2,0xe2
+    0.00 :   e1888:  addi    a2,a2,-1348 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e188c:  auipc   a0,0xe3
+    0.00 :   e1890:  addi    a0,a0,-1332 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e1894:  jal     84470 <ggml_abort@plt>
+    0.00 :   e1898:  auipc   a5,0x149
+    0.00 :   e189c:  ld      a5,-568(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e18a0:  ld      a4,424(sp)
+    0.00 :   e18a2:  ld      a5,0(a5)
+    0.00 :   e18a4:  xor     a5,a5,a4
+    0.00 :   e18a6:  li      a4,0
+    0.00 :   e18a8:  fsd     fs0,520(sp)
+    0.00 :   e18ac:  fsd     fs1,512(sp)
+    0.00 :   e18b0:  fsd     fs2,504(sp)
+    0.00 :   e18b2:  fsd     fs3,496(sp)
+    0.00 :   e18b4:  fsd     fs4,488(sp)
+    0.00 :   e18b6:  fsd     fs5,480(sp)
+    0.00 :   e18b8:  fsd     fs6,472(sp)
+    0.00 :   e18ba:  fsd     fs7,464(sp)
+    0.00 :   e18bc:  fsd     fs8,456(sp)
+    0.00 :   e18be:  fsd     fs9,448(sp)
+    0.00 :   e18c0:  fsd     fs10,440(sp)
+    0.00 :   e18c2:  fsd     fs11,432(sp)
+    0.00 :   e18c4:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e18c8:  lui     a1,0x2
+    0.00 :   e18ca:  addi    a1,a1,311 # 2137 <std::__once_callable+0x2077>
+    0.00 :   e18ce:  auipc   a3,0xe3
+    0.00 :   e18d2:  addi    a3,a3,-910 # 1c4540 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1400>
+    0.00 :   e18d6:  auipc   a2,0xe2
+    0.00 :   e18da:  addi    a2,a2,-1430 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e18de:  auipc   a0,0xe3
+    0.00 :   e18e2:  addi    a0,a0,-1414 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e18e6:  jal     84470 <ggml_abort@plt>
+    0.00 :   e18ea:  auipc   a5,0x149
+    0.00 :   e18ee:  ld      a5,-650(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e18f2:  ld      a4,424(sp)
+    0.00 :   e18f4:  ld      a5,0(a5)
+    0.00 :   e18f6:  xor     a5,a5,a4
+    0.00 :   e18f8:  li      a4,0
+    0.00 :   e18fa:  fsd     fs0,520(sp)
+    0.00 :   e18fe:  fsd     fs1,512(sp)
+    0.00 :   e1902:  fsd     fs2,504(sp)
+    0.00 :   e1904:  fsd     fs3,496(sp)
+    0.00 :   e1906:  fsd     fs4,488(sp)
+    0.00 :   e1908:  fsd     fs5,480(sp)
+    0.00 :   e190a:  fsd     fs6,472(sp)
+    0.00 :   e190c:  fsd     fs7,464(sp)
+    0.00 :   e190e:  fsd     fs8,456(sp)
+    0.00 :   e1910:  fsd     fs9,448(sp)
+    0.00 :   e1912:  fsd     fs10,440(sp)
+    0.00 :   e1914:  fsd     fs11,432(sp)
+    0.00 :   e1916:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e191a:  lui     a1,0x2
+    0.00 :   e191c:  addi    a1,a1,321 # 2141 <std::__once_callable+0x2081>
+    0.00 :   e1920:  auipc   a3,0xe2
+    0.00 :   e1924:  addi    a3,a3,-1056 # 1c3500 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x3c0>
+    0.00 :   e1928:  auipc   a2,0xe2
+    0.00 :   e192c:  addi    a2,a2,-1512 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e1930:  auipc   a0,0xe3
+    0.00 :   e1934:  addi    a0,a0,-1496 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e1938:  jal     84470 <ggml_abort@plt>
+    0.00 :   e193c:  auipc   a5,0x149
+    0.00 :   e1940:  ld      a5,-732(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e1944:  ld      a4,424(sp)
+    0.00 :   e1946:  ld      a5,0(a5)
+    0.00 :   e1948:  xor     a5,a5,a4
+    0.00 :   e194a:  li      a4,0
+    0.00 :   e194c:  fsd     fs0,520(sp)
+    0.00 :   e1950:  fsd     fs1,512(sp)
+    0.00 :   e1954:  fsd     fs2,504(sp)
+    0.00 :   e1956:  fsd     fs3,496(sp)
+    0.00 :   e1958:  fsd     fs4,488(sp)
+    0.00 :   e195a:  fsd     fs5,480(sp)
+    0.00 :   e195c:  fsd     fs6,472(sp)
+    0.00 :   e195e:  fsd     fs7,464(sp)
+    0.00 :   e1960:  fsd     fs8,456(sp)
+    0.00 :   e1962:  fsd     fs9,448(sp)
+    0.00 :   e1964:  fsd     fs10,440(sp)
+    0.00 :   e1966:  fsd     fs11,432(sp)
+    0.00 :   e1968:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e196c:  lui     a1,0x2
+    0.00 :   e196e:  addi    a1,a1,320 # 2140 <std::__once_callable+0x2080>
+    0.00 :   e1972:  auipc   a3,0xe2
+    0.00 :   e1976:  addi    a3,a3,-1154 # 1c34f0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x3b0>
+    0.00 :   e197a:  auipc   a2,0xe2
+    0.00 :   e197e:  addi    a2,a2,-1594 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e1982:  auipc   a0,0xe3
+    0.00 :   e1986:  addi    a0,a0,-1578 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e198a:  jal     84470 <ggml_abort@plt>
+    0.00 :   e198e:  auipc   a5,0x149
+    0.00 :   e1992:  ld      a5,-814(a5) # 22a660 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   e1996:  ld      a4,424(sp)
+    0.00 :   e1998:  ld      a5,0(a5)
+    0.00 :   e199a:  xor     a5,a5,a4
+    0.00 :   e199c:  li      a4,0
+    0.00 :   e199e:  fsd     fs0,520(sp)
+    0.00 :   e19a2:  fsd     fs1,512(sp)
+    0.00 :   e19a6:  fsd     fs2,504(sp)
+    0.00 :   e19a8:  fsd     fs3,496(sp)
+    0.00 :   e19aa:  fsd     fs4,488(sp)
+    0.00 :   e19ac:  fsd     fs5,480(sp)
+    0.00 :   e19ae:  fsd     fs6,472(sp)
+    0.00 :   e19b0:  fsd     fs7,464(sp)
+    0.00 :   e19b2:  fsd     fs8,456(sp)
+    0.00 :   e19b4:  fsd     fs9,448(sp)
+    0.00 :   e19b6:  fsd     fs10,440(sp)
+    0.00 :   e19b8:  fsd     fs11,432(sp)
+    0.00 :   e19ba:  bnez    a5,e17a4 <ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)+0xbfc>
+    0.00 :   e19be:  lui     a1,0x2
+    0.00 :   e19c0:  addi    a1,a1,319 # 213f <std::__once_callable+0x207f>
+    0.00 :   e19c4:  auipc   a3,0xe2
+    0.00 :   e19c8:  addi    a3,a3,-1252 # 1c34e0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x3a0>
+    0.00 :   e19cc:  auipc   a2,0xe2
+    0.00 :   e19d0:  addi    a2,a2,-1676 # 1c3340 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x200>
+    0.00 :   e19d4:  auipc   a0,0xe3
+    0.00 :   e19d8:  addi    a0,a0,-1660 # 1c4358 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1218>
+    0.00 :   e19dc:  jal     84470 <ggml_abort@plt>
