@@ -410,7 +410,8 @@ parents leave work unattributed. Inlined K transpose is not separated by the
 copy metric. These are CPU-time diagnostics, not wall-time shares or speedups.
 
 The controller has a 30-minute limit after lock acquisition. Final perf data,
-stack text, summaries and logs are collected automatically. To recover a
+stack text, summaries and logs are collected in a compressed archive. Archive
+and individual file SHA-256 checks verify recovery before collection succeeds. To recover a
 collector, run the following in local tmux if profiling is still active:
 
 ```bash
