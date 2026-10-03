@@ -1,0 +1,28 @@
+# K1 attention infrastructure screen
+
+Status: failed
+
+Infrastructure-only: unchanged full prompts/model/quantization. Stage timings are summed active worker time in isolated attention calls, not full-model wall shares. Repeated deterministic DDR tensors; no production SPERT synchronization in the operator harness. Model screens are pilots with one generated token; no significance, decode or quality claim.
+
+## runtime
+
+{
+  "geometry": {
+    "version": "3.0.1",
+    "available": 0,
+    "layout_status": 0,
+    "block_size": 0,
+    "block_count": 0,
+    "fake": true
+  },
+  "production_buffer_records": [
+    "[tcmdbg] ith=2 shared_buffer=0x2ac714f7c0 size=131072",
+    "[tcmdbg] ith=0 shared_buffer=0x2ac8395140 size=131072",
+    "[tcmdbg] ith=3 shared_buffer=0x2ac79e5cc0 size=131072",
+    "[tcmdbg] ith=1 shared_buffer=0x2ac8b20480 size=131072"
+  ],
+  "barrier_heap_fallback": true,
+  "note": "Missing sync device and compute buffer availability are separate observations; no OS settings changed."
+}
+
+CalledProcessError: Command '[PosixPath('/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-204948/test-attention'), PosixPath('/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-204948/numeric--1.bin')]' died with <Signals.SIGABRT: 6>.

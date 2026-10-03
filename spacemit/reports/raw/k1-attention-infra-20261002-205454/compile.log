@@ -1,0 +1,206 @@
+In file included from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:5:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: warning: use of ‘std::hardware_destructive_interference_size’ [-Winterference-size]
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: its value can vary between compiler versions or with different ‘-mtune’ or ‘-mcpu’ flags
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: if this use is part of a public ABI, change it to instead use a constant variable you define
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: the default value for the current CPU tuning is 32 bytes
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: you can stabilize this value with ‘--param hardware_destructive_interference_size=32’, or disable this warning with ‘-Wno-interference-size’
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In function ‘void spacemit_kernels::rvv::{anonymous}::flash_attn_ext_f16_one_chunk_inner_vlen1024_vf16_m1(const float*, const char*, const char*, const ggml_fp16_t*, const float*, float*, float, float, float, int64_t, int64_t, int64_t, int64_t, int64_t)’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1085:51: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1085 |     vfloat16m2_t VKQ16_v = __riscv_vfmv_v_f_f16m2(0.0f, DV);
+      |                                                   ^~~~
+In file included from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ggml-cpu-impl.h:349,
+                 from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/spacemit/rvv_kernels.h:3,
+                 from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1:
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 1 of ‘vfloat16m2_t __riscv_vfmv_v_f_f16m2(_Float16, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1125:55: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1125 |             VKQ16_v = __riscv_vfmul_vf_f16m2(VKQ16_v, ms, DV);
+      |                                                       ^~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 2 of ‘vfloat16m2_t __riscv_vfmul_vf_f16m2(vfloat16m2_t, _Float16, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1131:52: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1131 |         VKQ16_v = __riscv_vfmacc_vf_f16m2(VKQ16_v, vs, v_data_v, DV);
+      |                                                    ^~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 2 of ‘vfloat16m2_t __riscv_vfmacc_vf_f16m2(vfloat16m2_t, _Float16, vfloat16m2_t, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In function ‘void spacemit_kernels::rvv::forward_flash_attn_ext_f16_one_chunk_vlen1024_vf16(const ggml_compute_params*, ggml_tensor*, int, int, void*, size_t)’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1310:54: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+ 1310 |     float scale         = *((float *) dst->op_params + 0);
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1395:54: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1395 |         if (tcm_buffer != nullptr && 4 * KV_row_size < tcm_buffer_size && ir < (ir1 - 3) && mp_equal_4 &&
+      |                                      ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1423:61: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+ 1423 |         } else if (tcm_buffer != nullptr && 2 * KV_row_size < tcm_buffer_size && ir < (ir1 - 1) && mp_equal_2 &&
+      |                                             ~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1297:19: warning: unused variable ‘N’ [-Wunused-variable]
+ 1297 |     const int64_t N  = neq1;
+      |                   ^
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1326:9: warning: unused variable ‘ith’ [-Wunused-variable]
+ 1326 |     int ith     = params->ith;
+      |         ^~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In function ‘void spacemit_kernels::rvv::forward_rms_norm_f32(ggml_compute_params*, ggml_tensor*)’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1891:23: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+ 1891 |     float epsilon = *((float *) dst->op_params);
+      |                      ~^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In function ‘void spacemit_kernels::rvv::forward_norm_f32(ggml_compute_params*, ggml_tensor*)’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2794:23: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+ 2794 |     float epsilon = *((float *) dst->op_params);
+      |                      ~^~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In instantiation of ‘void spacemit_kernels::rvv::{anonymous}::flash_attn_ext_f16_one_chunk_inner_vlen1024_vf16_mrow(float**, const char*, const char*, const ggml_fp16_t*, float**, float**, float, float, float, int64_t, int64_t, int64_t, int64_t, int64_t, void*, size_t) [with long unsigned int QLEN = 4; ggml_fp16_t = short unsigned int; int64_t = long int; size_t = long unsigned int]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1415:69:   required from here
+ 1415 |             flash_attn_ext_f16_one_chunk_inner_vlen1024_vf16_mrow<4>(  //
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+ 1416 |                 pq_buffer.data(),                                      //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1417 |                 (const char *) k->data + (ik2 * nbk2 + ik3 * nbk3),    //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1418 |                 (const char *) v->data + (iv2 * nbv2 + iv3 * nbv3),    //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1419 |                 mp,                                                    //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1420 |                 sinks_buffer.data(),                                   //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1421 |                 dst_buffer.data(),                                     //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1422 |                 scale, logit_softcap, slope, nek1, nbk1, nbv1, DV, DK, tcm_buffer, tcm_buffer_size);
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:830:55: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+  830 |         vfloat16m2_t VKQ16_v = __riscv_vfmv_v_f_f16m2(0.0f, DV);
+      |                                                       ^~~~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 1 of ‘vfloat16m2_t __riscv_vfmv_v_f_f16m2(_Float16, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:831:31: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  831 |         for (int64_t i = 0; i < QLEN; ++i) {
+      |                             ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:922:35: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  922 |                 for (int i = 0; i < QLEN; ++i) {
+      |                                 ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1001:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1001 |             for (int i = 0; i < QLEN; ++i) {
+      |                             ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1023:63: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1023 |                     VKQ16_v = __riscv_vfmul_vf_f16m2(VKQ16_v, ms, DV);
+      |                                                               ^~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 2 of ‘vfloat16m2_t __riscv_vfmul_vf_f16m2(vfloat16m2_t, _Float16, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1028:60: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1028 |                 VKQ16_v = __riscv_vfmacc_vf_f16m2(VKQ16_v, vs, v_data_v, DV);
+      |                                                            ^~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 2 of ‘vfloat16m2_t __riscv_vfmacc_vf_f16m2(vfloat16m2_t, _Float16, vfloat16m2_t, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1035:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1035 |     for (int i = 0; i < QLEN; ++i) {
+      |                     ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In instantiation of ‘void spacemit_kernels::rvv::{anonymous}::flash_attn_ext_f16_one_chunk_inner_vlen1024_vf16_mrow(float**, const char*, const char*, const ggml_fp16_t*, float**, float**, float, float, float, int64_t, int64_t, int64_t, int64_t, int64_t, void*, size_t) [with long unsigned int QLEN = 2; ggml_fp16_t = short unsigned int; int64_t = long int; size_t = long unsigned int]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1436:69:   required from here
+ 1436 |             flash_attn_ext_f16_one_chunk_inner_vlen1024_vf16_mrow<2>(  //
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+ 1437 |                 pq_buffer.data(),                                      //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1438 |                 (const char *) k->data + (ik2 * nbk2 + ik3 * nbk3),    //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1439 |                 (const char *) v->data + (iv2 * nbv2 + iv3 * nbv3),    //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1440 |                 mp,                                                    //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1441 |                 sinks_buffer.data(),                                   //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1442 |                 dst_buffer.data(),                                     //
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1443 |                 scale, logit_softcap, slope, nek1, nbk1, nbv1, DV, DK, tcm_buffer, tcm_buffer_size);
+      |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:830:55: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+  830 |         vfloat16m2_t VKQ16_v = __riscv_vfmv_v_f_f16m2(0.0f, DV);
+      |                                                       ^~~~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 1 of ‘vfloat16m2_t __riscv_vfmv_v_f_f16m2(_Float16, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:831:31: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  831 |         for (int64_t i = 0; i < QLEN; ++i) {
+      |                             ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:922:35: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+  922 |                 for (int i = 0; i < QLEN; ++i) {
+      |                                 ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1001:31: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1001 |             for (int i = 0; i < QLEN; ++i) {
+      |                             ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1023:63: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1023 |                     VKQ16_v = __riscv_vfmul_vf_f16m2(VKQ16_v, ms, DV);
+      |                                                               ^~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 2 of ‘vfloat16m2_t __riscv_vfmul_vf_f16m2(vfloat16m2_t, _Float16, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1028:60: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 1028 |                 VKQ16_v = __riscv_vfmacc_vf_f16m2(VKQ16_v, vs, v_data_v, DV);
+      |                                                            ^~
+/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/lib/gcc/riscv64-linux-gnu/14/include/riscv_vector.h:40:25: note:   initializing argument 2 of ‘vfloat16m2_t __riscv_vfmacc_vf_f16m2(vfloat16m2_t, _Float16, vfloat16m2_t, long unsigned int)’
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:1035:23: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+ 1035 |     for (int i = 0; i < QLEN; ++i) {
+      |                     ~~^~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In instantiation of ‘void spacemit_kernels::rvv::quantize_a_nrow_i8k_ref(size_t, const float*, size_t, uint8_t*) [with long unsigned int MB_ROWS = 1; size_t = long unsigned int; uint8_t = unsigned char]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2645:35:   required from here
+ 2645 |         quantize_a_nrow_i8k_ref<1>(blk_len, a_ptr, count_k, quant_a_ptr);
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2073:42: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int64_t’ {aka ‘long int’} [-Wsign-compare]
+ 2073 |                 for (size_t bki = 0; bki < a_sum_size; bki++) {
+      |                                      ~~~~^~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2085:38: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int64_t’ {aka ‘long int’} [-Wsign-compare]
+ 2085 |             for (size_t bki = 0; bki < a_sum_size; bki++) {
+      |                                  ~~~~^~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2061:19: warning: variable ‘max_a’ set but not used [-Wunused-but-set-variable]
+ 2061 |             float max_a     = 0.0f;
+      |                   ^~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In instantiation of ‘void spacemit_kernels::rvv::quantize_a_nrow_i8k_ref(size_t, const float*, size_t, uint8_t*) [with long unsigned int MB_ROWS = 4; size_t = long unsigned int; uint8_t = unsigned char]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2741:35:   required from here
+ 2741 |         quantize_a_nrow_i8k_ref<4>(blk_len, a_ptr, count_k, quant_a_ptr);
+      |         ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2073:42: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int64_t’ {aka ‘long int’} [-Wsign-compare]
+ 2073 |                 for (size_t bki = 0; bki < a_sum_size; bki++) {
+      |                                      ~~~~^~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2085:38: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘int64_t’ {aka ‘long int’} [-Wsign-compare]
+ 2085 |             for (size_t bki = 0; bki < a_sum_size; bki++) {
+      |                                  ~~~~^~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:2061:19: warning: variable ‘max_a’ set but not used [-Wunused-but-set-variable]
+ 2061 |             float max_a     = 0.0f;
+      |                   ^~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp: In instantiation of ‘void spacemit_kernels::rvv::forward_sum_rows(const ggml_compute_params*, ggml_tensor*) [with T = _Float16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:3582:94:   required from here
+ 3582 | template void forward_sum_rows<_Float16>(const ggml_compute_params * params, ggml_tensor * op);
+      |                                                                                              ^
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-attention-infra-20261002-205454/candidate-attention-infra.cpp:3171:22: warning: ISO C++ does not allow converting to ‘_Float16’ from ‘float’ with greater conversion rank [-Wnarrowing]
+ 3171 |         dst_row[0] = row_sum;
+      |                      ^~~~~~~

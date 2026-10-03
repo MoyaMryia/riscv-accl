@@ -1,0 +1,15 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml.c:5421: GGML_ASSERT(mask) failed
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/riscv64-linux-gnu/libthread_db.so.1".
+0x0000003faecb79e8 in __GI___wait4 (pid=<optimized out>, stat_loc=0x0, options=<optimized out>, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30
+warning: 30	../sysdeps/unix/sysv/linux/wait4.c: No such file or directory
+#0  0x0000003faecb79e8 in __GI___wait4 (pid=<optimized out>, stat_loc=0x0, options=<optimized out>, usage=0x0) at ../sysdeps/unix/sysv/linux/wait4.c:30
+30	in ../sysdeps/unix/sysv/linux/wait4.c
+#1  0x0000003faf11342a in ggml_print_backtrace () from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin/libggml-base.so.0
+#2  0x0000003faf113532 in ggml_abort () from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin/libggml-base.so.0
+#3  0x0000003faf11c3de in ggml_flash_attn_ext () from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin/libggml-base.so.0
+#4  0x0000002ae497b71a in main ()
+[Inferior 1 (process 31099) detached]

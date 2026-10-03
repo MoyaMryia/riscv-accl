@@ -1,0 +1,321 @@
+--- a/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
++++ b/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+@@ -6,6 +6,7 @@
+ #include "string.h"
+ 
+ #include <algorithm>
++#include <chrono>
+ #include <atomic>
+ #include <cstdlib>
+ #include <cstdio>
+@@ -590,6 +591,147 @@
+     }
+ }
+ 
++static inline void k1_qk_m2_x1(float *          dst,
++                                          const _Float16 * q_row,
++                                          const _Float16 * k_pack,
++                                          int64_t          dk,
++                                          int64_t          kv_tile) {
++    // On X60 VLEN=256, e16m2 covers only 16 of the 64 KV tile cells.
++    // Preserve one accumulator per cell and walk the tile in VL-sized chunks.
++    for (int64_t offset = 0; offset < kv_tile;) {
++        const size_t vl  = __riscv_vsetvl_e16m2(kv_tile - offset);
++        vfloat32m2_t acc = __riscv_vfmv_v_f_f32m4(0.0f, vl);
++
++        for (int64_t d = 0; d < dk; ++d) {
++            const vfloat16m1_t k_vec = __riscv_vle16_v_f16m2(k_pack + d * ggml_fa_tile_config::KV + offset, vl);
++            acc                      = __riscv_vfwmacc_vf_f32m4(acc, q_row[d], k_vec, vl);
++        }
++
++        __riscv_vse32_v_f32m4(dst + offset, acc, vl);
++        offset += vl;
++    }
++}
++
++static inline void k1_qk_m2_x4(float *          dst0,
++                                          float *          dst1,
++                                          float *          dst2,
++                                          float *          dst3,
++                                          const _Float16 * q0,
++                                          const _Float16 * q1,
++                                          const _Float16 * q2,
++                                          const _Float16 * q3,
++                                          const _Float16 * k_pack,
++                                          int64_t          dk,
++                                          int64_t          kv_tile) {
++    for (int64_t offset = 0; offset < kv_tile;) {
++        const size_t vl   = __riscv_vsetvl_e16m2(kv_tile - offset);
++        vfloat32m2_t acc0 = __riscv_vfmv_v_f_f32m4(0.0f, vl);
++        vfloat32m2_t acc1 = __riscv_vfmv_v_f_f32m4(0.0f, vl);
++        vfloat32m2_t acc2 = __riscv_vfmv_v_f_f32m4(0.0f, vl);
++        vfloat32m2_t acc3 = __riscv_vfmv_v_f_f32m4(0.0f, vl);
++
++        for (int64_t d = 0; d < dk; ++d) {
++            const vfloat16m1_t k_vec = __riscv_vle16_v_f16m2(k_pack + d * ggml_fa_tile_config::KV + offset, vl);
++            acc0                     = __riscv_vfwmacc_vf_f32m4(acc0, q0[d], k_vec, vl);
++            acc1                     = __riscv_vfwmacc_vf_f32m4(acc1, q1[d], k_vec, vl);
++            acc2                     = __riscv_vfwmacc_vf_f32m4(acc2, q2[d], k_vec, vl);
++            acc3                     = __riscv_vfwmacc_vf_f32m4(acc3, q3[d], k_vec, vl);
++        }
++
++        __riscv_vse32_v_f32m4(dst0 + offset, acc0, vl);
++        __riscv_vse32_v_f32m4(dst1 + offset, acc1, vl);
++        __riscv_vse32_v_f32m4(dst2 + offset, acc2, vl);
++        __riscv_vse32_v_f32m4(dst3 + offset, acc3, vl);
++        offset += vl;
++    }
++}
++
++template<int Variant> static inline void k1_pv_strided_x1(float *          dst,
++                                            const float *    prob,
++                                            const _Float16 * v_pack,
++                                            int64_t          kv_tile,
++                                            int64_t          dv, size_t row_stride) {
++    int64_t d_left = dv;
++    int64_t d_off  = 0;
++
++    while (d_left > 0) {
++        const size_t vl  = __riscv_vsetvl_e16m2(d_left);
++        vfloat32m4_t acc = __riscv_vle32_v_f32m4(dst + d_off, vl);
++
++        for (int64_t tk = 0; tk < kv_tile; ++tk) {
++            const vfloat16m2_t v16 = __riscv_vle16_v_f16m2((Variant == 1 ? (const _Float16 *) ((const char *) v_pack + tk * row_stride) + d_off : v_pack + tk * dv + d_off), vl);
++            const vfloat32m4_t v32 = __riscv_vfwcvt_f_f_v_f32m4(v16, vl);
++            acc                    = __riscv_vfmacc_vf_f32m4(acc, prob[tk], v32, vl);
++        }
++
++        __riscv_vse32_v_f32m4(dst + d_off, acc, vl);
++        d_left -= vl;
++        d_off += vl;
++    }
++}
++
++template<int Variant> static inline void k1_pv_strided_x4(float *          dst0,
++                                            float *          dst1,
++                                            float *          dst2,
++                                            float *          dst3,
++                                            const float *    prob0,
++                                            const float *    prob1,
++                                            const float *    prob2,
++                                            const float *    prob3,
++                                            const _Float16 * v_pack,
++                                            int64_t          kv_tile,
++                                            int64_t          dv, size_t row_stride) {
++    int64_t d_left = dv;
++    int64_t d_off  = 0;
++
++    while (d_left > 0) {
++        const size_t vl   = __riscv_vsetvl_e16m2(d_left);
++        vfloat32m4_t acc0 = __riscv_vle32_v_f32m4(dst0 + d_off, vl);
++        vfloat32m4_t acc1 = __riscv_vle32_v_f32m4(dst1 + d_off, vl);
++        vfloat32m4_t acc2 = __riscv_vle32_v_f32m4(dst2 + d_off, vl);
++        vfloat32m4_t acc3 = __riscv_vle32_v_f32m4(dst3 + d_off, vl);
++
++        for (int64_t tk = 0; tk < kv_tile; ++tk) {
++            const vfloat16m2_t v16 = __riscv_vle16_v_f16m2((Variant == 1 ? (const _Float16 *) ((const char *) v_pack + tk * row_stride) + d_off : v_pack + tk * dv + d_off), vl);
++            const vfloat32m4_t v32 = __riscv_vfwcvt_f_f_v_f32m4(v16, vl);
++            acc0                   = __riscv_vfmacc_vf_f32m4(acc0, prob0[tk], v32, vl);
++            acc1                   = __riscv_vfmacc_vf_f32m4(acc1, prob1[tk], v32, vl);
++            acc2                   = __riscv_vfmacc_vf_f32m4(acc2, prob2[tk], v32, vl);
++            acc3                   = __riscv_vfmacc_vf_f32m4(acc3, prob3[tk], v32, vl);
++        }
++
++        __riscv_vse32_v_f32m4(dst0 + d_off, acc0, vl);
++        __riscv_vse32_v_f32m4(dst1 + d_off, acc1, vl);
++        __riscv_vse32_v_f32m4(dst2 + d_off, acc2, vl);
++        __riscv_vse32_v_f32m4(dst3 + d_off, acc3, vl);
++        d_left -= vl;
++        d_off += vl;
++    }
++}
++
++
++// Diagnostic timers are compiled out of ordinary timing/model arms.
++static thread_local double k1_attention_ns[8] = {};
++extern "C" __attribute__((visibility("default"))) void spine_k1_attention_profile_reset() {
++    std::fill(k1_attention_ns, k1_attention_ns + 8, 0.0);
++}
++extern "C" __attribute__((visibility("default"))) void spine_k1_attention_profile_read(double * out) {
++    std::copy(k1_attention_ns, k1_attention_ns + 8, out);
++}
++template<bool Enabled> struct K1AttentionTimer {
++    using Clock = std::chrono::steady_clock;
++    Clock::time_point last;
++    int stage = 0;
++    K1AttentionTimer() { if constexpr (Enabled) last = Clock::now(); }
++    void step(int next) {
++        if constexpr (Enabled) {
++            auto now = Clock::now();
++            k1_attention_ns[stage] += std::chrono::duration<double, std::nano>(now - last).count();
++            last = now; stage = next;
++        }
++    }
++    ~K1AttentionTimer() { if constexpr (Enabled) step(0); }
++};
+ static inline void rvv_qk_dot_tile(float *       dst,
+                                    const float * q_row,
+                                    const float * k_pack,
+@@ -1313,13 +1455,14 @@
+     }
+ }
+ 
+-template<int Q_TILE_SZ, bool Compact>
++template<int Q_TILE_SZ, bool Compact, int Variant = 0, bool Profile = false>
+ static void forward_flash_attn_ext_f16_tiled_impl(const ggml_compute_params * params,
+                                                     ggml_tensor *               dst,
+                                                     int                         ir0,
+                                                     int                         ir1,
+                                                     void *                      tcm_buffer,
+                                                     size_t                      tcm_buffer_size) {
++    K1AttentionTimer<Profile> timer;
+     const ggml_tensor * q     = dst->src[0];
+     const ggml_tensor * k     = dst->src[1];
+     const ggml_tensor * v     = dst->src[2];
+@@ -1413,6 +1556,7 @@
+ 
+     int ir = ir0;
+     while (ir < ir1) {
++        timer.step(0);
+         // q indices for the start of this tile
+         const int iq3 = ir / (neq2 * neq1);
+         const int iq2 = (ir - iq3 * neq2 * neq1) / neq1;
+@@ -1481,9 +1625,13 @@
+         for (int64_t ic = 0; ic < nek1; ic += KV_TILE_SZ) {
+             const int kv_tile = (int) std::min((int64_t) KV_TILE_SZ, nek1 - ic);
+ 
++            timer.step(1);
+             if constexpr (!Compact) {
+                 rvv_zero_f32(K_f32, DK * KV_TILE_SZ);
+-                rvv_zero_f32(V32, KV_TILE_SZ * DV);
++                // Direct reads apply only to full F16 tiles; partial tiles retain
++                // their initialized packed padding and all 64 PV operations.
++                if (!(Variant == 1 && kv_type == GGML_TYPE_F16 && kv_tile == KV_TILE_SZ))
++                    rvv_zero_f32(V32, KV_TILE_SZ * DV);
+             }
+ 
+             // skip the tile entirely if all the masks are -inf
+@@ -1512,20 +1660,22 @@
+                 }
+             }
+ 
++            timer.step(2);
+             if (kv_type == GGML_TYPE_F16) {
+                 rvv_transposed_s16_mn_to_nm((int8_t *) K_f16, KV_TILE_SZ * sizeof(_Float16),
+                                             (int8_t *) k->data + ic * nbk1 + ik2 * nbk2 + ik3 * nbk3, nbk1, kv_tile,
+                                             DK);
+ 
++                timer.step(3);
+                 int tq = 0;
+                 for (; tq + 3 < tile_rows; tq += 4) {
+-                    rvv_qk_dot_tile_f16_x4(KQ + (tq + 0) * KV_TILE_SZ, KQ + (tq + 1) * KV_TILE_SZ,
++                    (Variant == 2 ? k1_qk_m2_x4 : rvv_qk_dot_tile_f16_x4)(KQ + (tq + 0) * KV_TILE_SZ, KQ + (tq + 1) * KV_TILE_SZ,
+                                            KQ + (tq + 2) * KV_TILE_SZ, KQ + (tq + 3) * KV_TILE_SZ,
+                                            Q_f16 + (tq + 0) * DK, Q_f16 + (tq + 1) * DK, Q_f16 + (tq + 2) * DK,
+                                            Q_f16 + (tq + 3) * DK, K_f16, DK, kv_tile);
+                 }
+                 for (; tq < tile_rows; ++tq) {
+-                    rvv_qk_dot_tile_f16_x1(KQ + tq * KV_TILE_SZ, Q_f16 + tq * DK, K_f16, DK, kv_tile);
++                    (Variant == 2 ? k1_qk_m2_x1 : rvv_qk_dot_tile_f16_x1)(KQ + tq * KV_TILE_SZ, Q_f16 + tq * DK, K_f16, DK, kv_tile);
+                 }
+             } else {
+                 for (int tk = 0; tk < kv_tile; tk++) {
+@@ -1542,6 +1692,7 @@
+                 }
+             }
+ 
++            timer.step(4);
+             // Set padded KQ entries to -inf so softmax gives them zero weight
+             if (kv_tile < KV_TILE_SZ) {
+                 for (int tq = 0; tq < tile_rows; tq++) {
+@@ -1584,6 +1735,7 @@
+                 S[tq] += rvv_softmax_exp_inplace_f32(kq_row, KV_TILE_SZ, Mnew);
+             }
+ 
++            timer.step(5);
+             // PV still reads all 64 entries, including a partial tile's padding.
+             if constexpr (Compact) {
+                 if (kv_tile < KV_TILE_SZ) {
+@@ -1593,28 +1745,34 @@
+             // Pack V as contiguous [KV_TILE_SZ][DV].
+             if (kv_type == GGML_TYPE_F16) {
+                 const char * v_data = (const char *) v->data + ic * nbv1 + iv2 * nbv2 + iv3 * nbv3;
+-                memcpy2d(V_f16, DV * sizeof(_Float16), v_data, nbv1, kv_tile, DV * sizeof(_Float16));
++                const bool direct_v = Variant == 1 && kv_tile == KV_TILE_SZ;
++                if (!direct_v) {
++                    memcpy2d(V_f16, DV * sizeof(_Float16), v_data, nbv1, kv_tile, DV * sizeof(_Float16));
++                }
++                const _Float16 * pv_data = direct_v ? (const _Float16 *) v_data : V_f16;
++                const size_t pv_stride = direct_v ? nbv1 : DV * sizeof(_Float16);
++                timer.step(6);
+ 
+                 int tq = 0;
+                 for (; tq + 3 < tile_rows; tq += 4) {
+                     if (skip[tq + 0] || skip[tq + 1] || skip[tq + 2] || skip[tq + 3]) {
+                         for (int i = 0; i < 4; ++i) {
+                             if (!skip[tq + i]) {
+-                                rvv_pv_accumulate_f16_x1(VKQ32 + (tq + i) * DV, KQ + (tq + i) * KV_TILE_SZ, V_f16,
+-                                                         KV_TILE_SZ, DV);
++                                k1_pv_strided_x1<Variant>(VKQ32 + (tq + i) * DV, KQ + (tq + i) * KV_TILE_SZ, pv_data,
++                                                         KV_TILE_SZ, DV, pv_stride);
+                             }
+                         }
+                         continue;
+                     }
+ 
+-                    rvv_pv_accumulate_f16_x4(VKQ32 + (tq + 0) * DV, VKQ32 + (tq + 1) * DV, VKQ32 + (tq + 2) * DV,
++                    k1_pv_strided_x4<Variant>(VKQ32 + (tq + 0) * DV, VKQ32 + (tq + 1) * DV, VKQ32 + (tq + 2) * DV,
+                                              VKQ32 + (tq + 3) * DV, KQ + (tq + 0) * KV_TILE_SZ,
+                                              KQ + (tq + 1) * KV_TILE_SZ, KQ + (tq + 2) * KV_TILE_SZ,
+-                                             KQ + (tq + 3) * KV_TILE_SZ, V_f16, KV_TILE_SZ, DV);
++                                             KQ + (tq + 3) * KV_TILE_SZ, pv_data, KV_TILE_SZ, DV, pv_stride);
+                 }
+                 for (; tq < tile_rows; ++tq) {
+                     if (!skip[tq]) {
+-                        rvv_pv_accumulate_f16_x1(VKQ32 + tq * DV, KQ + tq * KV_TILE_SZ, V_f16, KV_TILE_SZ, DV);
++                        k1_pv_strided_x1<Variant>(VKQ32 + tq * DV, KQ + tq * KV_TILE_SZ, pv_data, KV_TILE_SZ, DV, pv_stride);
+                     }
+                 }
+             } else {
+@@ -1629,6 +1787,7 @@
+             }
+         }
+ 
++        timer.step(7);
+         // sinks (apply only to valid rows in the tile)
+         if (sinks) {
+             const float s = ((float *) ((char *) sinks->data))[h];
+@@ -1671,6 +1830,33 @@
+         if (strcmp(env, "32") == 0) return 32;
+         GGML_ABORT("SPINE_FA_K1_LAYOUT must be 0, 16 or 32");
+     }();
++    static const int variant = [] {
++        const char * e = getenv("SPINE_FA_K1_INFRA");
++        if (!e || strcmp(e, "0") == 0) return 0;
++        if (strcmp(e, "1") == 0) return 1;
++        if (strcmp(e, "2") == 0) return 2;
++        GGML_ABORT("SPINE_FA_K1_INFRA must be 0, 1 or 2");
++    }();
++    static const bool profile = [] {
++        const char * e = getenv("SPINE_FA_K1_PROFILE");
++        return e && strcmp(e, "1") == 0;
++    }();
++    const bool infra_eligible = rows == 0 && !params->use_ref && __riscv_vlenb() == 32 &&
++        dst->src[0]->type == GGML_TYPE_F32 && dst->src[1]->type == GGML_TYPE_F16 &&
++        dst->src[2]->type == GGML_TYPE_F16 && dst->src[1]->ne[0] == 256 && dst->src[2]->ne[0] == 256;
++    if (infra_eligible) {
++        static std::atomic<bool> logged {false};
++        if (!logged.exchange(true))
++            fprintf(stderr, "SPINE_FA_K1_INFRA: mode=%d profile=%d legacy Q64 KV64\n", variant, (int) profile);
++#define K1_DISPATCH(V) \
++        if (profile) forward_flash_attn_ext_f16_tiled_impl<ggml_fa_tile_config::Q, false, V, true>(params, dst, ir0, ir1, tcm_buffer, tcm_buffer_size); \
++        else forward_flash_attn_ext_f16_tiled_impl<ggml_fa_tile_config::Q, false, V, false>(params, dst, ir0, ir1, tcm_buffer, tcm_buffer_size);
++        if (variant == 1) { K1_DISPATCH(1) }
++        else if (variant == 2) { K1_DISPATCH(2) }
++        else { K1_DISPATCH(0) }
++#undef K1_DISPATCH
++        return;
++    }
+     const bool eligible = rows && !params->use_ref && __riscv_vlenb() == 32 &&
+         dst->src[0]->type == GGML_TYPE_F32 && dst->src[1]->type == GGML_TYPE_F16 &&
+         dst->src[2]->type == GGML_TYPE_F16 && dst->src[1]->ne[0] == 256 &&
