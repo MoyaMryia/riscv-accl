@@ -1,0 +1,16 @@
+verify and build isolated kernel
+failed
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-gemm-audit-20261002-205004/k1-gemm-audit.py", line 81, in <module>
+    signal.signal(signal.SIGTERM,interrupted); Run(args.root.resolve()).run()
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-gemm-audit-20261002-205004/k1-gemm-audit.py", line 32, in run
+    self.prepare()
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-gemm-audit-20261002-205004/k1-ime-test.py", line 153, in prepare
+    self.command(c,'compile.log',getattr(self,'compile_timeout',180),cwd=self.build); self.command(l,'link.log',120,cwd=self.build)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-gemm-audit-20261002-205004/k1-ime-test.py", line 106, in command
+    subprocess.run(list(map(str,argv)),stdout=output,stderr=subprocess.STDOUT,
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/bin/g++-14', '-DGGML_BACKEND_BUILD', '-DGGML_BACKEND_SHARED', '-DGGML_SCHED_MAX_COPIES=4', '-DGGML_SHARED', '-DGGML_USE_CPU_RISCV64_SPACEMIT', '-DGGML_USE_LLAMAFILE', '-DRISCV64_SPACEMIT_IME1', '-D_GNU_SOURCE', '-D_XOPEN_SOURCE=600', '-Dggml_cpu_EXPORTS', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/..', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/.', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu', '-I/home/moyamryia/Projects/spacemit-llama/spert/spine-runtime.riscv64.0.6.2/include', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/../include', '-O3', '-DNDEBUG', '-std=gnu++17', '-fPIC', '-Wmissing-declarations', '-Wmissing-noreturn', '-Wall', '-Wextra', '-Wpedantic', '-Wcast-qual', '-Wno-unused-function', '-Wno-array-bounds', '-Wextra-semi', '-march=rv64gcv_zfh_zvfh_zicbop_zihintpause_zba', '-mabi=lp64d', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/spacemit', '-o', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-gemm-audit-20261002-205004/candidate-gemm-audit.o', '-c', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-gemm-audit-20261002-205004/candidate-gemm-audit.cpp']' returned non-zero exit status 1.

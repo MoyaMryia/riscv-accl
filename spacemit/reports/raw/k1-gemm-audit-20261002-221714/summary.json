@@ -1,0 +1,106 @@
+{
+  "status": "diagnostic complete",
+  "stages": {
+    "2B": {
+      "prefill": {
+        "records": 8184,
+        "worker_elapsed_ns": 33321209941.0,
+        "section_ns": {
+          "activation_quantization": 571113921.0,
+          "staging_copies": 3181210379.0,
+          "gemm": 27910638273.0,
+          "grid_wait": 84574296.0,
+          "pair_wait": 1080249199.0
+        },
+        "elapsed_fraction": {
+          "activation_quantization": 0.017139651351533735,
+          "staging_copies": 0.09547103435417835,
+          "gemm": 0.8376237934462705,
+          "grid_wait": 0.0025381520103787037,
+          "pair_wait": 0.032419266914759
+        },
+        "staging_copy_bytes": 8815177728,
+        "buffer_sizes": [
+          131072
+        ]
+      },
+      "single_row": {
+        "records": 12,
+        "worker_elapsed_ns": 755249846.0,
+        "section_ns": {
+          "activation_quantization": 36292.0,
+          "staging_copies": 308621353.0,
+          "gemm": 375585330.0,
+          "grid_wait": 22293.0,
+          "pair_wait": 48089716.0
+        },
+        "elapsed_fraction": {
+          "activation_quantization": 4.805297239345614e-05,
+          "staging_copies": 0.4086347777951086,
+          "gemm": 0.49729944599022136,
+          "grid_wait": 2.951738437031075e-05,
+          "pair_wait": 0.06367391698878942
+        },
+        "staging_copy_bytes": 858221568,
+        "buffer_sizes": [
+          131072
+        ]
+      },
+      "outputs_equal_to_original": true,
+      "uncached_verified": true,
+      "single_row_note": "First-token work only; not sustained decode."
+    },
+    "4B": {
+      "prefill": {
+        "records": 10912,
+        "worker_elapsed_ns": 87298219644.0,
+        "section_ns": {
+          "activation_quantization": 1149203729.0,
+          "staging_copies": 8671232476.0,
+          "gemm": 73534898937.0,
+          "grid_wait": 147114557.0,
+          "pair_wait": 2749761660.0
+        },
+        "elapsed_fraction": {
+          "activation_quantization": 0.01316411415589487,
+          "staging_copies": 0.09932885815267566,
+          "gemm": 0.8423413356752694,
+          "grid_wait": 0.0016851953865717945,
+          "pair_wait": 0.03149848497728202
+        },
+        "staging_copy_bytes": 22578315264,
+        "buffer_sizes": [
+          131072
+        ]
+      },
+      "single_row": {
+        "records": 12,
+        "worker_elapsed_ns": 936901226.0,
+        "section_ns": {
+          "activation_quantization": 41501.0,
+          "staging_copies": 402401121.0,
+          "gemm": 450574903.0,
+          "grid_wait": 27543.0,
+          "pair_wait": 59013807.0
+        },
+        "elapsed_fraction": {
+          "activation_quantization": 4.429602486185668e-05,
+          "staging_copies": 0.42950218212223795,
+          "gemm": 0.4809203900006424,
+          "grid_wait": 2.9397976260092972e-05,
+          "pair_wait": 0.0629882909343103
+        },
+        "staging_copy_bytes": 1072776960,
+        "buffer_sizes": [
+          131072
+        ]
+      },
+      "outputs_equal_to_original": true,
+      "uncached_verified": true,
+      "single_row_note": "First-token work only; not sustained decode."
+    }
+  },
+  "limitations": "Instrumented diagnostic: summed worker elapsed time includes overlapping waits and clock overhead. No speedup or removable wall-time claim.",
+  "elapsed_s": 429.1517737239483,
+  "reason": "Use section attribution to choose a packing/staging experiment; no optimized candidate enabled."
+}

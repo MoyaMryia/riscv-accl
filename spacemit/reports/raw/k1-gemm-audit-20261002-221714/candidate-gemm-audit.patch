@@ -1,0 +1,235 @@
+--- a/ggml/src/ggml-cpu/spacemit/ime.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime.cpp
+@@ -23,6 +23,7 @@
+ #include <unistd.h>
+ 
+ #include <algorithm>
++#include <chrono>
+ #include <atomic>
+ #include <cassert>
+ #include <cerrno>
+@@ -82,6 +83,43 @@
+ };
+ 
+ thread_local TLSContext tls_context;
++
++// Per-worker elapsed sections include waiting and clock overhead. Records are
++// diagnostic, not a speed comparison. File locking happens after measurement.
++struct K1GemmAudit {
++    using Clock = std::chrono::steady_clock;
++    bool enabled;
++    int ith;
++    int64_t m,n,k;
++    double ns[5] = {};
++    uint64_t calls[5] = {};
++    uint64_t copy_bytes = 0;
++    long buffer_size = 0;
++    Clock::time_point begin;
++    K1GemmAudit(bool e,int i,int64_t mm,int64_t nn,int64_t kk):enabled(e),ith(i),m(mm),n(nn),k(kk) {
++        if (enabled) begin=Clock::now();
++    }
++    ~K1GemmAudit() {
++        if (!enabled) return;
++        double total=std::chrono::duration<double,std::nano>(Clock::now()-begin).count();
++        fprintf(stderr,"K1_GEMM_AUDIT {\"ith\":%d,\"m\":%ld,\"n\":%ld,\"k\":%ld,\"buffer_size\":%ld,\"copy_bytes\":%lu,\"total_ns\":%.3f,\"section_ns\":[%.3f,%.3f,%.3f,%.3f,%.3f],\"section_calls\":[%lu,%lu,%lu,%lu,%lu]}\n",
++                ith,m,n,k,buffer_size,copy_bytes,total,ns[0],ns[1],ns[2],ns[3],ns[4],
++                calls[0],calls[1],calls[2],calls[3],calls[4]);
++    }
++};
++struct K1GemmSection {
++    K1GemmAudit & a;
++    int id;
++    K1GemmAudit::Clock::time_point begin;
++    K1GemmSection(K1GemmAudit & aa,int i):a(aa),id(i) { if (a.enabled) begin=K1GemmAudit::Clock::now(); }
++    ~K1GemmSection() {
++        if (a.enabled) {
++            a.ns[id]+=std::chrono::duration<double,std::nano>(K1GemmAudit::Clock::now()-begin).count();
++            ++a.calls[id];
++        }
++    }
++};
++
+ 
+ template <typename BLOC_TYPE, int64_t INTER_SIZE, int64_t NB_COLS> constexpr size_t get_repacked_block_type_size() {
+     if constexpr (std::is_same_v<BLOC_TYPE, block_q6_K> || std::is_same_v<BLOC_TYPE, block_q8_0>) {
+@@ -331,6 +369,31 @@
+             GGML_ABORT("no kernel implementation found for the block type");
+         }
+ 
++        const char * audit_env = getenv("SPINE_GEMM_AUDIT");
++        K1GemmAudit audit(audit_env && strcmp(audit_env, "1") == 0 &&
++                          std::is_same_v<BLOC_TYPE, block_q4_0>, ith, gemm_m, gemm_n, gemm_k);
++        auto audit_gemm = [&](auto... args) {
++            K1GemmSection section(audit, 2);
++            return gemm_kernel(args...);
++        };
++        auto audit_quant_row = [&](auto... args) {
++            K1GemmSection section(audit, 0); quantize_a_row_i8(args...);
++        };
++        auto audit_quant_four = [&](auto... args) {
++            K1GemmSection section(audit, 0); quantize_a_4row_i8(args...);
++        };
++        auto audit_copy = [&](void * dst, const void * src, size_t size) {
++            K1GemmSection section(audit, 1);
++            if (audit.enabled) audit.copy_bytes += size;
++            spacemit_kernels::rvv::memcpy1d(dst, src, size);
++        };
++        auto audit_grid = [&]() {
++            K1GemmSection section(audit, 3); spacemit_spert_grid_sync();
++        };
++        auto audit_pair = [&](spine_barrier_t * barrier) {
++            K1GemmSection section(audit, 4); spine_barrier_wait(barrier);
++        };
++
+         const int64_t a_k_blks = spacemit_kernels::div_round_up(gemm_k, a_blk_len);
+         const int64_t b_k_blks = spacemit_kernels::div_round_up(gemm_k, b_blk_len);
+ 
+@@ -345,6 +408,7 @@
+ 
+         long          tcm_buffer_size = 0;
+         void *        tcm_buffer      = spacemit_spert_shared_buffer(&tcm_buffer_size);
++        audit.buffer_size = tcm_buffer ? tcm_buffer_size : 0;
+         if (getenv("SPINE_TCM_DEBUG")) {
+             static thread_local bool printed = false;
+             if (!printed) {
+@@ -373,7 +437,7 @@
+             int a_blk_start     = ith * task_per_thread;
+             int a_blk_end       = std::min(a_blk_start + task_per_thread, (int) a_k_blks);
+             if (a_blk_start < a_blk_end) {
+-                quantize_a_row_i8(a_blk_len, feature + a_blk_start * a_blk_len, (a_blk_end - a_blk_start) * a_blk_len,
++                audit_quant_row(a_blk_len, feature + a_blk_start * a_blk_len, (a_blk_end - a_blk_start) * a_blk_len,
+                                   quant_a_buffer + a_blk_start * block_stride_a);
+             }
+         } else {
+@@ -387,12 +451,12 @@
+                 if (rows_tobe_handled == row_align && quantize_a_4row_i8 != nullptr) {
+                     const float * a_row_ptr       = feature + m_idx * gemm_k;
+                     auto *        quant_a_row_ptr = quant_a_buffer + m_idx * row_stride_a;
+-                    quantize_a_4row_i8(a_blk_len, a_row_ptr, gemm_k, quant_a_row_ptr);
++                    audit_quant_four(a_blk_len, a_row_ptr, gemm_k, quant_a_row_ptr);
+                 } else {
+                     while (rows_tobe_handled) {
+                         const float * a_row_ptr       = feature + m_idx * gemm_k;
+                         auto *        quant_a_row_ptr = quant_a_buffer + m_idx * row_stride_a;
+-                        quantize_a_row_i8(a_blk_len, a_row_ptr, gemm_k, quant_a_row_ptr);
++                        audit_quant_row(a_blk_len, a_row_ptr, gemm_k, quant_a_row_ptr);
+                         rows_tobe_handled -= 1;
+                         m_idx += 1;
+                     }
+@@ -400,7 +464,7 @@
+             }
+         }
+ 
+-        spacemit_spert_grid_sync();
++        audit_grid();
+ 
+         const int64_t gemm_m_stride     = gemm_n / gemm_m > 64 ? gemm_m : 16;
+         const int64_t gemm_m_blocked    = spacemit_kernels::div_round_up(gemm_m, gemm_m_stride);
+@@ -419,7 +483,7 @@
+ 
+                 int64_t m_row_real = std::min(gemm_m - m_start, row_align);
+ 
+-                spacemit_kernels::rvv::memcpy1d(tcm_buffer, quant_a_buffer + m_start * row_stride_a,
++                audit_copy(tcm_buffer, quant_a_buffer + m_start * row_stride_a,
+                                                 m_row_real * row_stride_a);
+ 
+                 int64_t n_blk_real = 0;
+@@ -432,7 +496,7 @@
+                     int32_t rows_remaining = m_row_real;
+ 
+                     while (rows_remaining > 0) {
+-                        auto rows_handled = gemm_kernel(b_blk_len, a_row_ptr, b_col, b_col_zp, c_blk, rows_remaining,
++                        auto rows_handled = audit_gemm(b_blk_len, a_row_ptr, b_col, b_col_zp, c_blk, rows_remaining,
+                                                         n_blk_real, b_k_blks, gemm_n);
+ 
+                         c_blk += rows_handled * gemm_n;
+@@ -458,7 +522,7 @@
+                 const bool direct_q8_supported = !std::is_same_v<BLOC_TYPE, block_q8_0> ||
+                                                  gemm_n <= 2 * NB_COLS * max_direct_q8_tiles;
+                 if (gemm_m == 1 && a_row != quant_a_buffer && direct_q8_supported) {
+-                    spacemit_kernels::rvv::memcpy1d(a_row, quant_a_buffer, gemm_workspace_size);
++                    audit_copy(a_row, quant_a_buffer, gemm_workspace_size);
+                     int64_t tile_cols = 2 * NB_COLS;
+                     if constexpr (std::is_same_v<BLOC_TYPE, block_q4_0>) {
+                         tile_cols = 4 * NB_COLS;
+@@ -467,7 +531,7 @@
+                         const int64_t nb_real  = std::min(gemm_n - ni, tile_cols);
+                         uint8_t *     b_row    = reinterpret_cast<uint8_t *>(w_data) + ni * row_stride_b;
+                         uint8_t *     b_row_zp = block_type_has_zp<BLOC_TYPE>() ? b_row : nullptr;
+-                        gemm_kernel(b_blk_len, a_row, b_row, b_row_zp, output + ni, 1, nb_real, b_k_blks, gemm_n);
++                        audit_gemm(b_blk_len, a_row, b_row, b_row_zp, output + ni, 1, nb_real, b_k_blks, gemm_n);
+                     }
+                     return;
+                 }
+@@ -480,22 +544,22 @@
+             const int64_t nb0     = active0 ? std::min(gemm_n - ni0, (int64_t) NB_COLS) : 0;
+ 
+             if (ith % 2 == 0 && active0) {
+-                spacemit_kernels::rvv::memcpy1d(b_col, reinterpret_cast<uint8_t *>(w_data) + ni0 * row_stride_b,
++                audit_copy(b_col, reinterpret_cast<uint8_t *>(w_data) + ni0 * row_stride_b,
+                                                 nb0 * row_stride_b);
+                 if (a_row != quant_a_buffer) {
+-                    spacemit_kernels::rvv::memcpy1d(a_row, quant_a_buffer, gemm_workspace_size);
++                    audit_copy(a_row, quant_a_buffer, gemm_workspace_size);
+                 }
+             }
+ 
+             if (has_pair) {
+-                spine_barrier_wait(cur_barrier);
++                audit_pair(cur_barrier);
+             }
+ 
+             if (ith % 2 != 0 && active0) {
+                 if (a_row != quant_a_buffer) {
+-                    spacemit_kernels::rvv::memcpy1d(a_row, quant_a_buffer, gemm_workspace_size);
+-                }
+-                spacemit_kernels::rvv::memcpy1d(b_col, reinterpret_cast<uint8_t *>(w_data) + ni0 * row_stride_b,
++                    audit_copy(a_row, quant_a_buffer, gemm_workspace_size);
++                }
++                audit_copy(b_col, reinterpret_cast<uint8_t *>(w_data) + ni0 * row_stride_b,
+                                                 nb0 * row_stride_b);
+             }
+ 
+@@ -507,7 +571,7 @@
+                 const int64_t nb_real = active ? std::min(gemm_n - ni, (int64_t) NB_COLS) : 0;
+ 
+                 if (has_pair && ith % 2 != 0) {
+-                    spine_barrier_wait(cur_barrier);
++                    audit_pair(cur_barrier);
+                 }
+ 
+                 if (active) {
+@@ -516,7 +580,7 @@
+                     auto *  a_row_cur      = a_row;
+ 
+                     while (rows_remaining > 0) {
+-                        auto rows_handled = gemm_kernel(b_blk_len, a_row_cur, b_col, b_col_zp, c_blk, rows_remaining,
++                        auto rows_handled = audit_gemm(b_blk_len, a_row_cur, b_col, b_col_zp, c_blk, rows_remaining,
+                                                         nb_real, b_k_blks, gemm_n);
+ 
+                         c_blk += rows_handled * gemm_n;
+@@ -527,13 +591,13 @@
+                 }
+ 
+                 if (has_pair && ith % 2 == 0) {
+-                    spine_barrier_wait(cur_barrier);
++                    audit_pair(cur_barrier);
+                 }
+ 
+                 const int64_t next_ni = ni + NB_COLS * nth;
+                 if (next_ni < gemm_n) {
+                     const int64_t next_nb = std::min(gemm_n - next_ni, (int64_t) NB_COLS);
+-                    spacemit_kernels::rvv::memcpy1d(b_col, reinterpret_cast<uint8_t *>(w_data) + next_ni * row_stride_b,
++                    audit_copy(b_col, reinterpret_cast<uint8_t *>(w_data) + next_ni * row_stride_b,
+                                                     next_nb * row_stride_b);
+                 }
+             }
+@@ -574,7 +638,7 @@
+                     uint8_t * b_col_zp_cur = b_col_zp;
+ 
+                     while (rows_remaining > 0) {
+-                        auto rows_handled = gemm_kernel(b_blk_len, a_row, b_col_cur, b_col_zp_cur, c_blk,
++                        auto rows_handled = audit_gemm(b_blk_len, a_row, b_col_cur, b_col_zp_cur, c_blk,
+                                                         rows_remaining, n_blk_real, b_k_blks, gemm_n);
+ 
+                         c_blk += rows_handled * gemm_n;
