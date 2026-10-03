@@ -132,7 +132,7 @@ def gate(base, candidate, threshold=3.0):
             'base_ms': base, 'candidate_ms': candidate}
 
 
-def check_model_records(rows, expected_labels, tokens):
+def check_model_records(rows, expected_labels, tokens, output_tokens=1):
     measurements = [r for r in rows if r.get('kind') == 'measurement']
     if len(measurements) != len(expected_labels):
         raise ValueError('missing or extra model requests')
@@ -142,15 +142,15 @@ def check_model_records(rows, expected_labels, tokens):
     hashes, prompt_hashes = set(), set()
     for r in measurements:
         c = config[r['label']]
-        if c['n_predict'] != 1 or c.get('cache_prompt') or not c.get('verify_cold'):
+        if c['n_predict'] != output_tokens or c.get('cache_prompt') or not c.get('verify_cold'):
             raise ValueError('wrong screen configuration')
         if r['context_tokens'] != tokens or len(r['results']) != 1:
             raise ValueError('wrong prompt length or concurrency')
         x = r['results'][0]
-        if (x.get('error') or x['stop_type'] != 'limit' or x['tokens_predicted'] != 1
-                or x['streamed_tokens'] != 1 or len(x.get('token_ids', [])) != 1
+        if (x.get('error') or x['stop_type'] != 'limit' or x['tokens_predicted'] != output_tokens
+                or x['streamed_tokens'] != output_tokens or len(x.get('token_ids', [])) != output_tokens
                 or x['timings'].get('cache_n') != 0 or x['timings'].get('prompt_n') != tokens):
-            raise ValueError('incomplete, cached or invalid one-token screen')
+            raise ValueError('incomplete, cached or invalid output-token screen')
         token_digest = hashlib.sha256(json.dumps(x['token_ids'], separators=(',', ':')).encode()).hexdigest()
         if (x.get('tokens_sha256') != token_digest or not re.fullmatch('[0-9a-f]{64}', x.get('sha256', ''))
                 or not x.get('ttft_ms') or x['timings'].get('prompt_ms', 0) <= 0):

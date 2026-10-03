@@ -69,6 +69,26 @@ class Gates(unittest.TestCase):
         with self.assertRaises(ValueError): fast.gate([100], [90])
         with self.assertRaises(ValueError): fast.gate([100, 100], [0, 0])
 
+    def test_decode_requires_every_requested_token_and_equal_outputs(self):
+        data = records()
+        ids = list(range(64))
+        digest = hashlib.sha256(json.dumps(ids, separators=(',', ':')).encode()).hexdigest()
+        for row in data:
+            if row['kind'] == 'config': row['n_predict'] = 64
+            else:
+                row['results'][0].update(tokens_predicted=64, streamed_tokens=64,
+                                         token_ids=ids[:], tokens_sha256=digest)
+        self.assertEqual(len(fast.check_model_records(data, ['control', 'candidate'], 512, 64)), 2)
+        for field in ('tokens_predicted', 'streamed_tokens'):
+            bad = copy.deepcopy(data)
+            bad[-1]['results'][0][field] = 63
+            with self.assertRaises(ValueError): fast.check_model_records(bad, ['control', 'candidate'], 512, 64)
+        bad = copy.deepcopy(data)
+        bad[-1]['results'][0]['token_ids'][-1] = 99
+        bad[-1]['results'][0]['tokens_sha256'] = hashlib.sha256(
+            json.dumps(bad[-1]['results'][0]['token_ids'], separators=(',', ':')).encode()).hexdigest()
+        with self.assertRaises(ValueError): fast.check_model_records(bad, ['control', 'candidate'], 512, 64)
+
     def test_resume_rejects_corrupt_artifacts_and_changed_provenance(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

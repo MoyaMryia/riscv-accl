@@ -16,8 +16,8 @@ class Isolation(unittest.TestCase):
     def test_compile_preserves_target_and_changes_only_source_output_dependencies(self):
         old = '/tool/g++ -DIME1 -I/include -O3 -march=rv64gcv -fPIC -MD -MT old.o -MF old.d -o old.o -c /old.cpp'
         self.assertEqual(ime.compile_argv(old, Path('/new.cpp'), Path('/new.o'), Path('/kernel')),
-                         ['/tool/g++', '-DIME1', '-I/include', '-O3', '-march=rv64gcv', '-fPIC',
-                          '-I/kernel', '-o', '/new.o', '-c', '/new.cpp'])
+                         ['/tool/g++', '-I/kernel', '-DIME1', '-I/include', '-O3', '-march=rv64gcv', '-fPIC',
+                          '-o', '/new.o', '-c', '/new.cpp'])
 
     def test_link_requires_exactly_one_replacement(self):
         old = ': && /tool/g++ -shared -Wl,-soname,libggml-cpu.so.0 untouched.o cpu/spacemit/ime1_kernels.cpp.o -o bin/libggml-cpu.so /base.so && :'

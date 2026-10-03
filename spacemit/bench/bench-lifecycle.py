@@ -279,7 +279,8 @@ def main():
         'SPINE_MTP_WINDOW', 'SPINE_SPEC_MAX_CONTEXT', 'SPINE_SPEC_MAX_ACTIVE',
         'SPINE_SPEC_RS', 'SPINE_SPEC_LOWACC', 'SPINE_FA_WIDE_TILE', 'SPINE_FA_K1_LAYOUT',
         'SPINE_KV_PAGE_GATHER', 'SPINE_IME_M4_SCHEDULE', 'SPINE_GDN_RVV',
-        'SPINE_GDN_PREFILL') if os.environ.get(key) is not None}
+        'SPINE_GDN_PREFILL', 'SPINE_FA_K1_INFRA', 'SPINE_FA_K1_PROFILE',
+        'SPINE_TCM_DEBUG', 'SPINE_GEMM_AUDIT', 'SPINE_K1_GEMM_ROUTE') if os.environ.get(key) is not None}
     with args.log.open('wb') as log, args.output.open('a') as output:
         proc = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT,
                                 stdin=subprocess.DEVNULL, env=os.environ.copy())

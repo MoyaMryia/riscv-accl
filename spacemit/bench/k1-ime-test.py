@@ -65,7 +65,10 @@ def compile_argv(line, source, output, include):
         if old[i] in ('-o','-c','-MT','-MF'): i+=2; continue
         if old[i]=='-MD': i+=1; continue
         new.append(old[i]); i+=1
-    return new+['-I'+str(include),'-o',str(output),'-c',str(source)]
+    # A relocated translation unit loses its implicit sibling-header search.
+    # Put that directory before generic -I paths (both CPU directories contain
+    # repack.h) to preserve the original quoted-include resolution.
+    return [new[0],'-I'+str(include),*new[1:],'-o',str(output),'-c',str(source)]
 
 
 def link_argv(line, output, object_file, object_suffix='/spacemit/ime1_kernels.cpp.o'):
@@ -81,6 +84,7 @@ def link_argv(line, output, object_file, object_suffix='/spacemit/ime1_kernels.c
 
 
 class Run:
+    verified_modified_kernel=False
     kernel_relative='ggml/src/ggml-cpu/spacemit/ime1_kernels.cpp'
     tag='ime1'
     harness='test-k1-ime.cpp'
@@ -132,8 +136,10 @@ class Run:
             self.shapes[model]=self.model_dimensions(info['path'])
         original=self.source/self.kernel_relative
         text=original.read_text()
-        if hashlib.sha256(subprocess.check_output(['git','-C',self.source,'show','HEAD:'+self.kernel_relative])).hexdigest()!=fast.digest(original):
+        if not self.verified_modified_kernel and hashlib.sha256(subprocess.check_output(['git','-C',self.source,'show','HEAD:'+self.kernel_relative])).hexdigest()!=fast.digest(original):
             raise ValueError('kernel differs from committed baseline')
+        if self.verified_modified_kernel and self.expected['source_sha256'].get(self.kernel_relative)!=fast.digest(original):
+            raise ValueError('modified kernel differs from verified source')
         (self.root/f'baseline-{self.tag}.cpp').write_text(text)
         candidate=self.root/f'candidate-{self.tag}.cpp'; candidate.write_text(self.generate(text))
         import difflib
@@ -147,12 +153,13 @@ class Run:
         c=compile_argv(compile_line,candidate,obj,original.parent); l=link_argv(link_line,library,obj,'/'+original.name+'.o')
         original_objects=[self.build/p for p in shlex.split(link_line.split(' && ')[1]) if p.endswith('.o')]
         object_hashes={str(p):fast.digest(p) for p in original_objects}
-        self.command(c,'compile.log',180,cwd=self.build); self.command(l,'link.log',120,cwd=self.build)
+        self.command(c,'compile.log',getattr(self,'compile_timeout',180),cwd=self.build); self.command(l,'link.log',120,cwd=self.build)
         for name in ('libggml-cpu.so','libggml-cpu.so.0'): (overlay/name).symlink_to(library.name)
         self.env=dict(os.environ,LD_LIBRARY_PATH=str(overlay)+':'+self.expected['runtime']['LD_LIBRARY_PATH'],SPINE_FA_WIDE_TILE='1',SPINE_FA_K1_LAYOUT='0')
         tool=c[0]
         self.command([tool,'-O3','-std=c++17','-march=rv64gcv_zfh_zvfh_zicbop_zihintpause_zba','-mabi=lp64d',
-            '-I'+str(self.source/'ggml/include'),'-I'+str(original.parent),HERE/self.harness,'-L'+str(overlay),
+            '-I'+str(self.source/'ggml/include'),'-I'+str(self.source/'ggml/src'),
+            '-I'+str(original.parent),'-I'+str(original.parent.parent),HERE/self.harness,'-L'+str(overlay),
             '-L'+str(self.server.parent),'-lggml-cpu','-lggml-base','-pthread','-o',self.root/self.binary],
             'harness-build.log',120,env=self.env)
         self.provenance={'source_revision':'a990751','baseline_kernel_sha256':fast.digest(original),
