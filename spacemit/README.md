@@ -2,6 +2,8 @@
 
 Start with the [documentation guide](DOCS.md) for current status and work.
 This page gives deployment commands; dated reports retain campaign evidence.
+The [submission report](reports/SUBMISSION-REPORT.md) consolidates measured
+results through October 3, with a separate [evidence appendix](reports/SUBMISSION-EVIDENCE.md).
 
 This directory packages the measured Qwen3.5 2B/4B work on MUSE-Pi-Pro (`musepipro-wg`). Source patches apply to the [official SpaceMiT llama.cpp fork](https://github.com/spacemit-com/llama.cpp) at commit `5ad05d8`. Patches 0001–0004 reproduce the tested `port-gdn` source at `6562c22`; patch 0005 adds the separately measured frequency-ranked 32k MTP prototype; patch 0006 adds an opt-in per-request low-acceptance fallback; patch 0007 adds Q8_0 IME1 kernels; patch 0008 improves the Q4_0 M4 scale path; optional patch 0009 adds the measured 256-bit RVV F16-KV prefill kernel; optional patch 0010 bounds the MTP draft KV history. For patches 0001–0005, we compared all 12 changed source files byte-for-byte with the board's experimental checkout; patch 0006 was built and benchmarked separately. The base optimization is not a replacement for upstream llama.cpp or a general RISC-V backend.
 

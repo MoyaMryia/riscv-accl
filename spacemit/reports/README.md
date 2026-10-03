@@ -3,7 +3,16 @@
 For current work and commands, use the [documentation guide](../DOCS.md).
 Historical queue statements describe the report's date.
 
-## Main evidence
+## Submission package
+
+- [SUBMISSION-REPORT.md](SUBMISSION-REPORT.md): current consolidated report, evidence through October 3, 2026.
+- [SUBMISSION-EVIDENCE.md](SUBMISSION-EVIDENCE.md): claim-to-artifact map, model/build identities and verification commands.
+
+Submit the report with the appendix. The older root `FINAL-REPORT.md` and
+September 24 PDF/LaTeX export retain historical campaign claims; they are not
+the current submission. No files have been submitted externally.
+
+## Current measurements and validation
 
 | Report | Scope |
 | --- | --- |
@@ -14,9 +23,19 @@ Historical queue statements describe the report's date.
 | [October 2 profile](2026-10-02-prefill-profile.md) | Completed cold-prefill profile, resolved IME GEMM hotspots and collection recovery |
 | [IME scheduling](2026-10-02-ime-scheduling.md) | Five variants pass native checks; neither operator screen qualifies for model testing |
 | [Recurrent prefill](2026-10-02-recurrent-prefill.md) | Completed: 158 numerical cases pass; operator time falls 24-28%, 2B/512 prefill falls 2.38%, below the 3% gate |
+| [Attention infrastructure](../experiments/2026-10-02-attention-infrastructure.md) | Completed: direct-V operator gains fail full-model gates; runtime findings and completed GEMM staging attribution |
+| [October 3 infrastructure research](2026-10-03-infrastructure-research.md) | Completed GitHub/arXiv/Scholar review and GEMM routing tests; verified model gains and remaining unused candidates |
 | [October 1 update](2026-10-01-fast-method.md) | Completed layout/quality evidence and implementation of the staged fast method |
-| [Code audit](2026-09-30-code-optimization-audit.md) | Source hypotheses and provenance; compact layout is a later experiment |
-| [PR #1 review](2026-09-30-pr1-review.md) | Historical findings; PR merged and local fixes completed |
+
+## Validation plan
+
+[Long-context and MTP validation practice](2026-10-03-validation-practice.md):
+GitHub/Scholar review and prioritized proposed checks; no new board result.
+
+## Source audits and integration history
+
+- [Code audit](2026-09-30-code-optimization-audit.md): source hypotheses and provenance, with later experiment updates.
+- [PR #1 review](2026-09-30-pr1-review.md): historical findings; PR merged and local fixes completed.
 
 ## Earlier campaign snapshots
 
@@ -41,4 +60,6 @@ are preserved with their workload, source, and output-length limits.
 The [PDF export](k1-llm-inference-optimizations.pdf) and its
 [LaTeX source](k1-llm-inference-optimizations.tex) are the 2026-09-24 kernel
 campaign report. They do not include later RVV, long-context, cache-quality,
-or compact-layout work; use the reports above for those updates.
+or compact-layout/GEMM-routing work. Its speculative exactness and bandwidth
+statements must be read with the later corrections in the submission report.
+Use the submission package for the current evidence summary.

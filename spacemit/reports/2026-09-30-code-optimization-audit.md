@@ -17,6 +17,11 @@ benchmark continues with its original code.
 
 ## What is already working
 
+Later runtime evidence: the [October 2 infrastructure audit](../experiments/2026-10-02-attention-infrastructure.md)
+reports the TCM API unavailable with zero geometry and `fake=true`, while
+SPERT still provides 128 KiB worker buffers. The older log description below
+does not establish current physical TCM placement.
+
 The current build uses GCC 14, `-O3`, RVV/F16 extensions, and the IME1
 backend. The server log reports real TCM and the preferred four-core mask
 `f`. The existing wide RVV attention dispatch is enabled for 256-dimensional
@@ -137,25 +142,21 @@ design should be evaluated before allocating another packed 8k/16k cache.
 
 ## Recommended next measurement
 
-After the current benchmark finishes, profile one short cold request per
-model to separate FLASH_ATTN_EXT, GATED_DELTA_NET, IME matmul, packing, and
-checkpoint costs. `perf` is installed, with `perf_event_paranoid=2`; user-mode
-event availability still needs checking. If counters are unavailable, use
-opt-in timing around the relevant operators in an isolated build. Sampling
-the active comparison would change its measurement conditions.
+Updated October 3: the originally proposed profiling and operator attribution
+have completed. See the [prefill profile](2026-10-02-prefill-profile.md),
+[recurrent prefill screen](2026-10-02-recurrent-prefill.md) and
+[attention/GEMM attribution](../experiments/2026-10-02-attention-infrastructure.md).
+Recurrent fusion and attention candidates did not clear their full-model
+promotion gates; do not repeat those unchanged proposals.
 
-Start with attention scratch clearing, then eligible recurrent prefill
-fusion. Compare each independently, retaining Q4_0 weights, F16 KV, four
-threads, batch/microbatch 32, exact inputs, and the same server configuration.
-Use bounded 2k checks before 8k confirmation and alternating baseline/candidate
-order. Kernel correctness checks should include partial tile lengths,
-all-masked tiles, final recurrent state, and target logits. Full-answer
-quality checks supplement those checks when greedy outputs diverge.
-
-The larger application opportunity for unique documents remains exact-span
-retrieval: `serve/cached-document-chat.py` currently sends the full document
-for every question. Retrieval changes the input and requires a separate
-fact/citation quality comparison; it is not covered by the kernel candidates.
+The [production GEMM routing test](../experiments/2026-10-03-gemm-routing.md)
+completed: separate prefill and single-row bypass modes qualified on both
+models, with full inputs and settings retained and collection verified.
+They remain opt-in; independent long-context and complete-answer confirmation
+is the next measurement before default adoption.
+The [October 3 research](2026-10-03-infrastructure-research.md) lists additional
+unused infrastructure candidates and their platform limitations. Retrieval
+and input shortening are excluded from this mission.
 
 ## Provenance
 

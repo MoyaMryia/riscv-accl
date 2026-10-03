@@ -4,6 +4,13 @@ See the [documentation guide](../DOCS.md) for current results and queued work.
 This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)
 now has native correctness, operator timing and gated model-screen modes.
 
+The [October 3 staged validation](../experiments/2026-10-03-staged-validation.md)
+adds small recurrent-state probes, forced-trajectory and MTP diagnostics,
+combined routing at 8k, complete-document answers, and gated 4B/32k feasibility.
+Launch with `python3 spacemit/bench/start-k1-validation.py`; board execution and
+automatic collection use tmux. `bench-lifecycle.py --no-context-shift` prevents
+automatic input shifting in the new fixed-length tests.
+
 `bench-server.py` starts the patched `llama-server` once per speculative mode, sends greedy completion requests, and writes one JSON record per result. It checks that all modes on the same model produce identical response text for each prompt. The recorded `tps` is the server's decode rate (`timings.predicted_per_second`), not end-to-end throughput. Server stdout and stderr go to `--log-dir`.
 
 The C++ near-copy prompt includes `fixtures/ngram-mod.cpp`, taken from `common/ngram-mod.cpp` in the official llama.cpp fork at base commit `5ad05d8` (MIT license). The fixture freezes the prompt across subsequent upstream edits. The Python edit and prose prompts are embedded in the runner. The FR-Spec set uses English, code, and Chinese prompts.
@@ -477,3 +484,55 @@ python3 spacemit/bench/start-k1-gdn-test.py --collect-only \
 
 See the [recurrent experiment](../reports/2026-10-02-recurrent-prefill.md) for
 the narrow dispatch, state correctness checks and adoption boundary.
+
+## Attention infrastructure attribution and layout screen
+
+```bash
+python3 spacemit/bench/start-k1-attention-infra.py
+```
+
+The board job audits runtime geometry and production GEMM buffer availability,
+compares 289 numerical cases per arm against the original library, and measures
+attention stages at 2k/8k/16k history. Eligible direct-V and larger-QK-group
+candidates receive six balanced uninstrumented operator blocks. Qualified
+candidates advance to cold 2B/2k and 4B/1k ABBA requests, then conditional 8k
+pairs. Full prompts and model settings remain unchanged. The two-hour board
+limit starts after the shared lock; board execution and local collection use
+tmux. Recover collection with:
+
+```bash
+python3 spacemit/bench/start-k1-attention-infra.py --collect-only \
+  --run-dir /absolute/path/to/existing/attention-run
+```
+
+Local gate checks: `python3 spacemit/bench/test-k1-attention-infra.py`.
+See the [protocol](../experiments/2026-10-02-attention-infrastructure.md) for
+dispatch limits, attribution boundaries and promotion rules.
+
+## Production GEMM packing/staging attribution
+
+```bash
+python3 spacemit/bench/start-k1-gemm-audit.py
+```
+
+This separate locked tmux job replaces only `ime.cpp.o` with diagnostic call
+wrappers and compares output hashes with the original library on cold 256-token
+prompts for both models. It reports quantization, staging copies, GEMM and
+barrier waits, with a 30-minute limit after acquiring the lock. Summed worker
+elapsed fractions are not model wall-time savings. See the
+[infrastructure protocol](../experiments/2026-10-02-attention-infrastructure.md).
+
+## Production GEMM routing screen
+
+```bash
+python3 spacemit/bench/start-k1-gemm-routing.py
+```
+
+Tests staging bypass independently for prefill and single-row decode using
+the existing production direct-memory branch. The numerical gate compares
+104 actual GGML graph cases per arm against the original library. Six balanced
+operator blocks include activation quantization and SPERT synchronization;
+eligible modes advance to cold ABBA prefill or 64-token decode tests for both
+models. Full input prompts, models and arithmetic remain unchanged. Execution
+and verified collection use tmux, with the shared lock and a one-hour board
+budget. See the [predeclared protocol](../experiments/2026-10-03-gemm-routing.md).

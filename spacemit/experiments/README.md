@@ -2,6 +2,8 @@
 
 Use the [documentation guide](../DOCS.md) for current work and the
 [integration guide](../README.md) for packaged patch application.
+For the consolidated results and adoption decisions, use the
+[submission report](../reports/SUBMISSION-REPORT.md).
 Experiment patches often target `a990751`; the helper targets `5ad05d8`.
 Follow individual base and patch-order instructions.
 
@@ -16,6 +18,8 @@ Follow individual base and patch-order instructions.
 | [Perfect-draft probe](2026-09-28-perfect-draft-probe.md) | x86 mechanism evidence; no K1 optimization or implemented tie guard |
 | [Compact K1 layout](2026-09-30-k1-attention-layout.md) | Completed native/model pilot; small effects, no adoption; staged fast screen follows |
 | [Fast-test method](2026-09-30-fast-test-design.md) | Implemented controller and concurrent timing; corrected screen completed in 8.45 minutes, model gains below threshold |
+| [Attention infrastructure](2026-10-02-attention-infrastructure.md) | Completed: direct-V gains do not improve model prefill. GEMM attribution also completed; staging bypass results are in the production GEMM routing experiment. |
+| [Production GEMM routing](2026-10-03-gemm-routing.md) | Completed: separate prefill/decode bypass modes qualify on both models; artifacts verified, experimental and opt-in. |
 
 Older queued-run instructions explain historical procedures. Consult completed
 reports before repeating them. Experimental and rejected patches remain as

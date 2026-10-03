@@ -1,6 +1,6 @@
 # Current documentation guide
 
-Last status check: 2026-10-02 Asia/Singapore.
+Last status check: 2026-10-03 Asia/Singapore.
 This is a dated snapshot. Read a run's `phase`, logs, and final exit status
 for live progress. A queued experiment is not a measured optimization.
 
@@ -8,6 +8,8 @@ for live progress. A queued experiment is not a measured optimization.
 
 | Need | Document |
 | --- | --- |
+| Report to submit | [Submission report](reports/SUBMISSION-REPORT.md) |
+| Claim-to-artifact map and verification commands | [Submission evidence appendix](reports/SUBMISSION-EVIDENCE.md) |
 | Apply patches, build, prepare models, run inference | [Integration guide](README.md) |
 | Ask follow-up questions over a local document | [Cached-document workflow](serve/README.md) |
 | Run and collect benchmarks | [Benchmark commands](bench/README.md) |
@@ -19,6 +21,9 @@ for live progress. A queued experiment is not a measured optimization.
 | Cold-prefill sampling and next bottleneck | [Profiling protocol](reports/2026-10-02-prefill-profile.md) |
 | IME M4 scheduling candidates and isolated tests | [IME screen](reports/2026-10-02-ime-scheduling.md) |
 | Multi-token reuse of the existing recurrent RVV step | [Recurrent screen](reports/2026-10-02-recurrent-prefill.md) |
+| Runtime audit and long-history attention data movement | [Infrastructure screen](experiments/2026-10-02-attention-infrastructure.md) |
+| New GEMM routing results and research leads | [October 3 research](reports/2026-10-03-infrastructure-research.md) |
+| Staged MTP, 8k routing, complete answers and conditional 4B/32k validation | [October 3 validation protocol](experiments/2026-10-03-staged-validation.md) |
 | Other candidates and source provenance | [Code audit](reports/2026-09-30-code-optimization-audit.md) |
 
 ## Implemented and measured
@@ -53,6 +58,10 @@ for live progress. A queued experiment is not a measured optimization.
 | IME scheduling, `k1-ime-20261002-183608` | Completed in 4.20 minutes; no candidate qualified | 288 numerical cases and 256 operator arms pass. Unrolling averages +0.67%; scheduled loads regress. Model stages skipped. |
 | IME scale gathering, `k1-ime-20261002-184503` | Completed in 3.98 minutes; no candidate qualified | All five variants pass 288 numerical cases; gathering regresses seven of eight operator shapes. Model stages skipped. |
 | Recurrent prefill fusion, `k1-gdn-20261002-185831` | Completed in 7.36 minutes; inconclusive | 158 numerical cases pass; operator time falls 24.28-27.82%. Cold 2B/512 prefill falls 2.38% (22.06 to 21.54 s), below the 3% gate. Longer model stages skipped. |
+| GEMM attribution, `k1-gemm-audit-20261002-221714` | Completed in 7.15 minutes; 29 artifact hashes verified | Prefill staging copies: 9.55% / 9.93% of summed worker elapsed time on 2B / 4B. Diagnostic only; no speedup claim. |
+| Attention infrastructure, `k1-attention-infra-20261002-205454` | Completed in 27.77 minutes; inconclusive | 289 cases/arm match the original library; direct-V operator gains fail model gates: 2B/2k is 1.67% slower, 4B/1k is effectively unchanged. 8k skipped. |
+| GEMM routing, `k1-gemm-routing-20261003-005740` | Completed in 38.16 minutes; 236 artifact hashes verified | Prefill time falls 6.40% / 7.75% (2B/2k, 4B/1k); 64-token decode time falls 14.40% / 28.62%. Separate modes qualify; remain opt-in. |
+| Staged validation, `k1-validation-20261003-124720` | Running in board tmux; automatic local collector | MTP state/trajectory diagnostics, combined routing at 8k, complete-document pilot, conditional 4B/32k. No new results claimed. |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.
@@ -70,6 +79,14 @@ pass the complete-answer quality gate.
 
 ## Next work
 
+The attention infrastructure screen did not qualify direct V or larger QK
+grouping; retain their original paths. The completed GEMM routing test qualified
+separate prefill and single-row/decode bypass modes. Independent long-context
+and complete-answer confirmation is the next gate before default adoption. See the [October 3 research](reports/2026-10-03-infrastructure-research.md).
+The TCM API reports unavailable/zero geometry/fake, while
+SPERT supplies 128 KiB worker buffers; physical placement needs separate
+verification before claiming hardware TCM use.
+
 1. Keep recurrent prefill fusion opt-in: its small 2B/512 pilot gain did not
    clear the preset model gate. Establish a separate replication protocol if
    this size of benefit warrants adoption; longer-context and complete-answer
@@ -77,8 +94,9 @@ pass the complete-answer quality gate.
 2. Keep layout 0; the fast screen did not qualify either compact layout. Do not
    run an 8k layout comparison or repeat the quality matrix for this result.
 3. Review the low-scoring 2B/4k cache answer separately from kernel timing.
-4. K/V packing needs targeted attribution before prioritizing a shared packing
-   cache; the completed IME screens do not justify enabling their variants.
+4. Shared K packing across query heads, a Q4_0/RVV LUT prototype and isolated
+   compiler comparisons remain unused leads. Attention attribution is available
+   in the October 3 research; operator gains must pass model gates.
 
 ## Older documents
 
