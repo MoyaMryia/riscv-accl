@@ -4,8 +4,8 @@ Research date: October 3, 2026, Asia/Singapore. This is a proposed validation
 plan, not a new benchmark result. It supplements the [submission report](SUBMISSION-REPORT.md).
 
 Implementation: the [staged validation protocol](../experiments/2026-10-03-staged-validation.md)
-and tmux runner now implement the first bounded round. Results are pending;
-unsupported state cases and failed gates will remain explicit.
+and tmux runner implement the first bounded round. The [completed results](2026-10-03-staged-validation-results.md)
+retain unsupported state cases and failed gates explicitly.
 
 ## Decision
 

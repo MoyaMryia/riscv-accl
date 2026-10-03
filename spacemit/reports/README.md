@@ -25,6 +25,7 @@ the current submission. No files have been submitted externally.
 | [Recurrent prefill](2026-10-02-recurrent-prefill.md) | Completed: 158 numerical cases pass; operator time falls 24-28%, 2B/512 prefill falls 2.38%, below the 3% gate |
 | [Attention infrastructure](../experiments/2026-10-02-attention-infrastructure.md) | Completed: direct-V operator gains fail full-model gates; runtime findings and completed GEMM staging attribution |
 | [October 3 infrastructure research](2026-10-03-infrastructure-research.md) | Completed GitHub/arXiv/Scholar review and GEMM routing tests; verified model gains and remaining unused candidates |
+| [October 3 staged validation](2026-10-03-staged-validation-results.md) | Combined routing clears 8k phase gates; 2B citation and RS rollback gates remain open; 4B/32k skipped |
 | [October 1 update](2026-10-01-fast-method.md) | Completed layout/quality evidence and implementation of the staged fast method |
 
 ## Validation plan

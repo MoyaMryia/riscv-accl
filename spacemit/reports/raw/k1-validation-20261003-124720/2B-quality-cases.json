@@ -1,0 +1,179 @@
+{
+  "blocks": [
+    {
+      "case_id": "routes",
+      "source_id": "S1",
+      "position": "beginning",
+      "question": "Which three OpenAI-compatible route types are listed? Answer in at most 90 words and cite [S1].",
+      "evidence": "[S1] tools/server/README.md:9\n* [OpenAI API](https://github.com/openai/openai-openapi) compatible chat completions, responses, and embeddings routes\nReceipt A: 17 units.",
+      "required_facts": [
+        "chat completions",
+        "responses",
+        "embeddings"
+      ],
+      "fact_patterns": [
+        "chat\\s+completions?",
+        "responses?",
+        "embeddings?"
+      ],
+      "evidence_char_offset": 66,
+      "evidence_char_fraction": 0.005
+    },
+    {
+      "case_id": "batches",
+      "source_id": "S2",
+      "position": "beginning",
+      "question": "Give the logical batch and physical microbatch flags and their documented defaults. Answer in at most 90 words and cite [S2].",
+      "evidence": "[S2] Synthetic trace: job orion uses route maple.",
+      "required_facts": [
+        "--batch-size default 2048",
+        "--ubatch-size default 512"
+      ],
+      "fact_patterns": [
+        "2048",
+        "512",
+        "(?:--batch-size|(?<!\\w)-b\\b)",
+        "(?:--ubatch-size|(?<!\\w)-ub\\b)"
+      ],
+      "evidence_char_offset": 237,
+      "evidence_char_fraction": 0.0181
+    },
+    {
+      "case_id": "cache",
+      "source_id": "S3",
+      "position": "middle",
+      "question": "What does cache_prompt reuse, what gets reprocessed, and are identical logits guaranteed? Answer in at most 90 words and cite [S3].",
+      "evidence": "[S3] Synthetic receipt B: 23 units.",
+      "required_facts": [
+        "reuse the common prefix/KV cache",
+        "evaluate only the differing suffix",
+        "bit-for-bit identical logits are not guaranteed because batching can differ"
+      ],
+      "fact_patterns": [
+        "(?:prefix|cache)",
+        "suffix",
+        "(?:not guaranteed|not.*identical|no guarantee|nondeterministic)",
+        "batch"
+      ],
+      "evidence_char_offset": 6634,
+      "evidence_char_fraction": 0.5068
+    },
+    {
+      "case_id": "slot",
+      "source_id": "S4",
+      "position": "middle",
+      "question": "What does id_slot do, and what is its default value and default assignment behavior? Answer in at most 90 words and cite [S4].",
+      "evidence": "[S4] Synthetic trace: route maple reaches cabinet cedar.",
+      "required_facts": [
+        "assign a completion to a specific slot",
+        "default -1 selects an idle slot"
+      ],
+      "fact_patterns": [
+        "slot",
+        "[-\u2212]\\s*1",
+        "idle"
+      ],
+      "evidence_char_offset": 6671,
+      "evidence_char_fraction": 0.5096
+    },
+    {
+      "case_id": "health",
+      "source_id": "S5",
+      "position": "end",
+      "question": "Does /health require an API key? Give its alternative path and the loading and ready HTTP codes. Answer in at most 90 words and cite [S5].",
+      "evidence": "[S5] Synthetic receipt C: 38 units.",
+      "required_facts": [
+        "no API key check",
+        "/v1/health also works",
+        "503 while loading",
+        "200 when ready"
+      ],
+      "fact_patterns": [
+        "(?:no|not|without|public)",
+        "/v1/health",
+        "503",
+        "200"
+      ],
+      "evidence_char_offset": 13001,
+      "evidence_char_fraction": 0.9931
+    },
+    {
+      "case_id": "tokenize",
+      "source_id": "S6",
+      "position": "end",
+      "question": "What field supplies text to /tokenize? What does add_special control and what is its default? Answer in at most 90 words and cite [S6].",
+      "evidence": "[S6] Synthetic trace: cabinet cedar has color cobalt.",
+      "required_facts": [
+        "content is required",
+        "add_special inserts special tokens such as BOS",
+        "default false"
+      ],
+      "fact_patterns": [
+        "content",
+        "(?:special|BOS)",
+        "false"
+      ],
+      "evidence_char_offset": 13038,
+      "evidence_char_fraction": 0.996
+    }
+  ],
+  "cases": [
+    {
+      "case_id": "routes",
+      "source_id": "S1",
+      "position": "beginning",
+      "question": "Which three OpenAI-compatible route types are listed? Answer in at most 90 words and cite [S1].",
+      "evidence": "[S1] tools/server/README.md:9\n* [OpenAI API](https://github.com/openai/openai-openapi) compatible chat completions, responses, and embeddings routes\nReceipt A: 17 units.",
+      "required_facts": [
+        "chat completions",
+        "responses",
+        "embeddings"
+      ],
+      "fact_patterns": [
+        "chat\\s+completions?",
+        "responses?",
+        "embeddings?"
+      ],
+      "citations": [
+        "S1"
+      ]
+    },
+    {
+      "case_id": "trace",
+      "source_id": "S6",
+      "position": "end",
+      "question": "Follow job orion through its route and cabinet. What color is its cabinet? Cite [S2], [S4], and [S6]. Answer briefly.",
+      "evidence": "[S6] Synthetic trace: cabinet cedar has color cobalt.",
+      "required_facts": [
+        "cobalt"
+      ],
+      "fact_patterns": [
+        "\\bcobalt\\b"
+      ],
+      "citations": [
+        "S2",
+        "S4",
+        "S6"
+      ]
+    },
+    {
+      "case_id": "aggregation",
+      "source_id": "S5",
+      "position": "end",
+      "question": "Add the units in receipts A, B, and C. Give the total and cite [S1], [S3], and [S5]. Answer briefly.",
+      "evidence": "[S5] Synthetic receipt C: 38 units.",
+      "required_facts": [
+        "78"
+      ],
+      "fact_patterns": [
+        "\\b78\\b"
+      ],
+      "citations": [
+        "S1",
+        "S3",
+        "S5"
+      ]
+    }
+  ],
+  "document_tokens": 4096
+}

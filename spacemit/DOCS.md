@@ -61,7 +61,7 @@ for live progress. A queued experiment is not a measured optimization.
 | GEMM attribution, `k1-gemm-audit-20261002-221714` | Completed in 7.15 minutes; 29 artifact hashes verified | Prefill staging copies: 9.55% / 9.93% of summed worker elapsed time on 2B / 4B. Diagnostic only; no speedup claim. |
 | Attention infrastructure, `k1-attention-infra-20261002-205454` | Completed in 27.77 minutes; inconclusive | 289 cases/arm match the original library; direct-V operator gains fail model gates: 2B/2k is 1.67% slower, 4B/1k is effectively unchanged. 8k skipped. |
 | GEMM routing, `k1-gemm-routing-20261003-005740` | Completed in 38.16 minutes; 236 artifact hashes verified | Prefill time falls 6.40% / 7.75% (2B/2k, 4B/1k); 64-token decode time falls 14.40% / 28.62%. Separate modes qualify; remain opt-in. |
-| Staged validation, `k1-validation-20261003-124720` | Running in board tmux; automatic local collector | MTP state/trajectory diagnostics, combined routing at 8k, complete-document pilot, conditional 4B/32k. No new results claimed. |
+| Staged validation, `k1-validation-20261003-124720` | Completed in 4.16 hours; 83 artifact hashes verified | Combined 8k prefill/decode reductions: 4.43%/9.49% (2B), 5.79%/15.06% (4B). 2B tracing citations fail in both arms; RS replay mismatches remain. 4B/32k skipped. See [results](reports/2026-10-03-staged-validation-results.md). |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.
@@ -81,8 +81,9 @@ pass the complete-answer quality gate.
 
 The attention infrastructure screen did not qualify direct V or larger QK
 grouping; retain their original paths. The completed GEMM routing test qualified
-separate prefill and single-row/decode bypass modes. Independent long-context
-and complete-answer confirmation is the next gate before default adoption. See the [October 3 research](reports/2026-10-03-infrastructure-research.md).
+separate prefill and single-row/decode bypass modes. Combined 8k phase gates
+now pass; the complete-answer pilot retains the overall gate because 2B omits
+tracing citations in both arms. See the [completed validation](reports/2026-10-03-staged-validation-results.md).
 The TCM API reports unavailable/zero geometry/fake, while
 SPERT supplies 128 KiB worker buffers; physical placement needs separate
 verification before claiming hardware TCM use.

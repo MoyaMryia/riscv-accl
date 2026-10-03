@@ -1,13 +1,14 @@
 # Staged validation of long context and MTP
 
 This protocol follows the [research review](../reports/2026-10-03-validation-practice.md).
-New measurements are pending. The existing submitted claims remain unchanged.
+The run completed; see the [results and retained gates](../reports/2026-10-03-staged-validation-results.md).
 
-Active run: `k1-validation-20261003-124720`, launched on October 3 at 12:47
+Completed run: `k1-validation-20261003-124720`, launched on October 3 at 12:47
 Asia/Singapore. Board tmux: `k1_validation_k1-validation-20261003-124720`.
 Local collector tmux: `k1_validation_collect_k1-validation-20261003-124720`.
 The [run manifest](../reports/raw/k1-validation-20261003-124720/run.json)
-records the staged code hashes and remote directory. Results are pending.
+records the staged code hashes and remote directory. Execution took 4.16 hours;
+the overall acceptance gate did not clear and 4B/32k was skipped.
 
 ## Fixed configuration
 

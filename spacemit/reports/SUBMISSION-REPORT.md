@@ -17,8 +17,10 @@ Both preserve the full benchmark inputs and required models. In replicated
 GEMM-routing modes reduced prefill time by 6.40% on 2B/2k and 7.75% on 4B/1k,
 and reduced 64-token decode time by 14.40% and 28.62%, respectively.
 All 24 requests in the routing experiment matched their control outputs.
-The routing candidate remains isolated and opt-in; longer-context and
-complete-answer confirmation are required before default adoption.
+Independent combined-mode 8k tests reduce prefill time by 4.43%/5.79% and
+64-token decode time by 9.49%/15.06% on 2B/4B. Complete-answer pairs match,
+but 2B omits required tracing citations in both arms. Routing remains isolated
+and opt-in because the declared overall quality gate has not cleared.
 
 The report also records negative results, bounded long-context feasibility,
 and the limits of speculative decoding and cache-quality evidence. Performance
@@ -122,7 +124,7 @@ The generated library is isolated from the original build.
 | Unset, invalid or 0 | Original staging | Control |
 | 1 | Bypass for M > 1 | Numerical, operator and model prefill gates passed |
 | 2 | Bypass for M = 1 | Numerical, operator and 64-token model decode gates passed |
-| 3 | Bypass for both | Numerical checks only; combined model performance unmeasured |
+| 3 | Bypass for both | Combined 8k phase gates pass on both models; overall quality gate remains open |
 
 Mode 2 can affect single-row work during prefill as well as decoding.
 The current TCM API reports unavailable/fake/zero geometry, while SPERT
@@ -199,10 +201,15 @@ were independently verified, and end-of-run checks matched 46 original
 source/object/build files. The verifier recomputes the required gates from
 individual records.
 
-The two routing modes were tested separately. Their gains must not be added
-or combined with older RVV percentages to claim a cumulative acceleration.
-Independent long-context and naturally completed answers remain the next
-confirmation gate before default adoption.
+These initial routing modes were tested separately. Their gains must not be
+added or combined with older RVV percentages to claim cumulative acceleration.
+The subsequent [staged validation](2026-10-03-staged-validation-results.md)
+completed in 4.16 hours with 83 artifact hashes verified. Combined mode 3 at
+8192 input/64 output tokens reduces prefill/decode time by 4.43%/9.49% on 2B
+and 5.79%/15.06% on 4B. All eight requests match hashes and cold counts.
+The 12 full-document answers stop naturally and match paired baseline text;
+2B lacks required tracing citations in both arms, retaining the overall gate.
+4B/32k was therefore skipped. These are bounded engineering pilots.
 
 ## 5. Negative results and correctness limits
 
@@ -224,6 +231,12 @@ this. Full-vocabulary target verification does not prove numerical identity
 between different execution paths. Historical matching 128-token samples
 therefore do not justify calling MTP universally lossless. Direct decoding
 is used for the principal results here.
+
+The newer 512-output checkpoint/RS samples match direct outputs on both
+models, but native RS rollback replay fails strict logit checks: 18 mismatches
+per model, including argmax changes. Full-state restore and same-shape controls
+pass. This newer evidence narrows the next diagnosis and does not establish
+general MTP identity or supersede the older long-output traces.
 
 Two complete 4,096-token requests per model and direct/MTP mode demonstrated
 bounded generation stability, including a roughly 43-minute 4B direct request.
@@ -291,9 +304,9 @@ outputs. Its scope is the current board/runtime and the recorded workload;
 the positive screen supports further confirmation rather than automatic
 default deployment.
 
-The immediate next step is independent long-context and complete-answer testing
-of the routing candidate, including a measured combined mode if both phase
-policies are to be enabled together. Further unused infrastructure leads are
+Combined mode now has independent 8k phase measurements and a complete-answer
+pilot. Next address the 2B baseline citation limitation under a separately
+declared protocol and investigate the native RS rollback mismatches. Further unused infrastructure leads are
 shared K packing across grouped query heads, a Q4_0 RVV lookup-table prototype,
 and compiler comparisons for measured hotspots. Their platform fit and primary
 research references are in the [October 3 research review](2026-10-03-infrastructure-research.md).
