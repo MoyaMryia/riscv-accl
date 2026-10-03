@@ -9,6 +9,11 @@ direct/MTP divergence (2B first mismatch at generated index 179, 4B at 303;
 margins in [2026-09-27-resumed-measures.md](../reports/2026-09-27-resumed-measures.md))
 from draft-model quality: the draft is the *direct greedy trajectory itself*.
 
+> October 3 clarification: the proposed tie guard below is unimplemented. An
+> observed epsilon does not guarantee arbitrary-input identity, and hybrid
+> models require recurrent-state restoration as well as attention KV rollback.
+> See the [validation review](../reports/2026-10-03-validation-practice.md).
+
 ## Mechanism hypothesis
 
 Speculative verification evaluates the draft's k tokens in one decode ubatch
