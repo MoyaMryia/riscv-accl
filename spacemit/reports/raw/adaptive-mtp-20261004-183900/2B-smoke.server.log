@@ -1,0 +1,57 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.017.231 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.019.616 W srv  llama_server: -----------------
+0.00.019.638 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.019.641 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.019.643 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.019.645 W srv  llama_server: -----------------
+0.00.021.728 I srv    load_model: loading model '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+K1_GEMM_ROUTE mode=0 phase=prefill eligible=1 bypass=0 buffer_size=131072
+K1_GEMM_ROUTE mode=0 phase=single eligible=1 bypass=0 buffer_size=131072
+0.15.720.224 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 6144, kv_unified = 'false'
+0.15.962.762 I srv  llama_server: model loaded
+0.15.962.806 I srv  llama_server: listening on http://127.0.0.1:18085
+0.17.121.736 I slot get_availabl: id  0 | task -1 | selected slot by id (0)
+0.17.121.783 I slot launch_slot_: id  0 | task -1 | MTP_POLICY start requested=off enabled=0 reason=requested_off prompt=30 calibration=
+0.17.122.105 I slot launch_slot_: id  0 | task 3 | processing task, is_child = 0
+SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads
+0.19.468.722 I slot print_timing: id  0 | task 3 | prompt eval time =    1785.63 ms /    30 tokens (   59.52 ms per token,    16.80 tokens per second)
+0.19.468.745 I slot print_timing: id  0 | task 3 |        eval time =     560.79 ms /     3 tokens (  186.93 ms per token,     5.35 tokens per second)
+0.19.468.752 I slot print_timing: id  0 | task 3 |       total time =    2346.43 ms /    33 tokens
+0.19.468.789 I slot print_timing: id  0 | task 3 |    graphs reused =          2
+0.19.469.060 I slot      release: id  0 | task 3 | stop processing: n_tokens = 32, truncated = 0
+0.19.808.831 I slot get_availabl: id  0 | task -1 | selected slot by id (0)
+0.19.808.878 I slot launch_slot_: id  0 | task -1 | MTP_POLICY start requested=on enabled=1 reason=requested_on prompt=30 calibration=
+0.19.809.185 I slot launch_slot_: id  0 | task 9 | processing task, is_child = 0
+0.22.670.593 I slot print_timing: id  0 | task 9 | prompt eval time =    1824.88 ms /    30 tokens (   60.83 ms per token,    16.44 tokens per second)
+0.22.670.619 I slot print_timing: id  0 | task 9 |        eval time =    1036.27 ms /     3 tokens (  345.42 ms per token,     2.90 tokens per second)
+0.22.670.625 I slot print_timing: id  0 | task 9 |       total time =    2861.14 ms /    33 tokens
+0.22.670.630 I slot print_timing: id  0 | task 9 |    graphs reused =          2
+0.22.670.652 I slot print_timing: id  0 | task 9 | draft acceptance = 0.66667 (    2 accepted /     3 generated), mean len =  3.00
+0.22.670.879 I slot      release: id  0 | task 9 | stop processing: n_tokens = 33, truncated = 0
+0.23.018.251 I slot get_availabl: id  0 | task -1 | selected slot by id (0)
+0.23.113.723 I slot launch_slot_: id  0 | task -1 | MTP_POLICY start requested=on enabled=1 reason=requested_on prompt=247 calibration=
+0.23.114.117 I slot launch_slot_: id  0 | task 15 | processing task, is_child = 0
+0.27.006.956 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =     85, progress = 0.34, t =   3.89 s / 21.84 tokens per second
+0.28.444.415 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =    117, progress = 0.47, t =   5.33 s / 21.95 tokens per second
+0.29.883.700 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =    149, progress = 0.60, t =   6.77 s / 22.01 tokens per second
+0.31.328.616 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =    181, progress = 0.73, t =   8.21 s / 22.03 tokens per second
+0.32.780.268 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =    213, progress = 0.86, t =   9.67 s / 22.04 tokens per second
+0.33.090.058 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =    215, progress = 0.87, t =   9.98 s / 21.55 tokens per second
+0.34.391.063 I slot print_timing: id  0 | task 15 | prompt processing, n_tokens =    243, progress = 0.98, t =  11.28 s / 21.55 tokens per second
+0.44.835.201 I slot   operator(): id  0 | task 15 | MTP_POLICY boundary cycles=12 tokens=31 ms_per_token=0.000 switched=1 output=32 reason=test_forced_boundary
+1.03.915.443 I slot print_timing: id  0 | task 15 | n_decoded =    100, tg =   3.44 t/s, tg_3s =   3.44 t/s
+1.07.029.933 I slot print_timing: id  0 | task 15 | n_decoded =    111, tg =   3.45 t/s, tg_3s =   3.53 t/s
+1.10.139.674 I slot print_timing: id  0 | task 15 | n_decoded =    122, tg =   3.45 t/s, tg_3s =   3.54 t/s
+1.11.843.296 I slot print_timing: id  0 | task 15 | prompt eval time =   11704.28 ms /   247 tokens (   47.39 ms per token,    21.10 tokens per second)
+1.11.843.320 I slot print_timing: id  0 | task 15 |        eval time =   37024.73 ms /   128 tokens (  289.26 ms per token,     3.46 tokens per second)
+1.11.843.327 I slot print_timing: id  0 | task 15 |       total time =   48729.01 ms /   375 tokens
+1.11.843.333 I slot print_timing: id  0 | task 15 |    graphs reused =        104
+1.11.843.366 I slot print_timing: id  0 | task 15 | draft acceptance = 0.52778 (   19 accepted /    36 generated), mean len =  2.58
+1.11.843.702 I slot      release: id  0 | task 15 | stop processing: n_tokens = 374, truncated = 0
+1.11.853.147 I srv    operator(): operator(): cleaning up before exit...

@@ -1,0 +1,16 @@
+verify fixed runtime and model hashes
+2B smoke off
+2B smoke on
+2B forced replay boundary
+failed
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/adaptive-mtp-20261004-183900/adaptive-mtp-test.py", line 207, in <module>
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('root',type=Path);Run(p.parse_args().root.resolve()).run()
+                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/adaptive-mtp-20261004-183900/adaptive-mtp-test.py", line 200, in run
+    for size in ('2B','4B'):self.smoke(size)
+                            ^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/adaptive-mtp-20261004-183900/adaptive-mtp-test.py", line 140, in smoke
+    if 'restoring speculative checkpoint' not in forced['request_log']:raise ValueError('forced probe did not exercise checkpoint replay')
+                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: forced probe did not exercise checkpoint replay

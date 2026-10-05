@@ -1,0 +1,81 @@
+{
+  "status": "generation completed; collection/scoring pending",
+  "models": {
+    "2B": {
+      "state_gate": "pass",
+      "calibration_quality": {
+        "unicode_offsets": {
+          "complete": false,
+          "code_test": {
+            "pass": false,
+            "reason": "SyntaxError: unterminated string literal (detected at line 116) (<unknown>, line 116)"
+          }
+        },
+        "chinese_policy": {
+          "complete": true,
+          "code_test": null
+        },
+        "routes": {
+          "complete": true,
+          "code_test": null
+        }
+      },
+      "calibration_gate": "timing metadata pass",
+      "timing_requests": 27,
+      "status": "generation completed"
+    },
+    "4B": {
+      "state_gate": "pass",
+      "calibration_quality": {
+        "unicode_offsets": {
+          "complete": true,
+          "code_test": {
+            "pass": false,
+            "reason": "AssertionError: functional output mismatch at check 4",
+            "exit": 1
+          }
+        },
+        "chinese_policy": {
+          "complete": true,
+          "code_test": null
+        },
+        "routes": {
+          "complete": true,
+          "code_test": null
+        }
+      },
+      "calibration_gate": "timing metadata pass",
+      "timing_requests": 27,
+      "status": "generation completed"
+    }
+  },
+  "planned_timing_requests": 54,
+  "protocol": {
+    "arms": [
+      "direct",
+      "loaded_off",
+      "adaptive"
+    ],
+    "repeats": 3,
+    "tasks": 3,
+    "SPINE_SPEC_RS": "0",
+    "routing": 0,
+    "threads": 4,
+    "batch": 32,
+    "ubatch": 32,
+    "context": 6144,
+    "weights": "Q4_0",
+    "kv": "F16",
+    "whole_request_budget_s": 3600,
+    "overall_budget_s": 43200,
+    "code_output_budget": 1024,
+    "screen": "infrastructure",
+    "capped_answers_are_quality_evidence": false,
+    "model_failures_independent": true,
+    "eligibility": "explicit code hint, expected >=256, matched per-task direct calibration",
+    "fallback": "two windows >105% direct; each >=12 cycles and >=32 committed tokens",
+    "defaults_changed": false
+  },
+  "limitations": "Three repeats and three tasks/model, single slot. Calibration, diagnostics and timing are distinct. State/quality gates can skip timing.",
+  "elapsed_s": 16259.704786229995
+}

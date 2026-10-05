@@ -1,0 +1,287 @@
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -301,6 +301,7 @@
+     int32_t n_draft_total = 0;      // Total draft tokens generated
+     int32_t n_draft_accepted = 0;   // Draft tokens actually accepted
+     int32_t n_draft_verif_steps = 0; // Total draft token verification steps by the target model
++    spine_mtp_policy mtp_policy;
+     bool    spec_lowacc_disabled = false;
+     int32_t spec_lowacc_steps = 0;
+     int32_t spec_lowacc_accepted = 0;
+@@ -322,11 +323,10 @@
+         spec_lowacc_disabled = false;
+         spec_lowacc_steps = 0;
+         spec_lowacc_accepted = 0;
+-        if (can_speculate()) {
+-            spec_draft.clear();
+-            spec_i_batch.clear();
+-            spec_ckpt.clear();
+-        }
++        spec_draft.clear();
++        spec_i_batch.clear();
++        spec_ckpt.clear();
++        mtp_policy = spine_mtp_policy{};
+         generated_tokens.clear();
+         generated_token_probs.clear();
+         json_schema = json();
+@@ -423,9 +423,10 @@
+     }
+ 
+     bool can_speculate() const {
+-        if (!spec || spec_lowacc_disabled) {
+-            return false;
+-        }
++        if (!spec) return false;
++        // A scheduled draft/replay must be verified even if load or policy changes.
++        if (!spec_draft.empty()) return true;
++        if (spec_lowacc_disabled || !mtp_policy.enabled) return false;
+         // adaptive speculation: only draft when few slots are active. speculative decoding
+         // wins in the memory-bound regime (1-2 streams) but wastes IME compute when the
+         // batch is compute-bound (>=3-4 streams), so disable it under load.
+@@ -554,6 +555,16 @@
+             timings.draft_n_accepted = n_draft_accepted;
+         }
+ 
++        if (!mtp_policy.config.mode.empty()) {
++            timings.spine_mtp = {
++                {"requested",mtp_policy.config.mode}, {"initially_enabled",mtp_policy.initially_enabled},
++                {"enabled_at_end",mtp_policy.enabled}, {"reason",mtp_policy.reason},
++                {"calibration_id",mtp_policy.config.calibration_id}, {"cycles",mtp_policy.cycles},
++                {"committed_tokens",mtp_policy.committed_tokens}, {"cycle_ms",mtp_policy.total_us/1000.0},
++                {"windows",mtp_policy.windows}, {"last_ms_per_token",mtp_policy.last_ms_per_token},
++                {"fallback_at",mtp_policy.fallback_at}
++            };
++        }
+         return timings;
+     }
+ 
+@@ -1892,6 +1903,12 @@
+ 
+         SLT_DBG(slot, "launching slot : %s\n", safe_json_to_str(slot.to_json()).c_str());
+ 
++        slot.mtp_policy.begin(task.params.spine_mtp, slot.spec != nullptr, task.n_tokens());
++        if (!task.params.spine_mtp.mode.empty()) {
++            SLT_INF(slot, "MTP_POLICY start requested=%s enabled=%d reason=%s prompt=%d calibration=%s\n",
++                task.params.spine_mtp.mode.c_str(), int(slot.mtp_policy.enabled), slot.mtp_policy.reason.c_str(),
++                task.n_tokens(), task.params.spine_mtp.calibration_id.c_str());
++        }
+         // initialize samplers
+         if (task.need_sampling()) {
+             try {
+@@ -3078,6 +3095,7 @@
+ 
+                 if (n_draft_max > 0) {
+                     GGML_ASSERT(slot.can_speculate());
++                    slot.mtp_policy.begin_cycle(ggml_time_us());
+ 
+                     if (!slot.spec_draft.empty()) {
+                         // we have a previous (partial) draft to reuse
+@@ -4046,6 +4064,15 @@
+                 common_context_seq_rm(slot.ctx_dft, slot.id, slot.prompt.tokens.pos_next(), -1);
+             }
+ 
++            auto finish_policy_cycle = [&](int tokens) {
++                const int old_windows=slot.mtp_policy.windows;
++                const bool switched=slot.mtp_policy.finish_cycle(ggml_time_us(),tokens,slot.n_decoded);
++                if (switched || old_windows!=slot.mtp_policy.windows) {
++                    SLT_INF(slot, "MTP_POLICY boundary cycles=%d tokens=%d ms_per_token=%.3f switched=%d output=%d reason=%s\n",
++                        slot.mtp_policy.cycles, slot.mtp_policy.committed_tokens,
++                        slot.mtp_policy.last_ms_per_token, int(switched), slot.n_decoded,slot.mtp_policy.reason.c_str());
++                }
++            };
+             for (size_t i = 0; i < ids.size(); ++i) {
+                 completion_token_output result;
+ 
+@@ -4058,6 +4085,7 @@
+                 slot.n_decoded += 1;
+ 
+                 if (!process_token(result, slot)) {
++                    finish_policy_cycle(int(i)+1);
+                     slot.print_timings();
+                     send_final_response(slot);
+                     metrics.on_prediction(slot);
+@@ -4068,6 +4096,8 @@
+             }
+ 
+             slot.print_timings_tg();
++
++            finish_policy_cycle(int(ids.size()));
+ 
+             SLT_DBG(slot, "accepted %d/%d draft tokens, new n_tokens = %d\n", (int) ids.size() - 1, (int) n_draft, slot.prompt.n_tokens());
+         });
+--- a/tools/server/server-schema.cpp
++++ b/tools/server/server-schema.cpp
+@@ -1,6 +1,9 @@
+ #include "server-schema.h"
+ 
+ #include "json-schema-to-grammar.h"
++#include <cmath>
++#include <cstdlib>
++#include <set>
+ 
+ namespace server_schema {
+ 
+@@ -193,6 +196,42 @@
+     //
+     // Speculative decoding params
+     //
++
++    add((new field_json("spine_mtp"))
++        ->set_desc("Experimental per-request checkpoint-MTP policy")
++        ->set_handler([&](field_eval_context & ctx, const json & data) {
++            const auto & value = data.at("spine_mtp");
++            if (!value.is_object()) throw std::runtime_error("spine_mtp must be an object");
++            const std::set<std::string> keys = {"mode", "workload", "expected_output_tokens",
++                "direct_ms_per_token", "calibration_id", "calibrated_prompt_max", "test_fallback_after"};
++            for (auto it=value.begin(); it!=value.end(); ++it)
++                if (!keys.count(it.key())) throw std::runtime_error("unknown spine_mtp setting");
++            spine_mtp_config cfg;
++            cfg.mode = value.value("mode", std::string("auto"));
++            cfg.workload = value.value("workload", std::string("unknown"));
++            if (cfg.mode!="on" && cfg.mode!="off" && cfg.mode!="auto")
++                throw std::runtime_error("spine_mtp.mode must be on, off or auto");
++            if (cfg.workload!="code" && cfg.workload!="prose" && cfg.workload!="qa" && cfg.workload!="unknown")
++                throw std::runtime_error("invalid spine_mtp.workload");
++            auto integer = [&](const char * key) {
++                if (!value.contains(key)) return 0;
++                if (!value.at(key).is_number_integer()) throw std::runtime_error("spine_mtp integer setting required");
++                const int64_t n=value.at(key).get<int64_t>();
++                if (n<0 || n>1000000) throw std::runtime_error("spine_mtp integer outside bounds");
++                return int(n);
++            };
++            cfg.expected_output_tokens=integer("expected_output_tokens");
++            cfg.calibrated_prompt_max=integer("calibrated_prompt_max");
++            cfg.test_fallback_after=integer("test_fallback_after");
++            cfg.direct_ms_per_token=value.value("direct_ms_per_token",0.0);
++            cfg.calibration_id=value.value("calibration_id",std::string());
++            if (!std::isfinite(cfg.direct_ms_per_token) || cfg.direct_ms_per_token<0 || cfg.direct_ms_per_token>60000)
++                throw std::runtime_error("invalid spine_mtp direct calibration");
++            const char * hooks=getenv("SPINE_MTP_TEST_HOOKS");
++            if (cfg.test_fallback_after && (!hooks || std::string(hooks)!="1"))
++                throw std::runtime_error("MTP test hook disabled");
++            ctx.params.spine_mtp=std::move(cfg);
++        }));
+ 
+     // TODO: to keep things simple, we disable speculative parameter adjustments for now
+ #if 0
+--- a/tools/server/server-task.h
++++ b/tools/server/server-task.h
+@@ -1,4 +1,5 @@
+ #pragma once
++#include "spine-mtp-policy.h"
+ 
+ #include "common.h"
+ #include "llama.h"
+@@ -75,6 +76,8 @@
+     bool timings_per_token   = false;
+     bool post_sampling_probs = false;
+ 
++    spine_mtp_config spine_mtp;
++
+     struct common_params_sampling sampling;
+     struct common_params_speculative speculative;
+ 
+@@ -276,6 +279,7 @@
+     int32_t draft_n = 0;
+     int32_t draft_n_accepted = 0;
+ 
++    json spine_mtp;
+     json to_json() const;
+ };
+ 
+--- a/tools/server/server-task.cpp
++++ b/tools/server/server-task.cpp
+@@ -252,6 +252,8 @@
+         {"predicted_per_second",   predicted_per_second},
+     };
+ 
++    if (!spine_mtp.is_null()) base["spine_mtp"] = spine_mtp;
++
+     if (draft_n > 0) {
+         base["draft_n"] = draft_n;
+         base["draft_n_accepted"] = draft_n_accepted;
+--- /dev/null
++++ b/tools/server/spine-mtp-policy.h
+@@ -0,0 +1,82 @@
++#pragma once
++#include <algorithm>
++#include <cstdint>
++#include <string>
++
++// A slot owns this policy. Call finish_cycle only after target verification,
++// any checkpoint replay, and committing the accepted tokens at a safe boundary.
++struct spine_mtp_config {
++    std::string mode; // empty means preserve the original server behavior
++    std::string workload;
++    int expected_output_tokens = 0;
++    double direct_ms_per_token = 0;
++    std::string calibration_id;
++    int calibrated_prompt_max = 0;
++    int test_fallback_after = 0; // requires SPINE_MTP_TEST_HOOKS on the server
++};
++
++struct spine_mtp_policy {
++    spine_mtp_config config;
++    bool enabled = true;
++    bool initially_enabled = true;
++    std::string reason = "inherit";
++    int cycles = 0;
++    int committed_tokens = 0;
++    int fallback_at = -1;
++    int windows = 0;
++    int bad_windows = 0;
++    int window_cycles = 0;
++    int window_tokens = 0;
++    int64_t cycle_start_us = 0;
++    int64_t total_us = 0;
++    int64_t window_us = 0;
++    double last_ms_per_token = 0;
++
++    void begin(const spine_mtp_config & cfg, bool available, int prompt_tokens) {
++        *this = spine_mtp_policy{};
++        config = cfg;
++        enabled = available;
++        reason = available ? "inherit" : "unavailable";
++        if (!cfg.mode.empty() && available) {
++            if (cfg.mode == "off") { enabled = false; reason = "requested_off"; }
++            else if (cfg.mode == "on") { reason = "requested_on"; }
++            else if (cfg.workload != "code" || cfg.expected_output_tokens < 256) {
++                enabled = false; reason = "ineligible_workload_or_length";
++            } else if (cfg.direct_ms_per_token <= 0 || cfg.calibration_id.empty() ||
++                       cfg.calibrated_prompt_max < prompt_tokens) {
++                enabled = false; reason = "missing_or_out_of_range_calibration";
++            } else { reason = "eligible_code"; }
++        }
++        initially_enabled = enabled;
++    }
++
++    void begin_cycle(int64_t now) {
++        if (!config.mode.empty() && enabled && cycle_start_us == 0) cycle_start_us = now;
++    }
++
++    bool finish_cycle(int64_t now, int tokens, int output_position) {
++        if (cycle_start_us == 0) return false;
++        const int64_t elapsed = std::max<int64_t>(1, now - cycle_start_us);
++        cycle_start_us = 0;
++        total_us += elapsed; window_us += elapsed;
++        committed_tokens += tokens; window_tokens += tokens;
++        ++cycles; ++window_cycles;
++        if (config.test_fallback_after > 0 && cycles >= config.test_fallback_after) {
++            enabled = false; reason = "test_forced_boundary"; fallback_at = output_position;
++            return true;
++        }
++        if (window_cycles >= 12 && window_tokens >= 32) {
++            last_ms_per_token = double(window_us) / 1000 / window_tokens;
++            ++windows;
++            const bool slower = config.direct_ms_per_token > 0 &&
++                                last_ms_per_token > 1.05 * config.direct_ms_per_token;
++            bad_windows = slower ? bad_windows + 1 : 0;
++            window_us = 0; window_tokens = 0; window_cycles = 0;
++            if (bad_windows >= 2) {
++                enabled = false; reason = "measured_cost"; fallback_at = output_position;
++                return true;
++            }
++        }
++        return false;
++    }
++};
