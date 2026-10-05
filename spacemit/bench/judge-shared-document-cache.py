@@ -8,6 +8,7 @@ The API key is read at run time and is never saved in the results.
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
 import re
@@ -122,11 +123,17 @@ def chat_completion(url, model, key, messages, timeout, retries, max_tokens):
                 time.sleep(min(2 ** attempt * 2, 15))
                 continue
             raise RuntimeError(f'Chat Completions HTTP status {exc.code}') from None
-        except urllib.error.URLError:
+        except (urllib.error.URLError, http.client.IncompleteRead,
+                http.client.RemoteDisconnected, TimeoutError, ConnectionError):
             if attempt < retries:
                 time.sleep(min(2 ** attempt * 2, 15))
                 continue
             raise RuntimeError('Chat Completions connection failed') from None
+        except ValueError:
+            if attempt < retries:
+                time.sleep(min(2 ** attempt * 2, 15))
+                continue
+            raise ValueError('Chat Completions returned invalid or truncated judgment after bounded retries') from None
     raise RuntimeError('Chat Completions attempts exhausted')
 
 
