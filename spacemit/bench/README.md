@@ -4,12 +4,41 @@ See the [documentation guide](../DOCS.md) for current results and queued work.
 This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)
 now has native correctness, operator timing and gated model-screen modes.
 
+For measured RAM bandwidth versus the direct-inference weight-traffic reference,
+run `python3 spacemit/bench/start-k1-roofline.py`. The
+[roofline protocol](../experiments/2026-10-05-k1-roofline.md) uses RVV full reads
+before/after 24 matched cold requests, plus separate CPU profiles. Execution
+and verified artifact collection use tmux. This is capped infrastructure
+timing, not an answer-quality benchmark or proof of reaching a hardware limit.
+
 The [October 3 staged validation](../experiments/2026-10-03-staged-validation.md)
 adds small recurrent-state probes, forced-trajectory and MTP diagnostics,
 combined routing at 8k, complete-document answers, and gated 4B/32k feasibility.
 Launch with `python3 spacemit/bench/start-k1-validation.py`; board execution and
 automatic collection use tmux. `bench-lifecycle.py --no-context-shift` prevents
 automatic input shifting in the new fixed-length tests.
+
+For relative answer quality of **checkpoint MTP versus direct decoding**, run
+`python3 spacemit/bench/start-mtp-quality.py`. The [usefulness protocol](../experiments/2026-10-03-mtp-usefulness.md)
+uses complete responses, deterministic facts/code tests and a blind cloud judge;
+token equality is diagnostic. Board generation and local scoring run in tmux.
+
+For the opt-in **adaptive MTP** candidate, use
+`python3 spacemit/bench/start-adaptive-mtp.py --run-dir spacemit/reports/raw/adaptive-mtp-NEW-ID`.
+The [implementation protocol](../experiments/2026-10-04-adaptive-mtp-implementation.md)
+builds an isolated server, checks switching/replay/reset on K1, then gates a
+three-arm, three-repeat complete-answer screen. Collection and cloud judging
+are automatic; this command does not change the production serving default.
+Code calibration and all comparison arms use a 3,072-token cap. Per-model
+`MODEL-requests.jsonl` journals preserve rejected answers before validation;
+a failed model does not stop the remaining model. The request/driver budgets
+are one/twelve hours. Run `python3 spacemit/bench/test-adaptive-mtp-runner.py`
+to check rejection persistence and model failure isolation.
+
+Add `--infrastructure` for the [bounded timing screen](../experiments/2026-10-05-adaptive-mtp-infrastructure.md).
+It uses the same full inputs and a 1,024-token code cap in every arm, records
+performance even when baseline code is incorrect, and excludes capped answers
+from cloud quality grading. Throughput evidence does not imply useful answers.
 
 `bench-server.py` starts the patched `llama-server` once per speculative mode, sends greedy completion requests, and writes one JSON record per result. It checks that all modes on the same model produce identical response text for each prompt. The recorded `tps` is the server's decode rate (`timings.predicted_per_second`), not end-to-end throughput. Server stdout and stderr go to `--log-dir`.
 

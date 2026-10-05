@@ -1,6 +1,6 @@
 # Current documentation guide
 
-Last status check: 2026-10-03 Asia/Singapore.
+Last status check: 2026-10-06 Asia/Singapore.
 This is a dated snapshot. Read a run's `phase`, logs, and final exit status
 for live progress. A queued experiment is not a measured optimization.
 
@@ -13,6 +13,8 @@ for live progress. A queued experiment is not a measured optimization.
 | Apply patches, build, prepare models, run inference | [Integration guide](README.md) |
 | Ask follow-up questions over a local document | [Cached-document workflow](serve/README.md) |
 | Run and collect benchmarks | [Benchmark commands](bench/README.md) |
+| Current RAM bandwidth and direct-inference references | [Measured roofline results](reports/2026-10-06-k1-roofline-results.md): approximately 7 GB/s, 24 matching direct requests; no hardware-limit claim |
+| Next infrastructure candidates and small test gates | [October 6 source audit](reports/2026-10-06-next-infrastructure-methods.md): convolution layout, shared activation packing and decode attribution; unmeasured |
 | Verified measurements through 16k, plus 2B 32k feasibility | [Resumed measurements](reports/2026-09-27-resumed-measures.md) |
 | Matrix verification and corrected small-effect intervals | [Local analysis](reports/2026-09-28-local-verification.md) |
 | Complete-answer quality protocol and completed matrix | [Chat quality benchmark](reports/2026-09-30-chat-quality-benchmark.md) |
@@ -24,6 +26,8 @@ for live progress. A queued experiment is not a measured optimization.
 | Runtime audit and long-history attention data movement | [Infrastructure screen](experiments/2026-10-02-attention-infrastructure.md) |
 | New GEMM routing results and research leads | [October 3 research](reports/2026-10-03-infrastructure-research.md) |
 | Staged MTP, 8k routing, complete answers and conditional 4B/32k validation | [October 3 validation protocol](experiments/2026-10-03-staged-validation.md) |
+| Checkpoint MTP complete-answer usefulness and functional code tests | [MTP usefulness protocol](experiments/2026-10-03-mtp-usefulness.md) |
+| Request-level adaptive MTP and gated native screen | [Adaptive MTP implementation](experiments/2026-10-04-adaptive-mtp-implementation.md) |
 | Other candidates and source provenance | [Code audit](reports/2026-09-30-code-optimization-audit.md) |
 
 ## Implemented and measured
@@ -62,6 +66,8 @@ for live progress. A queued experiment is not a measured optimization.
 | Attention infrastructure, `k1-attention-infra-20261002-205454` | Completed in 27.77 minutes; inconclusive | 289 cases/arm match the original library; direct-V operator gains fail model gates: 2B/2k is 1.67% slower, 4B/1k is effectively unchanged. 8k skipped. |
 | GEMM routing, `k1-gemm-routing-20261003-005740` | Completed in 38.16 minutes; 236 artifact hashes verified | Prefill time falls 6.40% / 7.75% (2B/2k, 4B/1k); 64-token decode time falls 14.40% / 28.62%. Separate modes qualify; remain opt-in. |
 | Staged validation, `k1-validation-20261003-124720` | Completed in 4.16 hours; 83 artifact hashes verified | Combined 8k prefill/decode reductions: 4.43%/9.49% (2B), 5.79%/15.06% (4B). 2B tracing citations fail in both arms; RS replay mismatches remain. 4B/32k skipped. See [results](reports/2026-10-03-staged-validation-results.md). |
+| MTP usefulness, `mtp-quality-20261003-173915` | Completed: 24 natural-stop requests, 12 pairs judged, 21 collected hashes verified | Relative quality gates pass; total latency falls 8.63%/15.22% (2B/4B). Absolute usefulness fails shared code/fact checks; Chinese prose slows down. Checkpoint MTP remains optional, RS disabled. See [results](reports/2026-10-03-mtp-usefulness-results.md). |
+| Adaptive MTP, `adaptive-mtp-infra-20261005-153716` | Completed: 54 timing requests, 47 artifacts verified, grading recovered | Code throughput rises 50.74%/53.35%; prose/QA regress, code fails correctness, overall candidate unqualified. No default change. See [results](reports/2026-10-05-adaptive-mtp-results.md). |
 
 See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
 run identities, timeout evidence and decision boundaries.

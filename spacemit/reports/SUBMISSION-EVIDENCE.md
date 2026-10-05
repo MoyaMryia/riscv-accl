@@ -1,6 +1,6 @@
 # Submission evidence appendix
 
-Evidence cutoff: October 3, 2026, Asia/Singapore. This appendix supports the
+Evidence cutoff: October 6, 2026, Asia/Singapore. This appendix supports the
 [submission report](SUBMISSION-REPORT.md). File dates identify campaigns;
 historical work queues do not describe current board activity.
 
@@ -18,11 +18,14 @@ historical work queues do not describe current board activity.
 | Q8_0 IME1 and M4 scale results | [September 24 integrated report](2026-09-24-integrated-k1.md), [raw arms](raw/2026-09-24-integrated/) | [Patch 0007](../patches/0007-q8-ime1.patch), [patch 0008](../patches/0008-ime-m4-scale.patch) |
 | Corrected small-effect statistics | [Local verification](2026-09-28-local-verification.md) | [Statistics script](../bench/paired-stats.py); fractional Welch degrees of freedom |
 | MTP long-code mismatch and bounded decode traces | [Resumed diagnostics](2026-09-27-resumed-measures.md), [long-code traces](raw/2026-09-25-lifecycle/lifecycle-code-long.jsonl) | [Lifecycle auditor](../bench/audit-lifecycle.py); smaller drafts/RS/target-logit/FA-off evidence in the resumed report |
+| Complete-answer checkpoint MTP usefulness | [Results](2026-10-03-mtp-usefulness-results.md), [quality summary](raw/mtp-quality-20261003-173915/quality-summary.json), [21-artifact receipt](raw/mtp-quality-20261003-173915/collection-receipt.json) | [Protocol](../experiments/2026-10-03-mtp-usefulness.md), [functional checks](../bench/mtp-quality-checks.py), [scoring recovery](raw/mtp-quality-20261003-173915/scoring-recovery.json); relative gates pass, absolute usefulness fails |
+| Adaptive MTP bounded infrastructure screen | [Results](2026-10-05-adaptive-mtp-results.md), [final summary](raw/adaptive-mtp-infra-20261005-153716/adaptive-quality-summary.json), [47-artifact receipt](raw/adaptive-mtp-infra-20261005-153716/collection-receipt.json) | [Protocol](../experiments/2026-10-05-adaptive-mtp-infrastructure.md), [grading recovery](raw/adaptive-mtp-infra-20261005-153716/adaptive-scoring-recovery.json); throughput positive, overall candidate unqualified |
 | Complete-answer cache matrix | [Quality report](2026-09-30-chat-quality-benchmark.md), [completed 24-pair summary](raw/document-quality-20260930-full-v2/summary.md) | [Quality runner](../bench/run-all-document-quality.py), [document benchmark](../bench/bench-shared-document-cache.py) |
 | Negative compact-layout screen | [Fast method results](2026-10-01-fast-method.md), [completed run](raw/k1-fast-20261001-224957/summary.md) | [Staged test design](../experiments/2026-09-30-fast-test-design.md) |
 | Negative IME / recurrent / attention screens | [IME scheduling](2026-10-02-ime-scheduling.md), [recurrent fusion](2026-10-02-recurrent-prefill.md), [attention infrastructure](../experiments/2026-10-02-attention-infrastructure.md) | Their linked native tests, operator records and gated model runs |
 | GPU and page-gather boundaries | [Completed gates](2026-09-27-completed-gates.md), [later telemetry and backend findings](2026-09-27-resumed-measures.md) | Zero transferred OpenCL layers; Vulkan dropped; page gathering retains full backing allocation |
-| Unused research opportunities | [October 3 GitHub/arXiv/Scholar review](2026-10-03-infrastructure-research.md) | Primary-source links and platform-fit decisions in that review |
+| Independent bandwidth and routing confirmation | [October 6 results](2026-10-06-k1-roofline-results.md), [summary](raw/k1-roofline-20261005-225502/summary.json), [150-artifact receipt](raw/k1-roofline-20261005-225502/collection-receipt.json) | [Protocol](../experiments/2026-10-05-k1-roofline.md), [compressed evidence storage](raw/k1-roofline-20261005-225502/ARCHIVE.md); traffic references are not hardware-limit proof |
+| Unused research opportunities | [October 3 GitHub/arXiv/Scholar review](2026-10-03-infrastructure-research.md), [October 6 source audit](2026-10-06-next-infrastructure-methods.md) | Primary-source links, exact tested build and platform-fit decisions; proposed methods are unmeasured |
 
 ## 2. Baseline identities
 

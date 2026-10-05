@@ -5,7 +5,7 @@ Historical queue statements describe the report's date.
 
 ## Submission package
 
-- [SUBMISSION-REPORT.md](SUBMISSION-REPORT.md): current consolidated report, evidence through October 3, 2026.
+- [SUBMISSION-REPORT.md](SUBMISSION-REPORT.md): current consolidated report, evidence through October 6, 2026.
 - [SUBMISSION-EVIDENCE.md](SUBMISSION-EVIDENCE.md): claim-to-artifact map, model/build identities and verification commands.
 
 Submit the report with the appendix. The older root `FINAL-REPORT.md` and
@@ -16,6 +16,8 @@ the current submission. No files have been submitted externally.
 
 | Report | Scope |
 | --- | --- |
+| [Next infrastructure methods](2026-10-06-next-infrastructure-methods.md) | Exact tested-source audit and new convolution-layout/activation-packing candidates; unmeasured, with small qualification gates |
+| [Measured K1 roofline](2026-10-06-k1-roofline-results.md) | Completed: 150 memory scans, 24 matching direct requests and two profiles; approximately 7 GB/s and confirmed routing gains; traffic references are not hardware-limit proof |
 | [Resumed measurements](2026-09-27-resumed-measures.md) | Verified matrix, actual 16k pairs, 2B 32k feasibility, weights, completed diagnostics and negative GPU findings |
 | [Local verification](2026-09-28-local-verification.md) | Matrix reproduction, corrected fractional Welch intervals, 32k scaling; no new board measurements |
 | [Chat quality](2026-09-30-chat-quality-benchmark.md) | Completed 24-pair matrix; 2B/4k requires review; three descriptive pilot passes |
@@ -26,6 +28,8 @@ the current submission. No files have been submitted externally.
 | [Attention infrastructure](../experiments/2026-10-02-attention-infrastructure.md) | Completed: direct-V operator gains fail full-model gates; runtime findings and completed GEMM staging attribution |
 | [October 3 infrastructure research](2026-10-03-infrastructure-research.md) | Completed GitHub/arXiv/Scholar review and GEMM routing tests; verified model gains and remaining unused candidates |
 | [October 3 staged validation](2026-10-03-staged-validation-results.md) | Combined routing clears 8k phase gates; 2B citation and RS rollback gates remain open; 4B/32k skipped |
+| [Checkpoint MTP usefulness](2026-10-03-mtp-usefulness-results.md) | 24 complete requests; relative quality gates pass and total latency falls 8.63%/15.22%. Shared correctness failures and slower prose prevent general adoption. |
+| [Adaptive MTP infrastructure](2026-10-05-adaptive-mtp-results.md) | 54 timing requests; code throughput +50.74%/+53.35%, but capped/incorrect code and non-code overhead prevent qualification; grading recovery completed. |
 | [October 1 update](2026-10-01-fast-method.md) | Completed layout/quality evidence and implementation of the staged fast method |
 
 ## Validation plan

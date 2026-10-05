@@ -1,6 +1,6 @@
 # Infrastructure optimization of Qwen3.5 inference on the SpaceMiT K1
 
-**Submission report — evidence cutoff: October 3, 2026, Asia/Singapore**\
+**Submission report — evidence cutoff: October 6, 2026, Asia/Singapore**\
 Platform: MUSE-Pi-Pro, SpaceMiT K1/X60, 16 GiB RAM\
 Models: Qwen3.5 2B and 4B conversational checkpoints\
 Implementation: SpaceMiT's open-source llama.cpp fork
@@ -38,7 +38,8 @@ inputs, Q4_0 weights and F16 K/V. Retrieval, prompt shortening, token pruning
 and model replacement are excluded. Earlier Q8_0 and speculative experiments
 are included as supporting evidence with their separate settings and limits.
 All model generation runs locally. An optional cloud judge is used only for
-evaluation of completed cached answers; inference does not require that judge.
+evaluation of completed answers, including cache reuse and MTP comparisons;
+inference does not require that judge.
 
 ### Requirement coverage
 
@@ -211,6 +212,28 @@ The 12 full-document answers stop naturally and match paired baseline text;
 2B lacks required tracing citations in both arms, retaining the overall gate.
 4B/32k was therefore skipped. These are bounded engineering pilots.
 
+### 4.3 Independent memory-bandwidth and routing confirmation
+
+The [October 6 campaign](2026-10-06-k1-roofline-results.md) completed 150 native
+full-read scans, 24 cold direct-inference requests and two separate prefill
+profiles. The four-core model-sized streaming reference is approximately
+7 GB/s. Main weight-read proxies, excluding MTP draft tensors, are 1.060 GB
+for 2B and 2.369 GB for 4B, giving weight-only references of 6.60/2.94 tok/s.
+These are traffic references rather than measured DDR utilization or
+attainable inference guarantees.
+
+At 256 prompt tokens, route-0/route-3 decode medians are 3.79/4.48 tok/s for
+2B and 1.48/2.06 for 4B; median paired throughput gains are 18.01%/38.70%.
+At 2,048 tokens the medians are 3.31/3.83 and 1.22/1.62, with paired gains
+15.47%/32.36%. All requests generate the same 64 capped output tokens and
+match their paired control. This confirms the existing routing mechanism;
+these gains must not be multiplied by previous routing measurements.
+
+The profiles identify convolution and synchronization as investigation
+targets, but sampled prefill CPU shares are not wall-time savings or decode
+attribution. This campaign adds no useful-answer qualification and does not
+demonstrate that the hardware limit has been reached.
+
 ## 5. Negative results and correctness limits
 
 | Candidate | Measured outcome | Decision |
@@ -237,6 +260,24 @@ models, but native RS rollback replay fails strict logit checks: 18 mismatches
 per model, including argmax changes. Full-state restore and same-shape controls
 pass. This newer evidence narrows the next diagnosis and does not establish
 general MTP identity or supersede the older long-output traces.
+
+The separate [complete-answer MTP pilot](2026-10-03-mtp-usefulness-results.md)
+completed 24 requests with RS disabled. Total paired task latency falls
+8.63% on 2B and 15.22% on 4B; both models pass the predeclared relative
+fact/code/judge quality gate. The 4B Unicode code differs from direct but
+passes all 106 functional checks. Absolute usefulness still fails shared
+interval-code errors and 2B arithmetic, while Chinese prose becomes slower.
+Checkpoint MTP remains optional. These single-pair task results support
+workload-specific usefulness, not universal losslessness or general adoption.
+
+The later [adaptive infrastructure screen](2026-10-05-adaptive-mtp-results.md)
+completed 54 timing requests and verified 47 artifacts. Median paired code
+throughput rises 50.74% on 2B and 53.35% on 4B. 2B code is capped; 4B code
+is shorter under adaptive MTP and fails reconstruction in every arm. Prose/QA
+wall time increases 5.77%/4.76% on 2B and 2.97%/3.62% on 4B despite disabled
+drafting. The relative judge gate passes on 4B, but both models fail absolute
+correctness and overall timing gates. This establishes bounded throughput,
+not faster useful answers. Adaptive MTP remains unqualified and optional.
 
 Two complete 4,096-token requests per model and direct/MTP mode demonstrated
 bounded generation stability, including a roughly 43-minute 4B direct request.
@@ -310,6 +351,11 @@ declared protocol and investigate the native RS rollback mismatches. Further unu
 shared K packing across grouped query heads, a Q4_0 RVV lookup-table prototype,
 and compiler comparisons for measured hotspots. Their platform fit and primary
 research references are in the [October 3 research review](2026-10-03-infrastructure-research.md).
+The [October 6 source audit](2026-10-06-next-infrastructure-methods.md) prioritizes
+channels-major SSM convolution with an RVV channel loop, shared dense FFN
+activation packing, and phase-isolated decode attribution before changing
+worker scheduling. These are unmeasured candidates with staged correctness
+and performance gates.
 
 Remaining submission coverage limits include the absent matched ARM/x86
 performance comparison, unmeasured 4B/32k and 64k workloads, unresolved MTP
