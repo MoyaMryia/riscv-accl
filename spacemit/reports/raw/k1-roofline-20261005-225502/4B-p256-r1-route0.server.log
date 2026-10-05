@@ -1,0 +1,35 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.017.573 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.019.058 W srv  llama_server: -----------------
+0.00.019.089 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.019.093 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.019.096 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.019.098 W srv  llama_server: -----------------
+0.00.021.210 I srv    load_model: loading model '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+K1_GEMM_ROUTE mode=0 phase=prefill eligible=1 bypass=0 buffer_size=131072
+K1_GEMM_ROUTE mode=0 phase=single eligible=1 bypass=0 buffer_size=131072
+0.19.232.024 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+0.19.402.543 I srv  llama_server: model loaded
+0.19.402.588 I srv  llama_server: listening on http://127.0.0.1:18085
+0.19.911.675 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.19.911.930 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads
+0.23.371.776 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     32, progress = 0.12, t =   3.46 s / 9.25 tokens per second
+0.26.808.270 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     64, progress = 0.25, t =   6.90 s / 9.28 tokens per second
+0.30.247.056 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     96, progress = 0.38, t =  10.34 s / 9.29 tokens per second
+0.33.687.644 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    128, progress = 0.50, t =  13.78 s / 9.29 tokens per second
+0.37.150.871 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    160, progress = 0.62, t =  17.24 s / 9.28 tokens per second
+0.40.606.076 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    192, progress = 0.75, t =  20.69 s / 9.28 tokens per second
+0.44.084.909 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    224, progress = 0.88, t =  24.17 s / 9.27 tokens per second
+0.47.247.797 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    252, progress = 0.98, t =  27.34 s / 9.22 tokens per second
+1.31.546.070 I slot print_timing: id  0 | task 0 | prompt eval time =   28380.46 ms /   256 tokens (  110.86 ms per token,     9.02 tokens per second)
+1.31.546.095 I slot print_timing: id  0 | task 0 |        eval time =   43253.49 ms /    64 tokens (  675.84 ms per token,     1.48 tokens per second)
+1.31.546.102 I slot print_timing: id  0 | task 0 |       total time =   71633.95 ms /   320 tokens
+1.31.546.140 I slot print_timing: id  0 | task 0 |    graphs reused =         68
+1.31.546.298 I slot      release: id  0 | task 0 | stop processing: n_tokens = 319, truncated = 0
+1.31.561.942 I srv    operator(): operator(): cleaning up before exit...

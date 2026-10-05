@@ -1,0 +1,44 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 220K of event 'cpu-clock:u'
+# Event count (approx.): 1108884283500
+#
+# Overhead  Command       Shared Object                Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+# ........  ............  ...........................  ................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    35.64%  llama-server  libggml-cpu.so.0.16.0        [.] BLOCK_INNER_LOOP435
+    20.04%  llama-server  libspert.so.0.6.2            [.] spert::detail::sync_impl(spert::detail::Future*)
+     8.56%  llama-server  libggml-cpu.so.0.16.0        [.] BLOCK_COUNTK_LOOP435
+     5.48%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_gated_delta_net
+     5.12%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_ssm_conv
+     5.11%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_vec_dot_f32
+     3.53%  llama-server  libggml-cpu.so.0.16.0        [.] void spacemit_kernels::rvv::forward_flash_attn_ext_f16_tiled_impl<64, false>(ggml_compute_params const*, ggml_tensor*, int, int, void*, unsigned long)
+     3.01%  llama-server  libggml-cpu.so.0.16.0        [.] RESULT_SAVE435
+     1.87%  llama-server  libspert.so.0.6.2            [.] spert::detail::barrier_coro(spert::detail::Tile*, spert::detail::Barrier*)
+     1.86%  llama-server  libggml-cpu.so.0.16.0        [.] void spacemit_kernels::rvv::forward_concat<int>(ggml_compute_params*, ggml_tensor*)
+     1.82%  llama-server  libggml-cpu.so.0.16.0        [.] END1972
+     1.29%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_M8N1972
+     0.93%  llama-server  libggml-cpu.so.0.16.0        [.] memcpy_tail_loop149
+     0.75%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP26
+     0.63%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_dup_bytes(ggml_compute_params const*, ggml_tensor*)
+     0.47%  llama-server  libggml-cpu.so.0.16.0        [.] END149
+     0.46%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_vec_swiglu_f32
+     0.45%  llama-server  libggml-cpu.so.0.16.0        [.] memcpy_main_loop149
+     0.40%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_rms_norm_mul_fused
+     0.35%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_l2_norm
+     0.34%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_vec_silu_f32
+     0.32%  llama-server  libm.so.6                    [.] expf@@GLIBC_2.27
+     0.20%  llama-server  libggml-cpu.so.0.16.0        [.] $xrv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicbop1p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0_zfh1p0_zfhmin1p0_zba1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvfh1p0_zvfhmin1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0
+     0.20%  llama-server  libggml-cpu.so.0.16.0        [.] void spacemit_kernels::rvv::forward_binary<(ggml_op)2, float>(ggml_compute_params*, ggml_tensor*)
+     0.17%  llama-server  libggml-cpu.so.0.16.0        [.] void spacemit_kernels::rvv::forward_binary<(ggml_op)7, float>(ggml_compute_params*, ggml_tensor*)
+     0.12%  llama-server  libggml-cpu.so.0.16.0        [.] RESULT_SAVE251
+     0.11%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)
+     0.11%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_vec_dot_f16
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#
