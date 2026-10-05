@@ -1,0 +1,49 @@
+{
+  "status": "generation completed; collection and judging pending",
+  "models": {
+    "2B": {
+      "requests_completed": 12,
+      "planned": 12,
+      "status": "complete"
+    },
+    "4B": {
+      "requests_completed": 12,
+      "planned": 12,
+      "status": "complete"
+    }
+  },
+  "planned_requests": 24,
+  "protocol": {
+    "models": [
+      "2B",
+      "4B"
+    ],
+    "mode": "checkpoint MTP vs direct",
+    "SPINE_SPEC_RS": "0",
+    "routing": 0,
+    "threads": 4,
+    "batch": 32,
+    "ubatch": 32,
+    "weights": "Q4_0",
+    "kv": "F16",
+    "context": 6144,
+    "document_budget": 2048,
+    "requests_per_task_arm": 1,
+    "order": {
+      "2B": [
+        "direct",
+        "mtp"
+      ],
+      "4B": [
+        "mtp",
+        "direct"
+      ]
+    },
+    "case_order": "reverse in MTP arm",
+    "per_request_budget_s": 1800,
+    "overall_budget_s": 21600,
+    "token_equality_required": false
+  },
+  "limitations": "One pair per task/model, six tasks; descriptive usefulness pilot, not general equivalence. RS path excluded. No default is changed.",
+  "elapsed_s": 5976.875843722024
+}

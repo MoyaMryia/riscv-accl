@@ -1,0 +1,692 @@
+# Checkpoint MTP complete-answer pilot
+
+Six tasks, one pair per model/task, one cloud judge in two answer orders. Shared baseline failures are reported, not labelled MTP regressions. RS rollback is untested here.
+
+```json
+{
+  "status": "scoring completed",
+  "generation_exit": "0",
+  "verified_artifacts": 21,
+  "judge_model": "mimo-v2.6-flash",
+  "models": {
+    "2B": {
+      "status": "pilot quality gate passed",
+      "gate": {
+        "pass": true,
+        "direct_mean_score": 3.0,
+        "mtp_mean_score": 3.0833333333333335,
+        "worst_pair_score_loss": 0.0,
+        "deterministic_no_regression": true,
+        "thresholds": {
+          "mean_score_loss": 0.25,
+          "worst_pair_score_loss": 0.5
+        },
+        "interpretation": "descriptive pilot; no statistical noninferiority or universal equivalence claim"
+      },
+      "timing": {
+        "paired_total_wall_s": {
+          "direct": 884.9780000000001,
+          "mtp": 808.647
+        },
+        "total_wall_reduction_pct": 8.625186162819865,
+        "interpretation": "descriptive complete-task latency; output lengths may differ, so also inspect per-task throughput"
+      },
+      "planned_pairs": 6,
+      "eligible_pairs": 6,
+      "judged_pairs": 6,
+      "comparisons": [
+        {
+          "case_id": "routes",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "direct": {
+              "facts": [
+                true,
+                true,
+                true
+              ],
+              "citations": [
+                true
+              ]
+            },
+            "mtp": {
+              "facts": [
+                true,
+                true,
+                true
+              ],
+              "citations": [
+                true
+              ]
+            }
+          },
+          "code_tests": {},
+          "text_identical": true,
+          "output_tokens": {
+            "direct": 31,
+            "mtp": 31
+          },
+          "wall_s": {
+            "direct": 105.944,
+            "mtp": 110.573
+          },
+          "ttft_s": {
+            "direct": 96.681,
+            "mtp": 101.421
+          },
+          "decode_ms": {
+            "direct": 9260.415,
+            "mtp": 9150.678
+          },
+          "decode_tps": {
+            "direct": 3.3475821547954383,
+            "mtp": 3.38772711705078
+          },
+          "wall_reduction_pct": -4.369289435928403
+        },
+        {
+          "case_id": "trace",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "direct": {
+              "facts": [
+                true
+              ],
+              "citations": [
+                false,
+                false,
+                false
+              ]
+            },
+            "mtp": {
+              "facts": [
+                true
+              ],
+              "citations": [
+                false,
+                false,
+                false
+              ]
+            }
+          },
+          "code_tests": {},
+          "text_identical": true,
+          "output_tokens": {
+            "direct": 8,
+            "mtp": 8
+          },
+          "wall_s": {
+            "direct": 101.968,
+            "mtp": 103.542
+          },
+          "ttft_s": {
+            "direct": 99.8,
+            "mtp": 101.635
+          },
+          "decode_ms": {
+            "direct": 2165.626,
+            "mtp": 1903.682
+          },
+          "decode_tps": {
+            "direct": 3.694081988302689,
+            "mtp": 4.202382540781496
+          },
+          "wall_reduction_pct": -1.543621528322614
+        },
+        {
+          "case_id": "aggregation",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "direct": {
+              "facts": [
+                false
+              ],
+              "citations": [
+                true,
+                true,
+                true
+              ]
+            },
+            "mtp": {
+              "facts": [
+                false
+              ],
+              "citations": [
+                true,
+                true,
+                true
+              ]
+            }
+          },
+          "code_tests": {},
+          "text_identical": true,
+          "output_tokens": {
+            "direct": 50,
+            "mtp": 50
+          },
+          "wall_s": {
+            "direct": 114.811,
+            "mtp": 115.718
+          },
+          "ttft_s": {
+            "direct": 99.709,
+            "mtp": 101.644
+          },
+          "decode_ms": {
+            "direct": 15099.025,
+            "mtp": 14070.718
+          },
+          "decode_tps": {
+            "direct": 3.3114720983639674,
+            "mtp": 3.553478934052974
+          },
+          "wall_reduction_pct": -0.7899939901228947
+        },
+        {
+          "case_id": "free_windows",
+          "kind": "code",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "direct": {
+              "facts": [],
+              "citations": []
+            },
+            "mtp": {
+              "facts": [],
+              "citations": []
+            }
+          },
+          "code_tests": {
+            "direct": {
+              "pass": false,
+              "reason": "worker failed or exceeded budget",
+              "exit": 1
+            },
+            "mtp": {
+              "pass": false,
+              "reason": "worker failed or exceeded budget",
+              "exit": 1
+            }
+          },
+          "text_identical": false,
+          "output_tokens": {
+            "direct": 1086,
+            "mtp": 904
+          },
+          "wall_s": {
+            "direct": 311.983,
+            "mtp": 201.695
+          },
+          "ttft_s": {
+            "direct": 8.049,
+            "mtp": 8.119
+          },
+          "decode_ms": {
+            "direct": 303931.468,
+            "mtp": 193572.548
+          },
+          "decode_tps": {
+            "direct": 3.5731739366981246,
+            "mtp": 4.67008369389238
+          },
+          "wall_reduction_pct": 35.35064410560832
+        },
+        {
+          "case_id": "unicode_runs",
+          "kind": "code",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "direct": {
+              "facts": [],
+              "citations": []
+            },
+            "mtp": {
+              "facts": [],
+              "citations": []
+            }
+          },
+          "code_tests": {
+            "direct": {
+              "pass": true,
+              "checks": 106,
+              "restriction": "builtin-only functions, AST checks and resource limits"
+            },
+            "mtp": {
+              "pass": true,
+              "checks": 106,
+              "restriction": "builtin-only functions, AST checks and resource limits"
+            }
+          },
+          "text_identical": true,
+          "output_tokens": {
+            "direct": 508,
+            "mtp": 508
+          },
+          "wall_s": {
+            "direct": 146.6,
+            "mtp": 99.177
+          },
+          "ttft_s": {
+            "direct": 7.77,
+            "mtp": 7.828
+          },
+          "decode_ms": {
+            "direct": 138828.549,
+            "mtp": 91346.584
+          },
+          "decode_tps": {
+            "direct": 3.6591897247301777,
+            "mtp": 5.561236969737149
+          },
+          "wall_reduction_pct": 32.34856753069576
+        },
+        {
+          "case_id": "chinese_policy",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "direct": {
+              "facts": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ],
+              "citations": []
+            },
+            "mtp": {
+              "facts": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ],
+              "citations": []
+            }
+          },
+          "code_tests": {},
+          "text_identical": false,
+          "output_tokens": {
+            "direct": 337,
+            "mtp": 474
+          },
+          "wall_s": {
+            "direct": 103.672,
+            "mtp": 177.942
+          },
+          "ttft_s": {
+            "direct": 11.587,
+            "mtp": 11.565
+          },
+          "decode_ms": {
+            "direct": 92082.447,
+            "mtp": 166374.601
+          },
+          "decode_tps": {
+            "direct": 3.659763733255264,
+            "mtp": 2.848992557463744
+          },
+          "wall_reduction_pct": -71.63940118836332
+        }
+      ]
+    },
+    "4B": {
+      "status": "pilot quality gate passed",
+      "gate": {
+        "pass": true,
+        "direct_mean_score": 4.333333333333333,
+        "mtp_mean_score": 4.75,
+        "worst_pair_score_loss": 0.0,
+        "deterministic_no_regression": true,
+        "thresholds": {
+          "mean_score_loss": 0.25,
+          "worst_pair_score_loss": 0.5
+        },
+        "interpretation": "descriptive pilot; no statistical noninferiority or universal equivalence claim"
+      },
+      "timing": {
+        "paired_total_wall_s": {
+          "direct": 2220.327,
+          "mtp": 1882.4810000000002
+        },
+        "total_wall_reduction_pct": 15.216047005688804,
+        "interpretation": "descriptive complete-task latency; output lengths may differ, so also inspect per-task throughput"
+      },
+      "planned_pairs": 6,
+      "eligible_pairs": 6,
+      "judged_pairs": 6,
+      "comparisons": [
+        {
+          "case_id": "routes",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "mtp": {
+              "facts": [
+                true,
+                true,
+                true
+              ],
+              "citations": [
+                true
+              ]
+            },
+            "direct": {
+              "facts": [
+                true,
+                true,
+                true
+              ],
+              "citations": [
+                true
+              ]
+            }
+          },
+          "code_tests": {},
+          "text_identical": true,
+          "output_tokens": {
+            "mtp": 23,
+            "direct": 23
+          },
+          "wall_s": {
+            "mtp": 282.035,
+            "direct": 271.274
+          },
+          "ttft_s": {
+            "mtp": 262.544,
+            "direct": 252.913
+          },
+          "decode_ms": {
+            "mtp": 19487.216,
+            "direct": 18357.912
+          },
+          "decode_tps": {
+            "mtp": 1.180260946458437,
+            "direct": 1.2528657943234502
+          },
+          "wall_reduction_pct": -3.966837957194569
+        },
+        {
+          "case_id": "trace",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "mtp": {
+              "facts": [
+                true
+              ],
+              "citations": [
+                true,
+                true,
+                true
+              ]
+            },
+            "direct": {
+              "facts": [
+                true
+              ],
+              "citations": [
+                true,
+                true,
+                true
+              ]
+            }
+          },
+          "code_tests": {},
+          "text_identical": true,
+          "output_tokens": {
+            "mtp": 64,
+            "direct": 64
+          },
+          "wall_s": {
+            "mtp": 311.903,
+            "direct": 312.313
+          },
+          "ttft_s": {
+            "mtp": 262.298,
+            "direct": 259.703
+          },
+          "decode_ms": {
+            "mtp": 49602.843,
+            "direct": 52607.437
+          },
+          "decode_tps": {
+            "mtp": 1.290248625466891,
+            "direct": 1.2165580315193838
+          },
+          "wall_reduction_pct": 0.1312785570885544
+        },
+        {
+          "case_id": "aggregation",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "mtp": {
+              "facts": [
+                true
+              ],
+              "citations": [
+                true,
+                true,
+                true
+              ]
+            },
+            "direct": {
+              "facts": [
+                true
+              ],
+              "citations": [
+                true,
+                true,
+                true
+              ]
+            }
+          },
+          "code_tests": {},
+          "text_identical": true,
+          "output_tokens": {
+            "mtp": 45,
+            "direct": 45
+          },
+          "wall_s": {
+            "mtp": 295.169,
+            "direct": 296.624
+          },
+          "ttft_s": {
+            "mtp": 263.247,
+            "direct": 259.914
+          },
+          "decode_ms": {
+            "mtp": 31918.677,
+            "direct": 36708.111
+          },
+          "decode_tps": {
+            "mtp": 1.4098328699525986,
+            "direct": 1.2258871070756
+          },
+          "wall_reduction_pct": 0.4905199848967201
+        },
+        {
+          "case_id": "free_windows",
+          "kind": "code",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "mtp": {
+              "facts": [],
+              "citations": []
+            },
+            "direct": {
+              "facts": [],
+              "citations": []
+            }
+          },
+          "code_tests": {
+            "mtp": {
+              "pass": false,
+              "reason": "worker failed or exceeded budget",
+              "exit": 1
+            },
+            "direct": {
+              "pass": false,
+              "reason": "worker failed or exceeded budget",
+              "exit": 1
+            }
+          },
+          "text_identical": false,
+          "output_tokens": {
+            "mtp": 814,
+            "direct": 982
+          },
+          "wall_s": {
+            "mtp": 431.925,
+            "direct": 721.16
+          },
+          "ttft_s": {
+            "mtp": 20.54,
+            "direct": 20.509
+          },
+          "decode_ms": {
+            "mtp": 411382.761,
+            "direct": 700649.073
+          },
+          "decode_tps": {
+            "mtp": 1.9786925393307864,
+            "direct": 1.4015575526209254
+          },
+          "wall_reduction_pct": 40.10691108769204
+        },
+        {
+          "case_id": "unicode_runs",
+          "kind": "code",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "mtp": {
+              "facts": [],
+              "citations": []
+            },
+            "direct": {
+              "facts": [],
+              "citations": []
+            }
+          },
+          "code_tests": {
+            "mtp": {
+              "pass": true,
+              "checks": 106,
+              "restriction": "builtin-only functions, AST checks and resource limits"
+            },
+            "direct": {
+              "pass": true,
+              "checks": 106,
+              "restriction": "builtin-only functions, AST checks and resource limits"
+            }
+          },
+          "text_identical": false,
+          "output_tokens": {
+            "mtp": 595,
+            "direct": 521
+          },
+          "wall_s": {
+            "mtp": 288.598,
+            "direct": 380.575
+          },
+          "ttft_s": {
+            "mtp": 19.793,
+            "direct": 19.661
+          },
+          "decode_ms": {
+            "mtp": 268800.641,
+            "direct": 360912.525
+          },
+          "decode_tps": {
+            "mtp": 2.2135363881070504,
+            "direct": 1.443563090530039
+          },
+          "wall_reduction_pct": 24.16790382973132
+        },
+        {
+          "case_id": "chinese_policy",
+          "kind": "facts",
+          "eligible": true,
+          "deterministic_regression": false,
+          "facts": {
+            "mtp": {
+              "facts": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ],
+              "citations": []
+            },
+            "direct": {
+              "facts": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ],
+              "citations": []
+            }
+          },
+          "code_tests": {},
+          "text_identical": false,
+          "output_tokens": {
+            "mtp": 296,
+            "direct": 302
+          },
+          "wall_s": {
+            "mtp": 272.851,
+            "direct": 238.381
+          },
+          "ttft_s": {
+            "mtp": 29.175,
+            "direct": 29.475
+          },
+          "decode_ms": {
+            "mtp": 243674.337,
+            "direct": 208903.276
+          },
+          "decode_tps": {
+            "mtp": 1.2147360433774361,
+            "direct": 1.4456451128128789
+          },
+          "wall_reduction_pct": -14.460045053926285
+        }
+      ]
+    }
+  },
+  "limitations": "Six tasks, one pair per model/task, one cloud judge in two answer orders. Shared baseline failures are reported, not labelled MTP regressions. RS rollback is untested here.",
+  "candidate_useful_in_pilot": false
+}
+```

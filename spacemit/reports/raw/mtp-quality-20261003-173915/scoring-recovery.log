@@ -1,0 +1,75 @@
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/bench/judge-shared-document-cache.py", line 80, in parse_judgment
+    value = json.loads(content)
+  File "/usr/lib/python3.10/json/__init__.py", line 346, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.10/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.10/json/decoder.py", line 353, in raw_decode
+    obj, end = self.scan_once(s, idx)
+json.decoder.JSONDecodeError: Expecting ',' delimiter: line 1 column 2050 (char 2049)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/bench/resume-mtp-quality-scoring.py", line 62, in <module>
+    resume(args.root.resolve(), args.key_file.resolve())
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/bench/resume-mtp-quality-scoring.py", line 45, in resume
+    result = scorer.score(root, key_file, manifest['judge']['base_url'], manifest['judge']['model'])
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/mtp-quality-20261003-173915/score-mtp-quality.py", line 117, in score
+    rating=judge.grade_case(item,url,model,key,120,2,1536,True)
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/mtp-quality-20261003-173915/judge-shared-document-cache.py", line 141, in grade_case
+    judgment, usage = chat_completion(url, model, key, [
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/bench/judge-shared-document-cache.py", line 120, in chat_completion
+    return parse_judgment(content), data.get('usage', {})
+  File "/home/moyamryia/Projects/riscv-accl/spacemit/bench/judge-shared-document-cache.py", line 82, in parse_judgment
+    raise ValueError('judge did not return valid JSON') from exc
+ValueError: judge did not return valid JSON
+{
+  "2B": {
+    "status": "pilot quality gate passed",
+    "gate": {
+      "pass": true,
+      "direct_mean_score": 3.0,
+      "mtp_mean_score": 3.0833333333333335,
+      "worst_pair_score_loss": 0.0,
+      "deterministic_no_regression": true,
+      "thresholds": {
+        "mean_score_loss": 0.25,
+        "worst_pair_score_loss": 0.5
+      },
+      "interpretation": "descriptive pilot; no statistical noninferiority or universal equivalence claim"
+    },
+    "timing": {
+      "paired_total_wall_s": {
+        "direct": 884.9780000000001,
+        "mtp": 808.647
+      },
+      "total_wall_reduction_pct": 8.625186162819865,
+      "interpretation": "descriptive complete-task latency; output lengths may differ, so also inspect per-task throughput"
+    }
+  },
+  "4B": {
+    "status": "pilot quality gate passed",
+    "gate": {
+      "pass": true,
+      "direct_mean_score": 4.333333333333333,
+      "mtp_mean_score": 4.75,
+      "worst_pair_score_loss": 0.0,
+      "deterministic_no_regression": true,
+      "thresholds": {
+        "mean_score_loss": 0.25,
+        "worst_pair_score_loss": 0.5
+      },
+      "interpretation": "descriptive pilot; no statistical noninferiority or universal equivalence claim"
+    },
+    "timing": {
+      "paired_total_wall_s": {
+        "direct": 2220.327,
+        "mtp": 1882.4810000000002
+      },
+      "total_wall_reduction_pct": 15.216047005688804,
+      "interpretation": "descriptive complete-task latency; output lengths may differ, so also inspect per-task throughput"
+    }
+  }
+}
