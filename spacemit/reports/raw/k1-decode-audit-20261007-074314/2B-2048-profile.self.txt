@@ -1,0 +1,37 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 16K of event 'cpu-clock:u'
+# Event count (approx.): 83788934250
+#
+# Overhead  Command       Shared Object                Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+# ........  ............  ...........................  ....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    50.42%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_INNER360
+    20.07%  llama-server  libspert.so.0.6.2            [.] spert::detail::sync_impl(spert::detail::Future*)
+     6.06%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_vec_dot_f16
+     5.95%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)
+     5.61%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_K360
+     4.90%  llama-server  libspert.so.0.6.2            [.] spert::detail::barrier_coro(spert::detail::Tile*, spert::detail::Barrier*)
+     1.85%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_gdn_decode_step_rvv(float*, float const*, float const*, float const*, float, float, float, long, float*)
+     0.65%  llama-server  libggml-cpu.so.0.16.0        [.] void spacemit_kernels::rvv::forward_concat<int>(ggml_compute_params*, ggml_tensor*)
+     0.56%  llama-server  libm.so.6                    [.] expf@@GLIBC_2.27
+     0.34%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_dup_bytes(ggml_compute_params const*, ggml_tensor*)
+     0.28%  llama-server  libc.so.6                    [.] getenv
+     0.26%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_graph_compute_spert_kernel
+     0.26%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_ssm_conv
+     0.25%  llama-server  libggml-cpu.so.0.16.0        [.] $xrv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicbop1p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0_zfh1p0_zfhmin1p0_zba1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvfh1p0_zvfhmin1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0
+     0.16%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_MAIN67
+     0.14%  llama-server  libggml-cpu.so.0.16.0        [.] memcpy_main_loop149
+     0.14%  llama-server  libllama.so.0.0.7            [.] llama_token_data_array_partial_sort_inplace(llama_token_data_array*, int)
+     0.14%  llama-server  libspert.so.0.6.2            [.] spert::detail::worker_main(spert::detail::WorkerPool*, unsigned int)
+     0.13%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_rms_norm_mul_fused
+     0.10%  llama-server  ld-linux-riscv64-lp64d.so.1  [.] __tls_get_addr
+     0.10%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_cpu_extra_compute_forward
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

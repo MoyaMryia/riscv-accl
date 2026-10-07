@@ -1,0 +1,34 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 30K of event 'cpu-clock:u'
+# Event count (approx.): 153909528500
+#
+# Overhead  Command       Shared Object                Symbol                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+# ........  ............  ...........................  .............................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+#
+    56.31%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_INNER360
+    20.04%  llama-server  libspert.so.0.6.2            [.] spert::detail::sync_impl(spert::detail::Future*)
+     6.84%  llama-server  libspert.so.0.6.2            [.] spert::detail::barrier_coro(spert::detail::Tile*, spert::detail::Barrier*)
+     6.29%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_K360
+     3.46%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_gdn_decode_step_rvv(float*, float const*, float const*, float const*, float, float, float, long, float*)
+     1.52%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_flash_attn_ext_f16_one_chunk(ggml_compute_params const*, ggml_tensor*, int, int, long, long, float*, long)
+     1.52%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_vec_dot_f16
+     0.55%  llama-server  libggml-cpu.so.0.16.0        [.] void spacemit_kernels::rvv::forward_concat<int>(ggml_compute_params*, ggml_tensor*)
+     0.26%  llama-server  libc.so.6                    [.] getenv
+     0.26%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_dup_bytes(ggml_compute_params const*, ggml_tensor*)
+     0.23%  llama-server  libm.so.6                    [.] expf@@GLIBC_2.27
+     0.20%  llama-server  libggml-cpu.so.0.16.0        [.] $xrv64i2p1_m2p0_a2p1_f2p2_d2p2_c2p0_v1p0_zicbop1p0_zicsr2p0_zifencei2p0_zihintpause2p0_zmmul1p0_zfh1p0_zfhmin1p0_zba1p0_zve32f1p0_zve32x1p0_zve64d1p0_zve64f1p0_zve64x1p0_zvfh1p0_zvfhmin1p0_zvl128b1p0_zvl32b1p0_zvl64b1p0
+     0.19%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_ssm_conv
+     0.18%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_rms_norm_mul_fused
+     0.18%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_graph_compute_spert_kernel
+     0.13%  llama-server  libggml-cpu.so.0.16.0        [.] memcpy_main_loop149
+     0.11%  llama-server  libggml-cpu.so.0.16.0        [.] LOOP_MAIN67
+     0.11%  llama-server  libggml-cpu.so.0.16.0        [.] ggml_compute_forward_gated_delta_net
+
+
+#
+# (Cannot load tips.txt file, please install perf!)
+#

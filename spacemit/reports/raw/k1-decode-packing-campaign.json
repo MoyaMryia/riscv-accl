@@ -1,0 +1,49 @@
+{
+  "stage": "completed",
+  "current_run": "k1-decode-audit-20261007-074314",
+  "local_root": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-audit-20261007-074314",
+  "remote_root": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-decode-audit-20261007-074314",
+  "monitor_id": "k1-decode-packing-20261007-074314",
+  "attempts": [
+    {
+      "run": "k1-decode-audit-20261007-070430",
+      "local_root": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-audit-20261007-070430",
+      "reason": "Initial sustained-decode and FFN branch packing attribution",
+      "dispatch_time": "2026-10-07T07:04:30.460914+08:00",
+      "monitor_id": "k1-decode-packing-20261007-070430",
+      "status": "failed",
+      "board_exit_status": 1,
+      "collector_exit_status": 1,
+      "reason_failed": "perf default clock differs from CLOCK_MONOTONIC; explicit --clockid mono passes short clock probe",
+      "native_cases_per_arm": 104,
+      "native_identity": true
+    },
+    {
+      "run": "k1-decode-audit-20261007-074314",
+      "local_root": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-audit-20261007-074314",
+      "remote_root": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-decode-audit-20261007-074314",
+      "dispatch_time": "2026-10-07T07:43:15.193714+08:00",
+      "monitor_id": "k1-decode-packing-20261007-074314",
+      "reason": "Explicit perf CLOCK_MONOTONIC and source-supported startup compatibility-probe separation; targeted exact model probe passed",
+      "status": "completed",
+      "board_exit_status": 0,
+      "collector_exit_status": 0,
+      "artifacts_verified": 86,
+      "requests": 8,
+      "profiles": 4,
+      "native_cases_per_arm": 104,
+      "candidate_advanced": false
+    }
+  ],
+  "repair_evidence": {
+    "clock_probe": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-clock-probe-20261007-0740",
+    "model_probe": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-validation-probe-20261007-0744",
+    "successful_model_probe": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-validation-probe-20261007-0750"
+  },
+  "completed_time": "2026-10-07T08:20:51.743611+08:00",
+  "conclusion": "Duplicate FFN packing is 0.024\u20130.035% of audited GEMM worker elapsed, below the declared priority signal; shared packing not implemented. Calling-thread sync accounts for ~20% of self CPU and is not proven removable inference time.",
+  "candidate_advanced": false,
+  "measured_report": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/2026-10-07-decode-packing-results.md",
+  "verification": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/k1-decode-analysis-20261007/verification.json",
+  "next_supported_action": "Separate M1/IME hot-kernel native/operator pilot including full-vocabulary output head, or precise worker-node barrier attribution; neither is qualified by this diagnostic"
+}

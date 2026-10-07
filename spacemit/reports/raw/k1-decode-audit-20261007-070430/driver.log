@@ -1,0 +1,16 @@
+verify and build isolated kernel
+104 native cases per baseline / audit-off / audit-on arm
+2B-256-profile
+failed
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-decode-audit-20261007-070430/k1-decode-audit.py", line 329, in <module>
+    Run(args.root.resolve()).run()
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-decode-audit-20261007-070430/k1-decode-audit.py", line 308, in run
+    baseline, cpu = self.request(model, tokens, False)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-decode-audit-20261007-070430/k1-decode-audit.py", line 291, in request
+    attribution['sample_window_verification'] = verify_sample_window(stacks.read_text(), window)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-decode-audit-20261007-070430/k1-decode-audit.py", line 59, in verify_sample_window
+    raise ValueError('perf samples outside declared decode window')
+ValueError: perf samples outside declared decode window
