@@ -5,7 +5,7 @@ Historical queue statements describe the report's date.
 
 ## Submission package
 
-- [SUBMISSION-REPORT.md](SUBMISSION-REPORT.md): current consolidated report, evidence through October 6, 2026.
+- [SUBMISSION-REPORT.md](SUBMISSION-REPORT.md): current consolidated report, evidence through October 7, 2026.
 - [SUBMISSION-EVIDENCE.md](SUBMISSION-EVIDENCE.md): claim-to-artifact map, model/build identities and verification commands.
 
 Submit the report with the appendix. The older root `FINAL-REPORT.md` and
@@ -14,9 +14,28 @@ the current submission. No files have been submitted externally.
 
 ## Current measurements and validation
 
+The [fresh release verification](2026-10-07-release-verification.md) passes the
+complete clean build, 104 exact native cases per routing arm and all four
+naturally stopped code answers, each passing 106 held-out checks. The current
+[pinned package](../release/README.md) is reproducible; routing remains opt-in.
+
+The [hybrid SSM complete-answer campaign](2026-10-06-ssm-complete-answer-results.md)
+is completed. Graph/state checks pass and all 24 answers stop naturally, with
+12 identical pairs. Total latency falls 2.92%/2.13%; usefulness remains 2/6
+and 5/6. The declared adoption gates fail; its monitor is paused.
+
 | Report | Scope |
 | --- | --- |
-| [Next infrastructure methods](2026-10-06-next-infrastructure-methods.md) | Exact tested-source audit and new convolution-layout/activation-packing candidates; unmeasured, with small qualification gates |
+| [Fresh release verification](2026-10-07-release-verification.md) | Complete clean build, native dump identity, four passing complete answers and 35 independently verified artifacts; one pair per model, no new statistical speed claim |
+| [Fixed K32 M1 specialization](2026-10-07-ime-m1-k32-results.md) | 480 raw cases, 104 production cases per arm and six actual FFN/full-output shapes pass exact identity; all 144 operator samples fail advancement, candidate disabled, model stages skipped |
+| [Decode and FFN packing results](2026-10-07-decode-packing-results.md) | Eight exact matched requests, four decode profiles and 104 native cases per arm; duplicate packing only 0.024–0.035% of GEMM worker elapsed, candidate declined; calling-thread sync CPU is not wall savings; 86 artifacts verified |
+| [Decode clock/startup repair](2026-10-07-decode-clock-repair.md) | Explicit monotonic perf clock and separate startup compatibility-probe inventory preserve strict request audits; targeted exact-output validation precedes the successful full run |
+| [Local clean-reference quality](2026-10-06-local-clean-reference-results.md) | Same GGUFs/prompts/seed on clean generic x86 CPU; 11 natural answers and one cap, useful 1/6 and 5/6 versus board 2/6 and 5/6; existing arithmetic/citation/code errors persist; no causal or speed claim across hardware |
+| [Hybrid SSM complete answers](2026-10-06-ssm-complete-answer-results.md) | 432 cases per three arms, 32 exact model-state comparisons, 24 natural answers; unchanged quality, small complete-answer gains below adoption threshold; 114 artifacts verified |
+| [Repaired convolution/RVV screen](2026-10-06-ssm-conv-repaired-results.md) | Four arms pass 432 cases each; 72 operator samples show RVV graph time -73.72%/-78.93% at 32 tokens but +69.00%/+85.10% at one token; model gates skipped, 97 artifacts verified |
+| [SSM history-copy diagnosis](2026-10-06-ssm-history-diagnosis.md) | Dated repair diagnosis; later graph/state and complete-answer checks pass, but the hybrid candidate misses adoption gates |
+| [Channels-major convolution/RVV screen](2026-10-06-ssm-conv-rvv-results.md) | Correctness failure: layout mode history write-back; original/control pass 432 cases each, RVV and model timing skipped; 23 collected artifacts verified |
+| [Next infrastructure methods](2026-10-06-next-infrastructure-methods.md) | Dated source audit; convolution, decode/packing and fixed-K32 M1 follow-ups measured above; separate load scheduling and worker-barrier work remain optional leads |
 | [Measured K1 roofline](2026-10-06-k1-roofline-results.md) | Completed: 150 memory scans, 24 matching direct requests and two profiles; approximately 7 GB/s and confirmed routing gains; traffic references are not hardware-limit proof |
 | [Resumed measurements](2026-09-27-resumed-measures.md) | Verified matrix, actual 16k pairs, 2B 32k feasibility, weights, completed diagnostics and negative GPU findings |
 | [Local verification](2026-09-28-local-verification.md) | Matrix reproduction, corrected fractional Welch intervals, 32k scaling; no new board measurements |

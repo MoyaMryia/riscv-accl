@@ -4,6 +4,14 @@ Date: October 6, 2026, Asia/Singapore. Status: code audit and primary-source
 research completed; candidates below are **unmeasured on K1**. No new inference
 campaign was launched for this review.
 
+Follow-up: the [October 7 decode audit](2026-10-07-decode-packing-results.md)
+now measures eight matched requests and four decode profiles. Duplicate FFN
+packing is only 0.024–0.035% of GEMM worker elapsed, so sharing is not pursued.
+The approximately 20% calling-thread sync CPU share is not removable inference
+latency. M1 kernel scheduling and precise worker-barrier attribution remain
+unmeasured implementation leads. Convolution follow-ups are indexed in the
+[current documentation guide](../DOCS.md).
+
 ## Measured starting point
 
 The [completed bandwidth campaign](2026-10-06-k1-roofline-results.md) measures
@@ -153,3 +161,7 @@ scheduling are recorded negative/sub-threshold results, not newly discovered
 optimizations. Adaptive MTP remains opt-in and unqualified because useful-code
 checks fail despite higher capped throughput. The present hardware limit has
 not been demonstrated.
+
+## October 7 fixed K32 M1 follow-up
+
+The [completed M1 specialization pilot](2026-10-07-ime-m1-k32-results.md) preserves exact outputs in raw and production tests, including both full output heads. Its 144 operator samples do not clear the preset gain/control-spread gate. Branch elimination alone therefore stays disabled; matched model and useful-answer stages were skipped. Further load scheduling or dataflow work needs a separate evidenced mechanism and protocol. This result does not establish a hardware ceiling.

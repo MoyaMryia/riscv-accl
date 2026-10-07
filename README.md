@@ -2,10 +2,11 @@
 
 RISC-V inference experiments and reproducible artifacts.
 
-- **Report to submit:** [Infrastructure optimization report](spacemit/reports/SUBMISSION-REPORT.md), updated October 3, 2026.
+- **Report to submit:** [Infrastructure optimization report](spacemit/reports/SUBMISSION-REPORT.md), updated October 7, 2026.
 - **Supporting evidence:** [Submission appendix](spacemit/reports/SUBMISSION-EVIDENCE.md).
 - **Current status:** [Documentation guide](spacemit/DOCS.md).
-- **Deployment and reproduction:** [SpaceMiT X60 integration](spacemit/README.md).
+- **Current release:** [Pinned K1 infrastructure package](spacemit/release/README.md).
+- **Model preparation and historical patches:** [SpaceMiT X60 integration](spacemit/README.md).
 
 `FINAL-REPORT.md`, dated reports, and `lab/` notes describe earlier campaigns.
 Their scope and dates matter; they are not the current submission or work queue.

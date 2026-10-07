@@ -1,6 +1,6 @@
 # Infrastructure optimization of Qwen3.5 inference on the SpaceMiT K1
 
-**Submission report — evidence cutoff: October 6, 2026, Asia/Singapore**\
+**Submission report — evidence cutoff: October 7, 2026, Asia/Singapore**\
 Platform: MUSE-Pi-Pro, SpaceMiT K1/X60, 16 GiB RAM\
 Models: Qwen3.5 2B and 4B conversational checkpoints\
 Implementation: SpaceMiT's open-source llama.cpp fork
@@ -19,8 +19,8 @@ and reduced 64-token decode time by 14.40% and 28.62%, respectively.
 All 24 requests in the routing experiment matched their control outputs.
 Independent combined-mode 8k tests reduce prefill time by 4.43%/5.79% and
 64-token decode time by 9.49%/15.06% on 2B/4B. Complete-answer pairs match,
-but 2B omits required tracing citations in both arms. Routing remains isolated
-and opt-in because the declared overall quality gate has not cleared.
+but 2B omits required tracing citations in both arms. Routing is packaged
+as opt-in because the declared overall absolute quality gate has not cleared.
 
 The report also records negative results, bounded long-context feasibility,
 and the limits of speculative decoding and cache-quality evidence. Performance
@@ -46,12 +46,12 @@ inference does not require that judge.
 | Requirement | Evidence and boundary |
 | --- | --- |
 | Both 2B and 4B models | Both have local inference, matched prefill comparisons and routing decode comparisons. |
-| SpaceMiT open-source llama.cpp | Packaged deployment uses official-fork base `5ad05d8`; later board experiments use `a990751` plus recorded changes. |
+| SpaceMiT open-source llama.cpp | Current release pins official-fork `a990751` and measured source hashes. The historical patch stack targets `5ad05d8`. |
 | Baseline and optimized results | Matched RVV off/on and GEMM staging/bypass tables below; each comparison states its baseline. |
 | Quantifiable infrastructure improvement | RVV reduces long-prompt TTFT; the new routing screen improves both phases on both models. |
 | Deployment, scripts and tests | Integration guide, patch helper, native harnesses, tmux runners and archived evidence are provided. |
 | Generation above 1 token/s | Demonstrated in short/moderate-context decode tests; this is not guaranteed at every long context. |
-| ARM/x86 performance comparison in the competition background | A matched inference-performance comparison is not included. Local x86 mechanism probes do not satisfy this comparison. |
+| Cross-architecture comparison | Excluded from the release requirements at the user’s direction. |
 
 The [original requested checklist](2026-09-27-next-steps-and-measures.md) and
 [competition background](../../env/competition-background.md) have different
@@ -240,6 +240,9 @@ demonstrate that the hardware limit has been reached.
 | --- | --- | --- |
 | Compact attention layouts | Original 2k pilot gains of 0.89% / 1.98%; later fast-screen model gains below 3% | Retain layout 0 |
 | Further IME scheduling / scale gathering | Numerical checks pass; operator screens do not qualify | Retain original schedule |
+| Hybrid SSM convolution/RVV | Exact graph/state checks and 24 natural answers pass; total latency falls 2.92% / 2.13%, below the adoption gate | Disabled in the release |
+| Shared dense FFN activation packing | Duplicate work is only 0.024–0.035% of summed GEMM worker elapsed in the decode audit | Implementation declined |
+| Fixed K32 M1 inner-loop specialization | Exact raw/production/full-output checks pass; 144 operator samples fail advancement | Disabled; model stages skipped |
 | Recurrent prefill fusion | Operator time falls 24–28%; 2B/512 model time falls 2.38%, below gate | Experimental; no advancement |
 | Direct V attention access | Operator gains do not become model gains: 2B/2k is 1.67% slower; 4B/1k effectively unchanged | No adoption |
 | Larger QK grouping | Operator qualification insufficient | No model advancement |
@@ -311,10 +314,18 @@ Length-capped one-, 32- or 64-token speed samples are not complete-answer eviden
 
 ## 7. Reproduction and deliverables
 
-Use the [deployment guide](../README.md) for the clean official-fork baseline,
-model preparation, compiler/runtime settings and server command. The packaged
-patch helper and the latest isolated routing experiment target different
-recorded source states; the routing candidate is not a default helper option.
+Use the [deployment guide](../README.md) for model preparation and the historical
+patch stack. The [current infrastructure release](../release/README.md) pins the later
+`a990751` source and packages its measured RVV/routing code with exact source
+hashes. The older patch helper targets `5ad05d8`; use separate checkouts.
+Routing remains opt-in, and unsuccessful SSM/K32 candidates stay disabled.
+The [fresh release verification](2026-10-07-release-verification.md) passes a
+complete clean build, 104 exact production graph cases per routing arm and
+four naturally complete code responses, each passing 106 held-out checks.
+All 35 archived artifacts and source/build/runtime checks pass; both exit
+statuses are zero. The one-pair natural-code observations show 508/521 tokens
+with identical baseline/optimized/prior text. They support package verification,
+without adding a new statistical speedup or general quality claim.
 
 From the repository root, the latest checks are:
 
@@ -336,29 +347,70 @@ The [evidence appendix](SUBMISSION-EVIDENCE.md) maps every principal claim to
 source code, provenance, raw records and verification commands. No model
 weights or private API credentials are included in the report.
 
-## 8. Conclusion and remaining work
+## 8. Release decisions and optional further work
+
+The bounded infrastructure release is verified and reproducible. The current
+submission report, evidence appendix, source package and test records form the
+completed deliverable. ARM/x86 comparison is excluded from the release scope.
 
 The strongest replicated long-input result is the activated RVV F16 attention
-kernel. The latest production GEMM-routing prototype also improves measured
+kernel. The opt-in production GEMM routing also improves measured
 prefill and bounded decode on both required models while preserving tested
 outputs. Its scope is the current board/runtime and the recorded workload;
-the positive screen supports further confirmation rather than automatic
-default deployment.
+the release packages the measured mechanisms within that scope. Routing
+remains opt-in.
 
-Combined mode now has independent 8k phase measurements and a complete-answer
-pilot. Next address the 2B baseline citation limitation under a separately
-declared protocol and investigate the native RS rollback mismatches. Further unused infrastructure leads are
+Combined mode has independent 8k phase measurements and a complete-answer
+pilot. The release uses direct decoding and keeps routing opt-in. Baseline
+citation errors, native RS rollback mismatches and the advanced context cases
+remain documented limitations; they require separately declared follow-up
+protocols if pursued. Further unused infrastructure leads are
 shared K packing across grouped query heads, a Q4_0 RVV lookup-table prototype,
 and compiler comparisons for measured hotspots. Their platform fit and primary
 research references are in the [October 3 research review](2026-10-03-infrastructure-research.md).
 The [October 6 source audit](2026-10-06-next-infrastructure-methods.md) prioritizes
 channels-major SSM convolution with an RVV channel loop, shared dense FFN
 activation packing, and phase-isolated decode attribution before changing
-worker scheduling. These are unmeasured candidates with staged correctness
-and performance gates.
+worker scheduling. The [repaired convolution screen](2026-10-06-ssm-conv-repaired-results.md)
+now passes 432 exact graph cases in each of four arms. RVV graph time falls
+73.72%/78.93% at 32 tokens for the 2B/4B shapes but rises 69.00%/85.10% at
+one token. This rejects unconditional replacement; full-model state and timing
+were skipped in that unconditional screen. The subsequent [hybrid complete-answer
+pilot](2026-10-06-ssm-complete-answer-results.md) selects RVV only for batches
+of at least 32 tokens. Three arms pass 432 graph cases each; both models pass
+16 exact mixed-chunk/reset/RS-reference-fallback comparisons. All 24 answers
+stop naturally and all 12 pairs are text-identical. Total answer latency falls
+2.92%/2.13% for 2B/4B, while absolute usefulness remains 2/6 and 5/6. Shared
+model errors and gains below the >3% gate prevent adoption. RS reference
+fallback does not resolve rollback qualification. No production defaults change.
+The [same-seed clean local reference](2026-10-06-local-clean-reference-results.md)
+uses the exact GGUFs and unpatched matching source on generic x86 CPU, without
+custom K1 paths, flash attention or MTP. All model/source/request hashes pass.
+It reproduces the 2B wrong sum and missing citations, and both models still
+fail interval code. Useful answers are 1/6 and 5/6 locally, versus 2/6 and 5/6
+on both board arms; one local 4B answer is length-capped. This supports limits
+of the tested weights/settings without proving causality for every earlier
+optimization across different CPUs. Local timing is not a matched x86/K1
+performance comparison.
 
-Remaining submission coverage limits include the absent matched ARM/x86
-performance comparison, unmeasured 4B/32k and 64k workloads, unresolved MTP
+The [October 7 sustained-decode diagnostic](2026-10-07-decode-packing-results.md)
+passes 104 production graph cases in each of three arms and eight matched cold
+requests with exact prompt/token/text identity. Four decode profiles and all
+86 artifact hashes are verified. Duplicate FFN branch packing costs only
+0.024–0.035% of summed GEMM worker elapsed, so a shared-packing implementation
+is not pursued. IME assembly accounts for 48.61–66.57% of sampled self CPU;
+approximately 20% is calling-thread synchronous waiting, which is not proven
+removable wall time. No new acceleration or useful-answer result is claimed.
+The [fixed K32 M1 inner-loop specialization](2026-10-07-ime-m1-k32-results.md)
+then passed 480 raw cases, 104 production cases per arm and all actual FFN/full
+output-head comparisons. Its 144 operator measurements produced no gain above
+both 3% and control spread; the candidate remains disabled. Full-model and
+useful-answer stages were skipped, so it adds no measured inference speedup.
+Separate load scheduling/dataflow, output-head partitioning and dependency-
+preserving worker-barrier changes remain unmeasured leads.
+
+Remaining advanced coverage limits include unmeasured 4B/32k and 64k
+workloads, unresolved MTP
 long-code identity, and unavailable measured GPU offload/full paged scheduling.
 These are stated explicitly so the submission represents the completed work.
 

@@ -49,7 +49,7 @@ tested execution environment. The package does not claim physical TCM placement.
 
 ## Run local inference
 
-Supply a legal local model from the [manifest](manifest.json). The exact tested
+Supply a local model matching the [manifest](manifest.json). The exact tested
 GGUF hashes are pinned; model preparation is described in the
 [integration guide](../README.md). No weights or credentials are distributed.
 Presence of MTP tensors does not enable speculative decoding.
@@ -76,14 +76,18 @@ The offline clean-archive patch round trip verified all 3,266 pinned source
 files and reproduced all three measured patched-file hashes. Reapplication is
 rejected. See [clean-apply verification](../reports/raw/release-20261007/clean-apply-verification.json).
 
-Fresh board build and complete-answer verification is running as
-`k1-release-check-20261007-125712` through direct SSH `musepipro`, with board and
-local collector tmux sessions and a quiet 30-minute monitor. It builds from a
-clean checkout, compares 104 production graph cases per routing arm, and runs
-four cold naturally completed Unicode code answers across both models. Each
-answer must pass 106 held-out checks and each pair must match exactly. This is
-a release smoke test, not a new statistical performance or general quality claim.
-The final release is published only after these checks pass.
+Fresh board verification **passed** in 57.01 minutes as
+`k1-release-check-20261007-125712` through direct SSH `musepipro`. The complete
+clean build passes 104 production graph cases per routing arm with exact
+identity to the preserved baseline. All four cold Unicode code answers stop
+naturally and pass 106 held-out checks each. Paired text matches exactly, as
+does the prior control text; outputs are 508 tokens for 2B and 521 for 4B.
+Board and collector exit statuses are zero. The archive's exact file list and
+all 35 artifact hashes, 18 staged-code hashes and three collector-code hashes
+pass independent verification, alongside post-run source/build/runtime checks.
+See the [release verification report](../reports/2026-10-07-release-verification.md).
+This is a release smoke test, not a new statistical performance or general
+quality claim. Its healthy 30-minute follow-up is closed after publication.
 
 ```bash
 python3 spacemit/bench/start-k1-release-check.py --board musepipro

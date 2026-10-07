@@ -1,6 +1,6 @@
 # Submission evidence appendix
 
-Evidence cutoff: October 6, 2026, Asia/Singapore. This appendix supports the
+Evidence cutoff: October 7, 2026, Asia/Singapore. This appendix supports the
 [submission report](SUBMISSION-REPORT.md). File dates identify campaigns;
 historical work queues do not describe current board activity.
 
@@ -25,7 +25,10 @@ historical work queues do not describe current board activity.
 | Negative IME / recurrent / attention screens | [IME scheduling](2026-10-02-ime-scheduling.md), [recurrent fusion](2026-10-02-recurrent-prefill.md), [attention infrastructure](../experiments/2026-10-02-attention-infrastructure.md) | Their linked native tests, operator records and gated model runs |
 | GPU and page-gather boundaries | [Completed gates](2026-09-27-completed-gates.md), [later telemetry and backend findings](2026-09-27-resumed-measures.md) | Zero transferred OpenCL layers; Vulkan dropped; page gathering retains full backing allocation |
 | Independent bandwidth and routing confirmation | [October 6 results](2026-10-06-k1-roofline-results.md), [summary](raw/k1-roofline-20261005-225502/summary.json), [150-artifact receipt](raw/k1-roofline-20261005-225502/collection-receipt.json) | [Protocol](../experiments/2026-10-05-k1-roofline.md), [compressed evidence storage](raw/k1-roofline-20261005-225502/ARCHIVE.md); traffic references are not hardware-limit proof |
-| Unused research opportunities | [October 3 GitHub/arXiv/Scholar review](2026-10-03-infrastructure-research.md), [October 6 source audit](2026-10-06-next-infrastructure-methods.md) | Primary-source links, exact tested build and platform-fit decisions; proposed methods are unmeasured |
+| Same-seed local clean-reference quality | [Results](2026-10-06-local-clean-reference-results.md), [summary](raw/local-reference-quality-20261006-194015/summary.json), [verification](raw/local-reference-quality-20261006-194015/completion-verification.json) | [Protocol](../experiments/2026-10-06-local-clean-reference.md), exact GGUF/source/request hashes, 12 audits and 11 two-order judgment pairs; errors persist, cross-backend causal/speed claims excluded |
+| Hybrid SSM complete useful answers | [Measured results](2026-10-06-ssm-complete-answer-results.md), [final quality summary](raw/k1-ssm-quality-20261006-131234/ssm-quality-summary.json), [114-artifact receipt](raw/k1-ssm-quality-20261006-131234/collection-receipt.json) | [Completion verification](raw/k1-ssm-quality-20261006-131234/completion-verification.json), [passing answer](2026-10-06-ssm-useful-answer-example.md); exact graph/state pass, 24 natural answers, adoption gates fail; local scoring files additional to receipt |
+| Sustained decode and negative shared-packing priority | [October 7 results](2026-10-07-decode-packing-results.md), [summary](raw/k1-decode-audit-20261007-074314/summary.json), [86-artifact receipt](raw/k1-decode-audit-20261007-074314/collection-receipt.json) | [Independent verifier](raw/k1-decode-analysis-20261007/verify-completion.py), [verification](raw/k1-decode-analysis-20261007/verification.json); eight exact matched requests, four decode profiles, native identity; packing declined, CPU shares are not wall-time savings |
+| Unused research opportunities | [October 3 GitHub/arXiv/Scholar review](2026-10-03-infrastructure-research.md), [October 6 source audit](2026-10-06-next-infrastructure-methods.md) | Dated primary-source/source reviews; convolution and decode packing subsequently measured; M1 kernel scheduling and worker-barrier implementation remain unqualified |
 
 ## 2. Baseline identities
 
@@ -89,7 +92,33 @@ not members of that original collection count. Native binary output dumps
 remain on the board; numerical logs and summaries record their identical
 SHA-256 values. End-of-run board hashing independently confirmed those dumps.
 
+## Fixed K32 M1 screen: negative evidence
+
+The [October 7 M1 specialization results](2026-10-07-ime-m1-k32-results.md)
+are supported by the [frozen summary](raw/k1-ime-m1-k32-20261007-121231/summary.json),
+[144 operator samples](raw/k1-ime-m1-k32-20261007-121231/operator.jsonl),
+[211-artifact receipt](raw/k1-ime-m1-k32-20261007-121231/collection-receipt.json),
+[independent verifier](raw/k1-ime-m1-analysis-20261007/verify-completion.py),
+[verification output](raw/k1-ime-m1-analysis-20261007/verification.json) and
+[40-file remote preservation check](raw/k1-ime-m1-analysis-20261007/remote-preservation.json).
+Both exit statuses are zero. All 480 raw cases, 104 production cases per arm
+and six actual FFN/full-248320-column shapes per arm pass exact outputs and
+guards. Recreated route-3 baseline hash is exact; generated assembly removes
+the inner counter/branches while retaining dot/load/FMA order and fallbacks.
+No operator clears both 3% and control spread. Full-model state, cold ABBA and
+useful-answer stages were skipped. Candidate disabled; no new inference or
+quality gain enters the submission. Independent analysis files are outside
+the original 211-artifact receipt.
+
 ## 5. Submission document roles
+
+The [October 6 repaired SSM screen](2026-10-06-ssm-conv-repaired-results.md)
+is supported by [its summary](raw/k1-ssm-conv-20261006-115459/summary.json),
+[operator samples](raw/k1-ssm-conv-20261006-115459/operator.jsonl) and
+[97-artifact receipt](raw/k1-ssm-conv-20261006-115459/collection-receipt.json).
+All four arms pass 432 exact output/history cases. Warm graph gains at
+32 tokens accompany single-token regressions, so model-state and inference
+timing stages were skipped. These measurements support no full-model gain.
 
 | Material | Use |
 | --- | --- |
@@ -105,3 +134,7 @@ SHA-256 values. End-of-run board hashing independently confirmed those dumps.
 No required final-report template, author list or external submission destination
 has been supplied. The report is organized for review; it has not been
 submitted externally.
+
+## Current release package
+
+The [release manifest](../release/manifest.json) pins the exact source revision, patch and measured files, model hashes and matched route0/3 profiles. [Offline clean-source verification](raw/release-20261007/clean-apply-verification.json) checks the 3,266-file snapshot and exact patch round trip. The [fresh full board build and complete-answer verification](2026-10-07-release-verification.md) passed in `k1-release-check-20261007-125712`: 104 exact production graph cases per routing arm and four naturally stopped Unicode code answers, each passing 106 held-out checks. All 35 archived artifacts, 18 staged code files and three collector files pass checksum verification; post-run source, binary, compiler and vendor-runtime checks pass. Board/collector exit statuses are zero. The [independent result](raw/release-20261007/verification.json) records exact paired/prior text identity and the descriptive natural-answer timings. ARM/x86 comparison is excluded by user instruction. Release smoke timings do not add a new statistical speedup claim.

@@ -4,6 +4,51 @@ See the [documentation guide](../DOCS.md) for current results and queued work.
 This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)
 now has native correctness, operator timing and gated model-screen modes.
 
+## Current release verification
+
+The [pinned release package](../release/README.md) supplies the current clean
+source patch, build and matched baseline/optimized launchers. To verify it on
+the existing K1 board:
+
+```bash
+python3 spacemit/bench/start-k1-release-check.py --board musepipro
+python3 spacemit/release/test-release.py
+```
+
+The first command offloads a fresh complete build, 104 native cases per routing
+arm and four naturally stopped code answers to board tmux, with a separate
+local collector. Each answer must pass all 106 held-out tests; paired text must
+match. The board job holds the shared lock and has a six-hour bound. Recover
+collection with `--collect-only --run-dir RUN_DIR`; never restart inference
+just to collect artifacts. Recheck the collected archive, frozen code, native
+dumps and complete responses with:
+
+```bash
+python3 spacemit/bench/verify-k1-release.py RUN_DIR \
+  --preservation /absolute/path/to/post-run-board-preservation.json
+```
+
+The [completed release result](../reports/2026-10-07-release-verification.md)
+links the reproducible preservation script and all passing receipts. The
+preservation receipt records post-run source, binary, CMake and staged
+code hashes from the board. Strict rechecking requires the retained binary
+dumps/archive in addition to the Git text records. This is a release smoke
+test; its four timings do not establish a new statistical performance result.
+
+## Measured diagnostic and candidate campaigns
+
+For separate sustained-decode CPU profiling and FFN branch packing counters,
+run `python3 spacemit/bench/start-k1-decode-audit.py --board musepipro`. The
+[decode audit protocol](../experiments/2026-10-07-decode-packing-audit.md) checks
+104 production graph cases per arm before eight cold matched requests. Both
+board execution and verified collection use tmux. Profiling starts after the
+first streamed token; separate counter runs identify adjacent same-input gate/up
+branches. This diagnostic does not qualify a speedup or change defaults.
+The [completed results](../reports/2026-10-07-decode-packing-results.md) decline
+shared packing because its measured duplicate branch cost is small; the monitor
+is paused. The retained command is for deliberate reproduction.
+Use `--collect-only --run-dir RUN_DIR` to recover collection without inference.
+
 For measured RAM bandwidth versus the direct-inference weight-traffic reference,
 run `python3 spacemit/bench/start-k1-roofline.py`. The
 [roofline protocol](../experiments/2026-10-05-k1-roofline.md) uses RVV full reads
@@ -11,12 +56,44 @@ before/after 24 matched cold requests, plus separate CPU profiles. Execution
 and verified artifact collection use tmux. This is capped infrastructure
 timing, not an answer-quality benchmark or proof of reaching a hardware limit.
 
+For the isolated channels-major SSM convolution and RVV channel-loop screen,
+run `python3 spacemit/bench/start-k1-ssm-conv.py`. The
+[convolution protocol](../experiments/2026-10-06-ssm-conv-rvv.md) compares the
+original, layout-only and RVV graphs, checks model state/reset behavior, and
+advances to cold model timing only after operator gates. The controller uses
+private libraries in tmux and records a separate collector exit status.
+The initial run failed history write-back. The
+[native diagnosis and repair](../reports/2026-10-06-ssm-history-diagnosis.md)
+passes the original/scalar/RVV graph matrix after materializing the small
+history tail. The [repaired screen](../reports/2026-10-06-ssm-conv-repaired-results.md)
+passes all four correctness arms but rejects unconditional use due to a
+single-token operator regression; model-state and inference timing were skipped.
+
 The [October 3 staged validation](../experiments/2026-10-03-staged-validation.md)
 adds small recurrent-state probes, forced-trajectory and MTP diagnostics,
 combined routing at 8k, complete-document answers, and gated 4B/32k feasibility.
 Launch with `python3 spacemit/bench/start-k1-validation.py`; board execution and
 automatic collection use tmux. `bench-lifecycle.py --no-context-shift` prevents
 automatic input shifting in the new fixed-length tests.
+
+The [local clean-reference quality protocol](../experiments/2026-10-06-local-clean-reference.md)
+uses `local-reference-quality.py RUN_DIR` to copy exact board models, build an
+unpatched generic CPU reference and replay unchanged requests at seed 42.
+Use the frozen runner with `--score-only` to recover judging without inference.
+The [completed clean-reference results](../reports/2026-10-06-local-clean-reference-results.md)
+verify both exact models and reproduce key board quality failures.
+
+The [completed hybrid SSM results](../reports/2026-10-06-ssm-complete-answer-results.md)
+verify 24 natural answers and exact state identity, but miss adoption gates.
+
+For naturally stopped **hybrid SSM complete answers**, run
+`python3 spacemit/bench/start-k1-ssm-quality.py`. The
+[protocol](../experiments/2026-10-06-ssm-complete-answers.md) uses the original
+graph below 32 tokens, RVV for full batches, exact mixed-state/reset checks,
+24 full responses, held-out code checks and blind cloud grading. Both board
+execution and local collection/scoring use tmux; the judge key remains local.
+Use `--collect-only` to recover collection or `--score-only` to recover judging
+without restarting inference, always with the current `--run-dir`.
 
 For relative answer quality of **checkpoint MTP versus direct decoding**, run
 `python3 spacemit/bench/start-mtp-quality.py`. The [usefulness protocol](../experiments/2026-10-03-mtp-usefulness.md)
@@ -565,3 +642,5 @@ eligible modes advance to cold ABBA prefill or 64-token decode tests for both
 models. Full input prompts, models and arithmetic remain unchanged. Execution
 and verified collection use tmux, with the shared lock and a one-hour board
 budget. See the [predeclared protocol](../experiments/2026-10-03-gemm-routing.md).
+
+- [Fixed K32 M1 IME specialization results](../reports/2026-10-07-ime-m1-k32-results.md): completed negative screen; 480 raw cases and 104 production cases per arm pass exact identity, including full output heads. All 144 operator samples fail the advancement gate. Candidate disabled; model and useful-answer tests skipped.

@@ -4,11 +4,17 @@ Use the [documentation guide](../DOCS.md) for current work and the
 [integration guide](../README.md) for packaged patch application.
 For the consolidated results and adoption decisions, use the
 [submission report](../reports/SUBMISSION-REPORT.md).
-Experiment patches often target `a990751`; the helper targets `5ad05d8`.
-Follow individual base and patch-order instructions.
+The [current release](../release/README.md) pins `a990751`. The historical
+`apply-patches.sh` helper targets `5ad05d8`; use separate checkouts and follow
+each experiment's base and patch-order instructions.
 
 | Experiment | Present interpretation |
 | --- | --- |
+| [Fixed K32 M1 specialization](2026-10-07-ime-m1-k32.md) | [Completed negative screen](../reports/2026-10-07-ime-m1-k32-results.md): exact native/full-output checks pass; 144 operator samples fail advancement, candidate disabled and model stages skipped. |
+| [Decode and FFN packing audit](2026-10-07-decode-packing-audit.md) | [Completed](../reports/2026-10-07-decode-packing-results.md): eight exact matched cold requests, 86 artifacts verified; duplicate packing is only 0.024–0.035% of GEMM worker elapsed, candidate declined; monitor paused. |
+| [Local clean-reference quality](2026-10-06-local-clean-reference.md) | [Completed](../reports/2026-10-06-local-clean-reference-results.md): exact models/clean source and same-seed requests verified; useful 1/6 and 5/6, 11 natural stops/one cap; existing errors persist; cross-backend causality limited. |
+| [Hybrid SSM complete answers](2026-10-06-ssm-complete-answers.md) | [Completed results](../reports/2026-10-06-ssm-complete-answer-results.md): mixed-state checks pass, 24 natural answers and 12 identical pairs; time -2.92%/-2.13%, usefulness 2/6 and 5/6; adoption gates fail. |
+| [Channels-major SSM convolution + RVV](2026-10-06-ssm-conv-rvv.md) | [Repaired screen completed](../reports/2026-10-06-ssm-conv-repaired-results.md): four arms pass 432 cases each; large 32-token graph gains but single-token regression rejects unconditional use; model checks/timing skipped, no adoption. |
 | [Measured memory/inference roofline](2026-10-05-k1-roofline.md) | Completed: approximately 7 GB/s, 24 matching requests, routing gains confirmed; [results](../reports/2026-10-06-k1-roofline-results.md); no hardware-limit claim |
 | [Original wide RVV](2026-09-26-wide-rvv-fa.md) | Superseded: its 128-byte-vector dispatcher did not activate on K1 |
 | [256-bit RVV](2026-09-26-wide-rvv-vlen256.md) | Built, measured and integrated; optional patch 0009, enabled with `SPINE_FA_WIDE_TILE=1` for tested F16 KV |

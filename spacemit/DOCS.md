@@ -1,6 +1,6 @@
 # Current documentation guide
 
-Last status check: 2026-10-06 Asia/Singapore.
+Last status check: 2026-10-07 Asia/Singapore.
 This is a dated snapshot. Read a run's `phase`, logs, and final exit status
 for live progress. A queued experiment is not a measured optimization.
 
@@ -10,11 +10,17 @@ for live progress. A queued experiment is not a measured optimization.
 | --- | --- |
 | Report to submit | [Submission report](reports/SUBMISSION-REPORT.md) |
 | Claim-to-artifact map and verification commands | [Submission evidence appendix](reports/SUBMISSION-EVIDENCE.md) |
-| Apply patches, build, prepare models, run inference | [Integration guide](README.md) |
+| Current pinned source package and baseline/optimized launchers | [Infrastructure release](release/README.md); [fresh build and complete-code checks passed](reports/2026-10-07-release-verification.md) |
+| Fixed K32 M1 specialization | [Completed negative screen](reports/2026-10-07-ime-m1-k32-results.md): exact graph/full-output checks pass; 144 operator samples fail advancement; candidate disabled |
+| Earlier patch stack and model preparation | [Integration guide](README.md) |
 | Ask follow-up questions over a local document | [Cached-document workflow](serve/README.md) |
 | Run and collect benchmarks | [Benchmark commands](bench/README.md) |
 | Current RAM bandwidth and direct-inference references | [Measured roofline results](reports/2026-10-06-k1-roofline-results.md): approximately 7 GB/s, 24 matching direct requests; no hardware-limit claim |
-| Next infrastructure candidates and small test gates | [October 6 source audit](reports/2026-10-06-next-infrastructure-methods.md): convolution layout, shared activation packing and decode attribution; unmeasured |
+| Next infrastructure candidates and small test gates | [October 6 source audit](reports/2026-10-06-next-infrastructure-methods.md), with later convolution and decode diagnostics; M1 kernel and worker-barrier candidates remain unqualified |
+| Sustained decode and duplicate FFN activation packing | [October 7 measured results](reports/2026-10-07-decode-packing-results.md): eight exact matched requests, 104 native cases per arm; duplicate packing 0.024–0.035% of GEMM worker elapsed, shared packing declined; calling-thread sync is not removable wall time, monitor paused |
+| Local clean-reference model quality | [Completed results](reports/2026-10-06-local-clean-reference-results.md): exact GGUFs and clean source verified, same seed/prompts; 11 natural answers plus one cap; useful 1/6 and 5/6 versus board 2/6 and 5/6; existing failures persist, monitor paused |
+| Hybrid SSM complete useful answers | [Completed results](reports/2026-10-06-ssm-complete-answer-results.md): exact graph/state checks pass; 24 natural answers, 12 identical pairs; total time -2.92%/-2.13%, usefulness 2/6 and 5/6 unchanged; adoption gates fail, monitor paused |
+| Channels-major convolution/RVV candidate | [Repaired screen completed](reports/2026-10-06-ssm-conv-repaired-results.md): four arms pass 432 cases each; RVV 32-token graph time falls 73.72%/78.93%, single-token time rises 69.00%/85.10%; operator gate rejects unconditional use, model timing skipped, monitor paused |
 | Verified measurements through 16k, plus 2B 32k feasibility | [Resumed measurements](reports/2026-09-27-resumed-measures.md) |
 | Matrix verification and corrected small-effect intervals | [Local analysis](reports/2026-09-28-local-verification.md) |
 | Complete-answer quality protocol and completed matrix | [Chat quality benchmark](reports/2026-09-30-chat-quality-benchmark.md) |
@@ -32,9 +38,9 @@ for live progress. A queued experiment is not a measured optimization.
 
 ## Implemented and measured
 
-- The integrated board source uses `a990751` plus the wide RVV changes.
-  The packaged helper starts from official-fork `5ad05d8`; these are different
-  source states. Follow the integration guide when rebuilding from scratch.
+- The current release pins official-fork `a990751` and exactly reproduces the
+  measured RVV attention/routing source. The earlier `apply-patches.sh` helper
+  targets `5ad05d8`; keep these packages in separate source checkouts.
 - The 256-bit RVV F16 attention path is integrated and opt-in through
   `SPINE_FA_WIDE_TILE=1`. Matched 2k/8k comparisons exist for both models;
   12k/16k comparisons have one pair per model. The optimized 2B 32k run is
@@ -55,6 +61,8 @@ for live progress. A queued experiment is not a measured optimization.
 
 | Work | State | Evidence boundary |
 | --- | --- | --- |
+| Fresh release, `k1-release-check-20261007-125712` | Completed in 57.01 minutes; 35 artifacts verified | Clean pinned build, 104 exact native cases per arm and four naturally complete code answers; each passes 106 held-out checks. Single-pair descriptive timings only; routing stays opt-in. |
+| Fixed K32 M1, `k1-ime-m1-k32-20261007-121231` | Completed negative screen; 211 artifacts verified | 480 raw cases, 104 production cases per arm and six actual FFN/full-output shapes per arm pass exact identity. All 144 operator samples fail advancement; model and useful-answer stages skipped. |
 | Chat quality, `document-quality-20260930-full-v2` | Completed: 24/24 pairs verified and judged | 2B/4k requires review because one question scores 2/5 in both arms. Three descriptive pilot passes; no full-matrix pass. |
 | Compact layout, `k1-layout-20260930-153134` | Completed: 235 numerical cases/layout and 24 model requests pass | Q32 2k TTFT reductions: 0.89% on 2B, 1.98% on 4B. Small pilot effects; no adoption or 8k claim. |
 | Fast method, `k1-fast-20261001-224957` | Completed in 8.45 minutes; inconclusive | 241 concurrent cases/layout passed; 216 operator records; Q16/Q32 model gains 0.32%/0.53%, below threshold. Longer stages skipped. |
@@ -83,7 +91,13 @@ its scores supplement facts/citations and completion checks. One- or 32-token
 speed requests cannot establish answer quality. Length-capped answers cannot
 pass the complete-answer quality gate.
 
-## Next work
+## Release decisions and optional follow-up
+
+The current package contains the measured RVV attention and opt-in GEMM routing.
+Unsuccessful candidates stay disabled. ARM/x86 comparison is outside this
+release's requirements; the earlier clean-reference run remains a model-quality
+diagnostic. The ideas below are optional new experiments, rather than missing
+steps for this release.
 
 The attention infrastructure screen did not qualify direct V or larger QK
 grouping; retain their original paths. The completed GEMM routing test qualified
@@ -104,6 +118,11 @@ verification before claiming hardware TCM use.
 4. Shared K packing across query heads, a Q4_0/RVV LUT prototype and isolated
    compiler comparisons remain unused leads. Attention attribution is available
    in the October 3 research; operator gains must pass model gates.
+5. The decode audit declines shared FFN packing, and the fixed K32 M1 screen
+   finds no qualifying gain from inner-branch removal. A separate measured
+   load/dataflow or output-head partitioning pilot, or precise worker-node
+   barrier attribution, remains possible. Calling-thread synchronization CPU
+   share is not a latency-saving estimate.
 
 ## Older documents
 
