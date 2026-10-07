@@ -1,0 +1,218 @@
+ggml/src/ggml-cpu/spacemit/ime.cpp
+1100:             case GGML_OP_GLU:
+1101:                 if (ggml_get_glu_op(op) == GGML_GLU_OP_GEGLU && op->src[0]->type == GGML_TYPE_F32) {
+1102:                     spacemit_kernels::rvv::forward_glu_geglu_f32(params, op);
+1103:                     return true;
+1104:                 }
+1105:                 return false;
+1106:             case GGML_OP_FLASH_ATTN_EXT:
+1107:                 forward_flash_attn_ext_f16(params, op);
+1108:                 return true;
+1109:             case GGML_OP_CONT:
+1110:                 {
+1111:                     const ggml_tensor * src0 = op->src[0];
+1112:                     if (op->type == src0->type && op->nb[0] != src0->nb[0] && op->nb[0] == src0->nb[1] &&
+1113:                         op->ne[3] * op->ne[2] * op->nb[2] == src0->ne[3] * src0->ne[2] * src0->nb[2]) {
+1114:                         spacemit_kernels::rvv::forward_cont_with_permute(params, op);
+1115:                     } else {
+1116:                         ggml_compute_forward_cont(params, op);
+1117:                     }
+1118:                     return true;
+1119:                 }
+1120:             case GGML_OP_CPY:
+1121:                 {
+1122:                     const ggml_tensor * src0 = op->src[0];
+1123:                     if (op->type == src0->type && op->nb[0] == src0->nb[1] && src0->nb[0] != src0->nb[1] &&
+1124:                         ggml_nelements(src0) == ggml_nelements(op)) {
+1125:                         spacemit_kernels::rvv::forward_cpy_with_permute(params, op);
+1126:                     } else {
+1127:                         ggml_compute_forward_cpy(params, op);
+1128:                     }
+1129:                     return true;
+1130:                 }
+1131:             case GGML_OP_REPEAT:
+1132:                 {
+1133:                     const bool rows_equal         = ggml_nrows(op->src[0]) == ggml_nrows(op);
+1134:                     const bool broadcast_or_equal = op->src[0]->ne[0] == 1 || op->src[0]->ne[0] == op->ne[0];
+1135: 
+1136:                     if (rows_equal && broadcast_or_equal) {
+1137:                         switch (op->src[0]->type) {
+1138:                             case GGML_TYPE_F32:
+1139:                                 spacemit_kernels::rvv::forward_repeat_nrows<int32_t>(params, op);
+1140:                                 return true;
+
+ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+311: static inline void rvv_transposed_s32_mn_to_nm(int8_t * dst,
+312:                                                int64_t  n_dst_stride,
+313:                                                int8_t * src,
+314:                                                int64_t  m_src_stride,
+315:                                                int64_t  m,
+316:                                                int64_t  n) {
+317:     int8_t * in  = src;
+318:     int8_t * out = dst;
+319: 
+320:     __asm__ volatile(
+321:         "vsetvli                t0, zero, e32, m1, tu, mu     \n\t"
+322:         "mul                    t3, t0, %[os0]                \n\t"
+323:         "srli                   t2, %[isz0], 3                \n\t"
+324:         "blez                   t2, M1%=                      \n\t"
+325: 
+326:         "LOOP_M8%=:                                           \n\t"
+327:         "addi                   a1, %[dst], 0                 \n\t"
+328:         "addi                   s1, %[src], 0                 \n\t"
+329:         "add                    s2, %[src], %[is0]            \n\t"
+330:         "add                    s3, s2, %[is0]                \n\t"
+331:         "add                    s4, s3, %[is0]                \n\t"
+332:         "add                    s5, s4, %[is0]                \n\t"
+333:         "add                    s6, s5, %[is0]                \n\t"
+334:         "add                    s7, s6, %[is0]                \n\t"
+335:         "add                    s8, s7, %[is0]                \n\t"
+336:         "addi                   t1, %[isz1], 0                \n\t"
+337: 
+338:         "LOOP_M8N%=:                                          \n\t"
+339:         "vsetvli                t0, t1, e32, m1, tu, mu       \n\t"
+340:         "sub                    t1, t1, t0                    \n\t"
+341:         "vle32.v                v0, (s1)                      \n\t"
+342:         "sh2add                 s1, t0, s1                    \n\t"
+343:         "vle32.v                v1, (s2)                      \n\t"
+344:         "sh2add                 s2, t0, s2                    \n\t"
+345:         "vle32.v                v2, (s3)                      \n\t"
+346:         "sh2add                 s3, t0, s3                    \n\t"
+347:         "vle32.v                v3, (s4)                      \n\t"
+348:         "sh2add                 s4, t0, s4                    \n\t"
+349:         "vle32.v                v4, (s5)                      \n\t"
+350:         "sh2add                 s5, t0, s5                    \n\t"
+351:         "vle32.v                v5, (s6)                      \n\t"
+352:         "sh2add                 s6, t0, s6                    \n\t"
+353:         "vle32.v                v6, (s7)                      \n\t"
+354:         "sh2add                 s7, t0, s7                    \n\t"
+355:         "vle32.v                v7, (s8)                      \n\t"
+356:         "sh2add                 s8, t0, s8                    \n\t"
+357:         "vssseg8e32.v           v0, (a1), %[os0]              \n\t"
+358:         "add                    a1, a1, t3                    \n\t"
+359:         "bnez                   t1, LOOP_M8N%=                \n\t"
+360:         "sh3add                 %[src], %[is0], %[src]        \n\t"
+361:         "addi                   %[dst], %[dst], 32            \n\t"
+362:         "addi                   t2, t2, -1                    \n\t"
+363:         "bnez                   t2, LOOP_M8%=                 \n\t"
+364: 
+365:         "M1%=:                                                \n\t"
+366:         "andi                   t2, %[isz0], 7                \n\t"
+367:         "blez                   t2, END%=                     \n\t"
+368: 
+369:         "LOOP_M1%=:                                           \n\t"
+370:         "addi                   a1, %[dst], 0                 \n\t"
+371:         "addi                   s1, %[src], 0                 \n\t"
+372:         "addi                   t1, %[isz1], 0                \n\t"
+373: 
+374:         "LOOP_M1N%=:                                          \n\t"
+375:         "vsetvli                t0, t1, e32, m1, tu, mu       \n\t"
+376:         "sub                    t1, t1, t0                    \n\t"
+377:         "vle32.v                v0, (s1)                      \n\t"
+378:         "sh2add                 s1, t0, s1                    \n\t"
+379:         "vsse32.v               v0, (a1), %[os0]              \n\t"
+380:         "add                    a1, a1, t3                    \n\t"
+381:         "bnez                   t1, LOOP_M1N%=                \n\t"
+382:         "add                    %[src], %[is0], %[src]        \n\t"
+383:         "addi                   %[dst], %[dst], 4             \n\t"
+384:         "addi                   t2, t2, -1                    \n\t"
+385:         "bnez                   t2, LOOP_M1%=                 \n\t"
+386:         "END%=:                                               \n\t"
+387: 
+388:         : [src] "+r"(in), [dst] "+r"(out), [isz0] "+r"(m)
+389:         : [isz1] "r"(n), [is0] "r"(m_src_stride), [os0] "r"(n_dst_stride)
+390:         : "cc", "t0", "t1", "t2", "t3", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "a1");
+391: }
+392: 
+393: static inline void rvv_transposed_s16_mn_to_nm(int8_t * dst,
+394:                                                int64_t  n_dst_stride,
+395:                                                int8_t * src,
+396:                                                int64_t  m_src_stride,
+397:                                                int64_t  m,
+398:                                                int64_t  n) {
+399:     int8_t * in  = src;
+400:     int8_t * out = dst;
+401: 
+402:     __asm__ volatile(
+403:         "vsetvli                t0, zero, e16, m1, tu, mu     \n\t"
+404:         "mul                    t3, t0, %[os0]                \n\t"
+405:         "srli                   t2, %[isz0], 3                \n\t"
+406:         "blez                   t2, M1%=                      \n\t"
+407: 
+408:         "LOOP_M8%=:                                           \n\t"
+409:         "addi                   a1, %[dst], 0                 \n\t"
+410:         "addi                   s1, %[src], 0                 \n\t"
+
+ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+630:     }
+631: }
+632: 
+633: static void permute_transpose_impl(const ggml_tensor * src0,
+634:                                    ggml_tensor *       dst,
+635:                                    int64_t             batch,
+636:                                    int64_t             m,
+637:                                    int64_t             n,
+638:                                    int64_t             batch_stride,
+639:                                    int64_t             m_src_stride,
+640:                                    int64_t             n_src_stride,
+641:                                    int64_t             n_dst_stride,
+642:                                    int                 ith,
+643:                                    int                 nth) {
+644:     GGML_ASSERT(n_src_stride == sizeof(int32_t) || n_src_stride == sizeof(int16_t));
+645: 
+646:     if (n_src_stride == sizeof(int32_t)) {
+647:         for (int64_t bi = ith; bi < batch; bi += nth) {
+648:             rvv_transposed_s32_mn_to_nm((int8_t *) ((char *) dst->data + bi * batch_stride), n_dst_stride,
+649:                                         (int8_t *) ((char *) src0->data + bi * batch_stride), m_src_stride, m, n);
+650:         }
+651:     } else if (n_src_stride == sizeof(int16_t)) {
+652:         for (int64_t bi = ith; bi < batch; bi += nth) {
+653:             rvv_transposed_s32_mn_to_nm((int8_t *) ((char *) dst->data + bi * batch_stride), n_dst_stride,
+654:                                         (int8_t *) ((char *) src0->data + bi * batch_stride), m_src_stride, m, n);
+655:         }
+656:     } else {
+657:         GGML_ABORT("not implemented");
+658:     }
+
+ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+2550:                     __riscv_vse8_v_i8mf2(quant_a_blk + mi * blk_len + bki * 16, v_a_quant_i8, vl);
+2551:                 }
+2552:             }
+2553:         }
+2554:     } else {
+2555:         quantize_a_nrow_i8k_ref<4>(blk_len, a_ptr, count_k, quant_a_ptr);
+2556:     }
+2557: }
+2558: 
+2559: void forward_cpy_with_permute(ggml_compute_params * params, ggml_tensor * op) {
+2560:     const ggml_tensor * src0 = op->src[0];
+2561:     ggml_tensor *       dst  = op;
+2562:     const int           ith  = params->ith;
+2563:     const int           nth  = params->nth;
+2564: 
+2565:     // [batch, m, n] -> [batch, n, m]
+2566:     int64_t batch = src0->ne[2] * src0->ne[3];
+2567:     int64_t m     = src0->ne[1];
+2568:     int64_t n     = src0->ne[0];
+2569: 
+2570:     int64_t batch_stride = src0->nb[2];
+2571:     int64_t m_src_stride = src0->nb[0];
+2572:     int64_t n_src_stride = src0->nb[1];
+2573:     int64_t n_dst_stride = n_src_stride * m;
+2574: 
+2575:     permute_transpose_impl(src0, dst, batch, m, n, batch_stride, m_src_stride, n_src_stride, n_dst_stride, ith, nth);
+2576: }
+2577: 
+2578: void forward_cont_with_permute(ggml_compute_params * params, ggml_tensor * op) {
+2579:     const ggml_tensor * src0 = op->src[0];
+2580:     ggml_tensor *       dst  = op;
+2581:     const int           ith  = params->ith;
+2582:     const int           nth  = params->nth;
+2583: 
+2584:     // [batch, m, n] -> [batch, n, m]
+2585:     int64_t batch = dst->ne[2] * dst->ne[3];
+2586:     int64_t n     = dst->ne[1];
+2587:     int64_t m     = dst->ne[0];
+2588: 
+2589:     int64_t batch_stride = dst->nb[2];
+2590:     int64_t m_src_stride = src0->nb[0];

@@ -1,0 +1,30 @@
+{
+  "compile": [
+    "/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/bin/g++-14",
+    "-O3",
+    "-std=c++17",
+    "-march=rv64gcv_zfh_zvfh_zicbop_zihintpause_zba",
+    "-mabi=lp64d",
+    "-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006",
+    "-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/include",
+    "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/test-k1-ssm-conv.cpp",
+    "-L/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/lib",
+    "-L/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin",
+    "-lggml-cpu",
+    "-lggml-base",
+    "-pthread",
+    "-o",
+    "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm"
+  ],
+  "runtime": {
+    "LD_LIBRARY_PATH": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/lib:/home/moyamryia/Projects/llm-bench/.toolchain/spine-tcm:/home/moyamryia/Projects/spacemit-llama/spert/spine-runtime.riscv64.0.6.2/lib:/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin",
+    "SPINE_FA_WIDE_TILE": "1",
+    "SPINE_FA_K1_LAYOUT": "0",
+    "SPINE_K1_GEMM_ROUTE": "3"
+  },
+  "libraries_verified": {
+    "libllama.so.0.0.7": "d8bfc3674e0750f0c874ca83c540b1b5d74f123da5789269a898216dfbc6b13f",
+    "libggml-cpu.so.0.16.0": "516b95cc2120279e49ebcae56c0fb67824d7bccdc0490c0e144a52cde76ccbc1"
+  },
+  "failure_exit": 1
+}

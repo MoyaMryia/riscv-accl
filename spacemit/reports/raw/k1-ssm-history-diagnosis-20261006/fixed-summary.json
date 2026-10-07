@@ -1,0 +1,137 @@
+{
+  "status": "passed",
+  "compile": [
+    "/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/bin/g++-14",
+    "-O3",
+    "-std=c++17",
+    "-march=rv64gcv_zfh_zvfh_zicbop_zihintpause_zba",
+    "-mabi=lp64d",
+    "-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006",
+    "-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/include",
+    "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/test-k1-ssm-conv-fixed.cpp",
+    "-L/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/lib",
+    "-L/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin",
+    "-lggml-cpu",
+    "-lggml-base",
+    "-pthread",
+    "-o",
+    "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed"
+  ],
+  "runtime": {
+    "LD_LIBRARY_PATH": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/lib:/home/moyamryia/Projects/llm-bench/.toolchain/spine-tcm:/home/moyamryia/Projects/spacemit-llama/spert/spine-runtime.riscv64.0.6.2/lib:/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin",
+    "SPINE_FA_WIDE_TILE": "1",
+    "SPINE_FA_K1_LAYOUT": "0",
+    "SPINE_K1_GEMM_ROUTE": "3"
+  },
+  "libraries_verified": {
+    "libllama.so.0.0.7": "d8bfc3674e0750f0c874ca83c540b1b5d74f123da5789269a898216dfbc6b13f",
+    "libggml-cpu.so.0.16.0": "516b95cc2120279e49ebcae56c0fb67824d7bccdc0490c0e144a52cde76ccbc1"
+  },
+  "cases_per_arm": 432,
+  "executions_per_case": 2,
+  "checks": [
+    {
+      "label": "legacy-minimal",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "--case",
+        "1",
+        "7",
+        "3",
+        "1",
+        "1",
+        "0"
+      ],
+      "legacy_copy": true,
+      "exit_status": 1
+    },
+    {
+      "label": "fixed-minimal-0",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "--case",
+        "0",
+        "7",
+        "3",
+        "1",
+        "1",
+        "0"
+      ],
+      "legacy_copy": false,
+      "exit_status": 0
+    },
+    {
+      "label": "fixed-matrix-0",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "0",
+        "--dump",
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/fixed-0.bin"
+      ],
+      "legacy_copy": false,
+      "exit_status": 0
+    },
+    {
+      "label": "fixed-minimal-1",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "--case",
+        "1",
+        "7",
+        "3",
+        "1",
+        "1",
+        "0"
+      ],
+      "legacy_copy": false,
+      "exit_status": 0
+    },
+    {
+      "label": "fixed-matrix-1",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "1",
+        "--dump",
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/fixed-1.bin"
+      ],
+      "legacy_copy": false,
+      "exit_status": 0
+    },
+    {
+      "label": "fixed-minimal-2",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "--case",
+        "2",
+        "7",
+        "3",
+        "1",
+        "1",
+        "0"
+      ],
+      "legacy_copy": false,
+      "exit_status": 0
+    },
+    {
+      "label": "fixed-matrix-2",
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/diagnose-ssm-fixed",
+        "2",
+        "--dump",
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-history-diagnosis-20261006/fixed-2.bin"
+      ],
+      "legacy_copy": false,
+      "exit_status": 0
+    }
+  ],
+  "dump_sha256": {
+    "0": "7e154f0a52c2475581a62a64f549a17c7d342d46c55dae7adf05d09c05001c69",
+    "1": "7e154f0a52c2475581a62a64f549a17c7d342d46c55dae7adf05d09c05001c69",
+    "2": "7e154f0a52c2475581a62a64f549a17c7d342d46c55dae7adf05d09c05001c69"
+  },
+  "source_sha256": {
+    "test-k1-ssm-conv-fixed.cpp": "57d0c4c3b6dab096b724352131a196a794af5d4fda03e06c5ea2acff656e30b5",
+    "spine-k1-ssm-conv.h": "731bfe010efb1dad580aab5e3efa999768c96e91af0d21a1758fc1df53ec3368",
+    "run-diagnosis.py": "b8966c4c970d402bbfe0cf162f917244fcc45f95be64524140c3feaa11a6c649"
+  }
+}

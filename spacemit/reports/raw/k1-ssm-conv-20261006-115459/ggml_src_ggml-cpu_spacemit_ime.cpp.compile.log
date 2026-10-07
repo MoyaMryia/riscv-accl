@@ -1,0 +1,533 @@
+In file included from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:13:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: warning: use of ‘std::hardware_destructive_interference_size’ [-Winterference-size]
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: its value can vary between compiler versions or with different ‘-mtune’ or ‘-mcpu’ flags
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: if this use is part of a public ABI, change it to instead use a constant variable you define
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: the default value for the current CPU tuning is 32 bytes
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:10:30: note: you can stabilize this value with ‘--param hardware_destructive_interference_size=32’, or disable this warning with ‘-Wno-interference-size’
+   10 | #define CACHE_LINE_SIZE std::hardware_destructive_interference_size
+      |                         ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/ops.h:21:43: note: in expansion of macro ‘CACHE_LINE_SIZE’
+   21 | static const size_t CACHE_LINE_SIZE_F32 = CACHE_LINE_SIZE/sizeof(float);
+      |                                           ^~~~~~~~~~~~~~~
+In file included from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:19:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/vec.h: In function ‘void ggml_vec_mad_f16(int, ggml_fp16_t*, const ggml_fp16_t*, float)’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/vec.h:520:33: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+  520 |         const _Float16 scale = *(const _Float16*)(&s);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/vec.h: In function ‘void ggml_vec_scale_f16(int, ggml_fp16_t*, float)’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/ggml-cpu/vec.h:800:33: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+  800 |         const _Float16 scale = *(const _Float16*)(&s);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q5_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_mxfp4; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_mxfp4; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_mxfp4; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_mxfp4; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q8_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q6_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q6_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q6_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q6_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q3_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q3_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q3_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q3_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q2_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q2_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q2_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q2_K; long int INTER_SIZE = 256; long int NB_COLS = 32]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_K; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_1; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:203:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  203 |                         forward_mul_mat(params, op);
+      |                         ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:340:39: warning: comparison of integer expressions of different signedness: ‘size_t’ {aka ‘long unsigned int’} and ‘const int64_t’ {aka ‘const long int’} [-Wsign-compare]
+  340 |         if (ith == 0 && params->wsize < gemm_workspace_size) {
+      |                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp: In instantiation of ‘void ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::forward_mul_mat_id(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’:
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:222:25:   required from ‘bool ggml::cpu::riscv64_spacemit::tensor_traits<BLOC_TYPE, INTER_SIZE, NB_COLS>::compute_forward(ggml_compute_params*, ggml_tensor*) [with BLOC_TYPE = block_q4_0; long int INTER_SIZE = 32; long int NB_COLS = 16]’
+  222 |                         forward_mul_mat_id(params, op);
+      |                         ^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:189:10:   required from here
+  189 |     bool compute_forward(ggml_compute_params * params, ggml_tensor * op) override {
+      |          ^~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:721:39: warning: comparison of integer expressions of different signedness: ‘int64_t’ {aka ‘long int’} and ‘long unsigned int’ [-Wsign-compare]
+  721 |             for (int64_t ii = ith; ii < ne12 * a_k_blks; ii += nth) {
+      |                                    ~~~^~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:804:60: warning: comparison of integer expressions of different signedness: ‘const size_t’ {aka ‘const long unsigned int’} and ‘long int’ [-Wsign-compare]
+  804 |             valid_act_count_t == n_as && per_nb_cols_wsize <= tcm_buffer_size) {
+      |                                          ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:824:48: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  824 |                 if ((nbw1 + per_nb_cols_wsize) <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-115459/candidate/ggml/src/ggml-cpu/spacemit/ime.cpp:896:68: warning: comparison of integer expressions of different signedness: ‘long unsigned int’ and ‘long int’ [-Wsign-compare]
+  896 |                     (src0_cur_end - src0_cur_start) * row_stride_b <= tcm_buffer_size) {
+      |                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~

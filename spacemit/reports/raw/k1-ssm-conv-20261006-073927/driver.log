@@ -1,0 +1,18 @@
+verify and build isolated convolution libraries
+convolution graph correctness
+failed
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/k1-ssm-conv.py", line 226, in <module>
+    signal.signal(signal.SIGTERM,interrupted); Run(args.root.resolve()).run()
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/k1-ssm-conv.py", line 206, in run
+    self.prepare(); mode=self.native()
+                         ^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/k1-ssm-conv.py", line 130, in native
+    self.command([self.root/'test-ssm',max(mode,0),'--dump',dump],label+'.log',600,self.arm_env(max(mode,0),mode==-1))
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/k1-ime-test.py", line 106, in command
+    if cwd is None: return fast.command(argv,self.root/log,timeout,env)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/k1-fast-test.py", line 118, in command
+    raise subprocess.CalledProcessError(status, argv)
+subprocess.CalledProcessError: Command '[PosixPath('/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/test-ssm'), 1, '--dump', PosixPath('/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073927/numeric-1.bin')]' returned non-zero exit status 1.

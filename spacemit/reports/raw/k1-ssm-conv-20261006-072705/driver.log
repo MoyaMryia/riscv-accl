@@ -1,0 +1,16 @@
+verify and build isolated convolution libraries
+failed
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705/k1-ssm-conv.py", line 226, in <module>
+    signal.signal(signal.SIGTERM,interrupted); Run(args.root.resolve()).run()
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705/k1-ssm-conv.py", line 206, in run
+    self.prepare(); mode=self.native()
+    ^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705/k1-ssm-conv.py", line 91, in prepare
+    self.command(argv,obj.stem+'.compile.log',600,cwd=self.build)
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705/k1-ime-test.py", line 109, in command
+    subprocess.run(list(map(str,argv)),stdout=output,stderr=subprocess.STDOUT,
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/bin/g++-14', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/src/models', '-DGGML_BACKEND_SHARED', '-DGGML_SHARED', '-DGGML_USE_CPU', '-DLLAMA_BUILD', '-DLLAMA_SHARED', '-Dllama_EXPORTS', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/src/.', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/src/../include', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/../include', '-O3', '-DNDEBUG', '-fPIC', '-Wmissing-declarations', '-Wmissing-noreturn', '-Wall', '-Wextra', '-Wpedantic', '-Wcast-qual', '-Wno-unused-function', '-Wno-array-bounds', '-Wextra-semi', '-o', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705/src_models_delta-net-base.cpp.o', '-c', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-072705/candidate/src/models/delta-net-base.cpp']' returned non-zero exit status 1.

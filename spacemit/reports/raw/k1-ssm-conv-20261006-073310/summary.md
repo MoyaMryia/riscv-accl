@@ -1,0 +1,7 @@
+# K1 channels-major SSM convolution screen
+
+Status: failed
+
+Warm graph operator screen followed by cold ABBA capped timing. Same route 3, precision and full prompts. No useful-answer, GPU or RS-rollback qualification; default unchanged.
+
+CalledProcessError: Command '['/home/moyamryia/Projects/llm-bench/.toolchain/gcc14/usr/bin/g++-14', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073310', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/src/models', '-DGGML_BACKEND_SHARED', '-DGGML_SHARED', '-DGGML_USE_CPU', '-DLLAMA_BUILD', '-DLLAMA_SHARED', '-Dllama_EXPORTS', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/src/.', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/src/../include', '-I/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/ggml/src/../include', '-O3', '-DNDEBUG', '-fPIC', '-Wmissing-declarations', '-Wmissing-noreturn', '-Wall', '-Wextra', '-Wpedantic', '-Wcast-qual', '-Wno-unused-function', '-Wno-array-bounds', '-Wextra-semi', '-o', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073310/src_models_qwen35.cpp.o', '-c', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-ssm-conv-20261006-073310/candidate/src/models/qwen35.cpp']' returned non-zero exit status 1.
