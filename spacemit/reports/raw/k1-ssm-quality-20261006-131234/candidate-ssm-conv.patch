@@ -1,0 +1,85 @@
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -9552,6 +9552,8 @@
+     }
+ }
+ 
++#include "spine-k1-ssm-kernel.h"
++
+ // ggml_compute_forward_ssm_conv
+ 
+ static void ggml_compute_forward_ssm_conv_f32(
+@@ -9610,6 +9612,10 @@
+ void ggml_compute_forward_ssm_conv(
+         const ggml_compute_params * params,
+         ggml_tensor * dst) {
++    if (dst->op_params[0] == 1 || dst->op_params[0] == 2) {
++        spine_k1_ssm_conv_cpu(params, dst);
++        return;
++    }
+     switch (dst->src[0]->type) {
+         case GGML_TYPE_F32:
+             {
+--- a/src/models/delta-net-base.cpp
++++ b/src/models/delta-net-base.cpp
+@@ -1,4 +1,5 @@
+ #include "models.h"
++#include "spine-k1-ssm-conv.h"
+ 
+ #include "llama-impl.h"
+ #include "llama-memory-recurrent.h"
+@@ -482,6 +483,28 @@
+     conv_states = ggml_reshape_3d(ctx0, conv_states, conv_kernel_size - 1, conv_channels, n_seqs);
+     cb(conv_states, "conv_states_reshaped", il);
+ 
++    // CPU-only dense Qwen3.5, RS=0. Persistent state stays time-major.
++    // Other architectures/backends and rollback configurations retain reference.
++    if (arch == LLM_ARCH_QWEN35 && spine_k1_ssm_cpu_only(sched) &&
++            cparams.n_rs_seq == 0 && spine_k1_ssm_conv_mode_for_tokens(qkv_mixed->ne[1]) != 0) {
++        ggml_tensor * history = ggml_cont(ctx0, ggml_transpose(ctx0, conv_states));
++        ggml_tensor * input = ggml_concat(ctx0, history, qkv_mixed, 1);
++        cb(input, "conv_input_channels_major", il);
++        const int64_t row_count = (conv_kernel_size - 1) * conv_channels;
++        const size_t row_size = ggml_row_size(conv_states_all->type, row_count);
++        const int64_t start = input->ne[1] - (conv_kernel_size - 1);
++        ggml_tensor * tail = ggml_view_3d(ctx0, input,
++            conv_channels, conv_kernel_size - 1, n_seqs,
++            input->nb[1], input->nb[2], start*input->nb[1]);
++        ggml_tensor * update = ggml_view_2d(ctx0, conv_states_all,
++            row_count, n_seqs, conv_states_all->nb[1], kv_head*row_size);
++        // The fork's CPY transpose fast path assumes incompatible dimensions
++        // and equal batch strides. CONT respects this cropped history view;
++        // the subsequent cache copy reads a contiguous time-major tensor.
++        ggml_tensor * tail_time_major = ggml_cont(ctx0, ggml_transpose(ctx0, tail));
++        ggml_build_forward_expand(gf, ggml_cpy(ctx0, tail_time_major, update));
++        return input;
++    }
+     qkv_mixed = ggml_transpose(ctx0, qkv_mixed);
+     cb(qkv_mixed, "qkv_mixed_transposed", il);
+ 
+--- a/src/models/qwen35.cpp
++++ b/src/models/qwen35.cpp
+@@ -1,4 +1,5 @@
+ #include "models.h"
++#include "spine-k1-ssm-conv.h"
+ #include "llama-memory-recurrent.h"
+ 
+ void llama_model_qwen35::load_arch_hparams(llama_model_loader & ml) {
+@@ -428,7 +429,16 @@
+     }
+     cb(state, "state_predelta", il);
+ 
+-    ggml_tensor * conv_output_proper = ggml_ssm_conv(ctx0, conv_input, conv_kernel);
++    const int conv_mode = spine_k1_ssm_cpu_only(sched) && cparams.n_rs_seq == 0
++        ? spine_k1_ssm_conv_mode_for_tokens(n_seq_tokens) : 0;
++    ggml_tensor * conv_output_proper = conv_mode
++        ? spine_k1_ssm_conv_channels_major(ctx0, conv_input, conv_kernel, conv_mode)
++        : ggml_ssm_conv(ctx0, conv_input, conv_kernel);
++    if (il == 0) {
++        fprintf(stderr, "K1_SSM_CONV mode=%d layout=%s rs=%u cpu_only=%d tokens=%lld requested=%d\n", conv_mode,
++            conv_mode ? "channels" : "time", cparams.n_rs_seq, spine_k1_ssm_cpu_only(sched),
++            (long long) n_seq_tokens, spine_k1_ssm_conv_mode());
++    }
+     cb(conv_output_proper, "conv_output_raw", il);
+ 
+     ggml_tensor * conv_output_silu = ggml_silu(ctx0, conv_output_proper);
