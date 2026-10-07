@@ -1,0 +1,410 @@
+{
+  "2B": {
+    "bitwise_text_equal": true,
+    "natural_answers": 2,
+    "held_out_checks_per_answer": 106,
+    "same_as_prior_control": true,
+    "baseline": {
+      "answer": "def encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    \n    Parameters:\n    text (str): Input string to encode.\n    \n    Returns:\n    list of tuples: Each tuple contains a single character and its consecutive count.\n    Empty string returns an empty list.\n    \n    Raises:\n    ValueError: If the input is not a string or contains invalid characters.\n    \"\"\"\n    if not isinstance(text, str):\n        raise ValueError(\"Input must be a string.\")\n    \n    if not text:\n        return []\n    \n    result = []\n    current_char = None\n    current_count = 0\n    \n    for char in text:\n        if char == current_char:\n            current_count += 1\n        else:\n            if current_char is not None:\n                result.append((current_char, current_count))\n            current_char = char\n            current_count = 1\n    \n    if current_char is not None:\n        result.append((current_char, current_count))\n    \n    return result\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into a string.\n    \n    Parameters:\n    runs (list): List of (character, count) tuples.\n    \n    Returns:\n    str: The decoded string.\n    \n    Raises:\n    ValueError: If any item in the list is malformed.\n    \"\"\"\n    if not isinstance(runs, list):\n        raise ValueError(\"Input must be a list.\")\n    \n    if len(runs) == 0:\n        return \"\"\n    \n    result = []\n    for item in runs:\n        if not isinstance(item, (list, tuple)):\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        if len(item) != 2:\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        char, count = item\n        \n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:\n            raise ValueError(\"Count must be a positive int.\")\n        \n        result.append(char * count)\n    \n    return \"\".join(result)",
+      "ttft_s": 7.511,
+      "wall_s": 146.565,
+      "finish_reason": "stop",
+      "answer_sha256": "78452b26413a09aa0627ec509f4a999de25036b6eac78eff986b969e7bf276df",
+      "usage": {
+        "completion_tokens": 508,
+        "prompt_tokens": 162,
+        "total_tokens": 670,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 162,
+        "prompt_ms": 7344.285,
+        "prompt_per_token_ms": 45.335092592592595,
+        "prompt_per_second": 22.057967521685228,
+        "predicted_n": 508,
+        "predicted_ms": 139052.349,
+        "predicted_per_token_ms": 273.7250964566929,
+        "predicted_per_second": 3.6533003840158074
+      },
+      "server_slot": 0,
+      "reasoning_text": "",
+      "request": {
+        "model": "local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Implement the requested Python functions. Give code directly without reasoning tags. Use Python builtins only and no imports or classes."
+          },
+          {
+            "role": "user",
+            "content": "Return only Python source, without imports, classes, tests, or explanatory text. Implement encode_runs(text) and decode_runs(runs). encode_runs returns a list of (character,count) tuples for consecutive runs of Unicode characters; empty text returns []. decode_runs returns the original string and rejects malformed items with ValueError: every item must be a two-element list or tuple, character must be a one-character string, and count must be a positive int, excluding bool. Empty runs returns an empty string. Do not mutate inputs. Use Python builtins only. Include useful docstrings and clear handling of edge cases."
+          }
+        ],
+        "cache_prompt": false,
+        "id_slot": 0,
+        "stream": true,
+        "temperature": 0,
+        "seed": 42,
+        "max_tokens": 2048,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "stream_options": {
+          "include_usage": true
+        },
+        "verbose": true
+      },
+      "prompt_tokens": 162,
+      "audit": {
+        "natural_stop": true,
+        "cold": true,
+        "full_input": true,
+        "complete_output": true,
+        "correct_slot": true,
+        "no_draft": true,
+        "no_thinking": true
+      },
+      "code_test": {
+        "pass": true,
+        "checks": 106,
+        "restriction": "builtin-only functions, AST checks and resource limits"
+      },
+      "server_command": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-release-check-20261007-125712/build/bin/llama-server",
+        "-m",
+        "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+        "--alias",
+        "local",
+        "-t",
+        "4",
+        "-c",
+        "6144",
+        "--parallel",
+        "1",
+        "-b",
+        "32",
+        "-ub",
+        "32",
+        "-fa",
+        "on",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16",
+        "-ngl",
+        "0",
+        "--no-context-shift",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18092"
+      ]
+    },
+    "optimized": {
+      "answer": "def encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    \n    Parameters:\n    text (str): Input string to encode.\n    \n    Returns:\n    list of tuples: Each tuple contains a single character and its consecutive count.\n    Empty string returns an empty list.\n    \n    Raises:\n    ValueError: If the input is not a string or contains invalid characters.\n    \"\"\"\n    if not isinstance(text, str):\n        raise ValueError(\"Input must be a string.\")\n    \n    if not text:\n        return []\n    \n    result = []\n    current_char = None\n    current_count = 0\n    \n    for char in text:\n        if char == current_char:\n            current_count += 1\n        else:\n            if current_char is not None:\n                result.append((current_char, current_count))\n            current_char = char\n            current_count = 1\n    \n    if current_char is not None:\n        result.append((current_char, current_count))\n    \n    return result\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into a string.\n    \n    Parameters:\n    runs (list): List of (character, count) tuples.\n    \n    Returns:\n    str: The decoded string.\n    \n    Raises:\n    ValueError: If any item in the list is malformed.\n    \"\"\"\n    if not isinstance(runs, list):\n        raise ValueError(\"Input must be a list.\")\n    \n    if len(runs) == 0:\n        return \"\"\n    \n    result = []\n    for item in runs:\n        if not isinstance(item, (list, tuple)):\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        if len(item) != 2:\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        char, count = item\n        \n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:\n            raise ValueError(\"Count must be a positive int.\")\n        \n        result.append(char * count)\n    \n    return \"\".join(result)",
+      "ttft_s": 6.926,
+      "wall_s": 124.634,
+      "finish_reason": "stop",
+      "answer_sha256": "78452b26413a09aa0627ec509f4a999de25036b6eac78eff986b969e7bf276df",
+      "usage": {
+        "completion_tokens": 508,
+        "prompt_tokens": 162,
+        "total_tokens": 670,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 162,
+        "prompt_ms": 6764.925,
+        "prompt_per_token_ms": 41.758796296296296,
+        "prompt_per_second": 23.947050410758433,
+        "predicted_n": 508,
+        "predicted_ms": 117706.09,
+        "predicted_per_token_ms": 231.70490157480313,
+        "predicted_per_second": 4.315834465319509
+      },
+      "server_slot": 0,
+      "reasoning_text": "",
+      "request": {
+        "model": "local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Implement the requested Python functions. Give code directly without reasoning tags. Use Python builtins only and no imports or classes."
+          },
+          {
+            "role": "user",
+            "content": "Return only Python source, without imports, classes, tests, or explanatory text. Implement encode_runs(text) and decode_runs(runs). encode_runs returns a list of (character,count) tuples for consecutive runs of Unicode characters; empty text returns []. decode_runs returns the original string and rejects malformed items with ValueError: every item must be a two-element list or tuple, character must be a one-character string, and count must be a positive int, excluding bool. Empty runs returns an empty string. Do not mutate inputs. Use Python builtins only. Include useful docstrings and clear handling of edge cases."
+          }
+        ],
+        "cache_prompt": false,
+        "id_slot": 0,
+        "stream": true,
+        "temperature": 0,
+        "seed": 42,
+        "max_tokens": 2048,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "stream_options": {
+          "include_usage": true
+        },
+        "verbose": true
+      },
+      "prompt_tokens": 162,
+      "audit": {
+        "natural_stop": true,
+        "cold": true,
+        "full_input": true,
+        "complete_output": true,
+        "correct_slot": true,
+        "no_draft": true,
+        "no_thinking": true
+      },
+      "code_test": {
+        "pass": true,
+        "checks": 106,
+        "restriction": "builtin-only functions, AST checks and resource limits"
+      },
+      "server_command": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-release-check-20261007-125712/build/bin/llama-server",
+        "-m",
+        "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+        "--alias",
+        "local",
+        "-t",
+        "4",
+        "-c",
+        "6144",
+        "--parallel",
+        "1",
+        "-b",
+        "32",
+        "-ub",
+        "32",
+        "-fa",
+        "on",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16",
+        "-ngl",
+        "0",
+        "--no-context-shift",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18092"
+      ]
+    }
+  },
+  "4B": {
+    "bitwise_text_equal": true,
+    "natural_answers": 2,
+    "held_out_checks_per_answer": 106,
+    "same_as_prior_control": true,
+    "baseline": {
+      "answer": "def encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    \n    Args:\n        text (str): The input string to encode.\n        \n    Returns:\n        List[tuple]: A list of tuples where each tuple contains a character and its run count.\n                     Returns an empty list for empty input.\n    \"\"\"\n    if not text:\n        return []\n    \n    result = []\n    current_char = text[0]\n    count = 1\n    \n    for char in text[1:]:\n        if char == current_char:\n            count += 1\n        else:\n            result.append((current_char, count))\n            current_char = char\n            count = 1\n    \n    result.append((current_char, count))\n    return result\n\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into the original string.\n    \n    Args:\n        runs (list): A list of tuples where each tuple contains a character and its run count.\n                     Each character must be a one-character string, and count must be a positive int.\n                     Returns an empty string for empty input.\n                     \n    Returns:\n        str: The reconstructed string.\n        \n    Raises:\n        ValueError: If any item is not a two-element list/tuple, character is not a one-char string,\n                   or count is not a positive int (excluding bool).\n    \"\"\"\n    if not runs:\n        return \"\"\n    \n    result = []\n    \n    for item in runs:\n        # Check if item is a list or tuple with exactly 2 elements\n        if not isinstance(item, (list, tuple)) or len(item) != 2:\n            raise ValueError(\"Each item must be a two-element list or tuple.\")\n        \n        char, count = item[0], item[1]\n        \n        # Check if character is a one-character string\n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        # Check if count is a positive int (excluding bool)\n        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:\n            raise ValueError(\"Count must be a positive int, excluding bool.\")\n        \n        result.append(char * count)\n    \n    return ''.join(result)",
+      "ttft_s": 18.984,
+      "wall_s": 380.611,
+      "finish_reason": "stop",
+      "answer_sha256": "ca5846d8abbae58588847578fddde235d093991bf143cce8320279fdeffae7d8",
+      "usage": {
+        "completion_tokens": 521,
+        "prompt_tokens": 162,
+        "total_tokens": 683,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 162,
+        "prompt_ms": 18828.49,
+        "prompt_per_token_ms": 116.22524691358025,
+        "prompt_per_second": 8.603982581715261,
+        "predicted_n": 521,
+        "predicted_ms": 361625.697,
+        "predicted_per_token_ms": 694.099226487524,
+        "predicted_per_second": 1.4407161999884095
+      },
+      "server_slot": 0,
+      "reasoning_text": "",
+      "request": {
+        "model": "local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Implement the requested Python functions. Give code directly without reasoning tags. Use Python builtins only and no imports or classes."
+          },
+          {
+            "role": "user",
+            "content": "Return only Python source, without imports, classes, tests, or explanatory text. Implement encode_runs(text) and decode_runs(runs). encode_runs returns a list of (character,count) tuples for consecutive runs of Unicode characters; empty text returns []. decode_runs returns the original string and rejects malformed items with ValueError: every item must be a two-element list or tuple, character must be a one-character string, and count must be a positive int, excluding bool. Empty runs returns an empty string. Do not mutate inputs. Use Python builtins only. Include useful docstrings and clear handling of edge cases."
+          }
+        ],
+        "cache_prompt": false,
+        "id_slot": 0,
+        "stream": true,
+        "temperature": 0,
+        "seed": 42,
+        "max_tokens": 2048,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "stream_options": {
+          "include_usage": true
+        },
+        "verbose": true
+      },
+      "prompt_tokens": 162,
+      "audit": {
+        "natural_stop": true,
+        "cold": true,
+        "full_input": true,
+        "complete_output": true,
+        "correct_slot": true,
+        "no_draft": true,
+        "no_thinking": true
+      },
+      "code_test": {
+        "pass": true,
+        "checks": 106,
+        "restriction": "builtin-only functions, AST checks and resource limits"
+      },
+      "server_command": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-release-check-20261007-125712/build/bin/llama-server",
+        "-m",
+        "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+        "--alias",
+        "local",
+        "-t",
+        "4",
+        "-c",
+        "6144",
+        "--parallel",
+        "1",
+        "-b",
+        "32",
+        "-ub",
+        "32",
+        "-fa",
+        "on",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16",
+        "-ngl",
+        "0",
+        "--no-context-shift",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18092"
+      ]
+    },
+    "optimized": {
+      "answer": "def encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    \n    Args:\n        text (str): The input string to encode.\n        \n    Returns:\n        List[tuple]: A list of tuples where each tuple contains a character and its run count.\n                     Returns an empty list for empty input.\n    \"\"\"\n    if not text:\n        return []\n    \n    result = []\n    current_char = text[0]\n    count = 1\n    \n    for char in text[1:]:\n        if char == current_char:\n            count += 1\n        else:\n            result.append((current_char, count))\n            current_char = char\n            count = 1\n    \n    result.append((current_char, count))\n    return result\n\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into the original string.\n    \n    Args:\n        runs (list): A list of tuples where each tuple contains a character and its run count.\n                     Each character must be a one-character string, and count must be a positive int.\n                     Returns an empty string for empty input.\n                     \n    Returns:\n        str: The reconstructed string.\n        \n    Raises:\n        ValueError: If any item is not a two-element list/tuple, character is not a one-char string,\n                   or count is not a positive int (excluding bool).\n    \"\"\"\n    if not runs:\n        return \"\"\n    \n    result = []\n    \n    for item in runs:\n        # Check if item is a list or tuple with exactly 2 elements\n        if not isinstance(item, (list, tuple)) or len(item) != 2:\n            raise ValueError(\"Each item must be a two-element list or tuple.\")\n        \n        char, count = item[0], item[1]\n        \n        # Check if character is a one-character string\n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        # Check if count is a positive int (excluding bool)\n        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:\n            raise ValueError(\"Count must be a positive int, excluding bool.\")\n        \n        result.append(char * count)\n    \n    return ''.join(result)",
+      "ttft_s": 18.005,
+      "wall_s": 280.354,
+      "finish_reason": "stop",
+      "answer_sha256": "ca5846d8abbae58588847578fddde235d093991bf143cce8320279fdeffae7d8",
+      "usage": {
+        "completion_tokens": 521,
+        "prompt_tokens": 162,
+        "total_tokens": 683,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 162,
+        "prompt_ms": 17853.721,
+        "prompt_per_token_ms": 110.20815432098766,
+        "prompt_per_second": 9.073738746113484,
+        "predicted_n": 521,
+        "predicted_ms": 262346.627,
+        "predicted_per_token_ms": 503.54438963531663,
+        "predicted_per_second": 1.9859222356230257
+      },
+      "server_slot": 0,
+      "reasoning_text": "",
+      "request": {
+        "model": "local",
+        "messages": [
+          {
+            "role": "system",
+            "content": "Implement the requested Python functions. Give code directly without reasoning tags. Use Python builtins only and no imports or classes."
+          },
+          {
+            "role": "user",
+            "content": "Return only Python source, without imports, classes, tests, or explanatory text. Implement encode_runs(text) and decode_runs(runs). encode_runs returns a list of (character,count) tuples for consecutive runs of Unicode characters; empty text returns []. decode_runs returns the original string and rejects malformed items with ValueError: every item must be a two-element list or tuple, character must be a one-character string, and count must be a positive int, excluding bool. Empty runs returns an empty string. Do not mutate inputs. Use Python builtins only. Include useful docstrings and clear handling of edge cases."
+          }
+        ],
+        "cache_prompt": false,
+        "id_slot": 0,
+        "stream": true,
+        "temperature": 0,
+        "seed": 42,
+        "max_tokens": 2048,
+        "chat_template_kwargs": {
+          "enable_thinking": false
+        },
+        "stream_options": {
+          "include_usage": true
+        },
+        "verbose": true
+      },
+      "prompt_tokens": 162,
+      "audit": {
+        "natural_stop": true,
+        "cold": true,
+        "full_input": true,
+        "complete_output": true,
+        "correct_slot": true,
+        "no_draft": true,
+        "no_thinking": true
+      },
+      "code_test": {
+        "pass": true,
+        "checks": 106,
+        "restriction": "builtin-only functions, AST checks and resource limits"
+      },
+      "server_command": [
+        "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-release-check-20261007-125712/build/bin/llama-server",
+        "-m",
+        "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+        "--alias",
+        "local",
+        "-t",
+        "4",
+        "-c",
+        "6144",
+        "--parallel",
+        "1",
+        "-b",
+        "32",
+        "-ub",
+        "32",
+        "-fa",
+        "on",
+        "-ctk",
+        "f16",
+        "-ctv",
+        "f16",
+        "-ngl",
+        "0",
+        "--no-context-shift",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "18092"
+      ]
+    }
+  }
+}

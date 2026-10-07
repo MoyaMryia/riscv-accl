@@ -137,6 +137,15 @@ def verify(root, preservation):
             and remote['source_commit'] == manifest['source_commit'], 'post-run board preservation differs')
     require(set(remote['modified_source_files']) == set(manifest['patched_source_sha256']),
             'unexpected source changes')
+    require(remote['baseline_source_commit'] == manifest['source_commit']
+            and set(remote['baseline_modified_source_files']) == set(manifest['measured_baseline_source_sha256'])
+            and remote['baseline_source_sha256'] == manifest['measured_baseline_source_sha256'],
+            'measured baseline has additional source changes')
+    runtime = {n: h for n, h in expected['artifacts_sha256'].items()
+               if n.endswith(('libspine_tcm.so.3.0.1', 'libspert.so.0.6.2'))}
+    require(len(runtime) == 2 and remote['runtime_files_sha256'] == runtime,
+            'vendor runtime differs from measured configuration')
+    require(remote['compiler_version'] == expected['compiler'], 'vendor compiler differs')
     for option, value in {'CMAKE_BUILD_TYPE':'Release','GGML_CPU_RISCV64_SPACEMIT':'ON',
                            'GGML_OPENMP':'OFF','GGML_RV_ZBA':'ON','GGML_NATIVE':'OFF',
                            'GGML_CPU_REPACK':'OFF','LLAMA_BUILD_TESTS':'OFF','LLAMA_OPENSSL':'OFF',
