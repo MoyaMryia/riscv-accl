@@ -1,5 +1,14 @@
 # X60 server benchmark runner
 
+## K1 performance evaluator and operator data
+
+Use the [model tools](qemu-screen/predictor/README.md) to replay fixed K1 examples on another host.
+Use the [operator collector](operator-data/README.md) for controlled native training data.
+The first batch has 32 configurations and 1,344 observations. Independent calibration and test shapes remain unmeasured.
+Performance results retain all candidates. Measurement spread does not establish prediction confidence.
+The [connection record](../reports/2026-10-12-k1-connection-interruption.md) lists the recovery steps.
+Board work remains paused until the user completes the site check.
+
 See the [documentation guide](../DOCS.md) for current results and queued work.
 This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)
 now has native correctness, operator timing and gated model-screen modes.

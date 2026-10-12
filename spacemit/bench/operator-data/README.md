@@ -85,3 +85,31 @@ python3 summarize.py /path/to/batch /path/to/summary.json
 冷缓存、真实共享缓存流量与完整矩阵乘法仍待采集。
 完整混合 IME 时序与图内同步成本仍待分解。
 不得用本批次的重复测量范围代替预测误差校准。
+
+## 远程连接与断线处理
+
+`remote.py` 对单次远程命令设置总等待上限。
+该工具关闭连接复用，并启用连接与存活超时。
+总等待上限也覆盖转发子进程。
+工具分别保存标准输出、错误输出与状态收据。
+已有收据不会被覆盖。
+工具不自动重试，不自动恢复板端工作。
+
+```sh
+python3 spacemit/bench/operator-data/remote.py --host musepipro-wg \
+  --receipt lab/k1-connection-new.json --deadline 30 -- hostname
+```
+
+SSH 退出码 `255` 记录为 `ssh-error`。
+它可能表示连接故障，也可能来自远程命令本身。
+总等待超时记录为 `client-deadline`。
+客户端命令成功只表示该命令返回 `0`。
+这些状态均不证明板端任务已经结束。
+板端任务状态保持 `unknown`，直到另行读取任务状态与退出记录。
+
+本机的 6 项假客户端测试通过。
+测试覆盖成功、断线退出、远程失败、总等待超时、子进程清理与收据保护。
+这次修改尚未在恢复后的 K1 上验证。
+用户已要求等待现场检查。
+不得为验证连接工具而恢复板端采集。
+恢复顺序见 [断线记录](../../reports/2026-10-12-k1-connection-interruption.md)。

@@ -1,5 +1,13 @@
 # Current documentation guide
 
+## K1 performance model status
+
+The [performance evaluator](bench/qemu-screen/predictor/README.md) supplies portable fixed examples and explicit model limits.
+The [operator report](reports/2026-10-12-k1-operator-data.md) records the first native training batch.
+The [connection record](reports/2026-10-12-k1-connection-interruption.md) records the interruption and pending recovery.
+The first batch is verified on two hosts. It does not establish new prediction accuracy.
+All candidates remain available. New calibration and test shapes remain unmeasured.
+
 Last status check: 2026-10-07 Asia/Singapore.
 This is a dated snapshot. Read a run's `phase`, logs, and final exit status
 for live progress. A queued experiment is not a measured optimization.

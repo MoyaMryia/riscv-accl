@@ -1,5 +1,16 @@
 # Reports index
 
+## K1 performance evaluator
+
+- [Model tools](../bench/qemu-screen/predictor/README.md): portable cost estimates and fixed examples.
+- [V7 audit](2026-10-12-k1-model-v7.md): broad bounds and incorrect point directions remain visible.
+- [Operator data](2026-10-12-k1-operator-data.md): 32 training configurations, exact paired dumps, and 1,344 observations.
+- [Connection interruption](2026-10-12-k1-connection-interruption.md): confirmed access failures, unknown hardware cause, and recovery steps.
+
+All performance candidates remain available. Calibration and test shapes remain separate from the new training data.
+Git stores text evidence and receipts. Full archives remain on the local host and the project server.
+Archive checks require the retained archives. Portable examples include their own replay data.
+
 For current work and commands, use the [documentation guide](../DOCS.md).
 Historical queue statements describe the report's date.
 
