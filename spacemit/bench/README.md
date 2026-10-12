@@ -16,8 +16,8 @@ now has native correctness, operator timing and gated model-screen modes.
 ## Current release verification
 
 The [pinned release package](../release/README.md) supplies the current clean
-source patch, build and matched baseline/optimized launchers. To verify it on
-the existing K1 board:
+source patch, the build and the matched baseline/optimized launchers. To verify
+the package on the existing K1 board:
 
 ```bash
 python3 spacemit/bench/start-k1-release-check.py --board musepipro
@@ -26,11 +26,11 @@ python3 spacemit/release/test-release.py
 
 The first command offloads a fresh complete build, 104 native cases per routing
 arm and four naturally stopped code answers to board tmux, with a separate
-local collector. Each answer must pass all 106 held-out tests; paired text must
-match. The board job holds the shared lock and has a six-hour bound. Recover
-collection with `--collect-only --run-dir RUN_DIR`; never restart inference
-just to collect artifacts. Recheck the collected archive, frozen code, native
-dumps and complete responses with:
+local collector. Each answer must pass all 106 held-out tests. The paired text
+must match. The board job holds the shared lock and has a six-hour bound.
+Recover collection with `--collect-only --run-dir RUN_DIR`. Never restart
+inference only to collect artifacts. Recheck the collected archive, frozen code,
+native dumps and complete responses with:
 
 ```bash
 python3 spacemit/bench/verify-k1-release.py RUN_DIR \
@@ -42,7 +42,7 @@ links the reproducible preservation script and all passing receipts. The
 preservation receipt records post-run source, binary, CMake and staged
 code hashes from the board. Strict rechecking requires the retained binary
 dumps/archive in addition to the Git text records. This is a release smoke
-test; its four timings do not establish a new statistical performance result.
+test. Its four timings do not establish a new statistical performance result.
 
 ## Measured diagnostic and candidate campaigns
 
@@ -51,10 +51,10 @@ run `python3 spacemit/bench/start-k1-decode-audit.py --board musepipro`. The
 [decode audit protocol](../experiments/2026-10-07-decode-packing-audit.md) checks
 104 production graph cases per arm before eight cold matched requests. Both
 board execution and verified collection use tmux. Profiling starts after the
-first streamed token; separate counter runs identify adjacent same-input gate/up
+first streamed token. Separate counter runs identify adjacent same-input gate/up
 branches. This diagnostic does not qualify a speedup or change defaults.
 The [completed results](../reports/2026-10-07-decode-packing-results.md) decline
-shared packing because its measured duplicate branch cost is small; the monitor
+shared packing because its measured duplicate branch cost is small. The monitor
 is paused. The retained command is for deliberate reproduction.
 Use `--collect-only --run-dir RUN_DIR` to recover collection without inference.
 
@@ -76,12 +76,12 @@ The initial run failed history write-back. The
 passes the original/scalar/RVV graph matrix after materializing the small
 history tail. The [repaired screen](../reports/2026-10-06-ssm-conv-repaired-results.md)
 passes all four correctness arms but rejects unconditional use due to a
-single-token operator regression; model-state and inference timing were skipped.
+single-token operator regression. Model-state and inference timing were skipped.
 
 The [October 3 staged validation](../experiments/2026-10-03-staged-validation.md)
 adds small recurrent-state probes, forced-trajectory and MTP diagnostics,
 combined routing at 8k, complete-document answers, and gated 4B/32k feasibility.
-Launch with `python3 spacemit/bench/start-k1-validation.py`; board execution and
+Launch with `python3 spacemit/bench/start-k1-validation.py`. Board execution and
 automatic collection use tmux. `bench-lifecycle.py --no-context-shift` prevents
 automatic input shifting in the new fixed-length tests.
 
@@ -100,24 +100,24 @@ For naturally stopped **hybrid SSM complete answers**, run
 [protocol](../experiments/2026-10-06-ssm-complete-answers.md) uses the original
 graph below 32 tokens, RVV for full batches, exact mixed-state/reset checks,
 24 full responses, held-out code checks and blind cloud grading. Both board
-execution and local collection/scoring use tmux; the judge key remains local.
+execution and local collection/scoring use tmux. The judge key remains local.
 Use `--collect-only` to recover collection or `--score-only` to recover judging
 without restarting inference, always with the current `--run-dir`.
 
 For relative answer quality of **checkpoint MTP versus direct decoding**, run
 `python3 spacemit/bench/start-mtp-quality.py`. The [usefulness protocol](../experiments/2026-10-03-mtp-usefulness.md)
-uses complete responses, deterministic facts/code tests and a blind cloud judge;
-token equality is diagnostic. Board generation and local scoring run in tmux.
+uses complete responses, deterministic facts/code tests and a blind cloud judge.
+Token equality is diagnostic. Board generation and local scoring run in tmux.
 
 For the opt-in **adaptive MTP** candidate, use
 `python3 spacemit/bench/start-adaptive-mtp.py --run-dir spacemit/reports/raw/adaptive-mtp-NEW-ID`.
 The [implementation protocol](../experiments/2026-10-04-adaptive-mtp-implementation.md)
 builds an isolated server, checks switching/replay/reset on K1, then gates a
 three-arm, three-repeat complete-answer screen. Collection and cloud judging
-are automatic; this command does not change the production serving default.
+are automatic. This command does not change the production serving default.
 Code calibration and all comparison arms use a 3,072-token cap. Per-model
-`MODEL-requests.jsonl` journals preserve rejected answers before validation;
-a failed model does not stop the remaining model. The request/driver budgets
+`MODEL-requests.jsonl` journals preserve rejected answers before validation.
+A failed model does not stop the remaining model. The request/driver budgets
 are one/twelve hours. Run `python3 spacemit/bench/test-adaptive-mtp-runner.py`
 to check rejection persistence and model failure isolation.
 
@@ -130,7 +130,7 @@ from cloud quality grading. Throughput evidence does not imply useful answers.
 
 The C++ near-copy prompt includes `fixtures/ngram-mod.cpp`, taken from `common/ngram-mod.cpp` in the official llama.cpp fork at base commit `5ad05d8` (MIT license). The fixture freezes the prompt across subsequent upstream edits. The Python edit and prose prompts are embedded in the runner. The FR-Spec set uses English, code, and Chinese prompts.
 
-On the MUSE-Pi-Pro, after applying the patches and building the official fork:
+On the MUSE-Pi-Pro, after you apply the patches and build the official fork:
 
 ```bash
 cd ~/Projects/spacemit-llama
@@ -143,9 +143,9 @@ python3 /path/to/riscv-accl/spacemit/bench/bench-server.py \
   --output /tmp/ngram-2b.jsonl --log-dir /tmp
 ```
 
-Use the analogous 4B MTP GGUF for 4B measurements. The default prompt set has `cpp_edit`, `python_edit`, and `prose`. Repeated `--prompt` flags run in the order supplied, which is useful for checking per-request server state. For the frequency-ranked model use `--prompt-set frspec --modes plain mtp` and the mapped 32k GGUF. Run models separately, because output hashes are only compared within one invocation. The runner fixes `-t 4 -c 8192 --parallel 1 -fa on`, `temperature=0`, seed 42, and `cache_prompt=false`; by default it requests 160 tokens and uses `-b 32 -ub 32`. Use `--ngram-min`, `--ngram-max`, `--draft-p-min`, and `--draft-backend-sampling on|off` for speculative sweeps. For n-gram modes, `--batch-size` must exceed `--ngram-max` because verification includes the sampled token; `--ubatch-size` can remain 32. The runner rejects an insufficient batch before launching the server. Pass `--n-predict 128` for the FR-Spec comparison.
+Use the analogous 4B MTP GGUF for 4B measurements. The default prompt set has `cpp_edit`, `python_edit`, and `prose`. Repeated `--prompt` flags run in the order supplied, which is useful for checking per-request server state. For the frequency-ranked model use `--prompt-set frspec --modes plain mtp` and the mapped 32k GGUF. Run models separately, because output hashes are only compared within one invocation. The runner fixes `-t 4 -c 8192 --parallel 1 -fa on`, `temperature=0`, seed 42, and `cache_prompt=false`; by default it requests 160 tokens and uses `-b 32 -ub 32`. Use `--ngram-min`, `--ngram-max`, `--draft-p-min`, and `--draft-backend-sampling on|off` for speculative sweeps. For n-gram modes, `--batch-size` must exceed `--ngram-max` because verification includes the sampled token; `--ubatch-size` can remain 32. The runner rejects a batch that is too small before it launches the server. Pass `--n-predict 128` for the FR-Spec comparison.
 
-These commands reproduce the configuration and prompt family, but token rates can vary with board load and run order. The archived results are in `../reports/2026-09-23-frspec.md` and `../reports/2026-09-24-ngram.md`. The general single-stream recommendation is based on a near-copy C++ task; do not infer a universal gain from it.
+These commands reproduce the configuration and prompt family, but token rates can vary with board load and run order. The archived results are in `../reports/2026-09-23-frspec.md` and `../reports/2026-09-24-ngram.md`. The general single-stream recommendation is based on a near-copy C++ task. Do not infer a universal gain from it.
 
 ## First-token, long-context, and stability measurements
 
@@ -159,10 +159,10 @@ text and token-sequence hashes for exact-output comparisons. The runner also sam
 and records stream-event gap percentiles, >1-second gaps, and first/second-half
 decode rates. Each invocation appends a configuration record, followed by
 request records. Prompts are deterministic and generated by repeating tokenized
-text by default; these are hardware stress tests, not natural long-document
+text by default. These are hardware stress tests, not natural long-document
 quality tests. `--prompt-file` instead tokenizes a fixed UTF-8 file and takes
-the first requested number of tokens. The file must contain enough tokens;
-its SHA-256 digest is saved in the configuration for reproducibility.
+the first requested number of tokens. The file must contain enough tokens.
+Its SHA-256 digest is saved in the configuration for reproducibility.
 
 Example on MUSE-Pi-Pro, with the required TCM runtime already in
 `LD_LIBRARY_PATH`:
@@ -216,7 +216,7 @@ prefill wall time.
 Audit completed token counts, server errors, and token-hash variants with
 `python3 audit-lifecycle.py /path/to/results-*.jsonl`. Old records that saved
 only text hashes are reported as validation limits rather than exact token
-comparisons. For configurations that should preserve exact output, add
+comparisons. For configurations that must preserve exact output, add
 `--require-identical --require-token-ids --min-runs-per-group 2`; the audit
 then exits nonzero on a hash difference, missing token IDs, or an absent
 comparison arm. Use `--label-regex` to select only matched configurations,
@@ -270,7 +270,7 @@ For the opt-in occupied-page gather experiment, run `python3 summarize-page-gath
 
 `python3 spacemit/bench/test-results-tools.py` checks the archived matrix, rejects deliberately corrupted/missing hashes and missing comparison partners, and verifies fractional and boundary Student t quantiles and the archived M4 interval.
 
-`summarize-microbatch-scaling.py SERVER_LOG` converts prompt-processing progress lines into per-32-token chunk times, fits chunk time against the processed-context position, prints bracket means with the linear share, and extrapolates a longer-prompt projection. The fit attributes the growth to a linear-in-context term; operator-level attribution still requires on-board profiling.
+`summarize-microbatch-scaling.py SERVER_LOG` converts prompt-processing progress lines into per-32-token chunk times, fits chunk time against the processed-context position, prints bracket means with the linear share, and extrapolates a longer-prompt projection. The fit attributes the growth to a linear-in-context term. Operator-level attribution still requires on-board profiling.
 
 The RVV TTFT figure can include the serialized integrated 12k results with `python3 plot-rvv-prefill.py SHORT_JSONL LONG_JSONL OUTPUT.svg --integrated INTEGRATED_12K_JSONL`. It requires both off/on rows before plotting a model's 12k point and uses square markers for the single-pair measurements.
 
@@ -292,12 +292,12 @@ Q4_0/Q8_0 weight ABBA at 2k with F16 K/V fixed and no MTP draft model in
 either arm. They refuse to start while another `llama-server` is running,
 check available memory, and keep results in persistent board storage. The
 12k/16k scripts cap each server process at 12 GiB virtual address space and
-each arm at four/three hours respectively. Inspect each JSONL and its log;
-a started or interrupted arm is not a completed measurement. The
+each arm at four/three hours respectively. Inspect each JSONL and its log.
+A started or interrupted arm is not a completed measurement. The
 [resumed measures report](../reports/2026-09-27-resumed-measures.md) records
 only audited results.
 
-For a single longer feasibility request after inspecting the 16k results,
+For a single longer feasibility request after you inspect the 16k results,
 set `MODEL_SIZE=2B` or `4B` and `PROMPT_TOKENS=32768` or `65536`, then run
 `run-bounded-long-context-board.sh`. It uses the same integrated RVV/F16
 path, a 12 GiB process address-space cap, and a three-hour default wall
@@ -329,7 +329,7 @@ bash spacemit/bench/finish-shared-document-quality.sh
 
 The first command stages code and starts tmux session
 `shared_doc_quality_2b16k` on `musepipro-wg`. The second command exits with
-status 3 while it is still running; after completion it archives the board
+status 3 while it is still running. After completion it archives the board
 records, builds judge input from the captured text and public document excerpt,
 and posts the pair to MiMo. The local project reports are not sent to the
 board or cloud by this workflow.
@@ -339,7 +339,7 @@ board or cloud by this workflow.
 The existing `bench-shared-document-cache.py` now supports `--quality-suite`.
 It uses the same system instruction, chat format, disabled thinking, slot 0,
 temperature 0 and seed 42 as `serve/cached-document-chat.py`. The legacy raw
-completion mode remains available for reproducing earlier results.
+completion mode remains available to reproduce earlier results.
 
 Run the entire new matrix with one command from the workstation:
 
@@ -378,7 +378,7 @@ and placed in beginning/middle/end groups. The questions cover route types,
 batch defaults, prefix cache behavior, slot assignment, health status and
 tokenization. Records include source line numbers, source/document hashes,
 exact evidence, offsets, and required facts. This is a constructed public
-documentation pilot; it does not establish quality on arbitrary real documents.
+documentation pilot. It does not establish quality on arbitrary real documents.
 
 Grouped runs send each cached target before its cold counterpart. Each
 request has an independent chat containing the system instruction, document,
@@ -387,7 +387,7 @@ The primer differs from every target. Subsequent cached targets reuse the
 document from the preceding request. Grouping confounds arm order with time,
 so use `--quality-schedule alternating` for order-controlled comparisons.
 That mode alternates cold/cached order and sends a distinct primer before
-each cached target, preventing cold-first identical-prompt repeats.
+each cached target. This step prevents cold-first identical-prompt repeats.
 The schedule is recorded in configuration records, manifests, and summaries.
 All requests must fit their
 allocated context. Cache validation requires physical slot 0, at least 90%
@@ -396,7 +396,7 @@ and timing events are saved, including events with no answer text.
 
 Only pairs where both answers finish with `stop`, contain answer text, and
 have no reasoning text/tags are eligible for completed-answer judging.
-Answers ending with `length` are retained and reported as incomplete; they
+Answers that end with `length` are retained and reported as incomplete; they
 cannot pass the pilot. Fact regex checks and citation checks are reported
 alongside cloud scores. Regex checks alone do not establish factual accuracy.
 Every eligible pair is judged against its exact included evidence and required
@@ -417,7 +417,7 @@ python3 spacemit/bench/run-all-document-quality.py --collect-only --detach \
 ```
 
 The collector reads the existing manifest, appends to its log, and skips
-already scored cases after verifying their input hashes and judge model.
+already scored cases after it verifies their input hashes and judge model.
 An existing local collector with the same tmux session name prevents a
 second detached collector from starting. Results from the original schedule
 retain their protocol; resume does not change the board's running code.
@@ -442,7 +442,7 @@ python3 spacemit/bench/test-document-quality-suite.py
 
 `start-k1-attention-layout.py` stages the isolated experiment and starts board
 tmux plus a local collector. It verifies baseline source hashes and waits for
-the shared quality-benchmark lock before building. Use a fresh run directory;
+the shared quality-benchmark lock before it builds. Use a fresh run directory;
 the launcher refuses to reuse an existing directory for generation.
 
 ```bash
@@ -492,7 +492,7 @@ python3 spacemit/bench/start-k1-fast-test.py --resume --mode confirm-long \
 
 For an interrupted run, `--resume` with its original mode validates fingerprints
 and completed-stage artifacts. Changed code requires a new run. Resume preserves
-partial model files as attempts before retrying an incomplete stage.
+partial model files as attempts before it retries an incomplete stage.
 To restore collection alone:
 
 ```bash
@@ -561,7 +561,7 @@ variants completed their speed screen without qualifying. The current screen
 times scale gathering and gathering plus unrolling (modes 4/5), using six
 balanced operator blocks, actual GGUF embedding/feed-forward dimensions, and
 four workers on cores 0-3. All five modes retain numerical coverage.
-Only candidates clearing the 3%/control-range gate on at least two
+Only candidates that clear the 3%/control-range gate on at least two
 shapes without a clear regression advance to cold model checks: 2B/512, then
 2B/2k, then 4B/1k. Each model stage has four ABBA requests and the same gate.
 

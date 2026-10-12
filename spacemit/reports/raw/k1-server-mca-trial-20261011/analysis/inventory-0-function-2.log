@@ -1,0 +1,250 @@
+warning: found a return instruction in the input assembly sequence.
+note: program counter updates are ignored.
+Iterations:        1
+Instructions:      58
+Total Cycles:      366
+Total uOps:        58
+
+Dispatch Width:    2
+uOps Per Cycle:    0.16
+IPC:               0.16
+Block RThroughput: 166.0
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     1.00                        blez	a4, .Lpc_e2368
+ 1      1     0.50                  U     csrr	t0, vlenb
+ 1      1     0.50                        slli	t1, t0, 3
+ 1      1     0.50                        sub	sp, sp, t1
+ 1      1     1.00                  U     vsetvli	t1, zero, e32, m8, ta, ma
+ 1      16    16.00                       vmv.v.i	v8, 0
+ 1      2     0.50                        sh2add	t4, a4, a5
+ 1      4     4.00                        vmv.s.x	v24, zero
+ 1      1     0.50                        slli	t3, a4, 2
+ 1      16    16.00          *            vs8r.v	v8, (sp)
+ 1      16    16.00   *                   vl8re32.v	v16, (sp)
+ 1      1     0.50                        li	a7, 0
+ 1      1     0.50                        sub	a6, a4, a7
+ 1      1     1.00                  U     vsetvli	a6, a6, e32, m8, ta, ma
+ 1      2     0.50                        sh2add	t5, a7, a0
+ 1      16    16.00   *                   vle32.v	v8, (t5)
+ 1      2     0.50                        sh2add	t6, a7, a1
+ 1      1     0.50                        add	a7, a7, a6
+ 1      8     8.00                        vfmul.vf	v8, v8, fa0
+ 1      19    19.00          *            vse32.v	v8, (t5)
+ 1      16    16.00   *                   vle32.v	v0, (t6)
+ 1      8     8.00                        vfmacc.vv	v16, v8, v0
+ 1      1     1.00                        blt	a7, a4, .Lpc_e22c4
+ 1      1     1.00                  U     vsetvli	t1, zero, e32, m8, ta, ma
+ 1      4     0.50    *                   flw	fa5, 0(a2)
+ 1      57    57.00                       vfredusum.vs	v1, v16, v24
+ 1      1     0.50                        li	a7, 0
+ 1      16    16.00   *                   vl8re32.v	v16, (sp)
+ 1      4     4.00                        vfmv.f.s	fa4, v1
+ 1      4     1.00                        fsub.s	fa5, fa5, fa4
+ 1      4     1.00                        fmul.s	fa5, fa5, fa1
+ 1      1     0.50                        sub	a6, a4, a7
+ 1      1     1.00                  U     vsetvli	a6, a6, e32, m8, ta, ma
+ 1      2     0.50                        sh2add	t5, a7, a0
+ 1      2     0.50                        sh2add	t6, a7, a1
+ 1      16    16.00   *                   vle32.v	v8, (t5)
+ 1      16    16.00   *                   vle32.v	v0, (t6)
+ 1      2     0.50                        sh2add	t6, a7, a3
+ 1      1     0.50                        add	a7, a7, a6
+ 1      8     8.00                        vfmacc.vf	v8, fa5, v0
+ 1      19    19.00          *            vse32.v	v8, (t5)
+ 1      16    16.00   *                   vle32.v	v0, (t6)
+ 1      8     8.00                        vfmacc.vv	v16, v8, v0
+ 1      1     1.00                        blt	a7, a4, .Lpc_e230c
+ 1      1     1.00                  U     vsetvli	t1, zero, e32, m8, ta, ma
+ 1      1     0.50                        addi	a5, a5, 4
+ 1      57    57.00                       vfredusum.vs	v16, v16, v24
+ 1      1     0.50                        add	a0, a0, t3
+ 1      1     0.50                        addi	a2, a2, 4
+ 1      4     4.00                        vfmv.f.s	fa5, v16
+ 1      4     1.00                        fmul.s	fa5, fa5, fa2
+ 1      4     0.50           *            fsw	fa5, -4(a5)
+ 1      1     1.00                        bne	t4, a5, .Lpc_e22be
+ 1      1     0.50                  U     csrr	t0, vlenb
+ 1      1     0.50                        slli	t1, t0, 3
+ 1      1     0.50                        add	sp, sp, t1
+ 1      1     1.00                        ret
+ 1      1     1.00                        ret
+
+
+Resources:
+[0]   - SMX60_FP
+[1]   - SMX60_IEUA
+[2]   - SMX60_IEUB
+[3.0] - SMX60_LS
+[3.1] - SMX60_LS
+[4]   - SMX60_VFP
+[5]   - SMX60_VIEU
+[6]   - SMX60_VLS
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3.0]  [3.1]  [4]    [5]    [6]    
+3.00   18.00  15.00  1.00   1.00   146.00 28.00  166.00 
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3.0]  [3.1]  [4]    [5]    [6]    Instructions:
+ -     1.00    -      -      -      -      -      -     blez	a4, .Lpc_e2368
+ -      -     1.00    -      -      -      -      -     csrr	t0, vlenb
+ -      -     1.00    -      -      -      -      -     slli	t1, t0, 3
+ -     1.00    -      -      -      -      -      -     sub	sp, sp, t1
+ -     1.00    -      -      -      -      -      -     vsetvli	t1, zero, e32, m8, ta, ma
+ -      -      -      -      -      -     16.00   -     vmv.v.i	v8, 0
+ -      -     1.00    -      -      -      -      -     sh2add	t4, a4, a5
+ -      -      -      -      -      -     4.00    -     vmv.s.x	v24, zero
+ -      -     1.00    -      -      -      -      -     slli	t3, a4, 2
+ -      -      -      -      -      -      -     16.00  vs8r.v	v8, (sp)
+ -      -      -      -      -      -      -     16.00  vl8re32.v	v16, (sp)
+ -     1.00    -      -      -      -      -      -     li	a7, 0
+ -      -     1.00    -      -      -      -      -     sub	a6, a4, a7
+ -     1.00    -      -      -      -      -      -     vsetvli	a6, a6, e32, m8, ta, ma
+ -      -     1.00    -      -      -      -      -     sh2add	t5, a7, a0
+ -      -      -      -      -      -      -     16.00  vle32.v	v8, (t5)
+ -     1.00    -      -      -      -      -      -     sh2add	t6, a7, a1
+ -      -     1.00    -      -      -      -      -     add	a7, a7, a6
+ -      -      -      -      -     8.00    -      -     vfmul.vf	v8, v8, fa0
+ -      -      -      -      -      -      -     19.00  vse32.v	v8, (t5)
+ -      -      -      -      -      -      -     16.00  vle32.v	v0, (t6)
+ -      -      -      -      -     8.00    -      -     vfmacc.vv	v16, v8, v0
+ -     1.00    -      -      -      -      -      -     blt	a7, a4, .Lpc_e22c4
+ -     1.00    -      -      -      -      -      -     vsetvli	t1, zero, e32, m8, ta, ma
+ -      -      -      -     1.00    -      -      -     flw	fa5, 0(a2)
+ -      -      -      -      -     57.00   -      -     vfredusum.vs	v1, v16, v24
+ -      -     1.00    -      -      -      -      -     li	a7, 0
+ -      -      -      -      -      -      -     16.00  vl8re32.v	v16, (sp)
+ -      -      -      -      -      -     4.00    -     vfmv.f.s	fa4, v1
+1.00    -      -      -      -      -      -      -     fsub.s	fa5, fa5, fa4
+1.00    -      -      -      -      -      -      -     fmul.s	fa5, fa5, fa1
+ -      -     1.00    -      -      -      -      -     sub	a6, a4, a7
+ -     1.00    -      -      -      -      -      -     vsetvli	a6, a6, e32, m8, ta, ma
+ -      -     1.00    -      -      -      -      -     sh2add	t5, a7, a0
+ -     1.00    -      -      -      -      -      -     sh2add	t6, a7, a1
+ -      -      -      -      -      -      -     16.00  vle32.v	v8, (t5)
+ -      -      -      -      -      -      -     16.00  vle32.v	v0, (t6)
+ -      -     1.00    -      -      -      -      -     sh2add	t6, a7, a3
+ -     1.00    -      -      -      -      -      -     add	a7, a7, a6
+ -      -      -      -      -     8.00    -      -     vfmacc.vf	v8, fa5, v0
+ -      -      -      -      -      -      -     19.00  vse32.v	v8, (t5)
+ -      -      -      -      -      -      -     16.00  vle32.v	v0, (t6)
+ -      -      -      -      -     8.00    -      -     vfmacc.vv	v16, v8, v0
+ -     1.00    -      -      -      -      -      -     blt	a7, a4, .Lpc_e230c
+ -     1.00    -      -      -      -      -      -     vsetvli	t1, zero, e32, m8, ta, ma
+ -      -     1.00    -      -      -      -      -     addi	a5, a5, 4
+ -      -      -      -      -     57.00   -      -     vfredusum.vs	v16, v16, v24
+ -      -     1.00    -      -      -      -      -     add	a0, a0, t3
+ -     1.00    -      -      -      -      -      -     addi	a2, a2, 4
+ -      -      -      -      -      -     4.00    -     vfmv.f.s	fa5, v16
+1.00    -      -      -      -      -      -      -     fmul.s	fa5, fa5, fa2
+ -      -      -     1.00    -      -      -      -     fsw	fa5, -4(a5)
+ -     1.00    -      -      -      -      -      -     bne	t4, a5, .Lpc_e22be
+ -      -     1.00    -      -      -      -      -     csrr	t0, vlenb
+ -      -     1.00    -      -      -      -      -     slli	t1, t0, 3
+ -     1.00    -      -      -      -      -      -     add	sp, sp, t1
+ -     1.00    -      -      -      -      -      -     ret
+ -     1.00    -      -      -      -      -      -     ret
+
+
+Timeline view:
+                    0123456789          0123456789          0123456789          01234
+Index     0123456789          0123456789          0123456789          0123456789     
+
+[0,0]     DE   .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   blez	a4, .Lpc_e2368
+[0,1]     DE   .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   csrr	t0, vlenb
+[0,2]     .DE  .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   slli	t1, t0, 3
+[0,3]     . DE .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   sub	sp, sp, t1
+[0,4]     .  DE.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   vsetvli	t1, zero, e32, m8, ta, ma
+[0,5]     .   DeeeeeeeeeeeeeeeE    .    .    .    .    .    .    .    .    .    .   .   vmv.v.i	v8, 0
+[0,6]     .    .    .    .  DeE    .    .    .    .    .    .    .    .    .    .   .   sh2add	t4, a4, a5
+[0,7]     .    .    .    .    DeeeE.    .    .    .    .    .    .    .    .    .   .   vmv.s.x	v24, zero
+[0,8]     .    .    .    .    .  DE.    .    .    .    .    .    .    .    .    .   .   slli	t3, a4, 2
+[0,9]     .    .    .    .    .  DeeeeeeeeeeeeeeeE.    .    .    .    .    .    .   .   vs8r.v	v8, (sp)
+[0,10]    .    .    .    .    .    .    .    .   DeeeeeeeeeeeeeeeE    .    .    .   .   vl8re32.v	v16, (sp)
+[0,11]    .    .    .    .    .    .    .    .    .    .    .   DE    .    .    .   .   li	a7, 0
+[0,12]    .    .    .    .    .    .    .    .    .    .    .    DE   .    .    .   .   sub	a6, a4, a7
+[0,13]    .    .    .    .    .    .    .    .    .    .    .    DE   .    .    .   .   vsetvli	a6, a6, e32, m8, ta, ma
+[0,14]    .    .    .    .    .    .    .    .    .    .    .    .DeE .    .    .   .   sh2add	t5, a7, a0
+[0,15]    .    .    .    .    .    .    .    .    .    .    .    .  DeeeeeeeeeeeeeeeE   vle32.v	v8, (t5)
+[0,16]    .    .    .    .    .    .    .    .    .    .    .    .    .    .    . DeE   sh2add	t6, a7, a1
+[0,17]    .    .    .    .    .    .    .    .    .    .    .    .    .    .    .  DE   add	a7, a7, a6
+Truncated display due to cycle limit
+
+
+Average Wait times (based on the timeline view):
+[0]: Executions
+[1]: Average time spent waiting in a scheduler's queue
+[2]: Average time spent waiting in a scheduler's queue while ready
+[3]: Average time elapsed from WB until retire stage
+
+      [0]    [1]    [2]    [3]
+0.     1     0.0    0.0    0.0       blez	a4, .Lpc_e2368
+1.     1     0.0    0.0    0.0       csrr	t0, vlenb
+2.     1     0.0    0.0    0.0       slli	t1, t0, 3
+3.     1     0.0    0.0    0.0       sub	sp, sp, t1
+4.     1     0.0    0.0    0.0       vsetvli	t1, zero, e32, m8, ta, ma
+5.     1     0.0    0.0    0.0       vmv.v.i	v8, 0
+6.     1     0.0    0.0    0.0       sh2add	t4, a4, a5
+7.     1     0.0    0.0    0.0       vmv.s.x	v24, zero
+8.     1     0.0    0.0    0.0       slli	t3, a4, 2
+9.     1     0.0    0.0    0.0       vs8r.v	v8, (sp)
+10.    1     0.0    0.0    0.0       vl8re32.v	v16, (sp)
+11.    1     0.0    0.0    0.0       li	a7, 0
+12.    1     0.0    0.0    0.0       sub	a6, a4, a7
+13.    1     0.0    0.0    0.0       vsetvli	a6, a6, e32, m8, ta, ma
+14.    1     0.0    0.0    0.0       sh2add	t5, a7, a0
+15.    1     0.0    0.0    0.0       vle32.v	v8, (t5)
+16.    1     0.0    0.0    0.0       sh2add	t6, a7, a1
+17.    1     0.0    0.0    0.0       add	a7, a7, a6
+18.    1     0.0    0.0    0.0       vfmul.vf	v8, v8, fa0
+19.    1     0.0    0.0    0.0       vse32.v	v8, (t5)
+20.    1     0.0    0.0    0.0       vle32.v	v0, (t6)
+21.    1     0.0    0.0    0.0       vfmacc.vv	v16, v8, v0
+22.    1     0.0    0.0    0.0       blt	a7, a4, .Lpc_e22c4
+23.    1     0.0    0.0    0.0       vsetvli	t1, zero, e32, m8, ta, ma
+24.    1     0.0    0.0    0.0       flw	fa5, 0(a2)
+25.    1     0.0    0.0    0.0       vfredusum.vs	v1, v16, v24
+26.    1     0.0    0.0    0.0       li	a7, 0
+27.    1     0.0    0.0    0.0       vl8re32.v	v16, (sp)
+28.    1     0.0    0.0    0.0       vfmv.f.s	fa4, v1
+29.    1     0.0    0.0    0.0       fsub.s	fa5, fa5, fa4
+30.    1     0.0    0.0    0.0       fmul.s	fa5, fa5, fa1
+31.    1     0.0    0.0    0.0       sub	a6, a4, a7
+32.    1     0.0    0.0    0.0       vsetvli	a6, a6, e32, m8, ta, ma
+33.    1     0.0    0.0    0.0       sh2add	t5, a7, a0
+34.    1     0.0    0.0    0.0       sh2add	t6, a7, a1
+35.    1     0.0    0.0    0.0       vle32.v	v8, (t5)
+36.    1     0.0    0.0    0.0       vle32.v	v0, (t6)
+37.    1     0.0    0.0    0.0       sh2add	t6, a7, a3
+38.    1     0.0    0.0    0.0       add	a7, a7, a6
+39.    1     0.0    0.0    0.0       vfmacc.vf	v8, fa5, v0
+40.    1     0.0    0.0    0.0       vse32.v	v8, (t5)
+41.    1     0.0    0.0    0.0       vle32.v	v0, (t6)
+42.    1     0.0    0.0    0.0       vfmacc.vv	v16, v8, v0
+43.    1     0.0    0.0    0.0       blt	a7, a4, .Lpc_e230c
+44.    1     0.0    0.0    0.0       vsetvli	t1, zero, e32, m8, ta, ma
+45.    1     0.0    0.0    0.0       addi	a5, a5, 4
+46.    1     0.0    0.0    0.0       vfredusum.vs	v16, v16, v24
+47.    1     0.0    0.0    0.0       add	a0, a0, t3
+48.    1     0.0    0.0    0.0       addi	a2, a2, 4
+49.    1     0.0    0.0    0.0       vfmv.f.s	fa5, v16
+50.    1     0.0    0.0    0.0       fmul.s	fa5, fa5, fa2
+51.    1     0.0    0.0    0.0       fsw	fa5, -4(a5)
+52.    1     0.0    0.0    0.0       bne	t4, a5, .Lpc_e22be
+53.    1     0.0    0.0    0.0       csrr	t0, vlenb
+54.    1     0.0    0.0    0.0       slli	t1, t0, 3
+55.    1     0.0    0.0    0.0       add	sp, sp, t1
+56.    1     0.0    0.0    0.0       ret
+57.    1     0.0    0.0    0.0       ret
+       1     0.0    0.0    0.0       <total>

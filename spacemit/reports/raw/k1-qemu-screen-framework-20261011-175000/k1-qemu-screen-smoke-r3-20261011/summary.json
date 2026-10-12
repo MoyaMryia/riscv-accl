@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "K1_timing": "unverified",
+  "checks": {
+    "rvv": {
+      "status": "passed",
+      "metrics": {
+        "roi_copy": {
+          "instructions": 155916,
+          "vector": 57344,
+          "ime": 0,
+          "loads": 131073,
+          "stores": 131072,
+          "load_bytes": 524292,
+          "store_bytes": 524288,
+          "vector_load_bytes": 524288,
+          "vector_store_bytes": 524288
+        },
+        "roi_direct": {
+          "instructions": 82122,
+          "vector": 32768,
+          "ime": 0,
+          "loads": 65537,
+          "stores": 65536,
+          "load_bytes": 262148,
+          "store_bytes": 262144,
+          "vector_load_bytes": 262144,
+          "vector_store_bytes": 262144
+        }
+      },
+      "scope": "exact function address ranges; callees excluded; fixed work; one guest thread"
+    },
+    "upstream_ime": {
+      "returncode": -4,
+      "supported": false
+    },
+    "vendor_ime": {
+      "status": "passed",
+      "metrics": {
+        "instructions": 160,
+        "vector": 112,
+        "ime": 32,
+        "loads": 1024,
+        "stores": 256,
+        "load_bytes": 1024,
+        "store_bytes": 1024,
+        "vector_load_bytes": 1024,
+        "vector_store_bytes": 1024
+      },
+      "scope": "K1 signed vmadot only; max CPU is not a strict K1 feature profile"
+    },
+    "os": {
+      "status": "passed",
+      "machine": "virt",
+      "guest_cpus": 2,
+      "scope": "Linux boot and RVV process; no K1 SoC or cycle model"
+    }
+  },
+  "artifacts": {
+    "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/probe.c": "6fcd329b1342c8afc0a9681c8ac5a896cc5cb613cd62cd5b04ae8c3a4909d0e2",
+    "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c": "efc25eb06201eb7f7dd29204164a3ca55dc48f3264cb92f38e446f08d59ab694",
+    "/usr/local/include/qemu-plugin.h": "335d4e472067e914add598b60d1f7cf0dc029cd48f62f66656d6a88c54d8d9f9",
+    "/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-gcc": "9353d39cc29b98802315fcd6a2ef9869a29766ed290b99b311be863fc43ec9e5",
+    "/usr/local/bin/qemu-riscv64": "c3472a46ea6d60a87fd236d748e9e16037213a761f0e8eb47fa6886c6183a898",
+    "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/bin/qemu-riscv64": "9ceec467a855e04b38138f81906eacd338aba2d6d457dda91a9a9e89df38f03e",
+    "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/include/qemu-plugin.h": "ceca12f3ba448340b38223617b1c66d7b92e0e0d78687d1e108c42287542836e",
+    "/home/moyamryia/Projects/riscv-accl/env/qemu/vmlinux-rv64": "c601b3ef8415fb0309c5098569cab61954916a9388fba929a32e11f024e8490a",
+    "/usr/local/share/qemu/opensbi-riscv64-generic-fw_dynamic.bin": "894e2aef99590fc07ec6c60ab00282b8bc5d5d5bb2a1d0c6ada0c52df24274c0",
+    "/home/moyamryia/Projects/riscv-accl/env/qemu/initramfs.cpio.gz": "3807b319cce77734a3ea300d919017e05c01647440c57ddfa383d2420e944a07"
+  },
+  "status": "passed"
+}

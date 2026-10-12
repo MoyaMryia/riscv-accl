@@ -1,31 +1,32 @@
 # Production GEMM staging versus direct memory
 
-Status: completed with exit status 0; modes 1 and 2 qualified.
-All required model stages and independent collection verification passed.
-Experimental and opt-in; confirmation before default adoption remains.
-Run: `k1-gemm-routing-20261003-005740`.
+Status: completed with exit status 0. Modes 1 and 2 qualified. All required
+model stages and the independent collection verification passed. This change
+is experimental and opt-in. Confirmation is necessary before default
+adoption. Run: `k1-gemm-routing-20261003-005740`.
 
 ## Evidence and scope
 
-The October 2 production attribution found staging copies at 9.55% / 9.93%
+The October 2 production attribution found staging copies at 9.55% and 9.93%
 of summed prefill worker elapsed time, with non-null 128 KiB SPERT buffers.
-The separately loaded TCM API reports unavailable, fake and zero geometry.
-Neither observation proves SPERT buffer placement. Attribution includes waits
-and timer overhead and is not a prediction of removable model latency.
+The separately loaded TCM API reports unavailable, fake, and zero geometry.
+Neither observation proves SPERT buffer placement. The attribution includes
+waits and timer overhead. It is not a prediction of removable model latency.
 
 Earlier board reports (`~/Projects/llm-bench/COPY-CURVE-REPORT.md` and
 `PLAN-tcm-dbuf.md`) rejected larger copy chunks and barrier removal under an
 older real-TCM setup. That setup reported decode gains from real TCM. The
-[OpenSolvers K1 study](https://www.opensolvers.com/apps/llamacpp.html) instead
-found staging harmful on another board. These differing conditions justify
-testing the existing direct-memory path on the current verified runtime.
-No permissions, kernel modules or clock settings are changed.
+[OpenSolvers K1 study](https://www.opensolvers.com/apps/llamacpp.html) found
+staging harmful on another board. These differing conditions justify a test
+of the existing direct-memory path on the current verified runtime. No
+permission, kernel module, or clock setting changes.
 
 The generator modifies only the buffer selection in production Q4_0
-`forward_mul_mat`, with K32/N16 traits, IME1, K divisible by 32 and N divisible
-by 16. Setting the selected buffer to null dispatches the existing direct
-branch. Activation quantization, packed weight data and kernel arithmetic
-remain unchanged. Other quantizations and traits retain their routing.
+`forward_mul_mat`, with K32/N16 traits, IME1, K divisible by 32, and N
+divisible by 16. A null value in the selected buffer dispatches the existing
+direct branch. Activation quantization, packed weight data, and kernel
+arithmetic remain unchanged. Other quantizations and traits retain their
+routing.
 
 | `SPINE_K1_GEMM_ROUTE` | Policy |
 | --- | --- |
@@ -35,45 +36,50 @@ remain unchanged. Other quantizations and traits retain their routing.
 | 3 | Bypass both; numerical checks only |
 
 All candidate code stays in an isolated CPU library. The original source,
-objects and deployed server remain intact. Keep full prompts, both required
-Qwen3.5 models, Q4_0 weights, F16 KV, four workers, batch/microbatch 32, direct
-decoding and the already accepted wide attention/layout 0.
+objects, and deployed server remain intact. Keep full prompts, both required
+Qwen3.5 models, Q4_0 weights, F16 KV, four workers, batch/microbatch 32,
+direct decoding, and the already accepted wide attention/layout 0.
 
 ## Predeclared protocol
 
-1. Verify baseline source/object/library/runtime/model hashes. Compile one
-   `ime.cpp.o` and link the isolated library using original build flags.
+1. Verify baseline source, object, library, runtime, and model hashes.
+   Compile one `ime.cpp.o` and link the isolated library with the original
+   build flags.
 2. Execute real GGML `MUL_MAT` graphs with SpaceMiT buffer allocation and
    weight repacking. Compare 104 cases per arm against the original library
-   and generated modes 0/1/2/3. Require bitwise equality, finite fully written
-   output, unchanged activation/packed weights and output/workspace guards.
-   Cover M1/2/3/4/7/16/32, small K32/64/256 and actual K2048/2560/6144/9216,
-   N16/32/64/128 and Q8 fallback cases. Require phase-specific dispatch logs
-   and real non-null staging buffers in the control.
+   and against generated modes 0, 1, 2, and 3. Require bitwise equality, a
+   finite fully written output, unchanged activation and packed weights, and
+   output/workspace guards. Cover M1/2/3/4/7/16/32, small K32/64/256 and
+   actual K2048/2560/6144/9216, N16/32/64/128, and Q8 fallback cases. Require
+   phase-specific dispatch logs and real non-null staging buffers in the
+   control.
 3. Screen production operators, including activation quantization and SPERT
-   synchronization: both models' embedding-to-FFN and FFN-to-embedding shapes,
-   M1 and M32. Six balanced blocks compare original library, generated mode 0
-   and the phase-specific bypass. Use at least 100 ms timed work per arm,
-   after initialization. Repeated weights are not cold model inference.
-4. Each phase needs at least two of four shapes with reduction greater than
-   both 3% and the full control range, no clear candidate regression and no
-   clear generated-control regression against the original library.
-5. Eligible prefill mode 1 receives cold ABBA 2B/512 and 4B/512 tests. Only
-   when both pass the same gate run 2B/2k and 4B/1k. One output token measures
-   prefill; it does not establish decode or answer quality.
+   synchronization: the embedding-to-FFN and FFN-to-embedding shapes of both
+   models, at M1 and M32. Six balanced blocks compare the original library,
+   generated mode 0, and the phase-specific bypass. Use at least 100 ms of
+   timed work per arm, after initialization. Repeated weights are not cold
+   model inference.
+4. Each phase needs at least two of four shapes with a reduction greater
+   than both 3% and the full control range. Require no clear candidate
+   regression and no clear generated-control regression against the original
+   library.
+5. Eligible prefill mode 1 receives cold ABBA 2B/512 and 4B/512 tests. Run
+   2B/2k and 4B/1k only when both pass the same gate. One output token
+   measures prefill. It does not establish decode or answer quality.
 6. Independently eligible single-row mode 2 receives cold ABBA requests for
-   each model: full 256-token prompt, 64 generated tokens, ignore EOS. Require
-   every requested token, equal input/text/token hashes, uncached counts,
-   positive timings and correct per-phase activation. Both models must pass
-   the decode-time gate, without a clear prefill regression. This is sustained
-   bounded decode throughput, not complete-answer quality.
-7. A qualifying mode remains opt-in pending independent confirmation on long
-   context and complete answers. No candidate becomes the default here.
+   each model: a full 256-token prompt, 64 generated tokens, and ignore EOS.
+   Require every requested token, equal input/text/token hashes, uncached
+   counts, positive timings, and correct per-phase activation. Both models
+   must pass the decode-time gate, with no clear prefill regression. This
+   test is sustained bounded decode throughput. It is not complete-answer
+   quality.
+7. A qualifying mode remains opt-in until independent confirmation on long
+   context and on complete answers. No candidate becomes the default here.
 
 Board execution and local verified collection run in tmux. The board job
-uses the shared lock, waits at most 12 hours for it, and has a separate one-hour
-execution budget after lock acquisition. Original sources and unrelated jobs
-must remain intact. All artifact hashes are verified during collection.
+uses the shared lock, waits at most 12 hours for it, and has a separate
+one-hour execution budget after lock acquisition. Original sources and
+unrelated jobs must remain intact. Collection verifies all artifact hashes.
 
 ## Commands
 
@@ -86,16 +92,18 @@ python3 spacemit/bench/test-k1-fast-test.py
 python3 spacemit/bench/verify-k1-gemm-routing.py /absolute/path/to/completed/run
 ```
 
-The final verifier rechecks artifact hashes, workload/runtime configuration,
-phase activation and every required model stage. It recalculates operator and
-model gates from individual records instead of accepting the stored summary.
+The final verifier rechecks artifact hashes, workload and runtime
+configuration, phase activation, and every required model stage. It
+recalculates the operator and model gates from individual records. It does
+not accept the stored summary.
 
 ## Completed results
 
 Run `k1-gemm-routing-20261003-005740` completed with exit status **0** in
 **38.16 minutes**. Both phase-specific modes qualified. The comparison is
-against the **current optimized baseline**, including accepted wide attention
-and layout 0. Each comparison contains four cold ABBA requests, two per arm.
+against the **current optimized baseline**, which includes accepted wide
+attention and layout 0. Each comparison contains four cold ABBA requests,
+two per arm.
 
 ### Prefill: mode 1, M > 1
 
@@ -110,7 +118,7 @@ Full input prompts and one output token:
 
 ### Single-row/decode: mode 2, M = 1
 
-Full 256-token input prompts and all 64 requested output tokens captured:
+Full 256-token input prompts, and all 64 requested output tokens captured:
 
 | Model | Control mean decode | Bypass mean decode | Time reduction | Throughput, control → bypass | Control range |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -118,30 +126,36 @@ Full 256-token input prompts and all 64 requested output tokens captured:
 | 4B | 43.553046 s | 31.087887 s | **28.62%** | 1.47 → 2.06 token/s | 1.75% |
 
 Mode 2 can also affect single-row work during prefill. Neither model showed
-clear prefill regression in these requests. All six model comparisons passed
-the predeclared time-reduction gate. These are engineering screens with two
-samples per arm; they do not establish a population confidence interval.
-Mode 3 passed numerical checks only; combined-mode model performance was not
-tested, and the separate gains must not be added together.
+a clear prefill regression in these requests. All six model comparisons
+passed the predeclared time-reduction gate. These results are engineering
+screens with two samples per arm. They do not establish a population
+confidence interval. Mode 3 passed numerical checks only. Combined-mode
+model performance was not tested, and the separate gains must not be added
+together.
 
 ### Verification and evidence boundary
 
-- All **24 model requests** passed matching input and output text/token hashes,
-  full requested token counts, uncached counts and actual phase activation.
-  Models, Q4_0 weights, F16 KV, four workers and batch/microbatch 32 were verified.
-- **104 native production graph cases per arm**, across five arms, gave identical
-  output hashes, unchanged input/packed weights and intact output/workspace guards.
-- **144 operator records**, six balanced blocks across eight production shapes,
-  qualified every candidate shape. Generated mode 0 had no clear regression
-  against the original library. Operator gains are not model speed estimates.
-- **236 collected artifact hashes** passed an independent verifier, which also
-  recalculated all required gates from individual records. End-of-run hashes
-  matched all **46 baseline source/object/build files** checked.
-- This run's lifecycle environment allowlist omitted `SPINE_K1_GEMM_ROUTE`.
-  Mandatory actual kernel markers independently prove each arm's mode,
-  eligibility and bypass. The verifier checks those markers and rejects a
-  conflicting environment value when recorded. Future runs also capture the
-  routing environment field; original raw records were preserved.
+- All **24 model requests** passed matching input and output text/token
+  hashes, full requested token counts, uncached counts, and actual phase
+  activation. The run verified models, Q4_0 weights, F16 KV, four workers,
+  and batch/microbatch 32.
+- **104 native production graph cases per arm**, across five arms, gave
+  identical output hashes, unchanged input and packed weights, and intact
+  output/workspace guards.
+- **144 operator records**, six balanced blocks across eight production
+  shapes, qualified every candidate shape. Generated mode 0 had no clear
+  regression against the original library. Operator gains are not model
+  speed estimates.
+- **236 collected artifact hashes** passed an independent verifier. That
+  verifier also recalculated all required gates from individual records.
+  End-of-run hashes matched all **46 baseline source/object/build files**
+  that the run checked.
+- The lifecycle environment allowlist of this run omitted
+  `SPINE_K1_GEMM_ROUTE`. Mandatory actual kernel markers independently prove
+  the mode, eligibility, and bypass of each arm. The verifier checks those
+  markers and rejects a recorded conflicting environment value. Future runs
+  also capture the routing environment field. The original raw records were
+  preserved.
 
 Evidence: [raw summary](../reports/raw/k1-gemm-routing-20261003-005740/summary.json),
 [independent verification](../reports/raw/k1-gemm-routing-20261003-005740/verification.json),
@@ -149,6 +163,6 @@ Evidence: [raw summary](../reports/raw/k1-gemm-routing-20261003-005740/summary.j
 [baseline preservation](../reports/raw/k1-gemm-routing-20261003-005740/baseline-preservation-check.json).
 
 The candidate remains **isolated and opt-in**. Independent long-context and
-complete-answer confirmation is required before default adoption. The
+complete-answer confirmation is necessary before default adoption. The
 64-token decode test establishes bounded throughput and exact agreement for
-these outputs; it does not establish complete-answer quality.
+these outputs. It does not establish complete-answer quality.

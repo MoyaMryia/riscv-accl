@@ -1,0 +1,15 @@
+PLEASE submit a bug report to https://github.com/llvm/llvm-project/issues/ and include the crash backtrace and instructions to reproduce the bug.
+Stack dump:
+0.	Program arguments: runtime/usr/lib/llvm-22/bin/llvm-mca -mtriple=riscv64 -mcpu=spacemit-x60 -mattr=+v,+zfh,+zvfh -iterations=3 -timeline probe.s
+ #0 0x00007fd32dcb661a llvm::sys::PrintStackTrace(llvm::raw_ostream&, int) (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x4eb661a)
+ #1 0x00007fd32dcb3e27 llvm::sys::RunSignalHandlers() (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x4eb3e27)
+ #2 0x00007fd32dcb7384 (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x4eb7384)
+ #3 0x00007fd32884bd70 (/lib/x86_64-linux-gnu/libc.so.6+0x3fd70)
+ #4 0x00007fd33187bfbd llvm::RISCVVType::getSameRatioLMUL(unsigned int, unsigned int) (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x8a7bfbd)
+ #5 0x00007fd331007447 (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x8207447)
+ #6 0x00007fd32f863fea llvm::mca::InstrBuilder::getOrCreateInstrDesc(llvm::MCInst const&, llvm::SmallVector<llvm::mca::Instrument*, 6u> const&) (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x6a63fea)
+ #7 0x00007fd32f8643e6 llvm::mca::InstrBuilder::createInstruction(llvm::MCInst const&, llvm::SmallVector<llvm::mca::Instrument*, 6u> const&) (/home/moyamryia/Projects/riscv-accl/lab/k1-mca-trial-20261011/runtime/usr/lib/x86_64-linux-gnu/libLLVM.so.22.1+0x6a643e6)
+ #8 0x000055e9304bb9d3 (runtime/usr/lib/llvm-22/bin/llvm-mca+0x1c9d3)
+ #9 0x00007fd328835ca8 (/lib/x86_64-linux-gnu/libc.so.6+0x29ca8)
+#10 0x00007fd328835d65 __libc_start_main (/lib/x86_64-linux-gnu/libc.so.6+0x29d65)
+#11 0x000055e9304b6741 (runtime/usr/lib/llvm-22/bin/llvm-mca+0x17741)

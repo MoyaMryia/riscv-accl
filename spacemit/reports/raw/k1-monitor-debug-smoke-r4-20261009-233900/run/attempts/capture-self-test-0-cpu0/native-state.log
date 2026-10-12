@@ -1,0 +1,181 @@
+
+info registers
+ra             0x233260	0x233260
+sp             0x3fdb9c2e70	0x3fdb9c2e70
+gp             0x754100	0x754100
+tp             0x3fb865bba0	0x3fb865bba0
+t0             0x6	6
+t1             0x3fb8694fec	273676849132
+t2             0x5eaa20	6203936
+fp             0x3fdb9c2ea0	0x3fdb9c2ea0
+s1             0x452f	17711
+a0             0x0	0
+a1             0xc	12
+a2             0x2b6f48	2846536
+a3             0x3fdb9c2e40	274267385408
+a4             0x1000	4096
+a5             0x0	0
+a6             0x100	256
+a7             0x81	129
+s2             0xc	12
+s3             0x3fb88a7080	273679020160
+s4             0x851478	8721528
+s5             0x310128	3211560
+s6             0x2	2
+s7             0x3fb88a7068	273679020136
+s8             0x851476	8721526
+s9             0x3fb85c67f0	273676003312
+s10            0x2	2
+s11            0x3fb88a7080	273679020160
+t3             0x3fb88db260	273679233632
+t4             0x1b368	111464
+t5             0x4	4
+t6             0x1f26624	32663076
+pc             0x3fb8694ff4	0x3fb8694ff4 <__GI_kill+8>
+
+thread apply all bt full
+
+Thread 1 (Thread 0x3fb865b440 (LWP 17711) "python3.12"):
+#0  0x0000003fb8694ff4 in __GI_kill () at ../sysdeps/unix/syscall-template.S:120
+No locals.
+#1  0x0000000000233260 in ?? ()
+No symbol table info available.
+#2  0x00000000000c6ef8 in ?? ()
+No symbol table info available.
+#3  0x0000000000081e8a in PyObject_Vectorcall ()
+No symbol table info available.
+#4  0x0000000000035870 in _PyEval_EvalFrameDefault ()
+No symbol table info available.
+#5  0x000000000015896e in PyEval_EvalCode ()
+No symbol table info available.
+#6  0x00000000001a23a8 in ?? ()
+No symbol table info available.
+#7  0x00000000001a245a in ?? ()
+No symbol table info available.
+#8  0x00000000001a45e6 in _PyRun_SimpleFileObject ()
+No symbol table info available.
+#9  0x00000000001a4d1e in PyRun_AnyFileExFlags ()
+No symbol table info available.
+#10 0x00000000001c3bb0 in ?? ()
+No symbol table info available.
+#11 0x00000000001c3fd2 in Py_BytesMain ()
+No symbol table info available.
+#12 0x0000003fb86847bc in __libc_start_call_main (main=main@entry=0x3bc36, argc=argc@entry=4, argv=argv@entry=0x3fdb9c3578) at ../sysdeps/nptl/libc_start_call_main.h:58
+        self = <optimized out>
+        result = <optimized out>
+        unwind_buf = {cancel_jmp_buf = {{jmp_buf = {{__pc = 273676781450, __regs = {274267387152, 274267387256, 4, 0, 6204856, 244790, 274267387296, 273679228176, 273679228936, 6204856, 184263217844, 184263837592}, __sp = 274267386848, __fpregs = {0 <repeats 12 times>}}}, mask_was_saved = 0}}, priv = {pad = {0x0, 0x0, 0x2ae6fc8450, 0x4}, data = {prev = 0x0, cleanup = 0x0, canceltype = -419658672}}}
+        not_first_call = <optimized out>
+#13 0x0000003fb8684868 in __libc_start_main_impl (main=0x3bc36, argc=4, argv=0x3fdb9c3578, init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, stack_end=<optimized out>) at ./csu/libc-start.c:360
+No locals.
+#14 0x000000000003bc34 in _start ()
+No symbol table info available.
+
+info proc mappings
+process 17711
+Mapped address spaces:
+
+          Start Addr           End Addr       Size     Offset  Perms  objfile
+             0x10000           0x5ea000   0x5da000        0x0  r-xp   /usr/bin/python3.12
+            0x5ea000           0x5eb000     0x1000   0x5d9000  r--p   /usr/bin/python3.12
+            0x5eb000           0x755000   0x16a000   0x5da000  rw-p   /usr/bin/python3.12
+            0x755000           0x758000     0x3000        0x0  rw-p   [heap]
+            0x758000           0x96b000   0x213000        0x0  rw-p   [heap]
+        0x3fb7500000       0x3fb7600000   0x100000        0x0  rw-p   
+        0x3fb7600000       0x3fb7964000   0x364000        0x0  r-xp   /usr/lib/riscv64-linux-gnu/libcrypto.so.3
+        0x3fb7964000       0x3fb79b9000    0x55000   0x364000  r--p   /usr/lib/riscv64-linux-gnu/libcrypto.so.3
+        0x3fb79b9000       0x3fb79bc000     0x3000   0x3b9000  rw-p   /usr/lib/riscv64-linux-gnu/libcrypto.so.3
+        0x3fb79bc000       0x3fb79bf000     0x3000        0x0  rw-p   
+        0x3fb7a00000       0x3fb7c00000   0x200000        0x0  rw-p   
+        0x3fb7c00000       0x3fb847c000   0x87c000        0x0  r--p   /usr/lib/locale/locale-archive
+        0x3fb8492000       0x3fb849d000     0xb000        0x0  r-xp   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-riscv64-linux-gnu.so
+        0x3fb849d000       0x3fb849e000     0x1000     0xb000  r--p   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-riscv64-linux-gnu.so
+        0x3fb849e000       0x3fb84a0000     0x2000     0xc000  rw-p   /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-riscv64-linux-gnu.so
+        0x3fb84a0000       0x3fb8602000   0x162000        0x0  rw-p   
+        0x3fb8602000       0x3fb865b000    0x59000        0x0  r--p   /usr/lib/locale/C.utf8/LC_CTYPE
+        0x3fb865b000       0x3fb865d000     0x2000        0x0  rw-p   
+        0x3fb865d000       0x3fb87ca000   0x16d000        0x0  r-xp   /usr/lib/riscv64-linux-gnu/libc.so.6
+        0x3fb87ca000       0x3fb87cd000     0x3000   0x16d000  r--p   /usr/lib/riscv64-linux-gnu/libc.so.6
+        0x3fb87cd000       0x3fb87cf000     0x2000   0x170000  rw-p   /usr/lib/riscv64-linux-gnu/libc.so.6
+        0x3fb87cf000       0x3fb87db000     0xc000        0x0  rw-p   
+        0x3fb87db000       0x3fb87fe000    0x23000        0x0  r-xp   /usr/lib/riscv64-linux-gnu/libexpat.so.1.9.1
+        0x3fb87fe000       0x3fb8800000     0x2000    0x23000  r--p   /usr/lib/riscv64-linux-gnu/libexpat.so.1.9.1
+        0x3fb8800000       0x3fb8801000     0x1000    0x25000  rw-p   /usr/lib/riscv64-linux-gnu/libexpat.so.1.9.1
+        0x3fb8801000       0x3fb881a000    0x19000        0x0  r-xp   /usr/lib/riscv64-linux-gnu/libz.so.1.3.1.zlib-ng
+        0x3fb881a000       0x3fb881b000     0x1000    0x18000  r--p   /usr/lib/riscv64-linux-gnu/libz.so.1.3.1.zlib-ng
+        0x3fb881b000       0x3fb881c000     0x1000    0x19000  rw-p   /usr/lib/riscv64-linux-gnu/libz.so.1.3.1.zlib-ng
+        0x3fb881c000       0x3fb8898000    0x7c000        0x0  r-xp   /usr/lib/riscv64-linux-gnu/libm.so.6
+        0x3fb8898000       0x3fb8899000     0x1000    0x7b000  r--p   /usr/lib/riscv64-linux-gnu/libm.so.6
+        0x3fb8899000       0x3fb889a000     0x1000    0x7c000  rw-p   /usr/lib/riscv64-linux-gnu/libm.so.6
+        0x3fb889a000       0x3fb889c000     0x2000        0x0  rw-p   
+        0x3fb889d000       0x3fb88a5000     0x8000        0x0  r-xp   /usr/lib/python3.12/lib-dynload/_json.cpython-312-riscv64-linux-gnu.so
+        0x3fb88a5000       0x3fb88a6000     0x1000     0x7000  r--p   /usr/lib/python3.12/lib-dynload/_json.cpython-312-riscv64-linux-gnu.so
+        0x3fb88a6000       0x3fb88a7000     0x1000     0x8000  rw-p   /usr/lib/python3.12/lib-dynload/_json.cpython-312-riscv64-linux-gnu.so
+        0x3fb88a7000       0x3fb88ab000     0x4000        0x0  rw-p   
+        0x3fb88ab000       0x3fb88b2000     0x7000        0x0  r--s   /usr/lib/riscv64-linux-gnu/gconv/gconv-modules.cache
+        0x3fb88b2000       0x3fb88b4000     0x2000        0x0  r--p   [vvar]
+        0x3fb88b4000       0x3fb88b6000     0x2000        0x0  r-xp   [vdso]
+        0x3fb88b6000       0x3fb88d8000    0x22000        0x0  r-xp   /usr/lib/riscv64-linux-gnu/ld-linux-riscv64-lp64d.so.1
+        0x3fb88d8000       0x3fb88da000     0x2000    0x21000  r--p   /usr/lib/riscv64-linux-gnu/ld-linux-riscv64-lp64d.so.1
+        0x3fb88da000       0x3fb88dc000     0x2000    0x23000  rw-p   /usr/lib/riscv64-linux-gnu/ld-linux-riscv64-lp64d.so.1
+        0x3fdb9a3000       0x3fdb9c4000    0x21000        0x0  rw-p   [stack]
+
+info sharedlibrary
+From                To                  Syms Read   Shared Object Library
+0x0000003fb88b6ce0  0x0000003fb88ccd4e  Yes         /lib/ld-linux-riscv64-lp64d.so.1
+0x0000003fb8828540  0x0000003fb8865c10  Yes         /lib/riscv64-linux-gnu/libm.so.6
+0x0000003fb8803490  0x0000003fb88113c2  Yes (*)     /lib/riscv64-linux-gnu/libz.so.1
+0x0000003fb87de610  0x0000003fb87f31a0  Yes (*)     /lib/riscv64-linux-gnu/libexpat.so.1
+0x0000003fb86842b0  0x0000003fb8764388  Yes         /lib/riscv64-linux-gnu/libc.so.6
+0x0000003fb8495f20  0x0000003fb849982a  Yes (*)     /usr/lib/python3.12/lib-dynload/_hashlib.cpython-312-riscv64-linux-gnu.so
+0x0000003fb76b2d00  0x0000003fb784f632  Yes (*)     /lib/riscv64-linux-gnu/libcrypto.so.3
+0x0000003fb889ee90  0x0000003fb88a3142  Yes (*)     /usr/lib/python3.12/lib-dynload/_json.cpython-312-riscv64-linux-gnu.so
+(*): Shared library is missing debugging information.
+
+info threads
+  Id   Target Id                                    Frame 
+* 1    Thread 0x3fb865b440 (LWP 17711) "python3.12" 0x0000003fb8694ff4 in __GI_kill () at ../sysdeps/unix/syscall-template.S:120
+
+x/24i $pc-24
+   0x3fb8694fdc <__GI___sigprocmask+26>:	ld	a5,-488(a5)
+   0x3fb8694fe0 <__GI___sigprocmask+30>:	add	a5,a5,tp
+   0x3fb8694fe2 <__GI___sigprocmask+32>:	sw	a0,0(a5)
+   0x3fb8694fe4 <__GI___sigprocmask+34>:	li	a0,-1
+   0x3fb8694fe6 <__GI___sigprocmask+36>:	j	0x3fb8694fd0 <__GI___sigprocmask+14>
+   0x3fb8694fe8:	unimp
+   0x3fb8694fea:	nop
+   0x3fb8694fec <__GI_kill>:	li	a7,129
+   0x3fb8694ff0 <__GI_kill+4>:	ecall
+=> 0x3fb8694ff4 <__GI_kill+8>:	lui	a7,0xfffff
+   0x3fb8694ff6 <__GI_kill+10>:	bltu	a7,a0,0x3fb8694ffc <__GI_kill+16>
+   0x3fb8694ffa <__GI_kill+14>:	ret
+   0x3fb8694ffc <__GI_kill+16>:	j	0x3fb86848d8 <__syscall_error>
+   0x3fb8695000 <__GI_kill+20>:	ret
+   0x3fb8695002 <__GI_kill+22>:	unimp
+   0x3fb8695004 <sigpending>:	addi	sp,sp,-16
+   0x3fb8695006 <sigpending+2>:	li	a7,136
+   0x3fb869500a <sigpending+6>:	sd	s0,8(sp)
+   0x3fb869500c <sigpending+8>:	addi	s0,sp,16
+   0x3fb869500e <sigpending+10>:	li	a1,8
+   0x3fb8695010 <sigpending+12>:	ecall
+   0x3fb8695014 <sigpending+16>:	lui	a5,0xfffff
+   0x3fb8695016 <sigpending+18>:	bltu	a5,a0,0x3fb8695022 <sigpending+30>
+   0x3fb869501a <sigpending+22>:	ld	s0,8(sp)
+
+x/16gx $sp
+0x3fdb9c2e70:	0x0000452f0000000a	0x000000000000000c
+0x3fdb9c2e80:	0x0000003fb85c67f0	0x00000000007537c8
+0x3fdb9c2e90:	0x0000003fdb9c2ee0	0x00000000000c6ef8
+0x3fdb9c2ea0:	0x0000000000851462	0x0000000000600e98
+0x3fdb9c2eb0:	0x0000003fb7a2cf90	0x00000000007537c8
+0x3fdb9c2ec0:	0x00000000007537c8	0x0000003fb85c67f0
+0x3fdb9c2ed0:	0x0000003fdb9c2f00	0x0000000000081e8a
+0x3fdb9c2ee0:	0x0000003fb88a7020	0x0000003fb88a7090
+
+x/16gx $s1
+Cannot access memory at address 0x452f
+
+x/16gx $a0
+Cannot access memory at address 0x0
+
+py-bt
+Undefined command: "py-bt".  Try "help".

@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "plan_sha256": "15279cde4c94835c06e2b2c08dacfcf448038b49cd7ea384674b82102469706e",
+  "scope": "host screen throughput; forty fixed cases; no K1 timing claim",
+  "host_affinity": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "K1_performance": "unverified",
+  "cases": [
+    {
+      "id": "conv-C8192-T32-r3",
+      "arms": {
+        "control": {
+          "dump_sha256": "0fd11503ebbb37c276db45c1de708984d9cc96f0425d07ef5359f3282f2678c6",
+          "dump_bytes": 2425472,
+          "metrics": {
+            "instructions": 2632352,
+            "vector": 726016,
+            "ime": 0,
+            "loads": 2572456,
+            "stores": 573552,
+            "load_bytes": 10683584,
+            "store_bytes": 2294656,
+            "vector_load_bytes": 9535488,
+            "vector_store_bytes": 2195456
+          },
+          "roi_threads": 4,
+          "pc_range": [
+            89864,
+            92022
+          ]
+        },
+        "candidate": {
+          "dump_sha256": "0fd11503ebbb37c276db45c1de708984d9cc96f0425d07ef5359f3282f2678c6",
+          "dump_bytes": 2425472,
+          "metrics": {
+            "instructions": 3080368,
+            "vector": 622592,
+            "ime": 0,
+            "loads": 2508912,
+            "stores": 286796,
+            "load_bytes": 10822432,
+            "store_bytes": 1147488,
+            "vector_load_bytes": 8388608,
+            "vector_store_bytes": 1048576
+          },
+          "roi_threads": 4,
+          "pc_range": [
+            89864,
+            92022
+          ]
+        }
+      },
+      "status": "needs-board",
+      "interpretation": "instruction and memory changes are signals; no K1 speed verdict",
+      "change_percent": {
+        "instructions": 17.01960831985996,
+        "vector": -14.245416078984485,
+        "loads": -2.4701685859738753,
+        "stores": -49.99651295784864,
+        "load_bytes": 1.2996387729061754,
+        "store_bytes": -49.99302727729123,
+        "vector_load_bytes": -12.02749140893471,
+        "vector_store_bytes": -52.23880597014925
+      }
+    }
+  ],
+  "status": "screen-complete-needs-board",
+  "commands": [
+    {
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+        "--version"
+      ],
+      "log": "qemu-version.log",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "cc",
+        "-std=c11",
+        "-O2",
+        "-shared",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/include",
+        "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c",
+        "-o",
+        "/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/metrics.so",
+        "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../include/glib-2.0",
+        "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../lib/glib-2.0/include",
+        "-L/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../lib",
+        "-lglib-2.0"
+      ],
+      "log": "plugin-build.log",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+        "-cpu",
+        "rv64,v=true,vlen=256,elen=64,zfh=true,zvfh=true",
+        "-plugin",
+        "/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/metrics.so,start=0x15f08,end=0x16776,out=/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/conv-C8192-T32-r3-control.json",
+        "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/conv-plan/conv-profile",
+        "8192",
+        "32",
+        "0",
+        "/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/conv-C8192-T32-r3-control.bin"
+      ],
+      "log": "conv-C8192-T32-r3-control.log",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+        "-cpu",
+        "rv64,v=true,vlen=256,elen=64,zfh=true,zvfh=true",
+        "-plugin",
+        "/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/metrics.so,start=0x15f08,end=0x16776,out=/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/conv-C8192-T32-r3-candidate.json",
+        "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/conv-plan/conv-profile",
+        "8192",
+        "32",
+        "1",
+        "/home/moyamryia/Projects/riscv-accl/lab/k1-host-speed-20261011/run-server/serial-2/conv-C8192-T32-r3/conv-C8192-T32-r3-candidate.bin"
+      ],
+      "log": "conv-C8192-T32-r3-candidate.log",
+      "returncode": 0
+    }
+  ],
+  "tool_sha256": {
+    "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64": "d06bd02796a961c87c0b11519490b30a3b06288008c0717bfa40ce7859f6dbe6",
+    "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/include/qemu-plugin.h": "335d4e472067e914add598b60d1f7cf0dc029cd48f62f66656d6a88c54d8d9f9",
+    "/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-nm": "f815f195a8342a455e63a155381c55847b15a1447a0b0d10971e11aa00a93fe7",
+    "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c": "efc25eb06201eb7f7dd29204164a3ca55dc48f3264cb92f38e446f08d59ab694"
+  },
+  "host_seconds": 0.3732794370000647,
+  "plugin_sha256": "c44e3a5631f46643356f95c6055bd199048c4bdafab8878a6f4f29de3239f142"
+}

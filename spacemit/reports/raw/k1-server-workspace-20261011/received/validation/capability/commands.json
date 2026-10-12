@@ -1,0 +1,190 @@
+[
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+      "--version"
+    ],
+    "label": "upstream-version",
+    "returncode": 0,
+    "host_seconds": 0.0037001419999569407
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-system-riscv64",
+      "-machine",
+      "help"
+    ],
+    "label": "upstream-machines",
+    "returncode": 0,
+    "host_seconds": 0.016085344000089208
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-gcc",
+      "-O2",
+      "-g",
+      "-static",
+      "-fno-pie",
+      "-no-pie",
+      "-march=rv64gcv",
+      "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/probe.c",
+      "-o",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/probe"
+    ],
+    "label": "build-probe",
+    "returncode": 0,
+    "host_seconds": 0.2646864739999728
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-nm",
+      "-S",
+      "--defined-only",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/probe"
+    ],
+    "label": "symbols",
+    "returncode": 0,
+    "host_seconds": 0.008497895000004974
+  },
+  {
+    "argv": [
+      "cc",
+      "-std=c11",
+      "-O2",
+      "-shared",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/include",
+      "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c",
+      "-o",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/metrics-upstream.so",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../include/glib-2.0",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../lib/glib-2.0/include",
+      "-L/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../lib",
+      "-lglib-2.0"
+    ],
+    "label": "build-plugin-upstream",
+    "returncode": 0,
+    "host_seconds": 0.16534475999992537
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "-plugin",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/metrics-upstream.so,start=0x10888,end=0x10904,out=/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/roi_copy.json",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/probe",
+      "rvv"
+    ],
+    "label": "roi_copy",
+    "returncode": 0,
+    "host_seconds": 0.03320202500003688
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "-plugin",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/metrics-upstream.so,start=0x10904,end=0x10956,out=/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/roi_direct.json",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/probe",
+      "rvv"
+    ],
+    "label": "roi_direct",
+    "returncode": 0,
+    "host_seconds": 0.015676855000037904
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/bin/qemu-riscv64",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/probe",
+      "ime"
+    ],
+    "label": "upstream-ime-capability",
+    "returncode": -4,
+    "host_seconds": 0.01574181600005886
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/bin/qemu-riscv64",
+      "--version"
+    ],
+    "label": "vendor-version",
+    "returncode": 0,
+    "host_seconds": 0.0038371749999441818
+  },
+  {
+    "argv": [
+      "cc",
+      "-std=c11",
+      "-O2",
+      "-shared",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/include",
+      "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c",
+      "-o",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/metrics-vendor.so",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../include/glib-2.0",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../lib/glib-2.0/include",
+      "-L/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/lib/pkgconfig/../../lib",
+      "-lglib-2.0"
+    ],
+    "label": "build-plugin-vendor",
+    "returncode": 0,
+    "host_seconds": 0.06445881100000861
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/bin/qemu-riscv64",
+      "-cpu",
+      "max,vlen=256",
+      "-plugin",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/metrics-vendor.so,start=0x10956,end=0x1097c,out=/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/vendor-ime.json",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/probe",
+      "ime"
+    ],
+    "label": "vendor-ime",
+    "returncode": 0,
+    "host_seconds": 0.016027837000024192
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/bin/qemu-system-riscv64",
+      "-M",
+      "virt",
+      "-cpu",
+      "max,vlen=256",
+      "-m",
+      "512M",
+      "-smp",
+      "2",
+      "-bios",
+      "/home/moyamryia/Projects/riscv-accl/lab/qemu-host-runtime/share/qemu/opensbi-riscv64-generic-fw_dynamic.bin",
+      "-kernel",
+      "/home/moyamryia/Projects/riscv-accl/env/qemu/vmlinux-rv64",
+      "-initrd",
+      "/home/moyamryia/Projects/riscv-accl/lab/server-validation-20261011/capability/initramfs.cpio.gz",
+      "-append",
+      "console=ttyS0 rdinit=/init",
+      "-nographic",
+      "-monitor",
+      "none",
+      "-no-reboot",
+      "-nic",
+      "none"
+    ],
+    "label": "os-boot",
+    "returncode": 0,
+    "host_seconds": 2.4259007200000724
+  }
+]

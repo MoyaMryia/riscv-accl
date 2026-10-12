@@ -1,0 +1,15 @@
+{
+  "session": "/home/moyamryia/.codex/sessions/2026/10/08/rollout-2026-10-08T10-08-58-01a11945-5c99-7741-9250-ae40a6847892.jsonl",
+  "timestamp": "2026-10-08T13:06:53.929Z",
+  "command": [
+    "/bin/bash",
+    "-lc",
+    "ssh -o BatchMode=yes -o ConnectTimeout=10 musepipro 'python3 - <<'\"'\"'PY'\"'\"'\nfrom pathlib import Path\nimport json,subprocess\nbase=Path(\"/home/moyamryia/Projects/riscv-accl-bench-2026-09-27\")\nprint(subprocess.run([\"tmux\",\"list-sessions\"],capture_output=True,text=True).stdout)\nfor name in (\"k1-local-candidates-C-repair2-20261008-190930\",\"k1-local-candidates-C1-repeat-20261008-202900\"):\n r=base/name;print(name,(r/\"phase\").read_text().strip())\n s=json.loads((r/\"summary.json\").read_text());print(\"status\",s[\"status\"])\n for arm,v in s.get(\"arms\",{}).items():print(arm,v[\"status\"],v.get(\"error\"))\n if (r/\"exit-status\").exists():print(\"exit\",(r/\"exit-status\").read_text())\n for p in r.glob(\"*/result.json\"):\n  if p.parent.name==\"C1-vs-C0\":continue\n  s=json.loads(p.read_text());print(p.parent.name,s[\"status\"])\n  for row in s[\"comparisons\"]:\n   if row[\"tokens\"]==2048 or s[\"status\"]!=\"running\":print(row[\"model\"],row[\"tokens\"],row[\"outputs\"],row[\"passed\"],{k:{x:v[x] for x in (\"reduction_pct\",\"control_range_pct\",\"advance\",\"clear_regression\")} for k,v in row[\"metrics\"].items()})\n for p in r.glob(\"*failure.txt\"):print(p.name,p.read_text()[-1500:])\n logs=sorted(r.glob(\"**/*.server.log\"),key=lambda p:p.stat().st_mtime)\n if logs:\n  p=logs[-1];print(\"latest\",p.relative_to(r));print(\"\\n\".join(p.read_text().splitlines()[-3:]))\nPY'"
+  ],
+  "exit_code": 139,
+  "duration": {
+    "secs": 19,
+    "nanos": 600620858
+  },
+  "historical_environment": "not captured"
+}

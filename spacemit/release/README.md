@@ -2,26 +2,26 @@
 
 This package reproduces the measured Qwen3.5 2B/4B infrastructure source on
 SpaceMiT's llama.cpp revision
-`a990751d55a4c54acf2bb77d44282c2093652359`. It includes the integrated wide RVV
-F16 attention path and the opt-in Q4_0 IME staging policy. It retains complete
-prompts, model weights, quantization and output vocabulary.
+`a990751d55a4c54acf2bb77d44282c2093652359`. The package includes the integrated
+wide RVV F16 attention path and the opt-in Q4_0 IME staging policy. The package
+keeps complete prompts, model weights, quantization and output vocabulary.
 
-The baseline profile enables the existing RVV attention and uses routing 0;
-the optimized profile uses the same attention and routing 3. Their comparison
-measures incremental routing, matching the October 6 replication. Historical
-generic-versus-RVV comparisons use a different baseline; do not multiply or
-add those percentages.
+The baseline profile enables the existing RVV attention and uses routing 0.
+The optimized profile uses the same attention and routing 3. Their comparison
+measures incremental routing. This comparison matches the October 6
+replication. Historical generic-versus-RVV comparisons use a different
+baseline. Do not multiply or add those percentages.
 
-Routing remains opt-in: performance and tested output identity are established,
-while the overall absolute useful-answer gate remains open due to errors also
-present in the baseline. MTP, hybrid SSM, compact layouts and the unsuccessful
-K32 specialization are not enabled by this package. ARM/x86 comparison is
-outside the release scope, as requested by the user.
+Routing remains opt-in. Performance and tested output identity are established.
+The overall absolute useful-answer gate remains open because the baseline also
+contains errors. MTP, hybrid SSM, compact layouts and the unsuccessful K32
+specialization are not enabled by this package. The ARM/x86 comparison is
+outside the release scope, as the user requested.
 
 ## Install and build
 
 Use a separate clean checkout on the K1 board. The older `apply-patches.sh`
-targets `5ad05d8` and is a historical package; do not apply both packages to one
+targets `5ad05d8` and is a historical package. Do not apply both packages to one
 checkout.
 
 ```bash
@@ -31,12 +31,12 @@ python3 /path/to/riscv-accl/spacemit/release/apply-release.py spacemit-release-s
 bash /path/to/riscv-accl/spacemit/release/build.sh spacemit-release-source spacemit-release-build
 ```
 
-The patch helper checks the exact clean revision, original source hashes and
-patch checksum, then requires all patched files to match the measured source.
-The build blocks with a four-hour compilation limit, four build workers, GCC14,
-IME1/SPERT, GPU off by default and the recorded CPU settings. Dependencies are
-external: install the matching vendor compiler, SPERT and TCM runtime first.
-The board defaults are:
+The patch helper checks the exact clean revision, the original source hashes and
+the patch checksum. Then it requires all patched files to match the measured
+source. The build applies a four-hour compilation limit, four build workers,
+GCC14, IME1/SPERT, GPU off by default and the recorded CPU settings.
+Dependencies are external. Install the matching vendor compiler, SPERT and TCM
+runtime first. The board defaults are:
 
 - `K1_CC=$HOME/Projects/llm-bench/.toolchain/gcc14/usr/bin/gcc-14`
 - `K1_CXX=$HOME/Projects/llm-bench/.toolchain/gcc14/usr/bin/g++-14`
@@ -44,15 +44,16 @@ The board defaults are:
 - `K1_TCM_DIR=$HOME/Projects/llm-bench/.toolchain/spine-tcm`
 
 Override these variables for another installation. Keep the TCM shim and SPERT
-libraries in the runtime search path; missing runtime dependencies change the
+libraries in the runtime search path. Missing runtime dependencies change the
 tested execution environment. The package does not claim physical TCM placement.
 
 ## Run local inference
 
-Supply a local model matching the [manifest](manifest.json). The exact tested
-GGUF hashes are pinned; model preparation is described in the
-[integration guide](../README.md). No weights or credentials are distributed.
-Presence of MTP tensors does not enable speculative decoding.
+Supply a local model that matches the [manifest](manifest.json). The exact
+tested GGUF hashes are pinned. The
+[integration guide](../README.md) describes the model preparation. No weights
+or credentials are distributed. The presence of MTP tensors does not enable
+speculative decoding.
 
 ```bash
 python3 /path/to/riscv-accl/spacemit/release/run-server.py \
@@ -68,7 +69,7 @@ one server slot, GPU layers0 and localhost port8080. The launcher verifies the
 model hash, clears inherited experimental `SPINE_` settings, and starts plain
 direct decoding. The local server accepts OpenAI-compatible chat requests.
 It needs no cloud API. Benchmark requests explicitly use seed42, temperature0,
-thinking off and zero prompt reuse; the user can supply these chat settings.
+thinking off and zero prompt reuse. The user can supply these chat settings.
 
 ## Verification and evidence
 
@@ -80,12 +81,12 @@ Fresh board verification **passed** in 57.01 minutes as
 `k1-release-check-20261007-125712` through direct SSH `musepipro`. The complete
 clean build passes 104 production graph cases per routing arm with exact
 identity to the preserved baseline. All four cold Unicode code answers stop
-naturally and pass 106 held-out checks each. Paired text matches exactly, as
-does the prior control text; outputs are 508 tokens for 2B and 521 for 4B.
-Board and collector exit statuses are zero. The archive's exact file list and
-all 35 artifact hashes, 18 staged-code hashes and three collector-code hashes
-pass independent verification, alongside post-run source/build/runtime checks.
-See the [release verification report](../reports/2026-10-07-release-verification.md).
+naturally and pass 106 held-out checks each. The paired text matches exactly.
+The prior control text also matches exactly. Outputs are 508 tokens for 2B and
+521 for 4B. Board and collector exit statuses are zero. The archive's exact file
+list and all 35 artifact hashes, 18 staged-code hashes and three collector-code
+hashes pass independent verification, alongside post-run source/build/runtime
+checks. See the [release verification report](../reports/2026-10-07-release-verification.md).
 This is a release smoke test, not a new statistical performance or general
 quality claim. Its healthy 30-minute follow-up is closed after publication.
 
@@ -97,6 +98,6 @@ python3 spacemit/release/test-release.py
 Existing matched performance, full-document quality limits and negative results
 are in the [submission report](../reports/SUBMISSION-REPORT.md) and
 [evidence appendix](../reports/SUBMISSION-EVIDENCE.md). Raw large generated
-binary dumps and archives stay in the measurement workspace; Git contains
+binary dumps and archives stay in the measurement workspace. Git contains
 source, text records and checksum receipts. Reproduce the runner to regenerate
 them or obtain the retained files before running strict full-artifact verifiers.

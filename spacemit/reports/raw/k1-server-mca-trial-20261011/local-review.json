@@ -1,0 +1,140 @@
+{
+  "checks": {
+    "bootstrap-exit-status": true,
+    "exit-status": true,
+    "ime-load-exit-status": true,
+    "extra-exit-status": true,
+    "analysis_receipts": true,
+    "qemu-conv_receipts": true,
+    "conv-plan_receipts": true,
+    "b2_input_identity": true,
+    "b2_complete_dump_equal": true,
+    "b2_original_159_cases": true,
+    "b2_b2_159_cases": true,
+    "b2_four_workers": true,
+    "conv_four_complete_pairs": true,
+    "ime_load_64_cases": true
+  },
+  "mca_records": [
+    {
+      "id": "inventory-0-function-0",
+      "symbol": "_ZL23spine_k1_gdn_prefill128PfPKfS1_S1_fffS_",
+      "status": "analyzed",
+      "expected_instructions": 44
+    },
+    {
+      "id": "inventory-0-function-1",
+      "symbol": "_ZL21spine_k1_ssm_conv_cpuPK19ggml_compute_paramsP11ggml_tensor",
+      "status": "analyzed",
+      "expected_instructions": 484
+    },
+    {
+      "id": "inventory-0-function-2",
+      "symbol": "_ZL24ggml_gdn_decode_step_rvvPfPKfS1_S1_ffflS_",
+      "status": "analyzed",
+      "expected_instructions": 58
+    },
+    {
+      "id": "inventory-0-function-3",
+      "symbol": "_ZL49ggml_compute_forward_flash_attn_ext_f16_one_chunkPK19ggml_compute_paramsP11ggml_tensoriillPfl",
+      "status": "analyzed",
+      "expected_instructions": 1216
+    },
+    {
+      "id": "inventory-0-function-4",
+      "symbol": "_ZN16spacemit_kernels4ime116gemm_kernel_i8i4EmPKhS2_S2_Pfmmmm",
+      "status": "coverage-gap",
+      "expected_instructions": 1053
+    },
+    {
+      "id": "inventory-0-function-5",
+      "symbol": "_ZN16spacemit_kernels4ime116gemm_kernel_i8i8EmPKhS2_S2_Pfmmmm",
+      "status": "coverage-gap",
+      "expected_instructions": 324
+    },
+    {
+      "id": "inventory-1-function-0",
+      "symbol": "_ZN4Conv4stepER7Workersii",
+      "status": "analyzed",
+      "expected_instructions": 715
+    },
+    {
+      "id": "inventory-2-function-0",
+      "symbol": "_ZN4Conv4stepER7Workersii",
+      "status": "analyzed",
+      "expected_instructions": 709
+    },
+    {
+      "id": "gdn-r2-loop",
+      "symbol": "_ZL23spine_k1_gdn_prefill128PfPKfS1_S1_fffS_",
+      "status": "analyzed",
+      "expected_instructions": 40
+    }
+  ],
+  "ime_load_model": [
+    {
+      "control": 344,
+      "candidate": 311,
+      "iterations": 10,
+      "modeled_reduction_percent": 9.593023255813948
+    },
+    {
+      "control": 3404,
+      "candidate": 3101,
+      "iterations": 100,
+      "modeled_reduction_percent": 8.901292596944765
+    },
+    {
+      "control": 34004,
+      "candidate": 31001,
+      "iterations": 1000,
+      "modeled_reduction_percent": 8.83131396306317
+    }
+  ],
+  "K1_performance": "unvalidated",
+  "IME_full_kernel_schedule": "unresolved write variant for verified smt.vmadot encoding",
+  "initial_tool_fault": "SIGFPE with LMUL alone; E32 annotation passes; failure retained",
+  "host_affinity": "default 0-19; no host speed claim",
+  "conv_changes": {
+    "conv-C6144-T8": {
+      "instructions": 16.909873644190988,
+      "vector": -16.022099447513817,
+      "loads": -5.731984631067199,
+      "stores": -49.98521584861029,
+      "load_bytes": -2.0533849832036988,
+      "store_bytes": -49.97045615693689,
+      "vector_load_bytes": -14.66666666666666,
+      "vector_store_bytes": -57.89473684210527
+    },
+    "conv-C6144-T32": {
+      "instructions": 16.992304576751714,
+      "vector": -14.245416078984485,
+      "loads": -2.470840434045274,
+      "stores": -49.99535091308067,
+      "load_bytes": 1.2982915744830459,
+      "store_bytes": -49.99070424630029,
+      "vector_load_bytes": -12.02749140893471,
+      "vector_store_bytes": -52.23880597014925
+    },
+    "conv-C8192-T8": {
+      "instructions": 16.955518254301303,
+      "vector": -16.022099447513817,
+      "loads": -5.729711926411252,
+      "stores": -49.98890959098572,
+      "load_bytes": -2.048761662618326,
+      "store_bytes": -49.97783294910445,
+      "vector_load_bytes": -14.66666666666666,
+      "vector_store_bytes": -57.89473684210527
+    },
+    "conv-C8192-T32": {
+      "instructions": 17.01960831985996,
+      "vector": -14.245416078984485,
+      "loads": -2.4701685859738753,
+      "stores": -49.99651295784864,
+      "load_bytes": 1.2996387729061754,
+      "store_bytes": -49.99302727729123,
+      "vector_load_bytes": -12.02749140893471,
+      "vector_store_bytes": -52.23880597014925
+    }
+  }
+}

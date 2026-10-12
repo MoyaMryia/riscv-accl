@@ -1,12 +1,12 @@
 # Opt-in RVV tiled attention for Qwen3.5 256-dimensional heads
 
-> Dated campaign snapshot. Measurements apply to the stated workload and date.
-> Queued/running statements below are historical; use the
-> [current guide](../DOCS.md) and the [experiments index](README.md) for later results and current status.
+> Dated campaign snapshot. The measurements apply to the stated workload and date.
+> Queued and running statements below are historical. Use the
+> [current guide](../DOCS.md) and the [experiments index](README.md) for the later results and the current status.
 
-The integrated SpaceMiT CPU backend dispatches its RVV flash-attention kernels only when K and V head dimensions are at most 128. Both measured Qwen3.5 GGUFs declare K and V head dimensions of 256. The measured F16 KV path therefore reaches the generic CPU implementation. The server logs show a 4B 32-token prefill batch taking 3.73 s near context 256 and 21.32 s near 8k; this motivated an isolated attention experiment.
+The integrated SpaceMiT CPU backend dispatches its RVV flash-attention kernels only when the K and V head dimensions are at most 128. Both measured Qwen3.5 GGUFs declare K and V head dimensions of 256. The measured F16 KV path therefore reaches the generic CPU implementation. The server logs show a 4B 32-token prefill batch that takes 3.73 s near context 256 and 21.32 s near 8k. This result motivated an isolated attention experiment.
 
-[The candidate patch](2026-09-26-wide-rvv-fa.patch) adds `SPINE_FA_WIDE_TILE=1`. It sends only 256/256 F16 K/V batches with at least 16 query tokens to the existing RVV **tiled** implementation. Single-token and short-tail decoding keep the generic path. The 256-wide one-chunk RVV implementation is deliberately excluded: it contains vector loads with a 128-lane maximum and has not been adapted for 256 elements. The tiled helpers loop across the dimension, and the patch extends only their shape assertion. The wide path uses its per-thread work buffer instead of the shared TCM pointer, avoiding any dependence on TCM capacity or sharing semantics. It also allocates the cache-line padding already used by each tiled worker in both CPU work-size calculations.
+[The candidate patch](2026-09-26-wide-rvv-fa.patch) adds `SPINE_FA_WIDE_TILE=1`. It sends only 256/256 F16 K/V batches with at least 16 query tokens to the existing RVV **tiled** implementation. Single-token and short-tail decoding keep the generic path. The 256-wide one-chunk RVV implementation is deliberately excluded: it contains vector loads with a 128-lane maximum and has not been adapted for 256 elements. The tiled helpers loop across the dimension, and the patch extends only their shape assertion. The wide path uses its per-thread work buffer instead of the shared TCM pointer. Thus the wide path does not depend on the TCM capacity or the sharing semantics. It also allocates the cache-line padding already used by each tiled worker in both CPU work-size calculations.
 
 ## Outcome: superseded
 

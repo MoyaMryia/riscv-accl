@@ -1,0 +1,186 @@
+[
+  {
+    "argv": [
+      "qemu-riscv64",
+      "--version"
+    ],
+    "label": "upstream-version",
+    "returncode": 0,
+    "host_seconds": 0.008457176008960232
+  },
+  {
+    "argv": [
+      "qemu-system-riscv64",
+      "-machine",
+      "help"
+    ],
+    "label": "upstream-machines",
+    "returncode": 0,
+    "host_seconds": 0.017681566008832306
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-gcc",
+      "-O2",
+      "-g",
+      "-static",
+      "-fno-pie",
+      "-no-pie",
+      "-march=rv64gcv",
+      "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/probe.c",
+      "-o",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/probe"
+    ],
+    "label": "build-probe",
+    "returncode": 0,
+    "host_seconds": 0.3148543129937025
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-nm",
+      "-S",
+      "--defined-only",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/probe"
+    ],
+    "label": "symbols",
+    "returncode": 0,
+    "host_seconds": 0.005722507004975341
+  },
+  {
+    "argv": [
+      "cc",
+      "-std=c11",
+      "-O2",
+      "-shared",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/usr/local/include",
+      "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c",
+      "-o",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/metrics-upstream.so",
+      "-I/usr/include/glib-2.0",
+      "-I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+      "-lglib-2.0"
+    ],
+    "label": "build-plugin-upstream",
+    "returncode": 0,
+    "host_seconds": 0.11453071399591863
+  },
+  {
+    "argv": [
+      "qemu-riscv64",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "-plugin",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/metrics-upstream.so,start=0x10888,end=0x10904,out=/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/roi_copy.json",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/probe",
+      "rvv"
+    ],
+    "label": "roi_copy",
+    "returncode": 0,
+    "host_seconds": 0.03380639699753374
+  },
+  {
+    "argv": [
+      "qemu-riscv64",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "-plugin",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/metrics-upstream.so,start=0x10904,end=0x10956,out=/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/roi_direct.json",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/probe",
+      "rvv"
+    ],
+    "label": "roi_direct",
+    "returncode": 0,
+    "host_seconds": 0.03368652799690608
+  },
+  {
+    "argv": [
+      "qemu-riscv64",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/probe",
+      "ime"
+    ],
+    "label": "upstream-ime-capability",
+    "returncode": -4,
+    "host_seconds": 0.1161792350030737
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/bin/qemu-riscv64",
+      "--version"
+    ],
+    "label": "vendor-version",
+    "returncode": 0,
+    "host_seconds": 0.003811795002548024
+  },
+  {
+    "argv": [
+      "cc",
+      "-std=c11",
+      "-O2",
+      "-shared",
+      "-fPIC",
+      "-fvisibility=hidden",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/include",
+      "/home/moyamryia/Projects/riscv-accl/spacemit/bench/qemu-screen/metrics.c",
+      "-o",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/metrics-vendor.so",
+      "-I/usr/include/glib-2.0",
+      "-I/usr/lib/x86_64-linux-gnu/glib-2.0/include",
+      "-lglib-2.0"
+    ],
+    "label": "build-plugin-vendor",
+    "returncode": 0,
+    "host_seconds": 0.11423994699725881
+  },
+  {
+    "argv": [
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-feasibility-20261011/jdsk-qemu/bin/qemu-riscv64",
+      "-cpu",
+      "max,vlen=256",
+      "-plugin",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/metrics-vendor.so,start=0x10956,end=0x1097c,out=/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/vendor-ime.json",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/probe",
+      "ime"
+    ],
+    "label": "vendor-ime",
+    "returncode": 0,
+    "host_seconds": 0.01741652899363544
+  },
+  {
+    "argv": [
+      "qemu-system-riscv64",
+      "-M",
+      "virt",
+      "-cpu",
+      "rv64,v=true,vlen=256,elen=64",
+      "-m",
+      "512M",
+      "-smp",
+      "2",
+      "-bios",
+      "/usr/local/share/qemu/opensbi-riscv64-generic-fw_dynamic.bin",
+      "-kernel",
+      "/home/moyamryia/Projects/riscv-accl/env/qemu/vmlinux-rv64",
+      "-initrd",
+      "/home/moyamryia/Projects/riscv-accl/lab/k1-qemu-screen-smoke-r2-20261011/initramfs.cpio.gz",
+      "-append",
+      "console=ttyS0 rdinit=/init",
+      "-nographic",
+      "-monitor",
+      "none",
+      "-no-reboot",
+      "-nic",
+      "none"
+    ],
+    "label": "os-boot"
+  }
+]

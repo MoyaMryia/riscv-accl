@@ -1,8 +1,15 @@
 # Checkpoint MTP complete-answer results
 
-Run: `mtp-quality-20261003-173915` on `musepipro-wg`. Generation completed successfully: 24/24 requests in 5976.876 seconds (1 h 39 m 37 s). All requests stopped naturally, used complete task inputs, and passed cold-cache, prompt/output count and slot checks. The 21 collected artifact hashes are verified.
+Run: `mtp-quality-20261003-173915` on `musepipro-wg`. Generation completed
+successfully: 24 of 24 requests in 5,976.876 seconds (1 h 39 m 37 s). All
+requests stopped naturally, used complete task inputs, and passed the
+cold-cache, prompt/output count, and slot checks. The 21 collected artifact
+hashes are verified.
 
-Configuration: Qwen3.5 2B/4B Q4_0, F16 KV, four threads, batch/microbatch 32, context 6144, wide attention and layout 0. Direct decoding versus checkpoint MTP with draft length 3; routing 0 in both arms; `SPINE_SPEC_RS=0`. See [protocol](../experiments/2026-10-03-mtp-usefulness.md).
+Configuration: Qwen3.5 2B/4B Q4_0, F16 KV, four threads, batch/microbatch 32,
+context 6144, wide attention, and layout 0. Direct decoding against checkpoint
+MTP, with draft length 3, routing 0 in both arms, and `SPINE_SPEC_RS=0`. See
+the [protocol](../experiments/2026-10-03-mtp-usefulness.md).
 
 ## Complete-task latency
 
@@ -11,7 +18,11 @@ Configuration: Qwen3.5 2B/4B Q4_0, F16 KV, four threads, batch/microbatch 32, co
 | 2B | 884.978 s | 808.647 s | 8.63% | 4/6 |
 | 4B | 2220.327 s | 1882.481 s | 15.22% | 3/6 |
 
-Totals sum the six task responses in each arm, excluding startup, model loading and hash verification. They are descriptive single-pair observations. Output lengths differ: the faster interval-code answers are shorter and incorrect in both arms. The total reduction is therefore not a fixed-token kernel speedup or a successful-work-only speedup.
+The totals sum the six task responses in each arm. They exclude startup, model
+loading, and hash verification. They are descriptive single-pair observations.
+The output lengths differ: the faster interval-code answers are shorter and
+incorrect in both arms. The total reduction is therefore not a fixed-token
+kernel speedup, and not a successful-work-only speedup.
 
 | Model | Task | Direct | MTP | Time reduction | Tokens direct/MTP |
 | --- | --- | ---: | ---: | ---: | ---: |
@@ -30,30 +41,67 @@ Totals sum the six task responses in each arm, excluding startup, model loading 
 
 ## Correctness and usefulness
 
-- Routes: required facts and citation pass, identical answers on both models.
-- Tracing: correct cobalt in all arms; 2B omits every requested source marker in both arms. 4B includes them.
-- Arithmetic: 2B returns 79 instead of 78, identically in both arms; 4B returns the correct 78 identically.
-- Unicode code: all 106 functional checks pass in all four responses. The 4B MTP implementation differs from direct but passes the same checks. Latency falls 32.35% on 2B and 24.16% on 4B.
-- Interval code: all four implementations fail independent boundary tests. 2B direct raises IndexError; 2B MTP fails the touching/zero-length example. Both 4B implementations reject a zero-length interval that the specification says to ignore. Additional visible defects remain in free-window handling.
-- Chinese prose: required fact patterns pass in all arms; full usefulness also depends on examples, length and unsupported claims. MTP increases total latency by 71.64% on 2B and 14.46% on 4B. Draft acceptance is 290/552 (52.54%) and 182/342 (53.22%).
+- Routes: the required facts and the citation pass, and the answers are
+  identical on both models.
+- Tracing: cobalt is correct in all arms. 2B omits every requested source
+  marker in both arms, and 4B includes them.
+- Arithmetic: 2B returns 79 instead of 78, identically in both arms. 4B
+  returns the correct 78, identically.
+- Unicode code: all 106 functional checks pass in all four responses. The 4B
+  MTP implementation differs from direct, but it passes the same checks.
+  Latency falls 32.35% on 2B and 24.16% on 4B.
+- Interval code: all four implementations fail the independent boundary
+  tests. 2B direct raises IndexError, and the 2B MTP fails the touching and
+  zero-length example. Both 4B implementations reject a zero-length interval,
+  although the specification says to ignore it. Additional visible defects
+  remain in the free-window handling.
+- Chinese prose: the required fact patterns pass in all arms. Full usefulness
+  depends also on the examples, the length, and unsupported claims. MTP
+  increases the total latency by 71.64% on 2B and by 14.46% on 4B. Draft
+  acceptance is 290/552 (52.54%) and 182/342 (53.22%).
 
-There is no new failure in the predeclared binary fact/citation/code checks, but a shared failure does not mean both answers are useful. The absolute usefulness criteria cannot pass because every MTP interval-code response fails and 2B arithmetic is wrong.
+There is no new failure in the predeclared binary fact, citation, and code
+checks. But a shared failure does not mean that both answers are useful. The
+absolute usefulness criteria cannot pass, because every MTP interval-code
+response fails, and the 2B arithmetic is wrong.
 
 ## Cloud judge and recovery
 
-The original collector verified and saved the board results, then cloud scoring stopped on an incomplete HTTP response. Scoring resumed in workstation tmux with bounded transport/malformed-JSON retries and a 4096-token judge-response budget. Original board generations, rubric and staged files remain intact; hashes of the recovery code are recorded in `scoring-recovery.json`. Cloud scores are supplementary and do not override functional failures or missing citations.
+The original collector verified and saved the board results. Then cloud
+scoring stopped on an incomplete HTTP response. Scoring resumed in workstation
+tmux, with bounded transport and malformed-JSON retries, and a 4096-token
+judge-response budget. The original board generations, the rubric, and the
+staged files remain intact. The hashes of the recovery code are recorded in
+`scoring-recovery.json`. Cloud scores are supplementary. They do not override
+functional failures or missing citations.
 
-Scoring completed: all 12 pairs have both blind answer orders (24 judge responses). Both models pass the relative quality gate; `candidate_useful_in_pilot` is false and collector exit 2 means completed review is required, rather than an infrastructure failure.
+Scoring completed: all 12 pairs have both blind answer orders (24 judge
+responses). Both models pass the relative quality gate. The
+`candidate_useful_in_pilot` flag is false, and collector exit 2 means that a
+completed review is necessary. That status is not an infrastructure failure.
 
 | Model | Direct mean /5 | MTP mean /5 | Relative gate | Absolute usefulness |
 | --- | ---: | ---: | --- | --- |
 | 2B | 3.00 | 3.08 | Pass | Fail |
 | 4B | 4.33 | 4.75 | Pass | Fail |
 
-The cloud judge gave 4B interval code 1/5 direct and 3.5/5 MTP, while both implementations fail executable tests. Its 2B tracing score is 5/5 despite missing requested citation markers in both arms. This shows why judge scores supplement explicit checks. The overall mean increase does not establish universally correct answers.
+The cloud judge gave the 4B interval code 1/5 direct and 3.5/5 MTP, although
+both implementations fail the executable tests. Its 2B tracing score is 5/5,
+despite the missing requested citation markers in both arms. This behavior
+shows why judge scores supplement the explicit checks. The overall mean
+increase does not establish universally correct answers.
 
 ## Decision
 
-Keep checkpoint MTP optional. This pilot supports a workload-specific code-generation benefit and demonstrates that different 4B Unicode code can remain correct. It does not support enabling MTP for all tasks: prose regresses in speed and the complete suite fails absolute usefulness. RS remains disabled. One pair per task/model and a single judge cannot establish general semantic equivalence.
+Keep checkpoint MTP optional. This pilot supports a workload-specific
+code-generation benefit. It demonstrates also that a different 4B Unicode
+code implementation can remain correct. The pilot does not support an
+enablement of MTP for all tasks: prose regresses in speed, and the complete
+suite fails absolute usefulness. RS remains disabled. One pair per task and
+model, and a single judge, cannot establish general semantic equivalence.
 
-Evidence: [run manifest](raw/mtp-quality-20261003-173915/run.json), [generation summary](raw/mtp-quality-20261003-173915/summary.json), [2B answers](raw/mtp-quality-20261003-173915/2B-pairs.json), [4B answers](raw/mtp-quality-20261003-173915/4B-pairs.json), [collection receipt](raw/mtp-quality-20261003-173915/collection-receipt.json).
+Evidence: [run manifest](raw/mtp-quality-20261003-173915/run.json),
+[generation summary](raw/mtp-quality-20261003-173915/summary.json),
+[2B answers](raw/mtp-quality-20261003-173915/2B-pairs.json),
+[4B answers](raw/mtp-quality-20261003-173915/4B-pairs.json),
+[collection receipt](raw/mtp-quality-20261003-173915/collection-receipt.json).

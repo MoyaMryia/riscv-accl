@@ -1,0 +1,203 @@
+warning: found a return instruction in the input assembly sequence.
+note: program counter updates are ignored.
+Iterations:        1
+Instructions:      44
+Total Cycles:      371
+Total uOps:        44
+
+Dispatch Width:    2
+uOps Per Cycle:    0.12
+IPC:               0.12
+Block RThroughput: 178.0
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.50                        li	a5, 128
+ 1      1     0.50                        li	t0, 64
+ 1      1     1.00                  U     vsetvli	zero, t0, e32, m8, ta, ma
+ 1      1     0.50                        addi	t0, a0, 256
+ 1      16    16.00   *                   vle32.v	v0, (a0)
+ 1      16    16.00   *                   vle32.v	v8, (t0)
+ 1      8     8.00                        vfmul.vf	v0, v0, fa0
+ 1      8     8.00                        vfmul.vf	v8, v8, fa0
+ 1      16    16.00                       vmv.v.i	v16, 0
+ 1      16    16.00   *                   vle32.v	v24, (a1)
+ 1      8     8.00                        vfmacc.vv	v16, v0, v24
+ 1      1     0.50                        addi	t1, a1, 256
+ 1      16    16.00   *                   vle32.v	v24, (t1)
+ 1      8     8.00                        vfmacc.vv	v16, v8, v24
+ 1      16    16.00                       vmv.v.i	v24, 0
+ 1      57    57.00                       vfredusum.vs	v16, v16, v24
+ 1      4     4.00                        vfmv.f.s	ft0, v16
+ 1      4     0.50    *                   flw	ft1, 0(a2)
+ 1      4     1.00                        fsub.s	ft1, ft1, ft0
+ 1      4     1.00                        fmul.s	ft1, ft1, fa1
+ 1      16    16.00   *                   vle32.v	v24, (a1)
+ 1      8     8.00                        vfmacc.vf	v0, ft1, v24
+ 1      19    19.00          *            vse32.v	v0, (a0)
+ 1      16    16.00                       vmv.v.i	v16, 0
+ 1      16    16.00   *                   vle32.v	v24, (a3)
+ 1      8     8.00                        vfmacc.vv	v16, v0, v24
+ 1      1     0.50                        addi	t1, a1, 256
+ 1      16    16.00   *                   vle32.v	v24, (t1)
+ 1      8     8.00                        vfmacc.vf	v8, ft1, v24
+ 1      19    19.00          *            vse32.v	v8, (t0)
+ 1      1     0.50                        addi	t1, a3, 256
+ 1      16    16.00   *                   vle32.v	v24, (t1)
+ 1      8     8.00                        vfmacc.vv	v16, v8, v24
+ 1      16    16.00                       vmv.v.i	v24, 0
+ 1      57    57.00                       vfredusum.vs	v16, v16, v24
+ 1      4     4.00                        vfmv.f.s	ft0, v16
+ 1      4     1.00                        fmul.s	ft0, ft0, fa2
+ 1      4     0.50           *            fsw	ft0, 0(a4)
+ 1      1     0.50                        addi	a0, a0, 512
+ 1      1     0.50                        addi	a2, a2, 4
+ 1      1     0.50                        addi	a4, a4, 4
+ 1      1     0.50                        addi	a5, a5, -1
+ 1      1     1.00                        bnez	a5, .Lpc_dfb1a
+ 1      1     1.00                        ret
+
+
+Resources:
+[0]   - SMX60_FP
+[1]   - SMX60_IEUA
+[2]   - SMX60_IEUB
+[3.0] - SMX60_LS
+[3.1] - SMX60_LS
+[4]   - SMX60_VFP
+[5]   - SMX60_VIEU
+[6]   - SMX60_VLS
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3.0]  [3.1]  [4]    [5]    [6]    
+3.00   7.00   6.00   1.00   1.00   178.00 72.00  166.00 
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3.0]  [3.1]  [4]    [5]    [6]    Instructions:
+ -      -     1.00    -      -      -      -      -     li	a5, 128
+ -     1.00    -      -      -      -      -      -     li	t0, 64
+ -     1.00    -      -      -      -      -      -     vsetvli	zero, t0, e32, m8, ta, ma
+ -      -     1.00    -      -      -      -      -     addi	t0, a0, 256
+ -      -      -      -      -      -      -     16.00  vle32.v	v0, (a0)
+ -      -      -      -      -      -      -     16.00  vle32.v	v8, (t0)
+ -      -      -      -      -     8.00    -      -     vfmul.vf	v0, v0, fa0
+ -      -      -      -      -     8.00    -      -     vfmul.vf	v8, v8, fa0
+ -      -      -      -      -      -     16.00   -     vmv.v.i	v16, 0
+ -      -      -      -      -      -      -     16.00  vle32.v	v24, (a1)
+ -      -      -      -      -     8.00    -      -     vfmacc.vv	v16, v0, v24
+ -      -     1.00    -      -      -      -      -     addi	t1, a1, 256
+ -      -      -      -      -      -      -     16.00  vle32.v	v24, (t1)
+ -      -      -      -      -     8.00    -      -     vfmacc.vv	v16, v8, v24
+ -      -      -      -      -      -     16.00   -     vmv.v.i	v24, 0
+ -      -      -      -      -     57.00   -      -     vfredusum.vs	v16, v16, v24
+ -      -      -      -      -      -     4.00    -     vfmv.f.s	ft0, v16
+ -      -      -      -     1.00    -      -      -     flw	ft1, 0(a2)
+1.00    -      -      -      -      -      -      -     fsub.s	ft1, ft1, ft0
+1.00    -      -      -      -      -      -      -     fmul.s	ft1, ft1, fa1
+ -      -      -      -      -      -      -     16.00  vle32.v	v24, (a1)
+ -      -      -      -      -     8.00    -      -     vfmacc.vf	v0, ft1, v24
+ -      -      -      -      -      -      -     19.00  vse32.v	v0, (a0)
+ -      -      -      -      -      -     16.00   -     vmv.v.i	v16, 0
+ -      -      -      -      -      -      -     16.00  vle32.v	v24, (a3)
+ -      -      -      -      -     8.00    -      -     vfmacc.vv	v16, v0, v24
+ -     1.00    -      -      -      -      -      -     addi	t1, a1, 256
+ -      -      -      -      -      -      -     16.00  vle32.v	v24, (t1)
+ -      -      -      -      -     8.00    -      -     vfmacc.vf	v8, ft1, v24
+ -      -      -      -      -      -      -     19.00  vse32.v	v8, (t0)
+ -      -     1.00    -      -      -      -      -     addi	t1, a3, 256
+ -      -      -      -      -      -      -     16.00  vle32.v	v24, (t1)
+ -      -      -      -      -     8.00    -      -     vfmacc.vv	v16, v8, v24
+ -      -      -      -      -      -     16.00   -     vmv.v.i	v24, 0
+ -      -      -      -      -     57.00   -      -     vfredusum.vs	v16, v16, v24
+ -      -      -      -      -      -     4.00    -     vfmv.f.s	ft0, v16
+1.00    -      -      -      -      -      -      -     fmul.s	ft0, ft0, fa2
+ -      -      -     1.00    -      -      -      -     fsw	ft0, 0(a4)
+ -     1.00    -      -      -      -      -      -     addi	a0, a0, 512
+ -      -     1.00    -      -      -      -      -     addi	a2, a2, 4
+ -     1.00    -      -      -      -      -      -     addi	a4, a4, 4
+ -      -     1.00    -      -      -      -      -     addi	a5, a5, -1
+ -     1.00    -      -      -      -      -      -     bnez	a5, .Lpc_dfb1a
+ -     1.00    -      -      -      -      -      -     ret
+
+
+Timeline view:
+                    0123456789          0123456789          0123456789          012345
+Index     0123456789          0123456789          0123456789          0123456789      
+
+[0,0]     DE   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .   li	a5, 128
+[0,1]     DE   .    .    .    .    .    .    .    .    .    .    .    .    .    .    .   li	t0, 64
+[0,2]     .DE  .    .    .    .    .    .    .    .    .    .    .    .    .    .    .   vsetvli	zero, t0, e32, m8, ta, ma
+[0,3]     .DE  .    .    .    .    .    .    .    .    .    .    .    .    .    .    .   addi	t0, a0, 256
+[0,4]     . DeeeeeeeeeeeeeeeE .    .    .    .    .    .    .    .    .    .    .    .   vle32.v	v0, (a0)
+[0,5]     .    .    .    .  DeeeeeeeeeeeeeeeE.    .    .    .    .    .    .    .    .   vle32.v	v8, (t0)
+[0,6]     .    .    .    .    .    .DeeeeeeeE.    .    .    .    .    .    .    .    .   vfmul.vf	v0, v0, fa0
+[0,7]     .    .    .    .    .    .    .   DeeeeeeeE  .    .    .    .    .    .    .   vfmul.vf	v8, v8, fa0
+[0,8]     .    .    .    .    .    .    .   DeeeeeeeeeeeeeeeE    .    .    .    .    .   vmv.v.i	v16, 0
+[0,9]     .    .    .    .    .    .    .    DeeeeeeeeeeeeeeeE   .    .    .    .    .   vle32.v	v24, (a1)
+[0,10]    .    .    .    .    .    .    .    .    .    .    .DeeeeeeeE.    .    .    .   vfmacc.vv	v16, v0, v24
+[0,11]    .    .    .    .    .    .    .    .    .    .    .    .  DE.    .    .    .   addi	t1, a1, 256
+[0,12]    .    .    .    .    .    .    .    .    .    .    .    .   DeeeeeeeeeeeeeeeE   vle32.v	v24, (t1)
+Truncated display due to cycle limit
+
+
+Average Wait times (based on the timeline view):
+[0]: Executions
+[1]: Average time spent waiting in a scheduler's queue
+[2]: Average time spent waiting in a scheduler's queue while ready
+[3]: Average time elapsed from WB until retire stage
+
+      [0]    [1]    [2]    [3]
+0.     1     0.0    0.0    0.0       li	a5, 128
+1.     1     0.0    0.0    0.0       li	t0, 64
+2.     1     0.0    0.0    0.0       vsetvli	zero, t0, e32, m8, ta, ma
+3.     1     0.0    0.0    0.0       addi	t0, a0, 256
+4.     1     0.0    0.0    0.0       vle32.v	v0, (a0)
+5.     1     0.0    0.0    0.0       vle32.v	v8, (t0)
+6.     1     0.0    0.0    0.0       vfmul.vf	v0, v0, fa0
+7.     1     0.0    0.0    0.0       vfmul.vf	v8, v8, fa0
+8.     1     0.0    0.0    0.0       vmv.v.i	v16, 0
+9.     1     0.0    0.0    0.0       vle32.v	v24, (a1)
+10.    1     0.0    0.0    0.0       vfmacc.vv	v16, v0, v24
+11.    1     0.0    0.0    0.0       addi	t1, a1, 256
+12.    1     0.0    0.0    0.0       vle32.v	v24, (t1)
+13.    1     0.0    0.0    0.0       vfmacc.vv	v16, v8, v24
+14.    1     0.0    0.0    0.0       vmv.v.i	v24, 0
+15.    1     0.0    0.0    0.0       vfredusum.vs	v16, v16, v24
+16.    1     0.0    0.0    0.0       vfmv.f.s	ft0, v16
+17.    1     0.0    0.0    0.0       flw	ft1, 0(a2)
+18.    1     0.0    0.0    0.0       fsub.s	ft1, ft1, ft0
+19.    1     0.0    0.0    0.0       fmul.s	ft1, ft1, fa1
+20.    1     0.0    0.0    0.0       vle32.v	v24, (a1)
+21.    1     0.0    0.0    0.0       vfmacc.vf	v0, ft1, v24
+22.    1     0.0    0.0    0.0       vse32.v	v0, (a0)
+23.    1     0.0    0.0    0.0       vmv.v.i	v16, 0
+24.    1     0.0    0.0    0.0       vle32.v	v24, (a3)
+25.    1     0.0    0.0    0.0       vfmacc.vv	v16, v0, v24
+26.    1     0.0    0.0    0.0       addi	t1, a1, 256
+27.    1     0.0    0.0    0.0       vle32.v	v24, (t1)
+28.    1     0.0    0.0    0.0       vfmacc.vf	v8, ft1, v24
+29.    1     0.0    0.0    0.0       vse32.v	v8, (t0)
+30.    1     0.0    0.0    0.0       addi	t1, a3, 256
+31.    1     0.0    0.0    0.0       vle32.v	v24, (t1)
+32.    1     0.0    0.0    0.0       vfmacc.vv	v16, v8, v24
+33.    1     0.0    0.0    0.0       vmv.v.i	v24, 0
+34.    1     0.0    0.0    0.0       vfredusum.vs	v16, v16, v24
+35.    1     0.0    0.0    0.0       vfmv.f.s	ft0, v16
+36.    1     0.0    0.0    0.0       fmul.s	ft0, ft0, fa2
+37.    1     0.0    0.0    0.0       fsw	ft0, 0(a4)
+38.    1     0.0    0.0    0.0       addi	a0, a0, 512
+39.    1     0.0    0.0    0.0       addi	a2, a2, 4
+40.    1     0.0    0.0    0.0       addi	a4, a4, 4
+41.    1     0.0    0.0    0.0       addi	a5, a5, -1
+42.    1     0.0    0.0    0.0       bnez	a5, .Lpc_dfb1a
+43.    1     0.0    0.0    0.0       ret
+       1     0.0    0.0    0.0       <total>

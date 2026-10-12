@@ -1,36 +1,36 @@
 # Channels-major SSM convolution: correctness gate failure
 
 Run: `k1-ssm-conv-20261006-073927`, dispatched October 6, 2026 at 07:39
-Asia/Singapore on SSH `musepipro-wg`. The board stopped after **6m 28s**
-(`387.9004` seconds). Board exit status **1**, independently confirmed over
-SSH; its tmux session has ended. No new benchmark was launched during this
-scheduled check.
+Asia/Singapore, on SSH `musepipro-wg`. The board stopped after **6m 28s**
+(`387.9004` seconds). The board exit status is **1**, and we confirmed it
+independently over SSH. Its tmux session has ended. We launched no new
+benchmark during this scheduled check.
 
 ## Result
 
 | Arm/stage | Observed result |
 | --- | --- |
-| Original CPU library, mode 0 | **432 cases pass** exact FP32 reference, history tails, tensor/scratch guards, strides and repeat execution |
-| Private candidate libraries, mode 0 | **432 cases pass** the same checks |
-| Channels-major graph, mode 1 | **Fails: `history write-back`**; the process exits 1 before completing its case matrix |
-| Channels-major graph plus RVV, mode 2 | Not run: earlier correctness gate failed |
+| Original CPU library, mode 0 | **432 cases pass**: exact FP32 reference, history tails, tensor/scratch guards, strides, and repeat execution |
+| Private candidate libraries, mode 0 | **432 cases pass**, with the same checks |
+| Channels-major graph, mode 1 | **Fails: `history write-back`**; the process exits 1 before it completes its case matrix |
+| Channels-major graph plus RVV, mode 2 | Not run: an earlier correctness gate failed |
 | Operator timing, including concat/history copies | Not run |
 | Actual model chunk/reset and RS fallback comparisons | Not run |
 | Cold prefill/decode versus route-3 control | **0 requests**; not run |
 
 All candidate libraries and native harnesses compiled before the numerical
-stage. This is a correctness failure, not a measured performance regression.
-The failing check compares the copied history tail against the independently
-expected sliding-window contents. The log does not identify the failing
-shape or establish whether the defect is in graph construction or the test
-fixture. It does not demonstrate an RVV arithmetic failure: mode 1 failed
-before mode 2 was attempted.
+stage. This result is a correctness failure, not a measured performance
+regression. The failing check compares the copied history tail against the
+independently expected sliding-window contents. The log does not identify the
+failing shape, and it does not establish whether the defect is in the graph
+construction or in the test fixture. The run does not demonstrate an RVV
+arithmetic failure, because mode 1 failed before we attempted mode 2.
 
-The two completed arms independently passed their reference checks. The
-controller only saves cross-arm dump hashes after all four arms complete;
-that stage did not finish, so a persisted four-arm identity result is absent.
-No useful-answer, model-state, RS rollback, throughput or adoption claim is
-supported by this run. Production defaults remain unchanged.
+The two completed arms passed their reference checks independently. The
+controller saves the cross-arm dump hashes only after all four arms complete.
+That stage did not finish, so a persisted four-arm identity result is absent.
+This run supports no useful-answer, model-state, RS rollback, throughput, or
+adoption claim. The production defaults remain unchanged.
 
 ## Collection verification
 
@@ -40,30 +40,34 @@ The archive SHA256 is:
 af7409e2c37b0d1eb250d9af4f52956e29a9cf155b57ca35eb20a9f3e43a8d78
 ```
 
-The archive checksum, its exact file list, and **all 23 individual artifact
-hashes** were checked against the receipt, both inside the archive and in the
-extracted local files. Artifact transfer succeeded. `collector-exit-status=1`
-reflects the collector wrapper deliberately rejecting the board's nonzero
-exit status; it does not mean those collected artifacts failed verification.
+We checked the archive checksum, its exact file list, and **all 23 individual
+artifact hashes** against the receipt, both inside the archive and in the
+extracted local files. The artifact transfer succeeded.
+`collector-exit-status=1` reflects the deliberate rejection of the nonzero
+board exit status by the collector wrapper. It does not mean that the
+collected artifacts failed their verification.
 
 ## Subsequent diagnosis and next step
 
-The [separate native diagnosis](2026-10-06-ssm-history-diagnosis.md) reproduced
-the first failing case and traced it to the fork's CPY transpose fast path.
-Materializing the small transposed history tail repairs the native graph:
-private-library modes 0/1/2 each pass all 432 cases with identical output and
-history dump hashes. The candidate generator now includes that repair.
+The [separate native diagnosis](2026-10-06-ssm-history-diagnosis.md)
+reproduced the first failing case, and it traced the failure to the CPY
+transpose fast path of the fork. A materialization of the small transposed
+history tail repairs the native graph: the private-library modes 0, 1, and 2
+each pass all 432 cases, with identical output and history dump hashes. The
+candidate generator now includes that repair.
 
-The diagnosis does not revise this failed campaign's results. A fresh private
-model-library build and the full original/control/layout/RVV numerical gates
-remain required before operator timing, model-state checks or inference timing.
+The diagnosis does not revise the results of this failed campaign. A fresh
+private model-library build and the full original/control/layout/RVV numerical
+gates remain necessary, before operator timing, model-state checks, or
+inference timing.
 
 The [subsequent repaired campaign](2026-10-06-ssm-conv-repaired-results.md)
-completed the fresh build and all four numerical arms, then rejected
-unconditional use at the operator gate because single-token time regressed.
-It did not advance to model-state or cold inference checks.
+completed the fresh build and all four numerical arms. Then it rejected the
+unconditional use at the operator gate, because the single-token time
+regressed. It did not advance to the model-state or the cold inference checks.
 
-The approximately 30-minute follow-up is paused after reporting the failure.
+The follow-up of approximately 30 minutes is paused, after this report of the
+failure.
 
 ## Evidence
 

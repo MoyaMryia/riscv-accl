@@ -30,13 +30,13 @@ the 256-dimensional head.
 | Four workers | 1,152 KiB | 512 KiB | 384 KiB |
 
 The table omits cache-line padding and small stack arrays. Layout span is
-not a measured cache working set. Q16 leaves more nominal L2 space, but
-splitting a 32-query microbatch into two tiles repeats K/V packing and scans.
+not a measured cache working set. Q16 leaves more nominal L2 space, but a
+split of a 32-query microbatch into two tiles repeats K/V packing and scans.
 Q32 avoids that extra split but leaves less cache capacity for other data.
 The completed pilot below found small effects; neither layout has been adopted.
 
 The existing planner still reserves the larger generic workspace so fallback
-paths have sufficient memory. The compact kernel packs worker buffers into
+paths have enough memory. The compact kernel packs worker buffers into
 the smaller span within that allocation. This experiment targets locality
 and scratch traffic; it does not establish a reduction in process RSS.
 
@@ -56,17 +56,17 @@ is limited to VLEN=256, F32 Q, F16 K/V, 256-dimensional heads, at least
 16 query rows, and non-reference execution. The kernel logs its activation.
 
 [The native harness](../bench/test-k1-attention-layout.cpp) compares 235
-cases per mode: partial query/key tiles, grouped query heads, thread chunks
-that cross head boundaries, causal masks, fully masked rows, short-query
-fallback, and a smaller-head fallback. Scratch starts filled with NaNs and
-has canaries on both sides. Each mode dumps its float outputs; `cmp` requires
-both candidates to match the control bit for bit before model tests start.
-This exercises kernel output and boundaries; it does not test a changed
-recurrent algorithm because this patch leaves that algorithm unchanged.
+cases per mode. The cases include partial query/key tiles, grouped query
+heads, thread chunks that cross head boundaries, causal masks, fully masked
+rows, short-query fallback, and a smaller-head fallback. Scratch starts filled
+with NaNs and has canaries on both sides. Each mode dumps its float outputs;
+`cmp` requires both candidates to match the control bit for bit before model
+tests start. This exercises kernel output and boundaries; it does not test a
+changed recurrent algorithm because this patch leaves that algorithm unchanged.
 
 After the numerical gate, the board runner compares the same server binary
 with layouts `0/16/32/32/16/0` on both required models, at 128 and 2,048
-prompt tokens, producing 32 greedy output tokens per request. It requires
+prompt tokens. Each request produces 32 greedy output tokens. It requires
 matching output hashes and activation markers. Two launches per arm provide
 a pilot comparison; no statistical significance or 8k speedup is implied.
 

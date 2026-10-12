@@ -1,0 +1,3 @@
+# LLVM-MCA-RISCV-LMUL M1
+# LLVM-MCA-RISCV-SEW E8
+smt.vmadot v16,v14,v0

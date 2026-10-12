@@ -1,15 +1,17 @@
 # Passing complete answer: Unicode run codec
 
-This is the complete, unchanged 4B hybrid answer from `k1-ssm-quality-20261006-131234`.
-It stopped naturally after 521 output tokens, passed **106 held-out functional checks**,
-and received **5/5 in both presentation orders** from the cloud judge.
-Control produced identical text. Hybrid answer latency was 274.132 s versus
-276.194 s for control (0.75% lower in this single pair).
+This report gives the complete, unchanged 4B hybrid answer from
+`k1-ssm-quality-20261006-131234`. The answer stopped naturally after 521
+output tokens. It passed **106 held-out functional checks**, and it received
+**5/5 in both presentation orders** from the cloud judge. The control produced
+identical text. The hybrid answer latency was 274.132 s, against 276.194 s
+for the control (0.75% lower in this single pair).
 
 [Original answer](raw/k1-ssm-quality-20261006-131234/4B-hybrid-unicode_runs-answer.md) ·
 [Measured results](2026-10-06-ssm-complete-answer-results.md)
 
-Original answer SHA-256: `cc0881f008503b024187bf69d93e2ef1e9da427f61d9e7edea57472e73aa7e6f`.
+Original answer SHA-256:
+`cc0881f008503b024187bf69d93e2ef1e9da427f61d9e7edea57472e73aa7e6f`.
 
 ```python
 def encode_runs(text):

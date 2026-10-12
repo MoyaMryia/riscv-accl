@@ -1,8 +1,8 @@
 # MTP divergence target-logit diagnostic
 
-> Dated campaign snapshot. Measurements apply to the stated workload and date.
-> Queued/running statements below are historical; use the
-> [current guide](../DOCS.md) and the [experiments index](README.md) for later results and current status.
+> Dated campaign snapshot. The measurements apply to the stated workload and date.
+> Queued and running statements below are historical. Use the
+> [current guide](../DOCS.md) and the [experiments index](README.md) for the later results and the current status.
 
 The fixed C++ prompt produced repeatable direct/MTP token-ID differences at generated index 179 for 2B and 303 for 4B. The [diagnostic patch](2026-09-27-spec-logits-trace.patch) adds `SPINE_TRACE_LOGITS_BEGIN` and `SPINE_TRACE_LOGITS_END` to print the target model's raw top-two logits at selected generated-token indices in direct sampling and speculative verification. It does not sample or alter logits. This permits inspection of the argmax margin where output first changes.
 
