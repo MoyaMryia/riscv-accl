@@ -1,0 +1,185 @@
+{
+  "schema": 2,
+  "kind": "K1-empirical-component-profile",
+  "parameters": {
+    "vmadot.s8|8|1|32|0|0": {
+      "key": {
+        "op": "vmadot.s8",
+        "sew": 8,
+        "lmul": 1,
+        "vl": 32,
+        "stride": 0,
+        "footprint": 0
+      },
+      "modes": {
+        "dependent": {
+          "chains": 1,
+          "cycles_per_operation": 6.000057713515094,
+          "replicate_cycles_per_operation": [
+            6.000095358781534,
+            6.000057713515094,
+            6.000058959130527,
+            6.000041105309311,
+            5.999715169270833,
+            6.000653256094105,
+            6.0000094113166105
+          ],
+          "measurement_range": [
+            5.999715169270833,
+            6.000653256094105
+          ],
+          "overhead_intercepts": [
+            -0.010718936011926417,
+            -0.012191530258007788,
+            -0.002077132936506132,
+            -0.002146887400840569,
+            0.008665054563493868,
+            -0.011253720238130427,
+            -9.300595240802068e-05
+          ],
+          "count_fit_residuals": [
+            [
+              -0.009854202097528741,
+              0.012317752621868294,
+              -0.0024635505244532396
+            ],
+            [
+              0.013822456065781807,
+              -0.017278070082170416,
+              0.003455614016445452
+            ],
+            [
+              0.0010009212018076141,
+              -0.0012511515022595177,
+              0.00025023030048032524
+            ],
+            [
+              0.0013065121882505082,
+              -0.001633140235242081,
+              0.0003266280471052596
+            ],
+            [
+              -0.004340277777714618,
+              0.00542534722225696,
+              -0.0010850694444570763
+            ],
+            [
+              0.008724844104335716,
+              -0.010906055130362802,
+              0.002181211026083929
+            ],
+            [
+              0.0013197987528315025,
+              -0.0016497484410251673,
+              0.00032994968819366477
+            ]
+          ],
+          "status": "measured-positive",
+          "dependency": "RAW-chain"
+        },
+        "independent": {
+          "chains": 4,
+          "cycles_per_operation": 1.5000211754623727,
+          "replicate_cycles_per_operation": [
+            1.499970935639881,
+            1.5000981268158304,
+            1.4999456081260631,
+            1.4996917793810234,
+            1.5000211754623727,
+            1.500029064360119,
+            1.5000372300612954
+          ],
+          "measurement_range": [
+            1.4996917793810234,
+            1.5000981268158304
+          ],
+          "overhead_intercepts": [
+            0.0014880952381020052,
+            -0.003479972718253066,
+            -0.002859933035722406,
+            0.009757874503961261,
+            -0.0028444320436733506,
+            -0.0003720238095326067,
+            0.0011238219245939263
+          ],
+          "count_fit_residuals": [
+            [
+              -0.0024181547619122057,
+              0.0030226934523724935,
+              -0.0006045386904816041
+            ],
+            [
+              -0.0017228245464906422,
+              0.00215353068310975,
+              -0.00043070613662621327
+            ],
+            [
+              -0.00014615221087410646,
+              0.00018269026360684393,
+              -3.65380527398429e-05
+            ],
+            [
+              -0.0013862315759496369,
+              0.001732789469961915,
+              -0.00034655789399096193
+            ],
+            [
+              -0.0018822633219883755,
+              0.0023528291524996803,
+              -0.00047056583051130474
+            ],
+            [
+              -0.00037202380951839586,
+              0.0004650297619122057,
+              -9.300595236538811e-05
+            ],
+            [
+              -0.004397852891145249,
+              0.005497316113952877,
+              -0.0010994632227863121
+            ]
+          ],
+          "status": "measured-positive",
+          "dependency": "independent-register-streams"
+        }
+      }
+    }
+  },
+  "evidence": {
+    "binary_sha256": "c8897073616ac9eb50a109d5efe15169210cda0d8f11cb5f64df724fd88248a6",
+    "plan_sha256": "837eaab1391db1aa6c9eb7ce43f4a826b4b10bc5d735c6074adf66c6c8fa81b0",
+    "samples_sha256": "8bae15c8e1960cceac8d0b5a371b57e6bcc4100553578e923ec21eeb96f7fb28",
+    "inventory_sha256": "d1e533083484eb654d57632b156c36746681c5d93ec79930c0c805e35bd27937",
+    "samples": 126,
+    "keys": 1,
+    "cpu": 0,
+    "frequency_snapshots_khz": [
+      1600000
+    ],
+    "involuntary_switches": 1,
+    "counter": {
+      "type": "PERF_TYPE_RAW",
+      "config": "0x22",
+      "scope": "U-mode cycle event; generic cycle filter is not reliable on this board",
+      "audit_samples_sha256": "4bed603fb7390d8373d67c999d830ff1eaf8984684fd877bbbb14d5ebdb48efd",
+      "byte_identity_sha256": "e7f0973accf6fdb7b17184404feff7a72cbcd51e82fea2becc29c26f6043f948"
+    }
+  },
+  "scope": {
+    "purpose": "K1 signed IME component model; no elimination rule",
+    "output_checks": "all sixteen int32 outputs per accumulator and guards",
+    "profile_scope": "CPU 0; fixed signed 4x4x8 tile; e8/m1 VL=32; input bytes equal one",
+    "intervals": "replicate variability; not unseen-algorithm prediction confidence"
+  },
+  "prediction_validation": {
+    "status": "not-yet-validated",
+    "scope": "parameter measurements alone do not prove unseen-kernel accuracy"
+  },
+  "limits": [
+    "warm CPU 0 only",
+    "stream cost includes finite independent-chain limits",
+    "vector memory latency is not isolated",
+    "no multicore bandwidth or coherence model",
+    "measurement ranges are not prediction confidence intervals"
+  ]
+}
