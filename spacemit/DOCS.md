@@ -1,146 +1,83 @@
 # Current documentation guide
 
-## K1 performance model status
+Evidence cutoff: October 12, 2026, Asia/Singapore.
+This guide records completed evidence and pending work at that cutoff.
+Dated queue statements do not establish current board activity.
 
-The [performance evaluator](bench/qemu-screen/predictor/README.md) supplies portable fixed examples and explicit model limits.
-The [operator report](reports/2026-10-12-k1-operator-data.md) records the first native training batch.
-The [connection record](reports/2026-10-12-k1-connection-interruption.md) records the interruption and pending recovery.
-The first batch is verified on two hosts. It does not establish new prediction accuracy.
-All candidates remain available. New calibration and test shapes remain unmeasured.
+## Read the project report
 
-Last status check: 2026-10-07 Asia/Singapore.
-This is a dated snapshot. To see live progress, read a run's `phase`, logs, and final exit status. A queued experiment is not a measured optimization.
-
-## Start here
-
-| Need | Document |
+| Document | Purpose |
 | --- | --- |
-| Report to submit | [Submission report](reports/SUBMISSION-REPORT.md) |
-| Map from claim to artifact, and verification commands | [Submission evidence appendix](reports/SUBMISSION-EVIDENCE.md) |
-| Current pinned source package and baseline/optimized launchers | [Infrastructure release](release/README.md); [fresh build and complete-code checks passed](reports/2026-10-07-release-verification.md) |
-| Fixed K32 M1 specialization | [Completed negative screen](reports/2026-10-07-ime-m1-k32-results.md): exact graph and full-output checks pass; 144 operator samples fail advancement; candidate disabled |
-| Earlier patch stack and model preparation | [Integration guide](README.md) |
-| Ask follow-up questions over a local document | [Cached-document workflow](serve/README.md) |
-| Run and collect benchmarks | [Benchmark commands](bench/README.md) |
-| Current RAM bandwidth and direct-inference references | [Measured roofline results](reports/2026-10-06-k1-roofline-results.md): approximately 7 GB/s, 24 matching direct requests; no hardware-limit claim |
-| October 8 local opportunity re-audit | [Source and archived-profile review](reports/2026-10-08-local-opportunity-audit.md): dedicated 256-dim single-token attention remains unqualified; generic RVV already exists; missing dot callers limit attribution; distinguish prefill gains from all-task latency. Offline only, no new board results. |
-| Next infrastructure candidates and small test gates | [October 6 source audit](reports/2026-10-06-next-infrastructure-methods.md), with later convolution and decode diagnostics; M1 kernel and worker-barrier candidates remain unqualified |
-| Sustained decode and duplicate FFN activation packing | [October 7 measured results](reports/2026-10-07-decode-packing-results.md): eight exact matched requests, 104 native cases per arm; duplicate packing is 0.024–0.035% of GEMM worker elapsed time; shared packing declined; calling-thread sync is not removable wall time; monitor paused |
-| Local clean-reference model quality | [Completed results](reports/2026-10-06-local-clean-reference-results.md): exact GGUFs and clean source verified; same seed and prompts; 11 natural answers plus one cap; useful 1/6 and 5/6 versus board 2/6 and 5/6; existing failures persist; monitor paused |
-| Hybrid SSM complete useful answers | [Completed results](reports/2026-10-06-ssm-complete-answer-results.md): exact graph and state checks pass; 24 natural answers, 12 identical pairs; total time -2.92%/-2.13%; usefulness 2/6 and 5/6 unchanged; adoption gates fail; monitor paused |
-| Channels-major convolution/RVV candidate | [Repaired screen completed](reports/2026-10-06-ssm-conv-repaired-results.md): four arms pass 432 cases each; RVV 32-token graph time falls 73.72%/78.93%; single-token time rises 69.00%/85.10%; operator gate rejects unconditional use; model timing skipped; monitor paused |
-| Verified measurements through 16k, plus 2B 32k feasibility | [Resumed measurements](reports/2026-09-27-resumed-measures.md) |
-| Matrix verification and corrected small-effect intervals | [Local analysis](reports/2026-09-28-local-verification.md) |
-| Complete-answer quality protocol and completed matrix | [Chat quality benchmark](reports/2026-09-30-chat-quality-benchmark.md) |
-| Compact attention layout code and completed pilot | [K1 layout experiment](experiments/2026-09-30-k1-attention-layout.md) |
-| Implemented staged developer test loop | [Fast-test design](experiments/2026-09-30-fast-test-design.md) |
-| Cold-prefill sampling and next bottleneck | [Profiling protocol](reports/2026-10-02-prefill-profile.md) |
-| IME M4 scheduling candidates and isolated tests | [IME screen](reports/2026-10-02-ime-scheduling.md) |
-| Multi-token reuse of the existing recurrent RVV step | [Recurrent screen](reports/2026-10-02-recurrent-prefill.md) |
-| Runtime audit and long-history attention data movement | [Infrastructure screen](experiments/2026-10-02-attention-infrastructure.md) |
-| New GEMM routing results and research leads | [October 3 research](reports/2026-10-03-infrastructure-research.md) |
-| Staged MTP, 8k routing, complete answers and conditional 4B/32k validation | [October 3 validation protocol](experiments/2026-10-03-staged-validation.md) |
-| Checkpoint MTP complete-answer usefulness and functional code tests | [MTP usefulness protocol](experiments/2026-10-03-mtp-usefulness.md) |
-| Request-level adaptive MTP and gated native screen | [Adaptive MTP implementation](experiments/2026-10-04-adaptive-mtp-implementation.md) |
-| Other candidates and source provenance | [Code audit](reports/2026-09-30-code-optimization-audit.md) |
+| [PDF report](reports/SUBMISSION-REPORT.pdf) | Complete report with the evidence appendix |
+| [TeX source](reports/SUBMISSION-REPORT.tex) | Standalone PDF source |
+| [Report text](reports/SUBMISSION-REPORT.md) | Editable technical report |
+| [Evidence appendix](reports/SUBMISSION-EVIDENCE.md) | Claim-to-record map, source identities, and check commands |
+| [Export instructions](reports/REPORT-BUILD.md) | Document update rules and repeatable export |
 
-## Implemented and measured
+## Current decisions
 
-- The current release pins official-fork `a990751`. It exactly reproduces the
-  measured RVV attention/routing source. The earlier `apply-patches.sh` helper
-  targets `5ad05d8`. Keep these packages in separate source checkouts.
-- The 256-bit RVV F16 attention path is integrated. It is opt-in through
-  `SPINE_FA_WIDE_TILE=1`. Matched 2k/8k comparisons exist for both models.
-  The 12k/16k comparisons have one pair per model. The optimized 2B 32k run is
-  a feasibility result. It has no matched disabled-path control.
-- Q4_0 weights, F16 KV, four threads, batch/microbatch 32, and direct decoding
-  are the common configuration for the current document workflow.
-- Same-process prefix reuse is measured. Changed questions can produce different
-  token sequences. For this reason, cache reuse does not promise identical answers.
-- The MTP long-code mismatch remains unresolved. Smaller draft lengths and RS
-  rollback did not remove it. The target-logit and FA-off diagnostics are complete.
-  Use direct decoding when agreement with direct greedy output is important.
-- GPU offload was not demonstrated. OpenCL transferred zero layers and the
-  Vulkan route was dropped. Page gathering did not improve the tested workloads.
-- Small M4 effects have corrected Welch intervals. Two launches per arm remain
-  a limitation. The interval tool does not implement a paired-block test.
-
-## Latest results and active work
-
-| Work | State | Evidence boundary |
+| Area | Status | Evidence and limit |
 | --- | --- | --- |
-| Fresh release, `k1-release-check-20261007-125712` | Completed in 57.01 minutes; 35 artifacts verified | Clean pinned build; 104 exact native cases per arm; four naturally complete code answers; each passes 106 held-out checks. Single-pair descriptive timings only; routing stays opt-in. |
-| Fixed K32 M1, `k1-ime-m1-k32-20261007-121231` | Completed negative screen; 211 artifacts verified | 480 raw cases; 104 production cases per arm; six actual FFN/full-output shapes per arm pass exact identity. All 144 operator samples fail advancement; model and useful-answer stages skipped. |
-| Chat quality, `document-quality-20260930-full-v2` | Completed: 24/24 pairs verified and judged | 2B/4k requires review because one question scores 2/5 in both arms. Three descriptive pilot passes; no full-matrix pass. |
-| Compact layout, `k1-layout-20260930-153134` | Completed: 235 numerical cases/layout and 24 model requests pass | Q32 2k TTFT reductions: 0.89% on 2B, 1.98% on 4B. Small pilot effects; no adoption or 8k claim. |
-| Fast method, `k1-fast-20261001-224957` | Completed in 8.45 minutes; inconclusive | 241 concurrent cases/layout passed; 216 operator records; Q16/Q32 model gains 0.32%/0.53%, below threshold. Longer stages skipped. |
-| Prefill profile, `k1-profile-20261002-154340` | Completed in 8.51 minutes; collection recovered | Three verified IME GEMM labels: 43-44% self CPU; visible recurrent/attention: 7%/3.3%. CPU shares are not wall-time estimates or gain estimates. |
-| IME scheduling, `k1-ime-20261002-183608` | Completed in 4.20 minutes; no candidate qualified | 288 numerical cases and 256 operator arms pass. Unrolling averages +0.67%; scheduled loads regress. Model stages skipped. |
-| IME scale gathering, `k1-ime-20261002-184503` | Completed in 3.98 minutes; no candidate qualified | All five variants pass 288 numerical cases; gathering regresses seven of eight operator shapes. Model stages skipped. |
-| Recurrent prefill fusion, `k1-gdn-20261002-185831` | Completed in 7.36 minutes; inconclusive | 158 numerical cases pass; operator time falls 24.28-27.82%. Cold 2B/512 prefill falls 2.38% (22.06 to 21.54 s), below the 3% gate. Longer model stages skipped. |
-| GEMM attribution, `k1-gemm-audit-20261002-221714` | Completed in 7.15 minutes; 29 artifact hashes verified | Prefill staging copies: 9.55% / 9.93% of summed worker elapsed time on 2B / 4B. Diagnostic only; no speedup claim. |
-| Attention infrastructure, `k1-attention-infra-20261002-205454` | Completed in 27.77 minutes; inconclusive | 289 cases/arm match the original library; direct-V operator gains fail model gates: 2B/2k is 1.67% slower, 4B/1k is effectively unchanged. 8k skipped. |
-| GEMM routing, `k1-gemm-routing-20261003-005740` | Completed in 38.16 minutes; 236 artifact hashes verified | Prefill time falls 6.40% / 7.75% (2B/2k, 4B/1k); 64-token decode time falls 14.40% / 28.62%. Separate modes qualify; remain opt-in. |
-| Staged validation, `k1-validation-20261003-124720` | Completed in 4.16 hours; 83 artifact hashes verified | Combined 8k prefill/decode reductions: 4.43%/9.49% (2B), 5.79%/15.06% (4B). 2B tracing citations fail in both arms; RS replay mismatches remain. 4B/32k skipped. See [results](reports/2026-10-03-staged-validation-results.md). |
-| MTP usefulness, `mtp-quality-20261003-173915` | Completed: 24 natural-stop requests, 12 pairs judged, 21 collected hashes verified | Relative quality gates pass; total latency falls 8.63%/15.22% (2B/4B). Absolute usefulness fails shared code/fact checks; Chinese prose slows down. Checkpoint MTP remains optional, RS disabled. See [results](reports/2026-10-03-mtp-usefulness-results.md). |
-| Adaptive MTP, `adaptive-mtp-infra-20261005-153716` | Completed: 54 timing requests, 47 artifacts verified, grading recovered | Code throughput rises 50.74%/53.35%; prose/QA regress, code fails correctness, overall candidate unqualified. No default change. See [results](reports/2026-10-05-adaptive-mtp-results.md). |
+| Pinned release | Verified; RVV attention and routing remain opt-in | [Release guide](release/README.md); [October 7 checks](reports/2026-10-07-release-verification.md): clean build, 104 native cases per arm, four complete code answers with 106 checks each |
+| Long-input attention | Matched gains on 2B and 4B | [Measurement matrix](reports/2026-09-27-resumed-measures.md): replicated 2k/8k; single-pair 16k; 2B/32k feasibility without a matched control |
+| Routing | Phase gains on the optimized baseline | [Routing results](reports/2026-10-03-infrastructure-research.md); [independent confirmation](reports/2026-10-06-k1-roofline-results.md); no cumulative project speedup |
+| Independent later candidates | Selected workload gains; not release defaults | [Candidate review](reports/2026-10-09-local-candidate-result-rejudgment.md); 96 complete answers, 48 identical pairs, shared model errors remain |
+| Combined-r1 | Stopped after one failed decode gate | [October 12 stop audit](reports/2026-10-12-combined-stop-audit.md): F versus B increases 4B/2048/65 decode time by 3.0220477%; later stages do not run |
+| Dispatch revision | Local checks only | [Revision protocol](experiments/2026-10-12-combined-dispatch-r2-local-protocol.md); native and model checks pending |
+| Performance evaluator V7 | Portable replay verified; point directions unreliable | [V7 audit](reports/2026-10-12-k1-model-v7.md): 9/9 group interval coverage, 9/27 point-direction agreement |
+| Operator training data | First batch verified on two hosts | [Operator report](reports/2026-10-12-k1-operator-data.md): 32 configurations and 1,344 observations; calibration and independent tests unmeasured |
+| Board access | Remote access failure confirmed; physical cause unknown | [Connection report](reports/2026-10-12-k1-connection-interruption.md); second-batch start unconfirmed; wait for the physical check |
 
-See the [October 1 update](reports/2026-10-01-fast-method.md) for commands,
-run identities, timeout evidence and decision boundaries.
+The October 11 [progress snapshot](reports/2026-10-11-project-progress.md) and
+[version comparison](reports/2026-10-11-original-current-comparison.md) predate the combination stop.
+Use the October 12 stop audit for its later decision.
+The documentation task does not resume board tests or establish automatic retries.
 
-The completed quality matrix kept its original **alternating** protocol.
-New quality runs default to **grouped**: one primer, six cached answers, then
-six cold controls. Grouping reduces full document passes from up to twelve to
-seven. Its speedup has not been measured. Collection-only recovery resumes
-existing records. It does not change board generation or its schedule.
+## Use the code and records
 
-Full model inference is local. The optional answer judge uses a cloud API.
-Its scores supplement facts/citations and completion checks. One- or 32-token
-speed requests cannot establish answer quality. Length-capped answers cannot
-pass the complete-answer quality gate.
+| Task | Guide |
+| --- | --- |
+| Reproduce the pinned release | [Release source, patch, and launchers](release/README.md) |
+| Prepare models and apply the older patch stack | [Integration guide](README.md); [model tools](models/tools/README.md) |
+| Run native and model benchmarks | [Benchmark guide](bench/README.md) |
+| Use full-document cache reuse | [Local document service](serve/README.md) |
+| Replay portable performance examples | [Evaluator guide](bench/qemu-screen/predictor/README.md) |
+| Inspect operator data and collector limits | [Operator tools](bench/operator-data/README.md) |
+| Find a dated result | [Reports index](reports/README.md) |
+| Find a predeclared experiment | [Experiments index](experiments/README.md) |
 
-## Release decisions and optional follow-up
+The release pins official-fork `a990751` and exact measured source hashes.
+The older `apply-patches.sh` helper targets `5ad05d8`.
+Use separate source checkouts for these packages.
+The release guide supplies the current launch commands.
 
-The current package contains the measured RVV attention and the opt-in GEMM routing.
-Unsuccessful candidates stay disabled. ARM/x86 comparison is outside the
-requirements for this release. The earlier clean-reference run remains a
-model-quality diagnostic. The ideas below are optional new experiments. They
-are not missing steps for this release.
+## Evidence rules
 
-The attention infrastructure screen did not qualify direct V or larger QK
-grouping. Keep their original paths. The completed GEMM routing test qualified
-separate prefill and single-row/decode bypass modes. Combined 8k phase gates
-now pass, but the complete-answer pilot keeps the overall gate because 2B omits
-tracing citations in both arms. See the [completed validation](reports/2026-10-03-staged-validation-results.md).
-The TCM API reports unavailable/zero geometry/fake, while
-SPERT supplies 128 KiB worker buffers. Physical placement needs separate
-verification before you claim hardware TCM use.
+1. Keep the source, model, workload, precision, thread count, and cache state with each measurement.
+2. Compare only matched arms from the stated campaign.
+3. Keep time reductions separate from throughput increases.
+4. Keep operator results separate from full-model results.
+5. Use naturally complete answers to assess complete-answer quality.
+6. Keep failed gates and pending checks visible.
+7. Preserve every file in `reports/raw/`.
 
-1. Keep recurrent prefill fusion opt-in. Its small 2B/512 pilot gain did not
-   clear the preset model gate. Establish a separate replication protocol if
-   this size of benefit warrants adoption. Longer-context and complete-answer
-   confirmation remain necessary.
-2. Keep layout 0. The fast screen did not qualify either compact layout. Do not
-   run an 8k layout comparison or repeat the quality matrix for this result.
-3. Review the low-scoring 2B/4k cache answer separately from kernel timing.
-4. Shared K packing across query heads, a Q4_0/RVV LUT prototype, and isolated
-   compiler comparisons remain unused leads. Attention attribution is available
-   in the October 3 research. Operator gains must pass model gates.
-5. The decode audit declines shared FFN packing. The fixed K32 M1 screen finds
-   no qualifying gain from inner-branch removal. A separate load/dataflow pilot
-   or output-head partitioning pilot remains possible. Precise worker-node
-   barrier attribution also remains possible. Calling-thread synchronization CPU
-   share is not a latency-saving estimate.
+The common inference configuration uses Q4_0 weights, F16 K/V, four workers, and batch/microbatch 32.
+Principal RVV and routing results use direct decoding.
+MTP long-code identity remains unresolved.
+Full-vocabulary verification does not establish universal numerical identity.
+The optional cloud judge supplements local answer checks; inference remains local.
 
-## Older documents
+## Negative results and open limits
 
-[Reports index](reports/README.md) and [experiments index](experiments/README.md)
-distinguish campaign evidence, prototypes, and designs. Dates in filenames
-identify the original campaign, even when a later correction was added.
-Earlier references to running jobs, queued diagnostics, and "final" results
-describe that campaign's snapshot. The 2026-09-27 board reboot ended its old
-queue. Do not use that queue as today's plan.
+- [SSM complete answers](reports/2026-10-06-ssm-complete-answer-results.md): exact states and 24 natural answers pass; 2.92%/2.13% gains miss adoption gates.
+- [Decode and packing audit](reports/2026-10-07-decode-packing-results.md): duplicate FFN packing is 0.024–0.035% of summed worker elapsed time; no implementation follows.
+- [Fixed K32 M1 screen](reports/2026-10-07-ime-m1-k32-results.md): numerical checks pass; 144 operator samples do not qualify; model stages do not run.
+- [Adaptive MTP](reports/2026-10-05-adaptive-mtp-results.md): code throughput gains do not establish faster useful answers; absolute correctness and overall time gates fail.
+- [Cache quality](reports/2026-09-30-chat-quality-benchmark.md): 24 complete pairs; 2B/4k needs review; no universal quality pass.
+- [GPU and page checks](reports/2026-09-27-resumed-measures.md): zero transferred OpenCL layers; no measured GPU or full paged-scheduler gain.
 
-Raw records are evidence. Generated `reports/raw/*/summary.md` files may
-still change while collectors run. Live summaries and unfinished outputs
-are not stable completed-result archives.
+4B/32k and 64k performance remain unmeasured.
+Physical TCM placement remains unverified under the current runtime.
+Sampled CPU shares and traffic references do not establish removable wall time or a hardware performance limit.
+A matched initial-vendor-to-final-combination regression does not exist.
+The report retains further numerical, quality, and archive limits.

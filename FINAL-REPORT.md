@@ -1,9 +1,8 @@
 # MUSE-Pi-Pro Qwen3.5 推理优化最终报告（2B + 4B）
 
-> Historical short-prompt report. The title does not describe current completion.
-> For submission, use the [October 3 consolidated report](spacemit/reports/SUBMISSION-REPORT.md)
-> and [evidence appendix](spacemit/reports/SUBMISSION-EVIDENCE.md).
-> This file retains the original campaign numbers.
+> 历史说明：本文保留 2026-09-21 的短输入测试记录。
+> 当前综合报告截至 2026-10-12，见[报告正文](spacemit/reports/SUBMISSION-REPORT.md)、[PDF](spacemit/reports/SUBMISSION-REPORT.pdf)和[证据附录](spacemit/reports/SUBMISSION-EVIDENCE.md)。
+> 本文的历史标题不表示当前所有候选均已完成验收。
 
 > 2026-09-27 更新：本文保留 2026-09-21 的短输出基线结果。"投机无损"只适用于当时逐 token 验证过的 prompt 和 128-token 输出。后续固定代码 prompt 的 4096-token 测试发现：2B/4B 的 MTP 输出与直接解码的 token 不同。长代码生成若要求逐 token 一致，必须使用直接解码。冷启动 TTFT、12k 上下文、RVV 预填充、内存和并发补测见 [2026-09-27 生命周期快照](spacemit/reports/2026-09-27-completed-gates.md)。
 

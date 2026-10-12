@@ -15,16 +15,22 @@ For the current work and the commands, use the
 [documentation guide](../DOCS.md). A historical queue statement describes the
 date of its report.
 
-## Submission package
+## Current report package
 
-- [SUBMISSION-REPORT.md](SUBMISSION-REPORT.md): the current consolidated
-  report, with evidence through October 7, 2026.
-- [SUBMISSION-EVIDENCE.md](SUBMISSION-EVIDENCE.md): the claim-to-artifact map,
-  the model and build identities, and the verification commands.
+Evidence cutoff: October 12, 2026, Asia/Singapore.
 
-Submit the report with the appendix. The older root `FINAL-REPORT.md` and the
-September 24 PDF/LaTeX export retain the historical campaign claims. They are
-not the current submission. No file has gone to an external submission.
+- [PDF report](SUBMISSION-REPORT.pdf): the technical report and evidence appendix.
+- [Standalone TeX](SUBMISSION-REPORT.tex): source for the PDF.
+- [Report text](SUBMISSION-REPORT.md): editable report with current results and limits.
+- [Evidence appendix](SUBMISSION-EVIDENCE.md): claim-to-record map and check commands.
+- [Export instructions](REPORT-BUILD.md): repeatable document export.
+- [Combined stop audit](2026-10-12-combined-stop-audit.md): one decode gate fails; second-round and complete-answer tests do not run.
+
+The pinned release remains the October 7 package.
+Later candidates and performance-model work have separate evidence boundaries.
+The October 11 snapshots predate the combination stop.
+The root `FINAL-REPORT.md` and September TeX/PDF remain historical reports.
+No external competition submission is recorded.
 
 ## Current measurements and validation
 
@@ -41,7 +47,7 @@ not the current submission. No file has gone to an external submission.
 - [K1 performance model infrastructure](2026-10-11-k1-model-v2.md): native component costs, portable trace estimates, investment priorities, and explicit accuracy limits.
 - [Project progress through October 11](2026-10-11-project-progress.md): matched
   gains from the initial campaign, later candidate results, and limits of a
-  cumulative comparison. The triple combination still needs model tests.
+  cumulative comparison. The later [stop audit](2026-10-12-combined-stop-audit.md) records a failed decode gate.
 - [Original and current version comparison](2026-10-11-original-current-comparison.md):
   source boundaries, paired phase times, and a CSV with measured and pending
   values. C0 is an optimized control, not the initial vendor version.

@@ -1,37 +1,56 @@
 # Infrastructure optimization of Qwen3.5 inference on the SpaceMiT K1
 
-**Submission report — evidence cutoff: October 7, 2026, Asia/Singapore**\
+**Project report - evidence cutoff: October 12, 2026, Asia/Singapore**\
 Platform: MUSE-Pi-Pro, SpaceMiT K1/X60, 16 GiB RAM\
 Models: Qwen3.5 2B and 4B conversational checkpoints\
 Implementation: SpaceMiT's open-source llama.cpp fork
 
 ## Abstract
 
-This project implements and evaluates local language-model inference improvements
-on a physical RISC-V board. Its principal contributions are a 256-bit RVV
-attention kernel for F16 K/V and a new policy that selects the existing
-direct-memory IME1 matrix path instead of staging eligible Q4_0 operations.
-Both preserve the full benchmark inputs and required models. In replicated
-8,192-token comparisons, RVV attention reduced client first-token latency by
-49.2% on 2B and 64.0% on 4B. Against the later optimized baseline, separate
-GEMM-routing modes reduced prefill time by 6.40% on 2B/2k and 7.75% on 4B/1k,
-and reduced 64-token decode time by 14.40% and 28.62%, respectively.
-All 24 requests in the routing experiment matched their control outputs.
-Independent combined-mode 8k tests reduce prefill time by 4.43%/5.79% and
-64-token decode time by 9.49%/15.06% on 2B/4B. Complete-answer pairs match,
-but 2B omits required tracing citations in both arms. Routing is packaged
-as opt-in because the declared overall absolute quality gate has not cleared.
+This project implements and tests local Qwen3.5 inference on the MUSE-Pi-Pro
+with the SpaceMiT K1/X60 and 16 GiB RAM.
+The main release retains Q4_0 weights, F16 K/V, complete inputs, and direct decoding.
+The 256-bit RVV attention path reduces 8,192-token first-token latency by
+49.2% on 2B and 64.0% on 4B.
+Separate IME1 routing tests reduce 64-token decode time by 14.40% and 28.62%.
+These comparisons use different controls and do not establish a cumulative speedup.
 
-The report also records negative results, bounded long-context feasibility,
-and the limits of speculative decoding and cache-quality evidence. Performance
-is reported for each matched workload; measurements from different campaigns
-are not combined into a cumulative speedup.
+Later candidates improve selected prefill or decode workloads on the optimized baseline.
+Their complete-answer tests contain 48 identical pairs, but shared model errors remain.
+The three-candidate combination fails one decode gate with a 3.0220477% regression
+against the attention-only candidate.
+Its second round and complete-answer stages do not run.
+The verified October 7 release remains the pinned package; routing stays opt-in.
+
+The project also provides a portable performance evaluator and native operator data.
+V7 covers all nine reserved groups with wide intervals, but its point directions
+agree with measurements in only 9/27 cases.
+The first operator batch contains 1,344 observations across 32 configurations.
+These training data do not establish independent prediction accuracy.
+K1 remote access fails before a confirmed second batch.
+Recovery remains pending; this document does not authorize new board work.
+
+## Report status and evidence levels
+
+| Evidence level | Meaning in this report |
+| --- | --- |
+| Implemented | Source code or an executable tool exists. This status does not establish a performance gain. |
+| Verified | The stated checks pass for the named configuration and records. |
+| Failed gate | A measured result does not meet its declared criterion. Later versions do not remove that result. |
+| Pending | A measurement or independent check is incomplete. |
+| Not implemented | The project does not provide the stated capability. |
+
+This report separates the verified release, later candidates, and performance-model work.
+Dated reports describe their original campaigns.
+The [evidence appendix](SUBMISSION-EVIDENCE.md) maps claims to records and tools.
+The report and appendix form one review package.
+No external competition submission is recorded.
 
 ## 1. Objective and scope
 
-The task is to deploy both required Qwen3.5 models locally through the SpaceMiT
-fork, improve prefill, decode or long-context inference, and provide baseline
-comparisons, executable code and reproducible test results.
+The task deploys both required Qwen3.5 models locally through the SpaceMiT fork.
+It targets prefill, decode, and long-context inference.
+Deliverables include baseline comparisons, executable code, and reproducible test results.
 
 The current optimization mission concerns infrastructure. It retains complete
 inputs, Q4_0 weights and F16 K/V. Retrieval, prompt shortening, token pruning
@@ -90,11 +109,23 @@ distinct: Q4_0 weights with F16 K/V is the common current configuration.
 | Memory | Whole-process RSS is distinguished from estimated KV payload. |
 | Correctness | Native finite-output/guard checks plus input, token and text hashes, completion counts and actual kernel activation logs. |
 
-For the latest screen, a candidate's mean time reduction must exceed both 3%
-and the observed full control range, with no clear regression in required
-comparisons. This is a predeclared engineering gate, not a statistical
+For the routing screen, a candidate's mean time reduction must exceed both 3%
+and the observed full control range.
+Required comparisons must have no clear regression. This is a predeclared engineering gate, not a statistical
 significance test. Two samples per arm do not establish a population confidence
 interval. Exact output agreement is limited to the tested inputs and settings.
+
+Time reduction and throughput increase use different denominators.
+For control time $t_b$ and candidate time $t_c$, the time reduction is
+
+$$R_t = 100\left(1-\frac{t_c}{t_b}\right)\%. $$
+
+For equal output counts, the throughput increase is
+
+$$G_q = 100\left(\frac{t_b}{t_c}-1\right)\%. $$
+
+The tables state whether they use means, medians, or median paired ratios.
+A ratio of medians need not equal the median paired ratio.
 
 ## 3. Implemented optimizations
 
@@ -208,9 +239,9 @@ The subsequent [staged validation](2026-10-03-staged-validation-results.md)
 completed in 4.16 hours with 83 artifact hashes verified. Combined mode 3 at
 8192 input/64 output tokens reduces prefill/decode time by 4.43%/9.49% on 2B
 and 5.79%/15.06% on 4B. All eight requests match hashes and cold counts.
-The 12 full-document answers stop naturally and match paired baseline text;
-2B lacks required tracing citations in both arms, retaining the overall gate.
-4B/32k was therefore skipped. These are bounded engineering pilots.
+The 12 full-document answers stop naturally and match paired baseline text.
+Both 2B arms lack required tracing citations, so the overall gate remains open.
+The protocol skips 4B/32k. These are bounded engineering pilots.
 
 ### 4.3 Independent memory-bandwidth and routing confirmation
 
@@ -234,7 +265,98 @@ targets, but sampled prefill CPU shares are not wall-time savings or decode
 attribution. This campaign adds no useful-answer qualification and does not
 demonstrate that the hardware limit has been reached.
 
-## 5. Negative results and correctness limits
+## 5. Later candidates and the stopped combination
+
+### 5.1 Independent candidates on the optimized baseline
+
+These comparisons retain the fixed 2B/4B GGUF files, four workers, batch and
+microbatch 32, F16 K/V, route 3, temperature 0, and seed 42.
+MTP is disabled.
+Prefill tests use 512 or 2,048 input tokens.
+The ranges below describe observed configurations across two rounds.
+They are not population confidence intervals.
+
+| Candidate | Change | Measured model result | Scope |
+| --- | --- | --- | --- |
+| C1 | Hybrid convolution; original path for small batches | One-output-token TTFT falls 4.26–6.53% | 64 cold requests across two rounds; 24 complete answers |
+| C2-r2 | GDN register kernel reduces intermediate state access | One-output-token TTFT falls 4.35–5.95% | 96 cold requests across the screen and two rounds; 24 complete answers |
+| C3 | C1 with the older C2 | TTFT falls 8.35–9.73% against its disabled control; 3.53–4.63% against C1 | 128 cold requests across two controls and two rounds; 24 complete answers |
+| B1-r2 | Shared attention path with a fallback for small work groups | At 2,048 input/65 output tokens, decode time falls 10.48–10.64% on 2B and 16.95–20.32% on 4B | 64 cold requests across two rounds; 24 complete answers |
+
+GDN means gated delta network, the recurrent-state component in these models.
+C3 contains the older C2, not C2-r2.
+All four versions complete 96 answers with 48 identical text pairs.
+Shared arithmetic, citation, code, and Chinese-language errors remain.
+These tests do not show an answer-quality improvement.
+
+C2-r2 increases 4B/512/65 decode time by 2.9480% in its first round.
+This result is near the 3% regression gate and is not a decode gain.
+The old controller deletes some native dumps before the later review.
+Saved logs cannot replace a fresh comparison of those dumps.
+Complete-answer requests also lack full operating-system thread snapshots.
+The [candidate review](2026-10-09-local-candidate-result-rejudgment.md)
+records these limits.
+
+### 5.2 Combined-r1: a valid performance stop
+
+The combination uses one library with independent switches.
+C0 disables the three new candidates but retains wide RVV attention and route 3.
+B enables B1-r2 only.
+P enables C1 and C2-r2.
+F enables B1-r2, C1, and C2-r2.
+C0 is an optimized control, not the initial vendor source.
+
+The run stops on October 11, 2026, at 18:28 Asia/Singapore with exit code 0
+and state `performance-gate-stopped`.
+The [October 12 audit](2026-10-12-combined-stop-audit.md) recomputes all
+48 comparisons from the first round's 96 requests.
+It confirms zero reused prompt tokens, output receipts, input hashes, and saved thread snapshots.
+One required comparison fails: F versus B for 4B/2,048 input/65 output tokens.
+Decode time rises 3.0220477%, above the declared 3% gate.
+The full control range is 0.0726418%.
+
+Each table value is the mean of two requests in that arm.
+All times are milliseconds.
+
+| Model / input tokens | B prefill | F prefill | B decode | F decode |
+| --- | ---: | ---: | ---: | ---: |
+| 2B / 512 | 20959.891 | 18769.821 | 14913.766 | 14920.559 |
+| 2B / 2048 | 88041.229 | 79032.342 | 15716.909 | 15714.604 |
+| 4B / 512 | 52863.175 | 47537.975 | 30820.230 | 31336.530 |
+| 4B / 2048 | 226049.395 | 203459.167 | 33608.751 | 34624.424 |
+
+For the failed configuration, F prefill time falls 9.9935% against B.
+F decode time also falls 17.5476% against C0.
+Neither result clears the required F-versus-B regression gate.
+The second round and complete-answer tests do not run.
+The combination does not complete acceptance.
+
+The audit does not recollect or compare all 536 formal state dumps.
+It checks saved input and text hashes, not reconstructed inputs or new answers.
+Startup thread snapshots allow CPU 0–7 and do not establish worker positions during decode.
+This gap does not prove incorrect core placement.
+Both failed-comparison arms emit 2,048 shared-attention log lines per request.
+The evidence does not establish extra attention logs as the cause.
+Logging cost remains part of the measured result.
+
+### 5.3 Local revision and comparison boundary
+
+The local dispatch revision changes one GDN condition order.
+It returns single-token and non-128-state calls before it reads the prefill switch.
+All 90 dispatch combinations select the same paths.
+The cross-compiler syntax check and four local tool checks pass.
+Full numerical checks, target assembly, operator tests, and model tests remain pending.
+This revision is not a verified fix for the regression.
+The stopped combination remains a failed result.
+
+The [original/current comparison](2026-10-11-original-current-comparison.md)
+contains historical phase measurements and explicit version identities.
+Its October 11 pending entries predate the stop audit.
+Use the October 12 audit for the combination's current status.
+No matched test compares the initial vendor source directly with a final accepted combination.
+The separate RVV, routing, and candidate gains must not be added or multiplied.
+
+## 6. Negative results and correctness limits
 
 | Candidate | Measured outcome | Decision |
 | --- | --- | --- |
@@ -258,9 +380,9 @@ between different execution paths. Historical matching 128-token samples
 therefore do not justify calling MTP universally lossless. Direct decoding
 is used for the principal results here.
 
-The newer 512-output checkpoint/RS samples match direct outputs on both
-models, but native RS rollback replay fails strict logit checks: 18 mismatches
-per model, including argmax changes. Full-state restore and same-shape controls
+The newer 512-output checkpoint/RS samples match direct outputs on both models.
+Native RS rollback replay fails strict logit checks.
+Each model has 18 mismatches, including argmax changes. Full-state restore and same-shape controls
 pass. This newer evidence narrows the next diagnosis and does not establish
 general MTP identity or supersede the older long-output traces.
 
@@ -275,8 +397,8 @@ workload-specific usefulness, not universal losslessness or general adoption.
 
 The later [adaptive infrastructure screen](2026-10-05-adaptive-mtp-results.md)
 completed 54 timing requests and verified 47 artifacts. Median paired code
-throughput rises 50.74% on 2B and 53.35% on 4B. 2B code is capped; 4B code
-is shorter under adaptive MTP and fails reconstruction in every arm. Prose/QA
+throughput rises 50.74% on 2B and 53.35% on 4B. The 2B code is capped.
+The 4B code is shorter under adaptive MTP and fails reconstruction in every arm. Prose/QA
 wall time increases 5.77%/4.76% on 2B and 2.97%/3.62% on 4B despite disabled
 drafting. The relative judge gate passes on 4B, but both models fail absolute
 correctness and overall timing gates. This establishes bounded throughput,
@@ -287,7 +409,7 @@ bounded generation stability, including a roughly 43-minute 4B direct request.
 These earlier traces are not a long-duration validation of the new routing
 candidate, and they do not establish indefinite service stability.
 
-## 6. Full-input cache reuse: separate supporting evidence
+## 7. Full-input cache reuse: separate supporting evidence
 
 Same-process prefix reuse preserves the complete document and sends changed
 questions through a local server slot. It avoids recomputing an unchanged
@@ -306,13 +428,136 @@ fact, citation, completion, cache and slot checks.
 | 4B / 4k | 4.83 / 4.83 | 551.91 / 10.80 s | Pilot pass |
 | 4B / 8k | 4.83 / 5.00 | 1,271.37 / 14.65 s | Pilot pass |
 
-One 2B/4k question scores 2/5 in both arms, so the matrix has no universal
-quality pass and does not show a cache-specific regression on that question.
+One 2B/4k question scores 2/5 in both arms.
+The matrix has no universal quality pass.
+That question does not show a cache-specific regression.
 One judge and six questions per configuration cannot establish general quality
 equivalence. These results also do not validate the new GEMM-routing candidate.
 Length-capped one-, 32- or 64-token speed samples are not complete-answer evidence.
 
-## 7. Reproduction and deliverables
+## 8. Performance evaluator and native operator data
+
+### 8.1 Purpose and accuracy boundary
+
+The evaluator combines actual instruction traces with measured component costs.
+Its portable examples retain frozen models, error bounds, and independent test results.
+QEMU supplies instruction and numerical evidence; it does not simulate K1 cycle timing.
+A component-cost estimate is not a verified full-model latency prediction.
+All performance candidates remain available in this evaluator.
+Its accuracy checks do not use candidate elimination gates.
+
+The [V7 audit](2026-10-12-k1-model-v7.md) fixes 28 configuration groups before measurements.
+It uses 19 groups to calibrate errors and reserves nine groups for independent tests.
+The groups include 1, 2, and 4 accumulator chains with 0–9 independent integer instructions.
+Each configuration has two arms and 8, 32, or 128 unrolled iterations.
+Both arms also change input-register reuse; instruction order is not the only difference.
+
+| V7 check | Recorded result |
+| --- | --- |
+| Numerical scope | 168 native complete dumps match QEMU for the same ELF; all-one signed 8-bit inputs |
+| Actual traces | 336 complete traces; vendor QEMU 10.0.2 executes the IME ELF |
+| Native timing | CPU 0; 512/2048/8192 loops; seven repetitions; raw user-cycle event 0x22 |
+| Samples | 2,394 calibration samples; 1,134 reserved-test samples |
+| Frozen ratio-error factor | 2.1216883936561333 |
+| Interval coverage | 9/9 reserved groups and 27/27 unrolled versions |
+| Point-direction agreement | 9/27 versions |
+| Absolute gain error | Median 29.540 percentage points; maximum 50.990 percentage points |
+| Portable replay | Identical key predictions on the local host and K1; 62 tool checks pass |
+
+Five two-chain reserved groups contain 15 versions with an incorrect predicted direction.
+The single-chain measurements are near zero and do not establish a statistically supported change.
+The reserved set contains no four-chain group.
+Wide interval coverage does not establish reliable point predictions or an optimization priority order.
+Nine observed groups cannot confirm a population coverage rate of 95%.
+The stated coverage requires exchangeable groups within the fixed binary and data scope.
+The target is the next paired fixture measurement, not a noise-free hardware mean.
+
+The all-one numerical fixture does not establish correctness for arbitrary data.
+Upstream QEMU 11.1.1 rejects the ELF with an illegal instruction; the failure record remains.
+Vendor QEMU executes the same ELF with VLEN 256.
+Frequency snapshots read 1,600,000 kHz but do not establish a constant frequency during each measurement.
+V7 replay takes approximately 0.44 s locally and 8.11 s on K1 after integrity checks.
+Those times measure the host tool, not the target algorithm.
+V7 server replay remains pending.
+
+V5 retains its 7/9 coverage gap.
+V6's 9/9 aligned-loop group coverage does not transfer to mixed IME loops.
+Shared-cache traffic, multithread synchronization costs, and full IME operator time remain pending.
+A gem5 backend calibrated on K1 is not implemented.
+Independent prediction confidence for arbitrary new algorithms is not established.
+
+### 8.2 First native operator training batch
+
+The [operator report](2026-10-12-k1-operator-data.md) records a successful first batch.
+The run covers October 12, 2026, 09:24:08–09:25:44 Asia/Singapore.
+It holds the shared board lock and exits with code 0.
+The local host and project server verify identical summaries and receipts.
+
+| Batch item | Verified scope |
+| --- | --- |
+| Shape groups | 16 training groups; eight per operator family |
+| Configurations | 32; one-thread and four-thread settings per shape |
+| Numerical dumps | 64; paired versions match byte for byte |
+| Timing observations | 1,344; all retained |
+| IME worker observations | 1,680 |
+| File receipts | 327 final hashes and 97 hashes fixed before measurements |
+| Independent numerical checks | Reference outputs, guards, unchanged inputs, and state write-back pass |
+| Calibration and reserved tests | Not measured |
+
+The IME data call the actual M4 kernel with K32 packing.
+They exclude production packing, tile scheduling, and backend synchronization.
+Four threads retain the work per thread and increase total output columns.
+The SSM data measure the complete convolution graph, including layout conversion and state write-back.
+They keep total work fixed between one-thread and four-thread settings.
+The convolution kernel length is 4 and the sequence count is 1.
+Both families reuse warm inputs from fixed numerical fixtures.
+These data do not represent the shape frequencies or cache states of full model inference.
+
+The next table first takes the median paired time reduction for each configuration.
+It then reports the median and range across the eight configurations in that row.
+Positive values mean a faster candidate.
+These ranges are observed training results, not prediction confidence intervals.
+
+| Operator scope | Threads | Configurations | Median reduction | Configuration range |
+| --- | ---: | ---: | ---: | --- |
+| IME M4 kernel slice | 1 | 8 | -12.90% | -14.63% to -10.48% |
+| IME M4 kernel slice | 4 | 8 | -12.73% | -19.26% to -1.60% |
+| SSM convolution graph | 1 | 8 | 37.68% | 2.36% to 92.00% |
+| SSM convolution graph | 4 | 8 | -0.90% | -41.26% to 82.68% |
+
+All 16 IME configurations have negative median reductions.
+Convolution results depend on the shape and thread count.
+The batch retains all candidates and all observations.
+It records 1,853 involuntary IME thread switches.
+The generic instruction event's user filter still needs an independent check.
+Foreground-thread cycles do not represent all convolution graph threads.
+
+The first batch chooses the common iteration count from the control arm only.
+Its shortest formal sample is 0.864482 ms.
+Fixed overhead and scheduler variation can affect short samples.
+The revised collector probes both versions twice and raises the common count until all four probes reach 10 ms.
+This revision has no verified second native batch.
+Each operator family reserves 19 calibration shapes and nine independent test shapes.
+Thread configurations of one shape remain in one group.
+The model must freeze before calibration; its error bounds must freeze before independent tests.
+Training observations cannot serve as independent test evidence.
+
+### 8.3 Connection interruption and recovery status
+
+K1 remote access fails during preparation for the second batch.
+The available records cannot distinguish power loss, reboot, network failure, or remote-service failure.
+They do not confirm a second-batch start.
+A client disconnect does not establish that a board task stops.
+The [connection report](2026-10-12-k1-connection-interruption.md) retains that uncertainty.
+
+The bounded remote client disables connection reuse and limits the total client wait.
+It records unverified board task status as `unknown` and does not dispatch automatic retries.
+Six local fake-client tests pass; actual recovery tests remain pending.
+Board work waits for the requested physical check.
+After access returns, task, tmux, lock, and batch records must be checked before any authorized restart.
+This documentation update does not resume the stopped combination or operator collection.
+
+## 9. Reproduction and deliverables
 
 Use the [deployment guide](../README.md) for model preparation and the historical
 patch stack. The [current infrastructure release](../release/README.md) pins the later
@@ -320,8 +565,8 @@ patch stack. The [current infrastructure release](../release/README.md) pins the
 hashes. The older patch helper targets `5ad05d8`; use separate checkouts.
 Routing remains opt-in, and unsuccessful SSM/K32 candidates stay disabled.
 The [fresh release verification](2026-10-07-release-verification.md) passes a
-complete clean build, 104 exact production graph cases per routing arm and
-four naturally complete code responses, each passing 106 held-out checks.
+complete clean build and 104 exact production graph cases per routing arm.
+All four code responses stop naturally and pass 106 held-out checks each.
 All 35 archived artifacts and source/build/runtime checks pass; both exit
 statuses are zero. The one-pair natural-code observations show 508/521 tokens
 with identical baseline/optimized/prior text. They support package verification,
@@ -347,7 +592,7 @@ The [evidence appendix](SUBMISSION-EVIDENCE.md) maps every principal claim to
 source code, provenance, raw records and verification commands. No model
 weights or private API credentials are included in the report.
 
-## 8. Release decisions and optional further work
+## 10. Release decisions and optional further work
 
 The bounded infrastructure release is verified and reproducible. The current
 submission report, evidence appendix, source package and test records form the
@@ -368,10 +613,9 @@ protocols if pursued. Further unused infrastructure leads are
 shared K packing across grouped query heads, a Q4_0 RVV lookup-table prototype,
 and compiler comparisons for measured hotspots. Their platform fit and primary
 research references are in the [October 3 research review](2026-10-03-infrastructure-research.md).
-The [October 6 source audit](2026-10-06-next-infrastructure-methods.md) prioritizes
-channels-major SSM convolution with an RVV channel loop, shared dense FFN
-activation packing, and phase-isolated decode attribution before changing
-worker scheduling. The [repaired convolution screen](2026-10-06-ssm-conv-repaired-results.md)
+The [October 6 source audit](2026-10-06-next-infrastructure-methods.md) identifies
+channels-major SSM convolution with an RVV channel loop and shared dense FFN activation packing.
+It also requires separate decode attribution before changes to the worker schedule. The [repaired convolution screen](2026-10-06-ssm-conv-repaired-results.md)
 now passes 432 exact graph cases in each of four arms. RVV graph time falls
 73.72%/78.93% at 32 tokens for the 2B/4B shapes but rises 69.00%/85.10% at
 one token. This rejects unconditional replacement; full-model state and timing
@@ -416,3 +660,21 @@ These are stated explicitly so the submission represents the completed work.
 
 Validation priorities and primary-source practices for these remaining checks
 are documented in the [October 3 validation review](2026-10-03-validation-practice.md).
+
+## 11. Current handover and remaining work
+
+| Area | State at the evidence cutoff | Next evidence needed |
+| --- | --- | --- |
+| Pinned RVV/routing release | Verified; routing stays opt-in | A new protocol for any broader quality claim |
+| Independent B1-r2/C1/C2-r2/C3 candidates | Measured within their stated limits; not production defaults | New release tests before integration |
+| Combined-r1 | Failed one declared decode gate; stopped | A separately declared revised-candidate protocol |
+| Dispatch revision | Local path checks and syntax check pass | Native numerical, assembly, operator, and model checks |
+| V7 evaluator | Portable evidence replay passes; point directions unreliable | Target-algorithm costs and independent error data |
+| Operator data | First training batch verified on two hosts | Native checks for longer samples; separate calibration and tests |
+| Board access | Remote failure confirmed; physical cause unknown | Physical check and bounded task/lock inspection |
+| Initial-to-final speedup | No matched complete comparison | Fixed-source, fixed-model direct regression |
+
+The strongest replicated long-input result remains the RVV attention comparison.
+Routing adds measured phase gains on its optimized control.
+Later individual gains do not override the combined regression or shared quality failures.
+The project retains negative results, unresolved mechanisms, and incomplete measurements.
