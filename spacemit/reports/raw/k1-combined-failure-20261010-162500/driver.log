@@ -1,0 +1,26 @@
+wait for shared experiment lock
+verify baseline and payload
+compile isolated libraries
+compile C
+correctness C
+operator screen C2-r2
+operator screen complete; model gates pending
+state-2B-C0-original
+combined campaign failed; preserve evidence
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-20261010-084031/tool/spacemit/bench/local-candidates/board-combined.py", line 265, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-20261010-084031/tool/spacemit/bench/local-candidates/board-combined.py", line 246, in main
+    run.execute()
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-20261010-084031/tool/spacemit/bench/local-candidates/board-combined.py", line 188, in execute
+    reference, record = self.probe(model, 'C0', 'long', original=True)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-20261010-084031/tool/spacemit/bench/local-candidates/board-combined.py", line 152, in probe
+    common.activation(selected, arm, fixed_route=False, require_shared=arm in ('B', 'F'), rs3=rs3)
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-20261010-084031/tool/spacemit/bench/local-candidates/combined_common.py", line 35, in activation
+    QUALITY.check_activation(text, int(selected['SPINE_K1_SSM_CONV']), require_both=require_both)
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-20261010-084031/tool/spacemit/bench/k1-ssm-quality.py", line 34, in check_activation
+    if not rows: raise ValueError('hybrid activation markers absent')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: hybrid activation markers absent

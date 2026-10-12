@@ -1,0 +1,120 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.017.347 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.018.899 W srv  llama_server: -----------------
+0.00.018.929 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.018.932 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.018.934 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.018.935 W srv  llama_server: -----------------
+0.00.021.103 I srv    load_model: loading model '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=16 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=16 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=2 requested=0
+K1_GEMM_ROUTE mode=3 phase=prefill eligible=1 bypass=1 buffer_size=131072
+SPINE_GDN_PREFILL: scalar-gate K1 RVV fusion enabled
+K1_GDN_R2 worker=3 workers=4 state=128
+SPINE_GDN_PREFILL_R2: retained two state segments; S=128; VLEN=256
+K1_GDN_R2 worker=1 workers=4 state=128
+K1_GDN_R2 worker=2 workers=4 state=128
+K1_GDN_R2 worker=0 workers=4 state=128
+K1_GEMM_ROUTE mode=3 phase=single eligible=1 bypass=1 buffer_size=131072
+0.18.687.099 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+0.18.859.659 I srv  llama_server: model loaded
+0.18.859.706 I srv  llama_server: listening on http://127.0.0.1:18085
+0.18.897.525 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.18.897.751 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+0.24.845.146 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     64, progress = 0.03, t =   5.95 s / 10.76 tokens per second
+0.27.835.065 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     96, progress = 0.05, t =   8.94 s / 10.74 tokens per second
+0.30.821.519 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    128, progress = 0.06, t =  11.92 s / 10.73 tokens per second
+0.33.849.397 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    160, progress = 0.08, t =  14.95 s / 10.70 tokens per second
+0.36.860.507 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    192, progress = 0.09, t =  17.96 s / 10.69 tokens per second
+0.39.864.662 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    224, progress = 0.11, t =  20.97 s / 10.68 tokens per second
+0.42.881.505 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    256, progress = 0.12, t =  23.98 s / 10.67 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+0.45.971.802 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    288, progress = 0.14, t =  27.07 s / 10.64 tokens per second
+0.49.041.797 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    320, progress = 0.16, t =  30.14 s / 10.62 tokens per second
+0.52.405.536 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    352, progress = 0.17, t =  33.51 s / 10.51 tokens per second
+0.55.455.895 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    384, progress = 0.19, t =  36.56 s / 10.50 tokens per second
+0.58.560.896 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    416, progress = 0.20, t =  39.66 s / 10.49 tokens per second
+1.01.638.436 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    448, progress = 0.22, t =  42.74 s / 10.48 tokens per second
+1.04.787.072 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    480, progress = 0.23, t =  45.89 s / 10.46 tokens per second
+1.08.216.113 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    512, progress = 0.25, t =  49.32 s / 10.38 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+1.11.357.286 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    544, progress = 0.27, t =  52.46 s / 10.37 tokens per second
+1.14.526.666 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    576, progress = 0.28, t =  55.63 s / 10.35 tokens per second
+1.17.677.014 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    608, progress = 0.30, t =  58.78 s / 10.34 tokens per second
+1.20.848.987 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    640, progress = 0.31, t =  61.95 s / 10.33 tokens per second
+1.23.986.348 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    672, progress = 0.33, t =  65.09 s / 10.32 tokens per second
+1.27.357.950 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    704, progress = 0.34, t =  68.46 s / 10.28 tokens per second
+1.30.527.845 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    736, progress = 0.36, t =  71.63 s / 10.28 tokens per second
+1.33.687.855 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    768, progress = 0.38, t =  74.79 s / 10.27 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+1.37.100.025 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    800, progress = 0.39, t =  78.20 s / 10.23 tokens per second
+1.40.369.784 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    832, progress = 0.41, t =  81.47 s / 10.21 tokens per second
+1.43.598.570 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    864, progress = 0.42, t =  84.70 s / 10.20 tokens per second
+1.46.844.890 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    896, progress = 0.44, t =  87.95 s / 10.19 tokens per second
+1.50.152.829 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    928, progress = 0.45, t =  91.25 s / 10.17 tokens per second
+1.53.417.929 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    960, progress = 0.47, t =  94.52 s / 10.16 tokens per second
+1.56.704.892 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    992, progress = 0.48, t =  97.81 s / 10.14 tokens per second
+1.59.992.893 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1024, progress = 0.50, t = 101.10 s / 10.13 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+2.03.305.329 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1056, progress = 0.52, t = 104.41 s / 10.11 tokens per second
+2.06.590.545 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1088, progress = 0.53, t = 107.69 s / 10.10 tokens per second
+2.09.925.126 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1120, progress = 0.55, t = 111.03 s / 10.09 tokens per second
+2.13.201.790 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1152, progress = 0.56, t = 114.30 s / 10.08 tokens per second
+2.16.572.094 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1184, progress = 0.58, t = 117.67 s / 10.06 tokens per second
+2.20.115.923 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1216, progress = 0.59, t = 121.22 s / 10.03 tokens per second
+2.23.451.317 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1248, progress = 0.61, t = 124.55 s / 10.02 tokens per second
+2.26.779.707 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1280, progress = 0.62, t = 127.88 s / 10.01 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+2.30.138.727 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1312, progress = 0.64, t = 131.24 s / 10.00 tokens per second
+2.33.511.421 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1344, progress = 0.66, t = 134.61 s / 9.98 tokens per second
+2.36.954.535 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1376, progress = 0.67, t = 138.06 s / 9.97 tokens per second
+2.40.320.569 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1408, progress = 0.69, t = 141.42 s / 9.96 tokens per second
+2.43.710.350 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1440, progress = 0.70, t = 144.81 s / 9.94 tokens per second
+2.47.148.830 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1472, progress = 0.72, t = 148.25 s / 9.93 tokens per second
+2.50.606.565 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1504, progress = 0.73, t = 151.71 s / 9.91 tokens per second
+2.54.077.081 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1536, progress = 0.75, t = 155.18 s / 9.90 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+2.57.506.474 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1568, progress = 0.77, t = 158.61 s / 9.89 tokens per second
+3.00.973.183 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1600, progress = 0.78, t = 162.08 s / 9.87 tokens per second
+3.04.464.780 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1632, progress = 0.80, t = 165.57 s / 9.86 tokens per second
+3.07.978.638 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1664, progress = 0.81, t = 169.08 s / 9.84 tokens per second
+3.11.464.584 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1696, progress = 0.83, t = 172.57 s / 9.83 tokens per second
+3.14.980.207 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1728, progress = 0.84, t = 176.08 s / 9.81 tokens per second
+3.18.500.102 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1760, progress = 0.86, t = 179.60 s / 9.80 tokens per second
+3.22.014.613 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1792, progress = 0.88, t = 183.12 s / 9.79 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+3.25.581.080 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1824, progress = 0.89, t = 186.68 s / 9.77 tokens per second
+3.29.113.029 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1856, progress = 0.91, t = 190.22 s / 9.76 tokens per second
+3.32.689.816 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1888, progress = 0.92, t = 193.79 s / 9.74 tokens per second
+3.36.322.990 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1920, progress = 0.94, t = 197.43 s / 9.73 tokens per second
+3.39.875.688 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1952, progress = 0.95, t = 200.98 s / 9.71 tokens per second
+3.43.464.448 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   1984, progress = 0.97, t = 204.57 s / 9.70 tokens per second
+3.47.036.698 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   2016, progress = 0.98, t = 208.14 s / 9.69 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=28 requested=0
+3.50.285.672 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =   2044, progress = 1.00, t = 211.39 s / 9.67 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=4 requested=0
+3.51.636.117 I slot print_timing: id  0 | task 0 | prompt eval time =  212738.14 ms /  2048 tokens (  103.88 ms per token,     9.63 tokens per second)
+3.51.636.145 I slot print_timing: id  0 | task 0 |        eval time =       0.00 ms /     1 tokens (    0.00 ms per token, 1000000.00 tokens per second)
+3.51.636.152 I slot print_timing: id  0 | task 0 |       total time =  212738.14 ms /  2049 tokens
+3.51.636.173 I slot print_timing: id  0 | task 0 |    graphs reused =         55
+3.51.636.627 I slot      release: id  0 | task 0 | stop processing: n_tokens = 2048, truncated = 0
+3.51.657.461 I srv    operator(): operator(): cleaning up before exit...

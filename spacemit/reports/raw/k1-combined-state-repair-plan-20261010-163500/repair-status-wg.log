@@ -1,0 +1,17 @@
+2026-10-10T16:37:23+08:00
+verify retained native stage and exact libraries
+wait for shared experiment lock
+verify baseline and payload
+verify retained native stage and exact libraries
+  25289   25284       02:04  0.0 timeout --signal=TERM --kill-after=30s 86400s python3 -u tool/spacemit/bench/local-candidates/board-combined-repair.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-state-repair-20261010-163500 C
+  25290   25289       02:04 99.8 python3 -u tool/spacemit/bench/local-candidates/board-combined-repair.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-state-repair-20261010-163500 C
+  25313   25100       00:00 25.0 bash -c d=/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-state-repair-20261010-163500; date -Is; cat "$d/phase"; tail -n 14 "$d/driver.log"; if test -f "$d/exit-status"; then cat "$d/exit-status"; fi; ps -eo pid,ppid,etime,pcpu,args | grep -E "board-combined-repair|test-combined-state|llama-server"; lslocks -o PID,COMMAND,MODE,PATH
+  25318   25313       00:00  0.0 grep -E board-combined-repair|test-combined-state|llama-server
+  PID COMMAND         MODE  PATH
+  946 pipewire        WRITE /run/user/109...
+  946 pipewire        WRITE /run/user/109...
+  970 labwc           WRITE /run/user/109...
+25076 pipewire        WRITE /run/user/1000/pipewire-0.lock
+25076 pipewire        WRITE /run/user/1000/pipewire-0-manager.lock
+25290 python3         WRITE /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/document-quality-suite.lock
+  703 cron            WRITE /run...

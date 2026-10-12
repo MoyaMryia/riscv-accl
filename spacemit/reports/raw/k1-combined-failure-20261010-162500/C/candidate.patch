@@ -1,0 +1,924 @@
+--- a/ggml/src/ggml-cpu/ggml-cpu.c
++++ b/ggml/src/ggml-cpu/ggml-cpu.c
+@@ -2956,7 +2956,7 @@
+ 
+                         // Tiled flash attention scratch (tile sizes defined in common.h)
+                         // Per-thread: Q_q + KQ + mask + VKQ32 + V32 + K_f32 + padding
+-                        size_t prefill  = sizeof(float)*(GGML_FA_TILE_Q*DK + 2*GGML_FA_TILE_Q*GGML_FA_TILE_KV + GGML_FA_TILE_Q*DV + GGML_FA_TILE_KV*DV + GGML_FA_TILE_KV*DK)*n_tasks;
++                        size_t prefill  = sizeof(float)*(GGML_FA_TILE_Q*DK + 2*GGML_FA_TILE_Q*GGML_FA_TILE_KV + GGML_FA_TILE_Q*DV + GGML_FA_TILE_KV*DV + GGML_FA_TILE_KV*DK + CACHE_LINE_SIZE_F32)*n_tasks;
+ 
+                         // Decode path: n_kv_chunks = n_tasks (one chunk per thread)
+                         // Per-thread: VKQ accmulator (DV), partial M, partial S + intra-thread scratch for V, Q and VKQ
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -9,8 +9,13 @@
+ #include "vec.h"
+ 
+ #include <algorithm>
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
+ #include <cfloat>
+ #include <cmath>
++
++#include "spine-k1-local-attention.h"
+ 
+ // ggml_compute_forward_dup
+ 
+@@ -9114,6 +9119,46 @@
+     const bool kv_is_f32_or_f16 = (k->type == GGML_TYPE_F32 || k->type == GGML_TYPE_F16);
+     const bool use_split_kv_path = !use_ref && (neq1 == 1 && neq3 == 1) && kv_is_f32_or_f16 && (k->type == v->type) && q->type == GGML_TYPE_F32 && nek1 >= 512;
+ 
++    const bool requested_a = spine_k1_flag("SPINE_K1_FA_DECODE");
++    const bool requested_b = spine_k1_flag("SPINE_K1_FA_GQA");
++    if ((requested_a || requested_b) &&
++            (requested_a == requested_b || !spine_k1_fa_shape(params, dst) ||
++             (requested_b && neq2 != 4*nek2))) {
++        spine_k1_fa_trace(params, dst, "reference", 0, nek1);
++    }
++
++    if (spine_k1_flag("SPINE_K1_TRACE") && spine_k1_flag("SPINE_K1_FA_GQA") &&
++            !spine_k1_flag("SPINE_K1_FA_DECODE") && spine_k1_fa_shape(params, dst) &&
++            neq2 == 4*nek2 && !use_split_kv_path && nek2 < nth) {
++        spine_k1_fa_trace(params, dst, "reference-underfilled-groups", 0, nek1);
++    }
++    if (spine_k1_flag("SPINE_K1_FA_GQA") && !spine_k1_flag("SPINE_K1_FA_DECODE") &&
++            spine_k1_fa_shape(params, dst) && neq2 == 4*nek2 &&
++            (use_split_kv_path || nek2 >= nth)) {
++        const int64_t chunk_size = (nek1 + nth - 1)/nth;
++        const int64_t first = use_split_kv_path ? ith*chunk_size : 0;
++        const int64_t last = use_split_kv_path ? std::min(first + chunk_size, nek1) : nek1;
++        spine_k1_fa_trace(params, dst, "B1", first, last);
++        if (ith == 0 && spine_k1_flag("SPINE_K1_TRACE")) {
++            fprintf(stderr, "K1_FA group=4 stack_bytes=%zu shared=K,V\n", sizeof(spine_k1_group_scratch));
++        }
++        if (use_split_kv_path) {
++            const int64_t partial_size = 2 + DV;
++            float * base = (float *) params->wdata + nth*(DK + 2*DV + CACHE_LINE_SIZE_F32);
++            for (int64_t group = 0; group < nek2; ++group) {
++                spine_k1_gqa_chunk(params, dst, group, first, last,
++                    base + ith*partial_size, nth*partial_size);
++            }
++            ggml_barrier(params->threadpool);
++            ggml_flash_attn_ext_reduce_partials(params, dst, nth, chunk_size);
++        } else {
++            for (int64_t group = ith; group < nek2; group += nth) {
++                spine_k1_gqa_chunk(params, dst, group, 0, nek1, nullptr, 0);
++            }
++        }
++        return;
++    }
++
+     if (use_split_kv_path) {
+         const int64_t chunk_size = (nek1 + nth - 1) / nth;
+ 
+@@ -9552,6 +9597,8 @@
+     }
+ }
+ 
++#include "spine-k1-ssm-kernel.h"
++
+ // ggml_compute_forward_ssm_conv
+ 
+ static void ggml_compute_forward_ssm_conv_f32(
+@@ -9610,6 +9657,10 @@
+ void ggml_compute_forward_ssm_conv(
+         const ggml_compute_params * params,
+         ggml_tensor * dst) {
++    if (dst->op_params[0] == 1 || dst->op_params[0] == 2) {
++        spine_k1_ssm_conv_cpu(params, dst);
++        return;
++    }
+     switch (dst->src[0]->type) {
+         case GGML_TYPE_F32:
+             {
+@@ -10774,6 +10825,8 @@
+ }
+ #endif
+ 
++#include "spine-k1-gdn-prefill-r2.h"
++
+ static void ggml_compute_forward_gated_delta_net_one_chunk(
+     const ggml_compute_params * params,
+     ggml_tensor * dst,
+@@ -10896,8 +10949,31 @@
+             // so row j of s_out = column j of S (contiguous access)
+ 
+ #if defined(__riscv_v_intrinsic)
+-            if (!kda && K == 1 && n_tokens == 1 && !(getenv("SPINE_GDN_RVV") != nullptr && getenv("SPINE_GDN_RVV")[0] == "0"[0])) {
++            if (!kda && K == 1 && (n_tokens == 1 || (getenv("SPINE_GDN_PREFILL") != nullptr && strcmp(getenv("SPINE_GDN_PREFILL"), "1") == 0)) && !(getenv("SPINE_GDN_RVV") != nullptr && getenv("SPINE_GDN_RVV")[0] == "0"[0])) {
++                if (n_tokens > 1) {
++                    static const bool logged = [] {
++                        fprintf(stderr, "SPINE_GDN_PREFILL: scalar-gate K1 RVV fusion enabled\n");
++                        return true;
++                    }();
++                    (void) logged;
++                }
++                if (spine_k1_flag("SPINE_K1_GDN_REVISION") && n_tokens > 1 && S_v == 128 && __riscv_vsetvlmax_e32m8() == 64) {
++                    if (getenv("SPINE_K1_TRACE") != nullptr && strcmp(getenv("SPINE_K1_TRACE"), "1") == 0) {
++                        static thread_local bool worker_logged = false;
++                        if (!worker_logged) {
++                            fprintf(stderr, "K1_GDN_R2 worker=%d workers=%d state=128\n", params->ith, params->nth);
++                            worker_logged = true;
++                        }
++                    }
++                    static const bool r2_logged = [] {
++                        fprintf(stderr, "SPINE_GDN_PREFILL_R2: retained two state segments; S=128; VLEN=256\n");
++                        return true;
++                    }();
++                    (void) r2_logged;
++                    spine_k1_gdn_prefill128(s_out, k_d, v_d, q_d, expf(g_d[0]), beta_val, scale, attn_data);
++                } else {
+                 ggml_gdn_decode_step_rvv(s_out, k_d, v_d, q_d, expf(g_d[0]), beta_val, scale, S_v, attn_data);
++                }
+             } else
+ #endif
+             {
+--- a/ggml/src/ggml-cpu/spacemit/ime.cpp
++++ b/ggml/src/ggml-cpu/spacemit/ime.cpp
+@@ -28,6 +28,7 @@
+ #include <cerrno>
+ #include <cmath>
+ #include <cstdio>  // for GGML_ASSERT
++#include <cstdlib>
+ #include <stdexcept>
+ #include <thread>
+ // clang-format off
+@@ -344,6 +345,33 @@
+ 
+         long          tcm_buffer_size = 0;
+         void *        tcm_buffer      = spacemit_spert_shared_buffer(&tcm_buffer_size);
++
++        // Experimental routing only: use the existing direct-memory branch.
++        // Quantization, packed weights and IME kernels retain their arithmetic.
++        static const int k1_route = [] {
++            const char * value = std::getenv("SPINE_K1_GEMM_ROUTE");
++            return value && value[0] >= '0' && value[0] <= '3' && value[1] == '\0'
++                       ? value[0] - '0' : 0;
++        }();
++        if constexpr (std::is_same_v<BLOC_TYPE, block_q4_0> && INTER_SIZE == 32 && NB_COLS == 16) {
++            const bool eligible = global_spine_env_info.use_ime1 && gemm_k % 32 == 0 && gemm_n % 16 == 0;
++            const bool requested = k1_route == 3 || (k1_route == 1 && gemm_m > 1) ||
++                                   (k1_route == 2 && gemm_m == 1);
++            const bool bypass = eligible && requested && tcm_buffer != nullptr;
++            if (ith == 0) {
++                static bool reported[2] = {false, false};
++                const int phase = gemm_m == 1 ? 0 : 1;
++                if (!reported[phase]) {
++                    reported[phase] = true;
++                    fprintf(stderr, "K1_GEMM_ROUTE mode=%d phase=%s eligible=%d bypass=%d buffer_size=%ld\n",
++                            k1_route, phase ? "prefill" : "single", eligible, bypass, tcm_buffer_size);
++                }
++            }
++            if (bypass) {
++                tcm_buffer = nullptr;
++                tcm_buffer_size = 0;
++            }
++        }
+         if (getenv("SPINE_TCM_DEBUG")) {
+             static thread_local bool printed = false;
+             if (!printed) {
+@@ -1002,7 +1030,7 @@
+                     // Per-thread: Q_q + KQ + mask + VKQ32 + V32 + K_f32 + padding
+                     size_t prefill = sizeof(float) *
+                                      (GGML_FA_TILE_Q * DK + 2 * GGML_FA_TILE_Q * GGML_FA_TILE_KV + GGML_FA_TILE_Q * DV +
+-                                      GGML_FA_TILE_KV * DV + GGML_FA_TILE_KV * DK) *
++                                      GGML_FA_TILE_KV * DV + GGML_FA_TILE_KV * DK + CACHE_LINE_SIZE_F32) *
+                                      n_tasks;
+ 
+                     // Decode path: n_kv_chunks = n_tasks (one chunk per thread)
+@@ -1235,14 +1263,31 @@
+ 
+         const bool supported_prec  = (dst->op_params[3] == GGML_PREC_F32 || dst->op_params[3] == GGML_PREC_DEFAULT);
+         const bool supported_types = (q->type == GGML_TYPE_F32 && k->type == GGML_TYPE_F16 && v->type == GGML_TYPE_F16);
+-        const bool supported_shape = (DK > 0 && DK <= 128 && DV > 0 && DV <= 128);
+-        const bool supported_vlen  = (__riscv_vlenb() == 128);
++        // The 256-wide Qwen3.5 head uses the tiled kernel only. The one-chunk
++        // path has vector loads that assume the head fits within 128 lanes.
++        static const bool enable_wide_tile = [] {
++            const char * env = std::getenv("SPINE_FA_WIDE_TILE");
++            return env && env[0] == '1' && env[1] == '\0';
++        }();
++        const bool wide_tile = enable_wide_tile && !params->use_ref &&
++                               DK == 256 && DV == 256 && neq1 >= 16;
++        const bool supported_shape = (DK > 0 && DK <= 128 && DV > 0 && DV <= 128) || wide_tile;
++        // The wide tiled dot helper below loops over all 64 KV cells on VLEN=256.
++        // Keep the original VLEN=1024 condition for the unmodified kernels.
++        const bool supported_vlen  = wide_tile ? (__riscv_vlenb() == 32) : (__riscv_vlenb() == 128);
+ 
+         if (!(supported_prec && supported_types && supported_shape && supported_vlen)) {
+             ggml_compute_forward_flash_attn_ext(params, dst);
+             return;
+         }
+ 
++        if (wide_tile) {
++            static std::atomic<bool> logged { false };
++            if (!logged.exchange(true)) {
++                fprintf(stderr, "SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads\n");
++            }
++        }
++
+         // total rows in q
+         const int64_t nr = neq1 * neq2 * neq3;
+ 
+@@ -1251,7 +1296,7 @@
+         const int nth = params->nth;
+ 
+         static constexpr int64_t Q_TILE_SZ = ggml_fa_tile_config::Q;
+-        const bool               use_tiled = !params->use_ref && (neq1 >= Q_TILE_SZ);
++        const bool               use_tiled = wide_tile || (!params->use_ref && neq1 >= Q_TILE_SZ);
+ 
+         // 4x chunks per thread
+         // int     nth_scaled = nth * 4;
+@@ -1277,7 +1322,7 @@
+ 
+             if (use_tiled) {
+                 spacemit_kernels::rvv::forward_flash_attn_ext_f16_tiled_vlen1024_vf16(
+-                    params, dst, ir0, ir1, tcm_buf, tcm_size);
++                    params, dst, ir0, ir1, wide_tile ? nullptr : tcm_buf, wide_tile ? 0 : tcm_size);
+             } else {
+                 spacemit_kernels::rvv::forward_flash_attn_ext_f16_one_chunk_vlen1024_vf16(
+                     params, dst, ir0, ir1, tcm_buf, tcm_size);
+--- a/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
++++ b/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp
+@@ -6,6 +6,9 @@
+ #include "string.h"
+ 
+ #include <algorithm>
++#include <atomic>
++#include <cstdlib>
++#include <cstdio>
+ #include <cmath>
+ #include <cstdint>
+ #include <stdexcept>
+@@ -474,15 +477,20 @@
+                                           const _Float16 * k_pack,
+                                           int64_t          dk,
+                                           int64_t          kv_tile) {
+-    const size_t vl  = __riscv_vsetvl_e16m1(kv_tile);
+-    vfloat32m2_t acc = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-
+-    for (int64_t d = 0; d < dk; ++d) {
+-        const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV, vl);
+-        acc                      = __riscv_vfwmacc_vf_f32m2(acc, q_row[d], k_vec, vl);
+-    }
+-
+-    __riscv_vse32_v_f32m2(dst, acc, vl);
++    // On X60 VLEN=256, e16m1 covers only 16 of the 64 KV tile cells.
++    // Preserve one accumulator per cell and walk the tile in VL-sized chunks.
++    for (int64_t offset = 0; offset < kv_tile;) {
++        const size_t vl  = __riscv_vsetvl_e16m1(kv_tile - offset);
++        vfloat32m2_t acc = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++
++        for (int64_t d = 0; d < dk; ++d) {
++            const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV + offset, vl);
++            acc                      = __riscv_vfwmacc_vf_f32m2(acc, q_row[d], k_vec, vl);
++        }
++
++        __riscv_vse32_v_f32m2(dst + offset, acc, vl);
++        offset += vl;
++    }
+ }
+ 
+ static inline void rvv_qk_dot_tile_f16_x4(float *          dst0,
+@@ -496,24 +504,27 @@
+                                           const _Float16 * k_pack,
+                                           int64_t          dk,
+                                           int64_t          kv_tile) {
+-    const size_t vl   = __riscv_vsetvl_e16m1(kv_tile);
+-    vfloat32m2_t acc0 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-    vfloat32m2_t acc1 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-    vfloat32m2_t acc2 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-    vfloat32m2_t acc3 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
+-
+-    for (int64_t d = 0; d < dk; ++d) {
+-        const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV, vl);
+-        acc0                     = __riscv_vfwmacc_vf_f32m2(acc0, q0[d], k_vec, vl);
+-        acc1                     = __riscv_vfwmacc_vf_f32m2(acc1, q1[d], k_vec, vl);
+-        acc2                     = __riscv_vfwmacc_vf_f32m2(acc2, q2[d], k_vec, vl);
+-        acc3                     = __riscv_vfwmacc_vf_f32m2(acc3, q3[d], k_vec, vl);
+-    }
+-
+-    __riscv_vse32_v_f32m2(dst0, acc0, vl);
+-    __riscv_vse32_v_f32m2(dst1, acc1, vl);
+-    __riscv_vse32_v_f32m2(dst2, acc2, vl);
+-    __riscv_vse32_v_f32m2(dst3, acc3, vl);
++    for (int64_t offset = 0; offset < kv_tile;) {
++        const size_t vl   = __riscv_vsetvl_e16m1(kv_tile - offset);
++        vfloat32m2_t acc0 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++        vfloat32m2_t acc1 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++        vfloat32m2_t acc2 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++        vfloat32m2_t acc3 = __riscv_vfmv_v_f_f32m2(0.0f, vl);
++
++        for (int64_t d = 0; d < dk; ++d) {
++            const vfloat16m1_t k_vec = __riscv_vle16_v_f16m1(k_pack + d * ggml_fa_tile_config::KV + offset, vl);
++            acc0                     = __riscv_vfwmacc_vf_f32m2(acc0, q0[d], k_vec, vl);
++            acc1                     = __riscv_vfwmacc_vf_f32m2(acc1, q1[d], k_vec, vl);
++            acc2                     = __riscv_vfwmacc_vf_f32m2(acc2, q2[d], k_vec, vl);
++            acc3                     = __riscv_vfwmacc_vf_f32m2(acc3, q3[d], k_vec, vl);
++        }
++
++        __riscv_vse32_v_f32m2(dst0 + offset, acc0, vl);
++        __riscv_vse32_v_f32m2(dst1 + offset, acc1, vl);
++        __riscv_vse32_v_f32m2(dst2 + offset, acc2, vl);
++        __riscv_vse32_v_f32m2(dst3 + offset, acc3, vl);
++        offset += vl;
++    }
+ }
+ 
+ static inline void rvv_pv_accumulate_f16_x1(float *          dst,
+@@ -1302,7 +1313,8 @@
+     }
+ }
+ 
+-void forward_flash_attn_ext_f16_tiled_vlen1024_vf16(const ggml_compute_params * params,
++template<int Q_TILE_SZ, bool Compact>
++static void forward_flash_attn_ext_f16_tiled_impl(const ggml_compute_params * params,
+                                                     ggml_tensor *               dst,
+                                                     int                         ir0,
+                                                     int                         ir1,
+@@ -1327,7 +1339,7 @@
+     const int64_t DV = nev0;
+     const int64_t N  = neq1;
+ 
+-    GGML_ASSERT(flash_attn_ext_supported_shape_vlen1024_vf16(DK, DV));
++    GGML_ASSERT(flash_attn_ext_supported_shape_vlen1024_vf16(DK, DV) || (DK == 256 && DV == 256));
+ 
+     GGML_ASSERT(ne0 == DV);
+     GGML_ASSERT(ne2 == N);
+@@ -1376,24 +1388,22 @@
+ 
+     int ith = params->ith;
+ 
+-    static constexpr int Q_TILE_SZ  = ggml_fa_tile_config::Q;
+     static constexpr int KV_TILE_SZ = ggml_fa_tile_config::KV;
+ 
+-    // Per-thread scratch layout:
+-    // Q_f32:   Q_TILE_SZ * DK
+-    // KQ:      Q_TILE_SZ * KV_TILE_SZ
+-    // mask32:  Q_TILE_SZ * KV_TILE_SZ
+-    // VKQ32:   Q_TILE_SZ * DV
+-    // V32:     KV_TILE_SZ * DV
+-    // K_f32:   DK * KV_TILE_SZ (transposed K tile)
+-    float *      base = (float *) params->wdata + ith * (Q_TILE_SZ * DK + 2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV +
+-                                                    KV_TILE_SZ * DV + KV_TILE_SZ * DK + CACHE_LINE_SIZE_F32);
+-    const size_t base_size =
+-        (Q_TILE_SZ * DK + 2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV + KV_TILE_SZ * DV + KV_TILE_SZ * DK) *
+-            sizeof(float) +
+-        CACHE_LINE_SIZE_F32;
+-
+-    if (base_size <= tcm_buffer_size && tcm_buffer != nullptr) {
++    const size_t legacy_floats = Q_TILE_SZ * DK + 2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV +
++                                 KV_TILE_SZ * DV + KV_TILE_SZ * DK + CACHE_LINE_SIZE_F32;
++    const size_t stride_bytes = Compact ?
++        sizeof(_Float16) * (Q_TILE_SZ * DK + KV_TILE_SZ * (DK + DV)) +
++        sizeof(float) * (2 * Q_TILE_SZ * KV_TILE_SZ + Q_TILE_SZ * DV + CACHE_LINE_SIZE_F32) :
++        sizeof(float) * legacy_floats;
++    if constexpr (Compact) {
++        GGML_ASSERT(kv_type == GGML_TYPE_F16 && DK == 256 && DV == 256);
++        GGML_ASSERT(params->wsize >= (size_t) (ith + 1) * stride_bytes);
++    }
++    float * base = (float *) ((char *) params->wdata + ith * stride_bytes);
++    const size_t base_size = Compact ? stride_bytes :
++        (legacy_floats - CACHE_LINE_SIZE_F32) * sizeof(float) + CACHE_LINE_SIZE_F32;
++    if (!Compact && base_size <= tcm_buffer_size && tcm_buffer != nullptr) {
+         base = (float *) tcm_buffer;
+     }
+ 
+@@ -1424,17 +1434,33 @@
+             M[i] = -INFINITY;
+         }
+ 
+-        float *    Q_f32  = base;
+-        float *    KQ     = (float *) ((char *) base + Q_TILE_SZ * DK * sizeof(float));
+-        float *    mask32 = KQ + Q_TILE_SZ * KV_TILE_SZ;
+-        float *    VKQ32  = mask32 + Q_TILE_SZ * KV_TILE_SZ;
+-        float *    V32    = VKQ32 + Q_TILE_SZ * DV;
+-        float *    K_f32  = V32 + KV_TILE_SZ * DV;
+-        _Float16 * Q_f16  = (_Float16 *) Q_f32;
+-        _Float16 * V_f16  = (_Float16 *) V32;
+-        _Float16 * K_f16  = (_Float16 *) K_f32;
+-
+-        rvv_zero_f32(VKQ32, Q_TILE_SZ * DV);
++        float * Q_f32 = base;
++        float * KQ;
++        float * mask32;
++        float * VKQ32;
++        float * V32;
++        float * K_f32;
++        _Float16 * Q_f16 = (_Float16 *) base;
++        _Float16 * V_f16;
++        _Float16 * K_f16;
++        if constexpr (Compact) {
++            KQ = (float *) (Q_f16 + Q_TILE_SZ * DK);
++            mask32 = KQ + Q_TILE_SZ * KV_TILE_SZ;
++            VKQ32 = mask32 + Q_TILE_SZ * KV_TILE_SZ;
++            V_f16 = (_Float16 *) (VKQ32 + Q_TILE_SZ * DV);
++            K_f16 = V_f16 + KV_TILE_SZ * DV;
++            V32 = (float *) V_f16;
++            K_f32 = (float *) K_f16;
++        } else {
++            KQ = base + Q_TILE_SZ * DK;
++            mask32 = KQ + Q_TILE_SZ * KV_TILE_SZ;
++            VKQ32 = mask32 + Q_TILE_SZ * KV_TILE_SZ;
++            V32 = VKQ32 + Q_TILE_SZ * DV;
++            K_f32 = V32 + KV_TILE_SZ * DV;
++            V_f16 = (_Float16 *) V32;
++            K_f16 = (_Float16 *) K_f32;
++        }
++        rvv_zero_f32(VKQ32, (Compact ? tile_rows : Q_TILE_SZ) * DV);
+ 
+         // k indices
+         const int ik3 = iq3 / rk3;
+@@ -1455,8 +1481,10 @@
+         for (int64_t ic = 0; ic < nek1; ic += KV_TILE_SZ) {
+             const int kv_tile = (int) std::min((int64_t) KV_TILE_SZ, nek1 - ic);
+ 
+-            rvv_zero_f32(K_f32, DK * KV_TILE_SZ);
+-            rvv_zero_f32(V32, KV_TILE_SZ * DV);
++            if constexpr (!Compact) {
++                rvv_zero_f32(K_f32, DK * KV_TILE_SZ);
++                rvv_zero_f32(V32, KV_TILE_SZ * DV);
++            }
+ 
+             // skip the tile entirely if all the masks are -inf
+             if (mask) {
+@@ -1556,6 +1584,12 @@
+                 S[tq] += rvv_softmax_exp_inplace_f32(kq_row, KV_TILE_SZ, Mnew);
+             }
+ 
++            // PV still reads all 64 entries, including a partial tile's padding.
++            if constexpr (Compact) {
++                if (kv_tile < KV_TILE_SZ) {
++                    memset(V_f16 + kv_tile * DV, 0, (KV_TILE_SZ - kv_tile) * DV * sizeof(_Float16));
++                }
++            }
+             // Pack V as contiguous [KV_TILE_SZ][DV].
+             if (kv_type == GGML_TYPE_F16) {
+                 const char * v_data = (const char *) v->data + ic * nbv1 + iv2 * nbv2 + iv3 * nbv3;
+@@ -1624,6 +1658,36 @@
+         rvv_pack_scaled_f32_as_f32(dst_ptr, nb1 * ne1, VKQ32, DV * sizeof(float), tile_rows, DV, S);
+ 
+         ir += tile_rows;
++    }
++}
++
++void forward_flash_attn_ext_f16_tiled_vlen1024_vf16(const ggml_compute_params * params,
++                                                    ggml_tensor * dst, int ir0, int ir1,
++                                                    void * tcm_buffer, size_t tcm_buffer_size) {
++    static const int rows = [] {
++        const char * env = std::getenv("SPINE_FA_K1_LAYOUT");
++        if (!env || !env[0] || strcmp(env, "0") == 0) return 0;
++        if (strcmp(env, "16") == 0) return 16;
++        if (strcmp(env, "32") == 0) return 32;
++        GGML_ABORT("SPINE_FA_K1_LAYOUT must be 0, 16 or 32");
++    }();
++    const bool eligible = rows && !params->use_ref && __riscv_vlenb() == 32 &&
++        dst->src[0]->type == GGML_TYPE_F32 && dst->src[1]->type == GGML_TYPE_F16 &&
++        dst->src[2]->type == GGML_TYPE_F16 && dst->src[1]->ne[0] == 256 &&
++        dst->src[2]->ne[0] == 256 && dst->src[0]->ne[1] >= 16;
++    if (eligible) {
++        static std::atomic<bool> logged { false };
++        if (!logged.exchange(true)) {
++            fprintf(stderr, "SPINE_FA_K1_LAYOUT: compact Q=%d KV=64 F16 scratch enabled\n", rows);
++        }
++        if (rows == 16) {
++            forward_flash_attn_ext_f16_tiled_impl<16, true>(params, dst, ir0, ir1, nullptr, 0);
++        } else {
++            forward_flash_attn_ext_f16_tiled_impl<32, true>(params, dst, ir0, ir1, nullptr, 0);
++        }
++    } else {
++        forward_flash_attn_ext_f16_tiled_impl<ggml_fa_tile_config::Q, false>(
++            params, dst, ir0, ir1, tcm_buffer, tcm_buffer_size);
+     }
+ }
+ 
+--- /dev/null
++++ b/ggml/src/ggml-cpu/spine-k1-gdn-prefill-r2.h
+@@ -0,0 +1,62 @@
++#pragma once
++
++#if defined(__riscv_v_intrinsic)
++__attribute__((noinline))
++static void spine_k1_gdn_prefill128(float * state, const float * key, const float * value,
++        const float * query, float gate, float beta, float scale, float * output) {
++    size_t rows = 128;
++    asm volatile(
++        "li t0, 64\n\t"
++        "vsetvli zero, t0, e32, m8, ta, ma\n\t"
++        "1:\n\t"
++        "addi t0, %[state], 256\n\t"
++        "vle32.v v0, (%[state])\n\t"
++        "vle32.v v8, (t0)\n\t"
++        "vfmul.vf v0, v0, %[gate]\n\t"
++        "vfmul.vf v8, v8, %[gate]\n\t"
++        "vmv.v.i v16, 0\n\t"
++        "vle32.v v24, (%[key])\n\t"
++        "vfmacc.vv v16, v0, v24\n\t"
++        "addi t1, %[key], 256\n\t"
++        "vle32.v v24, (t1)\n\t"
++        "vfmacc.vv v16, v8, v24\n\t"
++        "vmv.v.i v24, 0\n\t"
++        "vfredusum.vs v16, v16, v24\n\t"
++        "vfmv.f.s ft0, v16\n\t"
++        "flw ft1, 0(%[value])\n\t"
++        "fsub.s ft1, ft1, ft0\n\t"
++        "fmul.s ft1, ft1, %[beta]\n\t"
++        "vle32.v v24, (%[key])\n\t"
++        "vfmacc.vf v0, ft1, v24\n\t"
++        "vse32.v v0, (%[state])\n\t"
++        "vmv.v.i v16, 0\n\t"
++        "vle32.v v24, (%[query])\n\t"
++        "vfmacc.vv v16, v0, v24\n\t"
++        "addi t1, %[key], 256\n\t"
++        "vle32.v v24, (t1)\n\t"
++        "vfmacc.vf v8, ft1, v24\n\t"
++        "vse32.v v8, (t0)\n\t"
++        "addi t1, %[query], 256\n\t"
++        "vle32.v v24, (t1)\n\t"
++        "vfmacc.vv v16, v8, v24\n\t"
++        "vmv.v.i v24, 0\n\t"
++        "vfredusum.vs v16, v16, v24\n\t"
++        "vfmv.f.s ft0, v16\n\t"
++        "fmul.s ft0, ft0, %[scale]\n\t"
++        "fsw ft0, 0(%[output])\n\t"
++        "addi %[state], %[state], 512\n\t"
++        "addi %[value], %[value], 4\n\t"
++        "addi %[output], %[output], 4\n\t"
++        "addi %[rows], %[rows], -1\n\t"
++        "bnez %[rows], 1b\n\t"
++        : [state] "+&r" (state), [value] "+&r" (value),
++          [output] "+&r" (output), [rows] "+&r" (rows)
++        : [key] "r" (key), [query] "r" (query), [gate] "f" (gate),
++          [beta] "f" (beta), [scale] "f" (scale)
++        : "t0", "t1", "ft0", "ft1", "memory",
++          "v0", "v1", "v2", "v3", "v4", "v5", "v6", "v7",
++          "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15",
++          "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23",
++          "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31");
++}
++#endif
+--- /dev/null
++++ b/ggml/src/ggml-cpu/spine-k1-local-attention.h
+@@ -0,0 +1,187 @@
++#pragma once
++#include <cstdio>
++#include <cstdlib>
++#include <cstring>
++
++static bool spine_k1_flag(const char * name) {
++    const char * value = getenv(name);
++    return value && strcmp(value, "1") == 0;
++}
++
++static bool spine_k1_fa_shape(const ggml_compute_params * p, const ggml_tensor * dst) {
++#if defined(__riscv_v_intrinsic) && defined(__riscv_zvfh)
++    if (__riscv_vsetvlmax_e8m1() != 32) return false;
++#else
++    return false;
++#endif
++    const auto * q = dst->src[0];
++    const auto * k = dst->src[1];
++    const auto * v = dst->src[2];
++    float bias, cap;
++    memcpy(&bias, dst->op_params + 1, sizeof(bias));
++    memcpy(&cap, dst->op_params + 2, sizeof(cap));
++    return !p->use_ref && p->nth == 4 &&
++        q->type == GGML_TYPE_F32 && k->type == GGML_TYPE_F16 && v->type == GGML_TYPE_F16 &&
++        q->ne[0] == 256 && k->ne[0] == 256 && v->ne[0] == 256 &&
++        q->ne[1] == 1 && q->ne[3] == 1 && k->ne[3] == 1 && v->ne[3] == 1 &&
++        k->ne[1] > 0 && k->ne[1] == v->ne[1] &&
++        k->ne[2] > 0 && k->ne[2] == v->ne[2] && q->ne[2] % k->ne[2] == 0 &&
++        q->nb[0] == 4 && k->nb[0] == 2 && v->nb[0] == 2 &&
++        dst->nb[0] == 4 && dst->nb[1] == 256*sizeof(float) &&
++        bias == 0.0f && cap == 0.0f && dst->src[4] == nullptr;
++}
++
++static void spine_k1_fa_trace(const ggml_compute_params * p, const ggml_tensor * dst,
++        const char * path, int64_t first, int64_t last) {
++    if (spine_k1_flag("SPINE_K1_TRACE")) {
++        fprintf(stderr, "K1_FA path=%s heads=%lld kv_heads=%lld history=%lld chunk=%lld:%lld worker=%d workers=%d\n",
++            path, (long long) dst->src[0]->ne[2], (long long) dst->src[1]->ne[2],
++            (long long) dst->src[1]->ne[1], (long long) first, (long long) last, p->ith, p->nth);
++    }
++}
++
++static inline void spine_k1_dot256(const ggml_fp16_t * x, const ggml_fp16_t * y, float * out) {
++#if defined(__riscv_v_intrinsic) && defined(__riscv_zvfh)
++    int vl = __riscv_vsetvlmax_e32m2();
++    vfloat32m1_t vs = __riscv_vfmv_v_f_f32m1(0.0f, 1);
++    vfloat32m2_t sum = __riscv_vreinterpret_v_u32m2_f32m2(__riscv_vmv_v_x_u32m2(0, vl));
++    vfloat16m1_t ax = __riscv_vfmv_v_f_f16m1(0.0f, vl), ay = ax;
++    for (int i = 0; i < 256; i += vl) {
++        vl = __riscv_vsetvl_e16m1(256 - i);
++        ax = __riscv_vle16_v_f16m1_tu(ax, (const _Float16 *) (x + i), vl);
++        ay = __riscv_vle16_v_f16m1_tu(ay, (const _Float16 *) (y + i), vl);
++        sum = __riscv_vfwmacc_vv_f32m2_tu(sum, ax, ay, vl);
++    }
++    vl = __riscv_vsetvlmax_e32m1();
++    const vfloat32m1_t pair = __riscv_vfadd_vv_f32m1(
++        __riscv_vget_v_f32m2_f32m1(sum, 0), __riscv_vget_v_f32m2_f32m1(sum, 1), vl);
++    vs = __riscv_vfredusum_vs_f32m1_f32m1(pair, vs, vl);
++    ggml_float result = 0.0;
++    result += __riscv_vfmv_f_s_f32m1_f32(vs);
++    *out = result;
++#else
++    ggml_vec_dot_f16(256, out, 0, const_cast<ggml_fp16_t *>(x), 0, const_cast<ggml_fp16_t *>(y), 0, 1);
++#endif
++}
++
++struct alignas(64) spine_k1_group_scratch {
++    ggml_fp16_t query[4][256];
++    ggml_fp16_t value[4][256];
++    float output[256];
++    float maximum[4];
++    float total[4];
++};
++static_assert(sizeof(spine_k1_group_scratch) == 5184, "group scratch size");
++static_assert(sizeof(spine_k1_group_scratch) <= 6*1024, "group scratch limit");
++
++static inline void spine_k1_dot4(const ggml_fp16_t * key,
++        const ggml_fp16_t query[4][256], float result[4]) {
++#if defined(__riscv_v_intrinsic) && defined(__riscv_zvfh)
++    int vl = __riscv_vsetvlmax_e32m2();
++    const vfloat32m2_t zero = __riscv_vreinterpret_v_u32m2_f32m2(__riscv_vmv_v_x_u32m2(0, vl));
++    vfloat32m2_t s0 = zero, s1 = zero, s2 = zero, s3 = zero;
++    vfloat16m1_t ax = __riscv_vfmv_v_f_f16m1(0.0f, vl);
++    vfloat16m1_t ay0 = ax, ay1 = ax, ay2 = ax, ay3 = ax;
++    for (int i = 0; i < 256; i += vl) {
++        vl = __riscv_vsetvl_e16m1(256 - i);
++        ax = __riscv_vle16_v_f16m1_tu(ax, (const _Float16 *) (key + i), vl);
++#define SPINE_DOT_HEAD(H) \
++        ay##H = __riscv_vle16_v_f16m1_tu(ay##H, (const _Float16 *) (query[H] + i), vl); \
++        s##H = __riscv_vfwmacc_vv_f32m2_tu(s##H, ax, ay##H, vl)
++        SPINE_DOT_HEAD(0); SPINE_DOT_HEAD(1); SPINE_DOT_HEAD(2); SPINE_DOT_HEAD(3);
++#undef SPINE_DOT_HEAD
++    }
++    vl = __riscv_vsetvlmax_e32m1();
++#define SPINE_REDUCE_HEAD(H) { \
++        vfloat32m1_t vs = __riscv_vfmv_v_f_f32m1(0.0f, 1); \
++        const vfloat32m1_t pair = __riscv_vfadd_vv_f32m1( \
++            __riscv_vget_v_f32m2_f32m1(s##H, 0), __riscv_vget_v_f32m2_f32m1(s##H, 1), vl); \
++        vs = __riscv_vfredusum_vs_f32m1_f32m1(pair, vs, vl); \
++        ggml_float value = 0.0; value += __riscv_vfmv_f_s_f32m1_f32(vs); result[H] = value; }
++    SPINE_REDUCE_HEAD(0); SPINE_REDUCE_HEAD(1); SPINE_REDUCE_HEAD(2); SPINE_REDUCE_HEAD(3);
++#undef SPINE_REDUCE_HEAD
++#else
++    for (int h = 0; h < 4; ++h) spine_k1_dot256(key, query[h], result + h);
++#endif
++}
++
++static inline void spine_k1_mad4(ggml_fp16_t acc[4][256], const ggml_fp16_t * value,
++        const float weight[4], const bool active[4]) {
++#if defined(__riscv_v_intrinsic) && defined(__riscv_zvfh)
++    ggml_fp16_t bits[4];
++    for (int h = 0; h < 4; ++h) bits[h] = GGML_CPU_FP32_TO_FP16(weight[h]);
++    for (int i = 0; i < 256;) {
++        const int vl = __riscv_vsetvl_e16m4(256 - i);
++        const vfloat16m4_t vx = __riscv_vle16_v_f16m4((const _Float16 *) (value + i), vl);
++        for (int h = 0; h < 4; ++h) if (active[h]) {
++            vfloat16m4_t vy = __riscv_vle16_v_f16m4((const _Float16 *) (acc[h] + i), vl);
++            vy = __riscv_vfmacc_vf_f16m4(vy, *(const _Float16 *) (bits + h), vx, vl);
++            __riscv_vse16_v_f16m4((_Float16 *) (acc[h] + i), vy, vl);
++            __asm__ __volatile__("" ::: "memory");
++        }
++        i += vl;
++    }
++#else
++    for (int h = 0; h < 4; ++h) if (active[h]) ggml_vec_mad_f16(256, acc[h], value, weight[h]);
++#endif
++}
++
++static void spine_k1_gqa_chunk(const ggml_compute_params * p, ggml_tensor * dst,
++        int64_t group, int64_t first, int64_t last, float * partials, int64_t stride) {
++    GGML_UNUSED(p);
++    spine_k1_group_scratch scratch;
++    const auto * q = dst->src[0];
++    const auto * k = dst->src[1];
++    const auto * v = dst->src[2];
++    const auto * mask = dst->src[3];
++    const ggml_fp16_t * masks[4];
++    float scale;
++    memcpy(&scale, dst->op_params, sizeof(scale));
++    const auto convert = ggml_get_type_traits_cpu(GGML_TYPE_F16)->from_float;
++    for (int h = 0; h < 4; ++h) {
++        const int64_t head = 4*group + h;
++        convert((const float *) ((const char *) q->data + head*q->nb[2]), scratch.query[h], 256);
++        memset(scratch.value[h], 0, sizeof(scratch.value[h]));
++        scratch.maximum[h] = -INFINITY;
++        scratch.total[h] = 0.0f;
++        masks[h] = mask ? (const ggml_fp16_t *) ((const char *) mask->data +
++            (head % mask->ne[2])*mask->nb[2]) : nullptr;
++    }
++    for (int64_t ic = first; ic < last; ++ic) {
++        float score[4], weight[4] = {1, 1, 1, 1};
++        bool active[4];
++        const auto * key = (const ggml_fp16_t *) ((const char *) k->data + ic*k->nb[1] + group*k->nb[2]);
++        const auto * value = (const ggml_fp16_t *) ((const char *) v->data + ic*v->nb[1] + group*v->nb[2]);
++        spine_k1_dot4(key, scratch.query, score);
++        for (int h = 0; h < 4; ++h) {
++            const float mv = masks[h] ? GGML_CPU_FP16_TO_FP32(masks[h][ic]) : 0.0f;
++            active[h] = mv != -INFINITY;
++            if (!active[h]) continue;
++            const float s = score[h]*scale + mv;
++            float ms = 1.0f;
++            if (s > scratch.maximum[h]) {
++                ms = expf(scratch.maximum[h] - s);
++                scratch.maximum[h] = s;
++                ggml_vec_scale_f16(256, scratch.value[h], ms);
++            } else {
++                weight[h] = expf(s - scratch.maximum[h]);
++            }
++            scratch.total[h] = scratch.total[h]*ms + weight[h];
++        }
++        spine_k1_mad4(scratch.value, value, weight, active);
++    }
++    for (int h = 0; h < 4; ++h) {
++        const int64_t head = 4*group + h;
++        for (int d = 0; d < 256; ++d) scratch.output[d] = GGML_CPU_FP16_TO_FP32(scratch.value[h][d]);
++        if (partials) {
++            float * out = partials + head*stride;
++            out[0] = scratch.maximum[h];
++            out[1] = scratch.total[h];
++            memcpy(out + 2, scratch.output, sizeof(scratch.output));
++        } else {
++            const float inv = scratch.total[h] == 0.0f ? 0.0f : 1.0f/scratch.total[h];
++            ggml_vec_scale_f32(256, scratch.output, inv);
++            memcpy((char *) dst->data + head*dst->nb[1], scratch.output, sizeof(scratch.output));
++        }
++    }
++}
+--- /dev/null
++++ b/ggml/src/ggml-cpu/spine-k1-ssm-kernel.h
+@@ -0,0 +1,59 @@
++#pragma once
++#if defined(__riscv_vector)
++#include <riscv_vector.h>
++#endif
++
++// No fused multiply/add: the measured reference multiplies taps then performs
++// an ordered FP32 reduction starting at +0. Independent channel lanes retain
++// that arithmetic without the per-channel horizontal reduction.
++#if defined(__GNUC__)
++__attribute__((optimize("fp-contract=off")))
++#endif
++static void spine_k1_ssm_conv_cpu(const ggml_compute_params * params, ggml_tensor * dst) {
++    const ggml_tensor * input = dst->src[0];
++    const ggml_tensor * weights = dst->src[1];
++    const int64_t channels = input->ne[0];
++    const int64_t taps = weights->ne[0];
++    GGML_ASSERT(input->type == GGML_TYPE_F32 && weights->type == GGML_TYPE_F32);
++    GGML_ASSERT(input->nb[0] == sizeof(float) && weights->nb[0] == sizeof(float));
++    GGML_ASSERT(input->ne[1] == taps - 1 + dst->ne[1]);
++    GGML_ASSERT(channels == weights->ne[1] && channels == dst->ne[0]);
++    GGML_ASSERT(input->ne[2] == dst->ne[2] && dst->nb[0] == sizeof(float));
++    const int64_t per_thread = (channels + params->nth - 1) / params->nth;
++    const int64_t first = per_thread * params->ith;
++    const int64_t last = std::min(first + per_thread, channels);
++    for (int64_t seq = 0; seq < dst->ne[2]; ++seq) {
++        for (int64_t token = 0; token < dst->ne[1]; ++token) {
++            const char * window = (const char *) input->data + seq*input->nb[2] + token*input->nb[1];
++            float * output = (float *) ((char *) dst->data + seq*dst->nb[2] + token*dst->nb[1]);
++            int64_t channel = first;
++#if defined(__riscv_vector)
++            if (dst->op_params[0] == 2) {
++                while (channel < last) {
++                    const size_t vl = __riscv_vsetvl_e32m1(last - channel);
++                    vfloat32m1_t sum = __riscv_vfmv_v_f_f32m1(0.0f, vl);
++                    for (int64_t tap = 0; tap < taps; ++tap) {
++                        const float * x = (const float *) (window + tap*input->nb[1]) + channel;
++                        const float * w = (const float *) ((const char *) weights->data + channel*weights->nb[1]) + tap;
++                        const vfloat32m1_t xv = __riscv_vle32_v_f32m1(x, vl);
++                        const vfloat32m1_t wv = __riscv_vlse32_v_f32m1(w, weights->nb[1], vl);
++                        const vfloat32m1_t product = __riscv_vfmul_vv_f32m1(xv, wv, vl);
++                        sum = __riscv_vfadd_vv_f32m1(sum, product, vl);
++                    }
++                    __riscv_vse32_v_f32m1(output + channel, sum, vl);
++                    channel += vl;
++                }
++            }
++#endif
++            for (; channel < last; ++channel) {
++                float sum = 0.0f;
++                for (int64_t tap = 0; tap < taps; ++tap) {
++                    const float x = ((const float *) (window + tap*input->nb[1]))[channel];
++                    const float w = ((const float *) ((const char *) weights->data + channel*weights->nb[1]))[tap];
++                    sum += x*w;
++                }
++                output[channel] = sum;
++            }
++        }
++    }
++}
+--- a/src/models/delta-net-base.cpp
++++ b/src/models/delta-net-base.cpp
+@@ -1,4 +1,5 @@
+ #include "models.h"
++#include "spine-k1-ssm-conv.h"
+ 
+ #include "llama-impl.h"
+ #include "llama-memory-recurrent.h"
+@@ -482,6 +483,28 @@
+     conv_states = ggml_reshape_3d(ctx0, conv_states, conv_kernel_size - 1, conv_channels, n_seqs);
+     cb(conv_states, "conv_states_reshaped", il);
+ 
++    // CPU-only dense Qwen3.5, RS=0. Persistent state stays time-major.
++    // Other architectures/backends and rollback configurations retain reference.
++    if (arch == LLM_ARCH_QWEN35 && spine_k1_ssm_cpu_only(sched) &&
++            cparams.n_rs_seq == 0 && spine_k1_ssm_conv_mode_for_tokens(qkv_mixed->ne[1]) != 0) {
++        ggml_tensor * history = ggml_cont(ctx0, ggml_transpose(ctx0, conv_states));
++        ggml_tensor * input = ggml_concat(ctx0, history, qkv_mixed, 1);
++        cb(input, "conv_input_channels_major", il);
++        const int64_t row_count = (conv_kernel_size - 1) * conv_channels;
++        const size_t row_size = ggml_row_size(conv_states_all->type, row_count);
++        const int64_t start = input->ne[1] - (conv_kernel_size - 1);
++        ggml_tensor * tail = ggml_view_3d(ctx0, input,
++            conv_channels, conv_kernel_size - 1, n_seqs,
++            input->nb[1], input->nb[2], start*input->nb[1]);
++        ggml_tensor * update = ggml_view_2d(ctx0, conv_states_all,
++            row_count, n_seqs, conv_states_all->nb[1], kv_head*row_size);
++        // The fork's CPY transpose fast path assumes incompatible dimensions
++        // and equal batch strides. CONT respects this cropped history view;
++        // the subsequent cache copy reads a contiguous time-major tensor.
++        ggml_tensor * tail_time_major = ggml_cont(ctx0, ggml_transpose(ctx0, tail));
++        ggml_build_forward_expand(gf, ggml_cpy(ctx0, tail_time_major, update));
++        return input;
++    }
+     qkv_mixed = ggml_transpose(ctx0, qkv_mixed);
+     cb(qkv_mixed, "qkv_mixed_transposed", il);
+ 
+--- a/src/models/qwen35.cpp
++++ b/src/models/qwen35.cpp
+@@ -1,4 +1,5 @@
+ #include "models.h"
++#include "spine-k1-ssm-conv.h"
+ #include "llama-memory-recurrent.h"
+ 
+ void llama_model_qwen35::load_arch_hparams(llama_model_loader & ml) {
+@@ -428,7 +429,16 @@
+     }
+     cb(state, "state_predelta", il);
+ 
+-    ggml_tensor * conv_output_proper = ggml_ssm_conv(ctx0, conv_input, conv_kernel);
++    const int conv_mode = spine_k1_ssm_cpu_only(sched) && cparams.n_rs_seq == 0
++        ? spine_k1_ssm_conv_mode_for_tokens(n_seq_tokens) : 0;
++    ggml_tensor * conv_output_proper = conv_mode
++        ? spine_k1_ssm_conv_channels_major(ctx0, conv_input, conv_kernel, conv_mode)
++        : ggml_ssm_conv(ctx0, conv_input, conv_kernel);
++    if (il == 0) {
++        fprintf(stderr, "K1_SSM_CONV mode=%d layout=%s rs=%u cpu_only=%d tokens=%lld requested=%d\n", conv_mode,
++            conv_mode ? "channels" : "time", cparams.n_rs_seq, spine_k1_ssm_cpu_only(sched),
++            (long long) n_seq_tokens, spine_k1_ssm_conv_mode());
++    }
+     cb(conv_output_proper, "conv_output_raw", il);
+ 
+     ggml_tensor * conv_output_silu = ggml_silu(ctx0, conv_output_proper);
+--- /dev/null
++++ b/src/models/spine-k1-ssm-conv.h
+@@ -0,0 +1,46 @@
++#pragma once
++// Internal opt-in CPU experiment; this is not a public GGML API extension.
++#include "ggml.h"
++#include "ggml-backend.h"
++#include "ggml-cpu.h"
++#include <cstdlib>
++
++static inline int spine_k1_ssm_conv_mode() {
++    const char * value = std::getenv("SPINE_K1_SSM_CONV");
++    return value && (value[0] == '1' || value[0] == '2' || value[0] == '3') && value[1] == 0
++        ? value[0] - '0' : 0;
++}
++
++static inline int spine_k1_ssm_conv_dispatch(int requested, int64_t tokens) {
++    // Mode 3 uses only the measured winning batch shape. Keep partial
++    // microbatches and single-token decode on the original graph.
++    return requested == 3 ? (tokens >= 32 ? 2 : 0) : requested;
++}
++
++static inline int spine_k1_ssm_conv_mode_for_tokens(int64_t tokens) {
++    return spine_k1_ssm_conv_dispatch(spine_k1_ssm_conv_mode(), tokens);
++}
++
++static inline bool spine_k1_ssm_cpu_only(ggml_backend_sched_t sched) {
++    return sched && ggml_backend_sched_get_n_backends(sched) == 1 &&
++        ggml_backend_is_cpu(ggml_backend_sched_get_backend(sched, 0));
++}
++
++// Channels-major input, original [channels, tokens, sequences] output.
++// Call only on the CPU backend. op_params[0] is reserved by this experiment.
++static inline ggml_tensor * spine_k1_ssm_conv_channels_major(
++        ggml_context * ctx, ggml_tensor * input, ggml_tensor * weights, int mode) {
++    GGML_ASSERT(mode == 1 || mode == 2);
++    GGML_ASSERT(input->type == GGML_TYPE_F32 && weights->type == GGML_TYPE_F32);
++    GGML_ASSERT(ggml_is_3d(input) && ggml_is_matrix(weights));
++    GGML_ASSERT(input->ne[0] == weights->ne[1]);
++    const int64_t tokens = input->ne[1] - weights->ne[0] + 1;
++    GGML_ASSERT(tokens > 0);
++    ggml_tensor * result = ggml_new_tensor_3d(ctx, GGML_TYPE_F32,
++        input->ne[0], tokens, input->ne[2]);
++    result->op = GGML_OP_SSM_CONV;
++    result->src[0] = input;
++    result->src[1] = weights;
++    result->op_params[0] = mode;
++    return result;
++}

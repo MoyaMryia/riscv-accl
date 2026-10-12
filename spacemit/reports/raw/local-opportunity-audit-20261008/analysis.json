@@ -1,0 +1,93 @@
+{
+  "scope": "Offline source/hash checks and archived decode stack reanalysis only.",
+  "cases": [
+    {
+      "model": "2B",
+      "prompt_tokens": 256,
+      "samples": 14051,
+      "decode_tokens_s": 4.494080915166341,
+      "attention_leaf_self_cpu_pct": 0.6761084620311721,
+      "attention_visible_stack_cpu_pct": 0.7188100491068251,
+      "f16_dot_leaf_self_cpu_pct": 0.5907052878798662,
+      "f16_dot_with_attention_frame_cpu_pct": 0.0,
+      "f16_dot_with_other_decoded_caller_cpu_pct": 0.0,
+      "f16_dot_without_decoded_caller_cpu_pct": 0.5907052878798662,
+      "attention_or_f16_dot_leaf_cpu_pct": 1.2668137499110383,
+      "ime_leaf_self_cpu_pct": 66.571774250943
+    },
+    {
+      "model": "2B",
+      "prompt_tokens": 2048,
+      "samples": 16674,
+      "decode_tokens_s": 3.7970423610313166,
+      "attention_leaf_self_cpu_pct": 5.9793690776058535,
+      "attention_visible_stack_cpu_pct": 6.363200191915557,
+      "f16_dot_leaf_self_cpu_pct": 6.057334772700012,
+      "f16_dot_with_attention_frame_cpu_pct": 0.0,
+      "f16_dot_with_other_decoded_caller_cpu_pct": 0.0,
+      "f16_dot_without_decoded_caller_cpu_pct": 6.057334772700012,
+      "attention_or_f16_dot_leaf_cpu_pct": 12.036703850305866,
+      "ime_leaf_self_cpu_pct": 56.03334532805565
+    },
+    {
+      "model": "4B",
+      "prompt_tokens": 256,
+      "samples": 30628,
+      "decode_tokens_s": 2.0827508306490947,
+      "attention_leaf_self_cpu_pct": 1.537808541204127,
+      "attention_visible_stack_cpu_pct": 1.6292281572417395,
+      "f16_dot_leaf_self_cpu_pct": 1.5182186234817814,
+      "f16_dot_with_attention_frame_cpu_pct": 0.0,
+      "f16_dot_with_other_decoded_caller_cpu_pct": 0.0,
+      "f16_dot_without_decoded_caller_cpu_pct": 1.5182186234817814,
+      "attention_or_f16_dot_leaf_cpu_pct": 3.0560271646859083,
+      "ime_leaf_self_cpu_pct": 62.59958208175526
+    },
+    {
+      "model": "4B",
+      "prompt_tokens": 2048,
+      "samples": 40811,
+      "decode_tokens_s": 1.5667795679988599,
+      "attention_leaf_self_cpu_pct": 10.051211683124647,
+      "attention_visible_stack_cpu_pct": 10.408958369067163,
+      "f16_dot_leaf_self_cpu_pct": 9.936046654088358,
+      "f16_dot_with_attention_frame_cpu_pct": 0.0,
+      "f16_dot_with_other_decoded_caller_cpu_pct": 0.0,
+      "f16_dot_without_decoded_caller_cpu_pct": 9.936046654088358,
+      "attention_or_f16_dot_leaf_cpu_pct": 19.987258337213007,
+      "ime_leaf_self_cpu_pct": 48.61434417191443
+    }
+  ],
+  "source_checks_sha256": {
+    "lab/local-reference/source-a990751-clean/ggml/src/ggml-cpu/ops.cpp": "d03e80d18d117047b5f6cc007a277c80cab90e9d6c9f7f97ef4d8002db1a8192",
+    "lab/local-reference/source-a990751-clean/ggml/src/ggml-cpu/vec.cpp": "cda0babb53f9c8ff1faa7459b2c49019d15e5970dfe0c613d58e2659e919f524",
+    "lab/local-reference/source-a990751-clean/ggml/src/ggml-cpu/vec.h": "926330bae1c5d003bd654035426e31381fafcdca23ffcc23201d219dbb97cbeb",
+    "lab/local-reference/source-a990751-clean/ggml/src/ggml-cpu/ggml-cpu.c": "cce2b11a33d119a1742c0534046bb6b244747b126f766ac5134704ae642f6752",
+    "lab/release-preparation/ggml/src/ggml-cpu/ggml-cpu.c": "2315688b8acd076764dede76fce3a80299d654fab4911bb2ef64885a6186c572",
+    "lab/release-preparation/ggml/src/ggml-cpu/spacemit/ime.cpp": "0b62c161cdbd18b0e6bc4498dba0e60d37d5a4e315751df677f66ed0408a2e6e",
+    "lab/release-preparation/ggml/src/ggml-cpu/spacemit/rvv_kernels.cpp": "f74862d5c73db963274a0350e6bb681d33c92bc256cd5da8bc48fb2f8a6b9461",
+    "spacemit/reports/raw/k1-gemm-routing-20261003-005740/candidate-gemm-routing.cpp": "10b244ee84e60368f7c1c7c8556c89c75049cee7cd8752f532a8cad63f6c94e3"
+  },
+  "inputs_sha256": {
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/profile-k1-prefill.py": "5525a6919411fc81ee29f2eec147f55140edbca1150ff6c82d9e4036960c7bbe",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/2B-256-profile.stacks.txt": "c01a3c3b5a0f9e6a9d082b27a33cac73d609f1df359709053be26dfb13434e7a",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/2B-256-profile.profile.json": "815a3fd1c50da9e51df4f11f0f38c4d344d589fe8a83cce2d3aa3b83cbcacf32",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/2B-256-profile.request.json": "bf513f13be834895ed649421ec8b10b0db36258b8645168dfebc516c59d17b60",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/2B-2048-profile.stacks.txt": "5133fe66e3bd348df10c59807cd1b62e4e02c9d1e6e83c4789a11a0c0f12de9c",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/2B-2048-profile.profile.json": "318ad609fd95469932e7f2104c87d1f3cc32fcab145a91afe724ee5715183ded",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/2B-2048-profile.request.json": "2dd5b1248fafd723857957fe008595f87a450f3f8042c8ff05e2f2989047b6bd",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/4B-256-profile.stacks.txt": "ec5f67ae0f6d69dbaf2c2b7ce50645dee249bfe5fe766f8f04d8592b3db2e1ca",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/4B-256-profile.profile.json": "fb4f6a6244875aafdecb2356265fb99dabbff3d18bd9fab56f7dadb7761b57f0",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/4B-256-profile.request.json": "944f5df95baa23a21a0ee04ddc5e1ae24453c263c0e553bf525a055f56e81753",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/4B-2048-profile.stacks.txt": "a54df8bdbf8396f727a074fccba715578583729ea11b633b8298f1be06a4a0b8",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/4B-2048-profile.profile.json": "351fdab9cac1976f8bef8a996ec0744ff8afcdd789d4c70b2d16a91a5f3d7eef",
+    "spacemit/reports/raw/k1-decode-audit-20261007-074314/4B-2048-profile.request.json": "faff83fe18ca8ec755aab72f6dab73b765069fdb4a5273a9fe99e89fa4aa27cd"
+  },
+  "limitations": [
+    "CPU sample shares are not wall-time savings or achievable speedups.",
+    "The attention-or-dot column is a union of disjoint self leaves, not attribution of every dot to attention.",
+    "Missing caller frames prevent definitive reassignment of most F16 dot samples.",
+    "A generic RVV F16 dot already exists; the absent path is a dedicated DK=DV=256 decode implementation.",
+    "No new board, model, kernel or quality measurement was performed."
+  ]
+}

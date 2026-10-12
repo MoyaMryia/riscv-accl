@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl/lab/k1-local-candidates-C2-r2-20261009-061000/verify-local.py", line 27, in <module>
+    run([compiler,'-O2','-std=c++17','-march=rv64gcv_zfh_zvfh',root/'C/test-gdn-r2.cpp','-I'+str(src/'ggml/include'),'-L'+str(root/'r2-lib'),'-L'+str(build/'bin'),'-lggml-cpu','-lggml-base','-pthread','-o',binary],'fixture-build')
+  File "/home/moyamryia/Projects/riscv-accl/lab/k1-local-candidates-C2-r2-20261009-061000/verify-local.py", line 14, in run
+    subprocess.run(list(map(str,args)),cwd=build,env=env,stdout=f,stderr=subprocess.STDOUT,check=True,timeout=1800)
+  File "/usr/lib/python3.10/subprocess.py", line 526, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/bin/riscv64-unknown-linux-gnu-g++', '-O2', '-std=c++17', '-march=rv64gcv_zfh_zvfh', '/home/moyamryia/Projects/riscv-accl/lab/k1-local-candidates-C2-r2-20261009-061000/C/test-gdn-r2.cpp', '-I/home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/include', '-L/home/moyamryia/Projects/riscv-accl/lab/k1-local-candidates-C2-r2-20261009-061000/r2-lib', '-L/home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/build-rvv/bin', '-lggml-cpu', '-lggml-base', '-pthread', '-o', '/home/moyamryia/Projects/riscv-accl/lab/k1-local-candidates-C2-r2-20261009-061000/test-gdn-r2']' returned non-zero exit status 1.

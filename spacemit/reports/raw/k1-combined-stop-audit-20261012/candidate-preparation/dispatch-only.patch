@@ -1,0 +1,11 @@
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -10957,7 +10957,7 @@
+                     }();
+                     (void) logged;
+                 }
+-                if (spine_k1_flag("SPINE_K1_GDN_REVISION") && n_tokens > 1 && S_v == 128 && __riscv_vsetvlmax_e32m8() == 64) {
++                if (n_tokens > 1 && S_v == 128 && spine_k1_flag("SPINE_K1_GDN_REVISION") && __riscv_vsetvlmax_e32m8() == 64) {
+                     if (getenv("SPINE_K1_TRACE") != nullptr && strcmp(getenv("SPINE_K1_TRACE"), "1") == 0) {
+                         static thread_local bool worker_logged = false;
+                         if (!worker_logged) {

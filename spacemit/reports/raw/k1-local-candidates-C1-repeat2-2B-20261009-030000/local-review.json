@@ -1,0 +1,60 @@
+{
+  "status": "C1 second repeat and paired 2B text reviewed; 4B pending",
+  "second_independent_repeat": {
+    "passed": true,
+    "cells": 8,
+    "cold_requests": 32
+  },
+  "2B_full_answers": {
+    "requests": 12,
+    "paired_tasks": 6,
+    "same_input_per_pair": true,
+    "same_complete_text_per_pair": true,
+    "natural_stop_and_audits": true,
+    "candidate_added_regressions_observed": 0,
+    "absolute_quality_tasks_passed": 2,
+    "absolute_quality_tasks_failed": 4,
+    "task_reviews": {
+      "routes": {
+        "pass": true,
+        "errors": []
+      },
+      "trace": {
+        "pass": false,
+        "errors": [
+          "The color is correct, but the answer omits all three required source citations."
+        ]
+      },
+      "aggregation": {
+        "pass": false,
+        "errors": [
+          "The answer gives 79. The stated receipts add to 78."
+        ]
+      },
+      "free_windows": {
+        "pass": false,
+        "errors": [
+          "The function reads current[1] after it creates a one-element list. The recorded code test raises IndexError.",
+          "The functions return nested lists instead of tuples. The free-window function does not compute the complement.",
+          "An empty busy list returns an empty list instead of the full nonempty query window."
+        ]
+      },
+      "unicode_runs": {
+        "pass": true,
+        "errors": [],
+        "recorded_code_checks": 106
+      },
+      "chinese_policy": {
+        "pass": false,
+        "errors": [
+          "The answer claims that customers cannot place weekend orders. The source only excludes weekend shipment.",
+          "The answer invents extra fees for used returns and omits customer-paid return postage.",
+          "The examples invent weekdays without a stated year. The standard delivery date contradicts the stated three business days after shipment.",
+          "The answer contains 305 Han characters. The request asks for about 450 to 600."
+        ],
+        "automated_fact_keywords_passed": true
+      }
+    },
+    "limitations": "Common errors do not establish candidate precision loss. Their source remains unverified. Full 4B review remains pending."
+  }
+}

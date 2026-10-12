@@ -1,0 +1,113 @@
+{
+  "状态": "全部 24 次完整回答复核结束；绝对质量未通过",
+  "独立复验": "两轮共 64 次冷请求通过",
+  "模型": {
+    "2B": {
+      "请求数": 12,
+      "配对数": 6,
+      "请求与全文相同": true,
+      "全部自然停止与审计通过": true,
+      "观察到候选新增回归数": 0,
+      "绝对质量通过数": 2,
+      "全文复核": {
+        "routes": {
+          "通过": true,
+          "与 C1 复核文本和请求相同": true,
+          "错误": []
+        },
+        "trace": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "The color is correct, but the answer omits all three required source citations."
+          ]
+        },
+        "aggregation": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "The answer gives 79. The stated receipts add to 78."
+          ]
+        },
+        "free_windows": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "The function reads current[1] after it creates a one-element list. The recorded code test raises IndexError.",
+            "The functions return nested lists instead of tuples. The free-window function does not compute the complement.",
+            "An empty busy list returns an empty list instead of the full nonempty query window."
+          ]
+        },
+        "unicode_runs": {
+          "通过": true,
+          "与 C1 复核文本和请求相同": true,
+          "错误": []
+        },
+        "chinese_policy": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "The answer claims that customers cannot place weekend orders. The source only excludes weekend shipment.",
+            "The answer invents extra fees for used returns and omits customer-paid return postage.",
+            "The examples invent weekdays without a stated year. The standard delivery date contradicts the stated three business days after shipment.",
+            "The answer contains 305 Han characters. The request asks for about 450 to 600."
+          ],
+          "汉字数": 305
+        }
+      }
+    },
+    "4B": {
+      "请求数": 12,
+      "配对数": 6,
+      "请求与全文相同": true,
+      "全部自然停止与审计通过": true,
+      "观察到候选新增回归数": 0,
+      "绝对质量通过数": 3,
+      "全文复核": {
+        "routes": {
+          "通过": true,
+          "与 C1 复核文本和请求相同": true,
+          "错误": []
+        },
+        "trace": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "颜色及要求的三段链路引用正确。额外一句将 38 单位收据标为 [S6]，但收据实际位于 [S5]。全文存在错误来源归属。"
+          ]
+        },
+        "aggregation": {
+          "通过": true,
+          "与 C1 复核文本和请求相同": true,
+          "错误": []
+        },
+        "free_windows": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "零长度区间触发 ValueError，违反忽略零长度区间的要求。",
+            "非空忙区间路径访问未定义变量 current_busy_start。",
+            "反向查询未抛出异常。空查询且没有忙区间时返回 [(start,end)]，违反返回 [] 的要求。"
+          ]
+        },
+        "unicode_runs": {
+          "通过": true,
+          "与 C1 复核文本和请求相同": true,
+          "错误": []
+        },
+        "chinese_policy": {
+          "通过": false,
+          "与 C1 复核文本和请求相同": true,
+          "错误": [
+            "只有 318 个汉字，未达到约 450～600 个汉字的要求。",
+            "示例未给出下单日是否为工作日，却断言截单前当日发货。",
+            "示例将截单后发货写为次日（工作日），不能涵盖周末。",
+            "没有明确说明标准配送从发货后的下一个工作日起计时。"
+          ],
+          "汉字数": 318
+        }
+      }
+    }
+  },
+  "限制": "每任务每模型一组配对。完整回答没有逐请求线程快照。共同错误来源待验证。"
+}

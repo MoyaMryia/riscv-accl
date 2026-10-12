@@ -1,0 +1,1 @@
+The cabinet is **cobalt**.

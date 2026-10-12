@@ -1,0 +1,43 @@
+2026-10-09T14:12:35+08:00
+k1_B1_r2_repeat_20261009_130100: 1 windows (created Fri Oct  9 13:02:05 2026)
+k1_C2_r2_model_20261009_130700: 1 windows (created Fri Oct  9 13:07:36 2026)
+COMMAND           PID  TYPE SIZE MODE   M START END PATH
+pipewire          946 FLOCK      WRITE  0     0   0 /run/user/109...
+pipewire          946 FLOCK      WRITE  0     0   0 /run/user/109...
+labwc             970 FLOCK      WRITE  0     0   0 /run/user/109...
+pipewire         2060 FLOCK      WRITE  0     0   0 /run/user/1000/pipewire-0.lock
+pipewire         2060 FLOCK      WRITE  0     0   0 /run/user/1000/pipewire-0-manager.lock
+cron              703 FLOCK      WRITE  0     0   0 /run...
+python3         12709 FLOCK      WRITE* 0     0   0 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/document-quality-suite.lock
+python3         12545 FLOCK      WRITE  0     0   0 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/document-quality-suite.lock
+    PID    PPID     ELAPSED STAT COMMAND
+   1083       1  1-04:35:17 Ss   /usr/lib/autossh/autossh -M 7003 -o ServerAliveInterval 30 -o ServerAliveCountMax 3 -o ExitOnForwardFailure=yes -o IdentitiesOnly=yes -i /home/moyamryia/.ssh/id_ed25519 -N -R 6002:localhost:22 moyamryia@36.151.149.214
+   2047       1    19:40:13 Ss   /usr/lib/systemd/systemd --user
+   2048    2047    19:40:13 S    (sd-pam)
+   2060    2047    19:40:12 Ssl  /usr/bin/pipewire
+   2061    2047    19:40:12 Ssl  /usr/bin/pipewire -c filter-chain.conf
+   2063    2047    19:40:12 Ssl  /usr/bin/wireplumber
+   2066    2047    19:40:12 Ssl  /usr/bin/pipewire-pulse
+   2082    2047    19:40:12 Ss   /usr/bin/dbus-daemon --session --address=systemd: --nofork --nopidfile --systemd-activation --syslog-only
+  10754    1083    06:34:02 S    /usr/bin/ssh -L 7003:127.0.0.1:7003 -R 7003:127.0.0.1:7004 -o ServerAliveInterval 30 -o ServerAliveCountMax 3 -o ExitOnForwardFailure=yes -o IdentitiesOnly=yes -i /home/moyamryia/.ssh/id_ed25519 -N -R 6002:localhost:22 moyamryia@36.151.149.214
+  12353   12332    01:20:41 S    sshd: moyamryia@notty
+  12538       1    01:10:29 Ss   tmux new-session -d -s k1_B1_r2_repeat_20261009_130100 bash /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/run-board.sh
+  12539   12538    01:10:29 Ss+  bash /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/run-board.sh
+  12544   12539    01:10:29 S    timeout --signal=TERM --kill-after=30s 86400s python3 -u tool/spacemit/bench/local-candidates/repeat-b1.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-model-20261009-051000 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-20261008-231500
+  12545   12544    01:10:29 S    python3 -u tool/spacemit/bench/local-candidates/repeat-b1.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-model-20261009-051000 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-20261008-231500
+  12703   12538    01:04:59 Ss+  bash /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-C2-r2-model-20261009-130700/run-board.sh
+  12708   12703    01:04:58 S    timeout --signal=TERM --kill-after=30s 86400s python3 -u tool/spacemit/bench/local-candidates/model-c2-r2.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-C2-r2-model-20261009-130700 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-C2-r2-20261009-063000
+  12709   12708    01:04:58 S    python3 -u tool/spacemit/bench/local-candidates/model-c2-r2.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-C2-r2-model-20261009-130700 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-C2-r2-20261009-063000
+  13275   12545       00:00 Rl   /usr/bin/python3 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/tool/spacemit/bench/bench-lifecycle.py --server /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin/llama-server --model /home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf --label 2B-p512-n1-B0-0 --mode plain --contexts 512 --n-predict 1 --ignore-eos --verify-cold --capture-token-ids --threads 4 --batch-size 32 --ubatch-size 32 --gpu-layers 0 --ctx-size 4096 --cache-type-k f16 --cache-type-v f16 --timeout 600 --output /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/repeat-2/2B-p512-n1-B0-0.jsonl --log /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/repeat-2/2B-p512-n1-B0-0.server.log
+  13276   13275       00:00 Rl   /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-layout-20260930-153134/source/build/bin/llama-server -m /home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf -t 4 -c 4096 --parallel 1 -b 32 -ub 32 -fa on --host 127.0.0.1 --port 18085 -ctk f16 -ctv f16 -ngl 0
+  13278   12353       00:00 Ss   bash -c date -Is; tmux list-sessions; lslocks; ps -u moyamryia -o pid,ppid,etime,stat,args; cat /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/phase; tail -n 6 /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-B1-r2-repeat-20261009-130100/driver.log; cat /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-local-candidates-C2-r2-model-20261009-130700/phase; journalctl -k --since "2026-10-09 13:08:00" --no-pager -n 35
+  13293   13278       00:00 R    ps -u moyamryia -o pid,ppid,etime,stat,args
+repeat 2 2B-p512-n1-B0-0
+repeat 1 4B-p2048-n65-B0-0
+repeat 1 4B-p2048-n65-B1-1
+repeat 1 4B-p2048-n65-B1-2
+repeat 1 4B-p2048-n65-B0-3
+repeat 1 passed
+repeat 2 2B-p512-n1-B0-0
+wait for shared experiment lock
+-- No entries --

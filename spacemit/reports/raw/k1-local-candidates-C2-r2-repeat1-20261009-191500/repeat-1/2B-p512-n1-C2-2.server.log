@@ -1,0 +1,65 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+warning: no usable GPU found, --gpu-layers option will be ignored
+warning: one possible reason is that llama.cpp was compiled without GPU support
+warning: consult docs/build.md for compilation instructions
+0.00.017.683 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.019.180 W srv  llama_server: -----------------
+0.00.019.210 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.019.213 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.019.215 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.019.217 W srv  llama_server: -----------------
+0.00.021.393 I srv    load_model: loading model '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=16 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=16 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=1 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=2 requested=0
+K1_GEMM_ROUTE mode=3 phase=prefill eligible=1 bypass=1 buffer_size=131072
+SPINE_GDN_PREFILL: scalar-gate K1 RVV fusion enabled
+K1_GDN_R2 worker=3 workers=4 state=128
+SPINE_GDN_PREFILL_R2: retained two state segments; S=128; VLEN=256
+K1_GDN_R2 worker=0 workers=4 state=128
+K1_GDN_R2 worker=2 workers=4 state=128
+K1_GDN_R2 worker=1 workers=4 state=128
+K1_GEMM_ROUTE mode=3 phase=single eligible=1 bypass=1 buffer_size=131072
+0.11.337.698 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 4096, kv_unified = 'false'
+0.11.523.470 I srv  llama_server: model loaded
+0.11.523.514 I srv  llama_server: listening on http://127.0.0.1:18085
+0.11.839.579 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.11.839.807 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+0.15.470.380 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     96, progress = 0.19, t =   3.63 s / 26.44 tokens per second
+0.16.674.866 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    128, progress = 0.25, t =   4.83 s / 26.47 tokens per second
+0.17.885.758 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    160, progress = 0.31, t =   6.05 s / 26.46 tokens per second
+0.19.096.957 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    192, progress = 0.38, t =   7.26 s / 26.46 tokens per second
+0.20.311.344 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    224, progress = 0.44, t =   8.47 s / 26.44 tokens per second
+0.21.530.189 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    256, progress = 0.50, t =   9.69 s / 26.42 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=32 requested=0
+0.22.760.221 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    288, progress = 0.56, t =  10.92 s / 26.37 tokens per second
+0.23.990.770 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    320, progress = 0.62, t =  12.15 s / 26.34 tokens per second
+0.25.221.616 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    352, progress = 0.69, t =  13.38 s / 26.30 tokens per second
+0.26.452.088 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    384, progress = 0.75, t =  14.61 s / 26.28 tokens per second
+0.27.691.381 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    416, progress = 0.81, t =  15.85 s / 26.24 tokens per second
+0.28.927.773 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    448, progress = 0.88, t =  17.09 s / 26.22 tokens per second
+0.30.169.515 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    480, progress = 0.94, t =  18.33 s / 26.19 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=28 requested=0
+0.31.288.033 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    508, progress = 0.99, t =  19.45 s / 26.12 tokens per second
+K1_SSM_CONV mode=0 layout=time rs=0 cpu_only=1 tokens=4 requested=0
+0.31.697.194 I slot print_timing: id  0 | task 0 | prompt eval time =   19857.13 ms /   512 tokens (   38.78 ms per token,    25.78 tokens per second)
+0.31.697.221 I slot print_timing: id  0 | task 0 |        eval time =       0.00 ms /     1 tokens (    0.00 ms per token, 1000000.00 tokens per second)
+0.31.697.228 I slot print_timing: id  0 | task 0 |       total time =   19857.13 ms /   513 tokens
+0.31.697.248 I slot print_timing: id  0 | task 0 |    graphs reused =         13
+0.31.697.442 I slot      release: id  0 | task 0 | stop processing: n_tokens = 512, truncated = 0
+0.31.705.967 I srv    operator(): operator(): cleaning up before exit...

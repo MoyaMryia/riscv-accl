@@ -1,0 +1,18 @@
+2026-10-10T16:36:56+08:00
+2026-10-10T16:35:19+08:00
+verify baseline and payload
+wait for shared experiment lock
+verify baseline and payload
+  PID COMMAND          TYPE MODE  PATH
+  946 pipewire        FLOCK WRITE /run/user/109...
+  946 pipewire        FLOCK WRITE /run/user/109...
+  970 labwc           FLOCK WRITE /run/user/109...
+25076 pipewire        FLOCK WRITE /run/user/1000/pipewire-0.lock
+25076 pipewire        FLOCK WRITE /run/user/1000/pipewire-0-manager.lock
+25290 python3         FLOCK WRITE /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/document-quality-suite.lock
+  703 cron            FLOCK WRITE /run...
+25284 0 bash
+  25289   25284       01:37  0.0 timeout --signal=TERM --kill-after=30s 86400s python3 -u tool/spacemit/bench/local-candidates/board-combined-repair.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-state-repair-20261010-163500 C
+  25290   25289       01:37 99.8 python3 -u tool/spacemit/bench/local-candidates/board-combined-repair.py /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-state-repair-20261010-163500 C
+  25303   25265       00:00 12.5 bash -c d=/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-combined-state-repair-20261010-163500; date -Is; cat "$d/start-clock.log" "$d/phase"; tail -n 14 "$d/driver.log"; for f in exit-status failure.txt numerical-stop.txt; do if test -f "$d/$f"; then cat "$d/$f"; fi; done; lslocks -o PID,COMMAND,TYPE,MODE,PATH; tmux list-panes -t k1_combined_state_repair_20261010_163500 -F "#{pane_pid} #{pane_dead} #{pane_current_command}"; ps -eo pid,ppid,etime,pcpu,args | grep -E "board-combined-repair|test-combined-state|llama-server"
+  25310   25303       00:00  0.0 grep -E board-combined-repair|test-combined-state|llama-server

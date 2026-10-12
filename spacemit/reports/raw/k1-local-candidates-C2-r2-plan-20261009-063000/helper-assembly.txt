@@ -1,0 +1,48 @@
+0000000000000020 <spine_k1_gdn_prefill128(float*, float const*, float const*, float const*, float, float, float, float*)>:
+      20:	08000793          	li	a5,128
+      24:	04000293          	li	t0,64
+      28:	0d32f057          	vsetvli	zero,t0,e32,m8,ta,ma
+
+000000000000002c <.L1^B1>:
+      2c:	10050293          	addi	t0,a0,256
+      30:	02056007          	vle32.v	v0,(a0)
+      34:	0202e407          	vle32.v	v8,(t0)
+      38:	92055057          	vfmul.vf	v0,v0,fa0
+      3c:	92855457          	vfmul.vf	v8,v8,fa0
+      40:	5e003857          	vmv.v.i	v16,0
+      44:	0205ec07          	vle32.v	v24,(a1)
+      48:	b3801857          	vfmacc.vv	v16,v0,v24
+      4c:	10058313          	addi	t1,a1,256
+      50:	02036c07          	vle32.v	v24,(t1)
+      54:	b3841857          	vfmacc.vv	v16,v8,v24
+      58:	5e003c57          	vmv.v.i	v24,0
+      5c:	070c1857          	vfredusum.vs	v16,v16,v24
+      60:	43001057          	vfmv.f.s	ft0,v16
+      64:	00062087          	flw	ft1,0(a2)
+      68:	0800f0d3          	fsub.s	ft1,ft1,ft0
+      6c:	10b0f0d3          	fmul.s	ft1,ft1,fa1
+      70:	0205ec07          	vle32.v	v24,(a1)
+      74:	b380d057          	vfmacc.vf	v0,ft1,v24
+      78:	02056027          	vse32.v	v0,(a0)
+      7c:	5e003857          	vmv.v.i	v16,0
+      80:	0206ec07          	vle32.v	v24,(a3)
+      84:	b3801857          	vfmacc.vv	v16,v0,v24
+      88:	10058313          	addi	t1,a1,256
+      8c:	02036c07          	vle32.v	v24,(t1)
+      90:	b380d457          	vfmacc.vf	v8,ft1,v24
+      94:	0202e427          	vse32.v	v8,(t0)
+      98:	10068313          	addi	t1,a3,256
+      9c:	02036c07          	vle32.v	v24,(t1)
+      a0:	b3841857          	vfmacc.vv	v16,v8,v24
+      a4:	5e003c57          	vmv.v.i	v24,0
+      a8:	070c1857          	vfredusum.vs	v16,v16,v24
+      ac:	43001057          	vfmv.f.s	ft0,v16
+      b0:	10c07053          	fmul.s	ft0,ft0,fa2
+      b4:	00072027          	fsw	ft0,0(a4)
+      b8:	20050513          	addi	a0,a0,512
+      bc:	0611                	addi	a2,a2,4
+      be:	0711                	addi	a4,a4,4
+      c0:	17fd                	addi	a5,a5,-1
+      c2:	f7ad                	bnez	a5,2c <.L1^B1>
+      c4:	8082                	ret
+

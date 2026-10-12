@@ -1,0 +1,29 @@
+In file included from /home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/ops.cpp:9:
+/home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/vec.h: In function 'void ggml_vec_mad_f16(int, ggml_fp16_t*, const ggml_fp16_t*, float)':
+/home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/vec.h:520:33: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+  520 |         const _Float16 scale = *(const _Float16*)(&s);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~
+/home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/vec.h: In function 'void ggml_vec_scale_f16(int, ggml_fp16_t*, float)':
+/home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/vec.h:800:33: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+  800 |         const _Float16 scale = *(const _Float16*)(&s);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~
+In file included from /home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/ops.cpp:18:
+/home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/spine-k1-local-attention.h: In function 'void spine_k1_dot256(const ggml_fp16_t*, const ggml_fp16_t*, float*)':
+/home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/spine-k1-local-attention.h:48:46: warning: ISO C++ does not allow converting to '_Float16' from 'float' with greater conversion rank [-Wnarrowing]
+   48 |     vfloat16m1_t ax = __riscv_vfmv_v_f_f16m1(0.0f, vl), ay = ax;
+      |                                              ^~~~
+In file included from /home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/ggml-cpu-impl.h:349,
+                 from /home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/traits.h:3,
+                 from /home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/common.h:4,
+                 from /home/moyamryia/Projects/riscv-accl/lab/local-candidates-final-20261008/test-bundle/source/ggml/src/ggml-cpu/binary-ops.h:3,
+                 from /home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/ops.cpp:5:
+/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/lib/gcc/riscv64-unknown-linux-gnu/16.1.0/include/riscv_vector.h:40:25: note: initializing argument 1 of 'vfloat16m1_t __riscv_vfmv_v_f_f16m1(_Float16, long unsigned int)'
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~
+/home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/spine-k1-local-attention.h: In function 'void spine_k1_dot4(const ggml_fp16_t*, const ggml_fp16_t (*)[256], float*)':
+/home/moyamryia/Projects/riscv-accl/lab/k1-combined-preparation-20261010/C/overlay/ggml/src/ggml-cpu/spine-k1-local-attention.h:83:46: warning: ISO C++ does not allow converting to '_Float16' from 'float' with greater conversion rank [-Wnarrowing]
+   83 |     vfloat16m1_t ax = __riscv_vfmv_v_f_f16m1(0.0f, vl);
+      |                                              ^~~~
+/home/moyamryia/Projects/riscv-accl/lab/toolchain/toolchain/riscv/lib/gcc/riscv64-unknown-linux-gnu/16.1.0/include/riscv_vector.h:40:25: note: initializing argument 1 of 'vfloat16m1_t __riscv_vfmv_v_f_f16m1(_Float16, long unsigned int)'
+   40 | #pragma riscv intrinsic "vector"
+      |                         ^~~~~~~~

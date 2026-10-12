@@ -1,0 +1,135 @@
+{
+  "status": "performance-gate-stopped",
+  "verified_requests": 96,
+  "verified_comparisons": 48,
+  "failures": [
+    {
+      "model": "4B",
+      "tokens": 2048,
+      "outputs": 65,
+      "candidate": "F",
+      "reference": "B",
+      "metrics": {
+        "prefill": {
+          "reduction_pct": 9.99349171006073,
+          "control_range_pct": 0.06753700904074567,
+          "advance": true,
+          "clear_regression": false,
+          "base_ms": [
+            226125.728,
+            225973.061
+          ],
+          "candidate_ms": [
+            203368.577,
+            203549.757
+          ]
+        },
+        "ttft": {
+          "reduction_pct": 9.993194874618682,
+          "control_range_pct": 0.06816295139461587,
+          "advance": true,
+          "clear_regression": false,
+          "base_ms": [
+            226133.863,
+            225979.776
+          ],
+          "candidate_ms": [
+            203375.304,
+            203557.738
+          ]
+        },
+        "decode": {
+          "reduction_pct": -3.0220477398877454,
+          "control_range_pct": 0.07264179498963537,
+          "advance": false,
+          "clear_regression": true,
+          "base_ms": [
+            33620.958,
+            33596.544
+          ],
+          "candidate_ms": [
+            34617.723,
+            34631.124
+          ]
+        }
+      },
+      "passed": false
+    }
+  ],
+  "diagnostics": [
+    {
+      "configuration": [
+        "4B",
+        2048,
+        65
+      ],
+      "times_by_arm": {
+        "C0": {
+          "prefill_ms": [
+            225568.536,
+            224984.943
+          ],
+          "decode_ms": [
+            41396.823,
+            42589.589
+          ]
+        },
+        "H": {
+          "prefill_ms": [
+            212619.503,
+            213418.491
+          ],
+          "decode_ms": [
+            42536.387,
+            42353.259
+          ]
+        },
+        "L": {
+          "prefill_ms": [
+            207143.81,
+            205426.455
+          ],
+          "decode_ms": [
+            42498.427,
+            42513.09
+          ]
+        },
+        "P": {
+          "prefill_ms": [
+            203511.422,
+            206358.126
+          ],
+          "decode_ms": [
+            42570.117,
+            41349.211
+          ]
+        },
+        "B": {
+          "prefill_ms": [
+            226125.728,
+            225973.061
+          ],
+          "decode_ms": [
+            33620.958,
+            33596.544
+          ]
+        },
+        "F": {
+          "prefill_ms": [
+            203368.577,
+            203549.757
+          ],
+          "decode_ms": [
+            34617.723,
+            34631.124
+          ]
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "Input lists and output text are represented by saved receipts.",
+    "Thread snapshots do not prove worker placement during decode.",
+    "This audit does not compare complete state dumps or validate hardware causes."
+  ]
+}
