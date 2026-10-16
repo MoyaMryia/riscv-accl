@@ -1,0 +1,817 @@
+{
+  "status": "pass",
+  "requests": 12,
+  "receipt_checks": 221,
+  "memory_samples": 101704,
+  "elapsed_s": 102171.88553082,
+  "models": {
+    "2B": "56f0ddd90dfa0e2456af6cb4718ece419678d21a75d65e27353319b5e431a2fa",
+    "4B": "0adf6cce5df53921606033c39a13fae2054543b78af0e7ff98860e86f078ac0f"
+  },
+  "inputs": {
+    "builds": {
+      "final": {
+        "path": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-final-default-20261013-r1/final-r3/build",
+        "binaries": {
+          "libggml-base.so": "6340f3e1104ee2ff2fb49bfddec10b9d86aabd5f6ea84d6553f9119c1de2ee52",
+          "libggml-base.so.0": "6340f3e1104ee2ff2fb49bfddec10b9d86aabd5f6ea84d6553f9119c1de2ee52",
+          "libggml-base.so.0.16.0": "6340f3e1104ee2ff2fb49bfddec10b9d86aabd5f6ea84d6553f9119c1de2ee52",
+          "libggml-cpu.so": "04ef807cbc43a84de0750e46ee69abf520c85123b7c93fe493e7d573e042c84d",
+          "libggml-cpu.so.0": "04ef807cbc43a84de0750e46ee69abf520c85123b7c93fe493e7d573e042c84d",
+          "libggml-cpu.so.0.16.0": "04ef807cbc43a84de0750e46ee69abf520c85123b7c93fe493e7d573e042c84d",
+          "libggml.so": "b759e434ca1185e012266959ed5276e5fc500172232a5b598afb65b0bd96a0fb",
+          "libggml.so.0": "b759e434ca1185e012266959ed5276e5fc500172232a5b598afb65b0bd96a0fb",
+          "libggml.so.0.16.0": "b759e434ca1185e012266959ed5276e5fc500172232a5b598afb65b0bd96a0fb",
+          "libllama-bench-impl.so": "26f9483f88304a6fab226270ab6aeaace3d6d8471b16e5da08c414f7fd0078b8",
+          "libllama-common.so": "b3a8eb4d685e1fcd01d7cd3e11b7c462b2201a40ce0bd7c8da20589b20e1d3db",
+          "libllama-common.so.0": "b3a8eb4d685e1fcd01d7cd3e11b7c462b2201a40ce0bd7c8da20589b20e1d3db",
+          "libllama-common.so.0.0.0": "b3a8eb4d685e1fcd01d7cd3e11b7c462b2201a40ce0bd7c8da20589b20e1d3db",
+          "libllama-server-impl.so": "096c1eb10336904fdb223ab3f7fef7e149df3801eff66800caab605147ec7653",
+          "libllama.so": "ab5c11cde6156e1b693cd8bb46e828a855b6c8b432699fc7251e73334299bd4c",
+          "libllama.so.0": "ab5c11cde6156e1b693cd8bb46e828a855b6c8b432699fc7251e73334299bd4c",
+          "libllama.so.0.0.0": "ab5c11cde6156e1b693cd8bb46e828a855b6c8b432699fc7251e73334299bd4c",
+          "libmtmd.so": "3eadfafbe80b430539161c5dd09cdf271e3e003aed15b6e080a6d86fc7f3ce32",
+          "libmtmd.so.0": "3eadfafbe80b430539161c5dd09cdf271e3e003aed15b6e080a6d86fc7f3ce32",
+          "libmtmd.so.0.0.0": "3eadfafbe80b430539161c5dd09cdf271e3e003aed15b6e080a6d86fc7f3ce32",
+          "llama-bench": "2a5b900b72b28b11b05b2fab3f8e18035da37a80da0ef67b459145b9b42cf6f7",
+          "llama-server": "f254f174919c0a97ef34366f116705f6d22574cab4c2bfc39928c0d315b5bfbd",
+          "test-attention": "46040e1f607b428f41ff6ec1d925c8a8a594caa080441b1a9a7a30fb87bf5050",
+          "test-default-state": "1a4cf522d2cb26e27d410277713bf587449a9215518b2819769eec2254daa8e1",
+          "test-gdn": "022bd5d8fed4e72ad75c7ee29081ab88e69c5a34762023c394bf8df69388268a",
+          "test-route": "b62b71e9d932638423642bb146a31853f1833f9c514328b4b0efab69c4b2ba4b",
+          "test-ssm": "aba1ee66bd5fe965fcd885a6f1e77b2fd894cf0fa16e67833bf9d7123008bab8",
+          "test-state": "0d9a4f5a32a6b92f954fbfa1e0ec29c7d5a06d4f3ce9d55d57220ba841d97a2a"
+        },
+        "receipt_sha256": "4e97c01b3c00cc60258dcf3b8d23ab9d360dfd0e143c6790acd76ce5d88a6d87"
+      },
+      "baseline": {
+        "path": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-final-default-20261013-r1/baseline-load-build",
+        "binaries": {
+          "libggml-base.so": "9d13a15be65b4b0c8876d37336f5a6dafe6d9c572fbf316e52579b951f66d462",
+          "libggml-base.so.0": "9d13a15be65b4b0c8876d37336f5a6dafe6d9c572fbf316e52579b951f66d462",
+          "libggml-base.so.0.16.0": "9d13a15be65b4b0c8876d37336f5a6dafe6d9c572fbf316e52579b951f66d462",
+          "libggml-cpu.so": "c6a719e4701f99abc7656b1ba3a83b83b8d8a66dcd7dbd2ac82513f970ee6e49",
+          "libggml-cpu.so.0": "c6a719e4701f99abc7656b1ba3a83b83b8d8a66dcd7dbd2ac82513f970ee6e49",
+          "libggml-cpu.so.0.16.0": "c6a719e4701f99abc7656b1ba3a83b83b8d8a66dcd7dbd2ac82513f970ee6e49",
+          "libggml.so": "e53ec59847ec630caced3ed664c332827d2f126b6a768f7e99fa23b1c7d5023b",
+          "libggml.so.0": "e53ec59847ec630caced3ed664c332827d2f126b6a768f7e99fa23b1c7d5023b",
+          "libggml.so.0.16.0": "e53ec59847ec630caced3ed664c332827d2f126b6a768f7e99fa23b1c7d5023b",
+          "libllama-bench-impl.so": "20d0a102a15769a03ec2c26fad27023af6d530e1ba7379ba2ff23b1ab5bf9b9d",
+          "libllama-common.so": "0def17c6291fd5111a663b6e9cf6ae9b3cfdddb75d5cc95efdc76c5eebfffc7c",
+          "libllama-common.so.0": "0def17c6291fd5111a663b6e9cf6ae9b3cfdddb75d5cc95efdc76c5eebfffc7c",
+          "libllama-common.so.0.0.0": "0def17c6291fd5111a663b6e9cf6ae9b3cfdddb75d5cc95efdc76c5eebfffc7c",
+          "libllama-server-impl.so": "073ad3fdd8217f4557581f280a1b7b775133ad83d280b5e86357e4fc4d0d0654",
+          "libllama.so": "b63f224117ce6a235317cc872ab7d31efd5285c0a584c626dd1fddd474c5e06e",
+          "libllama.so.0": "b63f224117ce6a235317cc872ab7d31efd5285c0a584c626dd1fddd474c5e06e",
+          "libllama.so.0.0.0": "b63f224117ce6a235317cc872ab7d31efd5285c0a584c626dd1fddd474c5e06e",
+          "libmtmd.so": "cd4ae5583f20a555942bbf40f5c803a1bced7537e757aaac2e0ab7cdb24ef288",
+          "libmtmd.so.0": "cd4ae5583f20a555942bbf40f5c803a1bced7537e757aaac2e0ab7cdb24ef288",
+          "libmtmd.so.0.0.0": "cd4ae5583f20a555942bbf40f5c803a1bced7537e757aaac2e0ab7cdb24ef288",
+          "llama-bench": "2a5b900b72b28b11b05b2fab3f8e18035da37a80da0ef67b459145b9b42cf6f7",
+          "llama-server": "f254f174919c0a97ef34366f116705f6d22574cab4c2bfc39928c0d315b5bfbd"
+        },
+        "receipt_sha256": "997700b98bb2d8dcda1c7b8246c75ea9f8d47f162100c788ed53898eb9de76c4"
+      }
+    },
+    "models": {
+      "2B": {
+        "path": "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+        "sha256": "56f0ddd90dfa0e2456af6cb4718ece419678d21a75d65e27353319b5e431a2fa",
+        "stat": [
+          1181126112,
+          1789908606100760513
+        ]
+      },
+      "4B": {
+        "path": "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+        "sha256": "0adf6cce5df53921606033c39a13fae2054543b78af0e7ff98860e86f078ac0f",
+        "stat": [
+          2542264480,
+          1790144738148260035
+        ]
+      }
+    },
+    "tools": {
+      "chat.py": "25dccf138dd9489e9c1bf152ae2bcb8eb12c3a244130209d6a97e09facb66ebe",
+      "experiment.py": "14b07c4291f349f4ab5e83e6eb11cdba7ad82dd0349ccd30423577638cd5e5a2",
+      "lifecycle.py": "db8c3dcfacab9eb472d011a98b6a416070085f1ea46edf754dbcdd67d615df35",
+      "long_context.py": "57d1a235fb1b4ef58d53bdf57ba3406f772037b069b875199654d811e6cad215",
+      "quality.py": "dfa6d0d8ffe5a8a85987d920cc2cfc44c5899a15e8d4d4b25032566a6429c48c",
+      "selection.py": "4f70852adf09d84a4c5fa126ced2f06d810ecb5062566b7f3c10e420347e03ca"
+    },
+    "protocol_sha256": "9374a4bcc723ada5902f67255494904b547fd1c6eb5d231113a11ae660643e68",
+    "plan": [
+      [
+        "2B",
+        16384,
+        0,
+        "final"
+      ],
+      [
+        "2B",
+        16384,
+        0,
+        "baseline"
+      ],
+      [
+        "4B",
+        16384,
+        0,
+        "baseline"
+      ],
+      [
+        "4B",
+        16384,
+        0,
+        "final"
+      ],
+      [
+        "2B",
+        32768,
+        0,
+        "baseline"
+      ],
+      [
+        "2B",
+        32768,
+        0,
+        "final"
+      ],
+      [
+        "4B",
+        32768,
+        0,
+        "final"
+      ],
+      [
+        "4B",
+        32768,
+        0,
+        "baseline"
+      ],
+      [
+        "4B",
+        16384,
+        1,
+        "final"
+      ],
+      [
+        "4B",
+        16384,
+        1,
+        "baseline"
+      ],
+      [
+        "2B",
+        16384,
+        1,
+        "baseline"
+      ],
+      [
+        "2B",
+        16384,
+        1,
+        "final"
+      ]
+    ]
+  },
+  "hardware": {
+    "uname": "Linux moyamryia-spacemitk1xmusepiproboard 6.6.63 #2.2.9.2 SMP PREEMPT Tue Jan 27 21:48:13 UTC 2026 riscv64 riscv64 riscv64 GNU/Linux\n",
+    "meminfo": "MemTotal:       16282584 kB\nMemFree:         3436488 kB\nMemAvailable:   15690984 kB\nBuffers:          114300 kB\nCached:         11987840 kB\nSwapCached:            0 kB\nActive:           750288 kB\nInactive:       11474968 kB\nActive(anon):     124996 kB\nInactive(anon):      168 kB\nActive(file):     625292 kB\nInactive(file): 11474800 kB\nUnevictable:           0 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:                 0 kB\nWriteback:             0 kB\nAnonPages:        122900 kB\nMapped:           128388 kB\nShmem:              2044 kB\nKReclaimable:     410876 kB\nSlab:             505024 kB\nSReclaimable:     410876 kB\nSUnreclaim:        94148 kB\nKernelStack:        4848 kB\nPageTables:         4980 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     8141292 kB\nCommitted_AS:    1036420 kB\nVmallocTotal:   67108864 kB\nVmallocUsed:       37356 kB\nVmallocChunk:          0 kB\nPercpu:             5888 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:         393216 kB\nCmaFree:           71304 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\n",
+    "cpuinfo": "processor\t: 0\nhart\t\t: 0\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt_ime\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 1\nhart\t\t: 1\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt_ime\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 2\nhart\t\t: 2\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt_ime\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 3\nhart\t\t: 3\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt_ime\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 4\nhart\t\t: 4\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 5\nhart\t\t: 5\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 6\nhart\t\t: 6\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\nprocessor\t: 7\nhart\t\t: 7\nmodel name\t: Spacemit(R) X60\nisa\t\t: rv64imafdcv_zicbom_zicboz_zicntr_zicond_zicsr_zifencei_zihintpause_zihpm_zfh_zfhmin_zca_zcd_zba_zbb_zbc_zbs_zkt_zve32f_zve32x_zve64d_zve64f_zve64x_zvfh_zvfhmin_zvkt_sscofpmf_sstc_svinval_svnapot_svpbmt\nmmu\t\t: sv39\nuarch\t\t: spacemit,x60\nmvendorid\t: 0x710\nmarchid\t\t: 0x8000000058000001\nmimpid\t\t: 0x1000000049772200\n\n",
+    "uid": 1000,
+    "frequency": {
+      "/sys/devices/system/cpu/cpu7/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu6/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_cur_freq": "1600000\n",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq": "1600000\n"
+    },
+    "governor": {
+      "/sys/devices/system/cpu/cpu7/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu5/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu3/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu1/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu6/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu4/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu2/cpufreq/scaling_governor": "performance\n",
+      "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor": "performance\n"
+    }
+  },
+  "rows": [
+    {
+      "label": "2B-p16384-r0-final",
+      "model": "2B",
+      "length": 16384,
+      "repeat": 0,
+      "arm": "final",
+      "context": 20480,
+      "ttft_s": 1040.4878738101106,
+      "prefill_s": 1040.456647,
+      "prefill_tps": 15.746931933435954,
+      "decode_tps": 2.9439233775551386,
+      "decode_s": 22.079379,
+      "wall_s": 1062.5756267050747,
+      "peak_rss_mib": 2569.58203125,
+      "min_available_mib": 13800.2265625,
+      "samples": 1068
+    },
+    {
+      "label": "2B-p16384-r0-baseline",
+      "model": "2B",
+      "length": 16384,
+      "repeat": 0,
+      "arm": "baseline",
+      "context": 20480,
+      "ttft_s": 2923.7883448520442,
+      "prefill_s": 2923.757713,
+      "prefill_tps": 5.603747508608967,
+      "decode_tps": 1.636242911386647,
+      "decode_s": 39.725153,
+      "wall_s": 2963.521929473034,
+      "peak_rss_mib": 2571.7890625,
+      "min_available_mib": 13801.80078125,
+      "samples": 2968
+    },
+    {
+      "label": "4B-p16384-r0-baseline",
+      "model": "4B",
+      "length": 16384,
+      "repeat": 0,
+      "arm": "baseline",
+      "context": 20480,
+      "ttft_s": 11301.279683990984,
+      "prefill_s": 11301.248904,
+      "prefill_tps": 1.4497512743216368,
+      "decode_tps": 0.4866370076633499,
+      "decode_s": 133.56978400000003,
+      "wall_s": 11434.857734688907,
+      "peak_rss_mib": 5600.546875,
+      "min_available_mib": 12008.109375,
+      "samples": 11428
+    },
+    {
+      "label": "4B-p16384-r0-final",
+      "model": "4B",
+      "length": 16384,
+      "repeat": 0,
+      "arm": "final",
+      "context": 20480,
+      "ttft_s": 3001.5439312170492,
+      "prefill_s": 3001.51305,
+      "prefill_tps": 5.4585802983598555,
+      "decode_tps": 1.1089851013652476,
+      "decode_s": 58.612148999999995,
+      "wall_s": 3060.1643801500322,
+      "peak_rss_mib": 5600.515625,
+      "min_available_mib": 12007.3125,
+      "samples": 3069
+    },
+    {
+      "label": "2B-p32768-r0-baseline",
+      "model": "2B",
+      "length": 32768,
+      "repeat": 0,
+      "arm": "baseline",
+      "context": 36864,
+      "ttft_s": 10761.012056982961,
+      "prefill_s": 10760.952201,
+      "prefill_tps": 3.045083686642054,
+      "decode_tps": 1.0507766136376353,
+      "decode_s": 61.859009,
+      "wall_s": 10822.886191335972,
+      "peak_rss_mib": 2767.640625,
+      "min_available_mib": 13607.07421875,
+      "samples": 10806
+    },
+    {
+      "label": "2B-p32768-r0-final",
+      "model": "2B",
+      "length": 32768,
+      "repeat": 0,
+      "arm": "final",
+      "context": 36864,
+      "ttft_s": 2983.9019348518923,
+      "prefill_s": 2983.845413,
+      "prefill_tps": 10.9818021594673,
+      "decode_tps": 2.1406466781642446,
+      "decode_s": 30.364656,
+      "wall_s": 3014.2817304579075,
+      "peak_rss_mib": 2766.42578125,
+      "min_available_mib": 13602.52734375,
+      "samples": 3015
+    },
+    {
+      "label": "4B-p32768-r0-final",
+      "model": "4B",
+      "length": 32768,
+      "repeat": 0,
+      "arm": "final",
+      "context": 36864,
+      "ttft_s": 8866.022146051051,
+      "prefill_s": 8865.966243,
+      "prefill_tps": 3.695931058374096,
+      "decode_tps": 0.7517196686086631,
+      "decode_s": 86.46840399999999,
+      "wall_s": 8952.505476120976,
+      "peak_rss_mib": 6117.80859375,
+      "min_available_mib": 11499.5234375,
+      "samples": 8949
+    },
+    {
+      "label": "4B-p32768-r0-baseline",
+      "model": "4B",
+      "length": 32768,
+      "repeat": 0,
+      "arm": "baseline",
+      "context": 36864,
+      "ttft_s": 42070.82285396103,
+      "prefill_s": 42070.764678,
+      "prefill_tps": 0.778878165177143,
+      "decode_tps": 0.2909821120358219,
+      "decode_s": 223.381429,
+      "wall_s": 42294.219887843006,
+      "peak_rss_mib": 6117.1640625,
+      "min_available_mib": 11396.44140625,
+      "samples": 42212
+    },
+    {
+      "label": "4B-p16384-r1-final",
+      "model": "4B",
+      "length": 16384,
+      "repeat": 1,
+      "arm": "final",
+      "context": 20480,
+      "ttft_s": 2949.88793015806,
+      "prefill_s": 2949.857324,
+      "prefill_tps": 5.554166930956285,
+      "decode_tps": 1.125576344873683,
+      "decode_s": 57.748193,
+      "wall_s": 3007.644633178017,
+      "peak_rss_mib": 5600.70703125,
+      "min_available_mib": 11983.89453125,
+      "samples": 3017
+    },
+    {
+      "label": "4B-p16384-r1-baseline",
+      "model": "4B",
+      "length": 16384,
+      "repeat": 1,
+      "arm": "baseline",
+      "context": 20480,
+      "ttft_s": 11211.110220885019,
+      "prefill_s": 11211.079269,
+      "prefill_tps": 1.4614114847357969,
+      "decode_tps": 0.49244663382345616,
+      "decode_s": 131.993998,
+      "wall_s": 11343.112943576067,
+      "peak_rss_mib": 5600.1875,
+      "min_available_mib": 11988.515625,
+      "samples": 11336
+    },
+    {
+      "label": "2B-p16384-r1-baseline",
+      "model": "2B",
+      "length": 16384,
+      "repeat": 1,
+      "arm": "baseline",
+      "context": 20480,
+      "ttft_s": 2735.503180132946,
+      "prefill_s": 2735.47113,
+      "prefill_tps": 5.989461859171587,
+      "decode_tps": 1.6825899210999935,
+      "decode_s": 38.630922,
+      "wall_s": 2774.1424580689054,
+      "peak_rss_mib": 2571.7734375,
+      "min_available_mib": 13788.484375,
+      "samples": 2779
+    },
+    {
+      "label": "2B-p16384-r1-final",
+      "model": "2B",
+      "length": 16384,
+      "repeat": 1,
+      "arm": "final",
+      "context": 20480,
+      "ttft_s": 1029.3268656440778,
+      "prefill_s": 1029.295926,
+      "prefill_tps": 15.917676915006075,
+      "decode_tps": 2.883669447189476,
+      "decode_s": 22.540725,
+      "wall_s": 1051.8757726399926,
+      "peak_rss_mib": 2569.65234375,
+      "min_available_mib": 13793.69921875,
+      "samples": 1057
+    }
+  ],
+  "groups": [
+    {
+      "model": "2B",
+      "length": 16384,
+      "pairs": 2,
+      "baseline": {
+        "ttft_s": {
+          "mean": 2829.645762492495,
+          "min": 2735.503180132946,
+          "max": 2923.7883448520442
+        },
+        "prefill_s": {
+          "mean": 2829.6144215,
+          "min": 2735.47113,
+          "max": 2923.757713
+        },
+        "prefill_tps": {
+          "mean": 5.796604683890276,
+          "min": 5.603747508608967,
+          "max": 5.989461859171587
+        },
+        "decode_tps": {
+          "mean": 1.6594164162433203,
+          "min": 1.636242911386647,
+          "max": 1.6825899210999935
+        },
+        "decode_s": {
+          "mean": 39.1780375,
+          "min": 38.630922,
+          "max": 39.725153
+        },
+        "wall_s": {
+          "mean": 2868.8321937709698,
+          "min": 2774.1424580689054,
+          "max": 2963.521929473034
+        },
+        "peak_rss_mib": {
+          "mean": 2571.78125,
+          "min": 2571.7734375,
+          "max": 2571.7890625
+        },
+        "min_available_mib": {
+          "mean": 13795.142578125,
+          "min": 13788.484375,
+          "max": 13801.80078125
+        }
+      },
+      "final": {
+        "ttft_s": {
+          "mean": 1034.9073697270942,
+          "min": 1029.3268656440778,
+          "max": 1040.4878738101106
+        },
+        "prefill_s": {
+          "mean": 1034.8762864999999,
+          "min": 1029.295926,
+          "max": 1040.456647
+        },
+        "prefill_tps": {
+          "mean": 15.832304424221014,
+          "min": 15.746931933435954,
+          "max": 15.917676915006075
+        },
+        "decode_tps": {
+          "mean": 2.9137964123723075,
+          "min": 2.883669447189476,
+          "max": 2.9439233775551386
+        },
+        "decode_s": {
+          "mean": 22.310052,
+          "min": 22.079379,
+          "max": 22.540725
+        },
+        "wall_s": {
+          "mean": 1057.2256996725337,
+          "min": 1051.8757726399926,
+          "max": 1062.5756267050747
+        },
+        "peak_rss_mib": {
+          "mean": 2569.6171875,
+          "min": 2569.58203125,
+          "max": 2569.65234375
+        },
+        "min_available_mib": {
+          "mean": 13796.962890625,
+          "min": 13793.69921875,
+          "max": 13800.2265625
+        }
+      },
+      "change_percent": {
+        "ttft_s": -63.42625697375295,
+        "prefill_s": -63.42695037752161,
+        "prefill_tps": 173.13065643792493,
+        "decode_tps": 75.59163473679035,
+        "decode_s": -43.05469741816446,
+        "wall_s": -63.14787243506037,
+        "peak_rss_mib": -0.08414644519241232,
+        "min_available_mib": 0.013195314870362296
+      }
+    },
+    {
+      "model": "2B",
+      "length": 32768,
+      "pairs": 1,
+      "baseline": {
+        "ttft_s": {
+          "mean": 10761.012056982961,
+          "min": 10761.012056982961,
+          "max": 10761.012056982961
+        },
+        "prefill_s": {
+          "mean": 10760.952201,
+          "min": 10760.952201,
+          "max": 10760.952201
+        },
+        "prefill_tps": {
+          "mean": 3.045083686642054,
+          "min": 3.045083686642054,
+          "max": 3.045083686642054
+        },
+        "decode_tps": {
+          "mean": 1.0507766136376353,
+          "min": 1.0507766136376353,
+          "max": 1.0507766136376353
+        },
+        "decode_s": {
+          "mean": 61.859009,
+          "min": 61.859009,
+          "max": 61.859009
+        },
+        "wall_s": {
+          "mean": 10822.886191335972,
+          "min": 10822.886191335972,
+          "max": 10822.886191335972
+        },
+        "peak_rss_mib": {
+          "mean": 2767.640625,
+          "min": 2767.640625,
+          "max": 2767.640625
+        },
+        "min_available_mib": {
+          "mean": 13607.07421875,
+          "min": 13607.07421875,
+          "max": 13607.07421875
+        }
+      },
+      "final": {
+        "ttft_s": {
+          "mean": 2983.9019348518923,
+          "min": 2983.9019348518923,
+          "max": 2983.9019348518923
+        },
+        "prefill_s": {
+          "mean": 2983.845413,
+          "min": 2983.845413,
+          "max": 2983.845413
+        },
+        "prefill_tps": {
+          "mean": 10.9818021594673,
+          "min": 10.9818021594673,
+          "max": 10.9818021594673
+        },
+        "decode_tps": {
+          "mean": 2.1406466781642446,
+          "min": 2.1406466781642446,
+          "max": 2.1406466781642446
+        },
+        "decode_s": {
+          "mean": 30.364656,
+          "min": 30.364656,
+          "max": 30.364656
+        },
+        "wall_s": {
+          "mean": 3014.2817304579075,
+          "min": 3014.2817304579075,
+          "max": 3014.2817304579075
+        },
+        "peak_rss_mib": {
+          "mean": 2766.42578125,
+          "min": 2766.42578125,
+          "max": 2766.42578125
+        },
+        "min_available_mib": {
+          "mean": 13602.52734375,
+          "min": 13602.52734375,
+          "max": 13602.52734375
+        }
+      },
+      "change_percent": {
+        "ttft_s": -72.27117747799939,
+        "prefill_s": -72.27154849063714,
+        "prefill_tps": 260.6404056361883,
+        "decode_tps": 103.7204340467417,
+        "decode_s": -50.913122452382,
+        "wall_s": -72.14900279676853,
+        "peak_rss_mib": -0.04389456271982617,
+        "min_available_mib": -0.033415522888335936
+      }
+    },
+    {
+      "model": "4B",
+      "length": 16384,
+      "pairs": 2,
+      "baseline": {
+        "ttft_s": {
+          "mean": 11256.194952438002,
+          "min": 11211.110220885019,
+          "max": 11301.279683990984
+        },
+        "prefill_s": {
+          "mean": 11256.1640865,
+          "min": 11211.079269,
+          "max": 11301.248904
+        },
+        "prefill_tps": {
+          "mean": 1.455581379528717,
+          "min": 1.4497512743216368,
+          "max": 1.4614114847357969
+        },
+        "decode_tps": {
+          "mean": 0.489541820743403,
+          "min": 0.4866370076633499,
+          "max": 0.49244663382345616
+        },
+        "decode_s": {
+          "mean": 132.78189100000003,
+          "min": 131.993998,
+          "max": 133.56978400000003
+        },
+        "wall_s": {
+          "mean": 11388.985339132487,
+          "min": 11343.112943576067,
+          "max": 11434.857734688907
+        },
+        "peak_rss_mib": {
+          "mean": 5600.3671875,
+          "min": 5600.1875,
+          "max": 5600.546875
+        },
+        "min_available_mib": {
+          "mean": 11998.3125,
+          "min": 11988.515625,
+          "max": 12008.109375
+        }
+      },
+      "final": {
+        "ttft_s": {
+          "mean": 2975.7159306875546,
+          "min": 2949.88793015806,
+          "max": 3001.5439312170492
+        },
+        "prefill_s": {
+          "mean": 2975.685187,
+          "min": 2949.857324,
+          "max": 3001.51305
+        },
+        "prefill_tps": {
+          "mean": 5.50637361465807,
+          "min": 5.4585802983598555,
+          "max": 5.554166930956285
+        },
+        "decode_tps": {
+          "mean": 1.1172807231194652,
+          "min": 1.1089851013652476,
+          "max": 1.125576344873683
+        },
+        "decode_s": {
+          "mean": 58.180171,
+          "min": 57.748193,
+          "max": 58.612148999999995
+        },
+        "wall_s": {
+          "mean": 3033.9045066640247,
+          "min": 3007.644633178017,
+          "max": 3060.1643801500322
+        },
+        "peak_rss_mib": {
+          "mean": 5600.611328125,
+          "min": 5600.515625,
+          "max": 5600.70703125
+        },
+        "min_available_mib": {
+          "mean": 11995.603515625,
+          "min": 11983.89453125,
+          "max": 12007.3125
+        }
+      },
+      "change_percent": {
+        "ttft_s": -73.56374917757587,
+        "prefill_s": -73.56394981333946,
+        "prefill_tps": 278.29376578318863,
+        "decode_tps": 128.22988267331223,
+        "decode_s": -56.18365534498979,
+        "wall_s": -73.36106407794252,
+        "peak_rss_mib": 0.004359368177597744,
+        "min_available_mib": -0.02257804482922454
+      }
+    },
+    {
+      "model": "4B",
+      "length": 32768,
+      "pairs": 1,
+      "baseline": {
+        "ttft_s": {
+          "mean": 42070.82285396103,
+          "min": 42070.82285396103,
+          "max": 42070.82285396103
+        },
+        "prefill_s": {
+          "mean": 42070.764678,
+          "min": 42070.764678,
+          "max": 42070.764678
+        },
+        "prefill_tps": {
+          "mean": 0.778878165177143,
+          "min": 0.778878165177143,
+          "max": 0.778878165177143
+        },
+        "decode_tps": {
+          "mean": 0.2909821120358219,
+          "min": 0.2909821120358219,
+          "max": 0.2909821120358219
+        },
+        "decode_s": {
+          "mean": 223.381429,
+          "min": 223.381429,
+          "max": 223.381429
+        },
+        "wall_s": {
+          "mean": 42294.219887843006,
+          "min": 42294.219887843006,
+          "max": 42294.219887843006
+        },
+        "peak_rss_mib": {
+          "mean": 6117.1640625,
+          "min": 6117.1640625,
+          "max": 6117.1640625
+        },
+        "min_available_mib": {
+          "mean": 11396.44140625,
+          "min": 11396.44140625,
+          "max": 11396.44140625
+        }
+      },
+      "final": {
+        "ttft_s": {
+          "mean": 8866.022146051051,
+          "min": 8866.022146051051,
+          "max": 8866.022146051051
+        },
+        "prefill_s": {
+          "mean": 8865.966243,
+          "min": 8865.966243,
+          "max": 8865.966243
+        },
+        "prefill_tps": {
+          "mean": 3.695931058374096,
+          "min": 3.695931058374096,
+          "max": 3.695931058374096
+        },
+        "decode_tps": {
+          "mean": 0.7517196686086631,
+          "min": 0.7517196686086631,
+          "max": 0.7517196686086631
+        },
+        "decode_s": {
+          "mean": 86.46840399999999,
+          "min": 86.46840399999999,
+          "max": 86.46840399999999
+        },
+        "wall_s": {
+          "mean": 8952.505476120976,
+          "min": 8952.505476120976,
+          "max": 8952.505476120976
+        },
+        "peak_rss_mib": {
+          "mean": 6117.80859375,
+          "min": 6117.80859375,
+          "max": 6117.80859375
+        },
+        "min_available_mib": {
+          "mean": 11499.5234375,
+          "min": 11499.5234375,
+          "max": 11499.5234375
+        }
+      },
+      "change_percent": {
+        "ttft_s": -78.92595973977652,
+        "prefill_s": -78.92606347695823,
+        "prefill_tps": 374.5197931609133,
+        "decode_tps": 158.3387904326302,
+        "decode_s": -61.29114027648198,
+        "wall_s": -78.83279204614371,
+        "peak_rss_mib": 0.010536438836927786,
+        "min_available_mib": 0.9045106939563397
+      }
+    }
+  ],
+  "limitations": [
+    "Two pairs per model at 16384 input tokens.",
+    "One pair per model at 32768 input tokens.",
+    "Explicit capacity extension; ordinary context remains 12288.",
+    "Synthetic fixed output; no long semantic or state acceptance.",
+    "RSS samples cover server load and request at a nominal 1 s interval.",
+    "No population confidence interval."
+  ],
+  "verifier_sha256": "e1ccce85e7d31564e7da979c9ee636180f5f9fd1844947c2e75a53745b14b0df"
+}
