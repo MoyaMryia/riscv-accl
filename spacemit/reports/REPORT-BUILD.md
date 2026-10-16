@@ -1,6 +1,9 @@
 # Report source and export
 
-The current report has an evidence cutoff of October 12, 2026, Asia/Singapore.
+This English export has an evidence cutoff of October 16, 2026, Asia/Singapore.
+The October 12 source and exports remain in `snapshots/2026-10-12/`.
+Use the [current gap report](2026-10-13-requirements-gap.md) for acceptance against [Requirements.md](../../Requirements.md).
+Use the [result index](RESULTS.md) for later evidence and the [history guide](HISTORY.md) for snapshot limits.
 The PDF contains the report and its evidence appendix.
 The standalone TeX file contains the same text, tables, and references.
 It does not require external images or a bibliography file.

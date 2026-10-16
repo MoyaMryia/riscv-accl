@@ -1,0 +1,2138 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=22mm,headheight=14pt]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{longtable,booktabs,array,calc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{fvextra}
+\usepackage{hyperref}
+\definecolor{reportblue}{HTML}{164B70}
+\hypersetup{colorlinks=true,linkcolor=reportblue,urlcolor=reportblue,
+  pdftitle={Qwen3.5 Inference on the SpaceMiT
+K1},pdfauthor={riscv-accl project}}
+\urlstyle{tt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{8pt}
+\setcounter{secnumdepth}{-1}
+\setcounter{tocdepth}{1}
+\renewcommand{\arraystretch}{1.15}
+\setlist{nosep,leftmargin=1.5em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{reportblue}{riscv-accl / SpaceMiT K1}}
+\fancyhead[R]{\small 2026-10-12}
+\fancyfoot[C]{\small\thepage}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\RecustomVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,fontsize=\small,commandchars=\\\{\}}
+\begin{document}
+\begin{titlepage}
+\vspace*{15mm}
+{\large\textcolor{reportblue}{RISC-V LOCAL INFERENCE}}\par
+\vspace{12mm}
+{\Huge\bfseries Qwen3.5 Inference on the SpaceMiT K1\par}
+\vspace{8mm}
+{\Large Infrastructure Optimization and Performance Evaluation\par}
+\vspace{12mm}
+{\large Evidence cutoff: October 12, 2026 (Asia/Singapore)\par}
+\vspace{14mm}
+\begin{tabular}{@{}ll@{}}
+\textbf{Platform} & MUSE-Pi-Pro, K1/X60, 16 GiB RAM \\
+\textbf{Models} & Qwen3.5 2B and 4B \\
+\textbf{Implementation} & SpaceMiT llama.cpp fork \\
+\textbf{Package} & Technical report and evidence appendix \\
+\end{tabular}
+\vfill
+\textcolor{reportblue}{\rule{\textwidth}{1pt}}\par
+This report separates verified release results, later candidates, and prediction limits.
+Its measurements do not establish a cumulative project speedup.\par
+\vspace{6mm}
+\href{https://github.com/MoyaMryia/riscv-accl}{github.com/MoyaMryia/riscv-accl}
+\end{titlepage}
+{\small\tableofcontents}
+\clearpage
+\textbf{Project report - evidence cutoff: October 12, 2026,
+Asia/Singapore}\\
+Platform: MUSE-Pi-Pro, SpaceMiT K1/X60, 16 GiB RAM\\
+Models: Qwen3.5 2B and 4B conversational checkpoints\\
+Implementation: SpaceMiT's open-source llama.cpp fork
+
+\hypertarget{abstract}{%
+\section{Abstract}\label{abstract}}
+
+This project implements and tests local Qwen3.5 inference on the
+MUSE-Pi-Pro with the SpaceMiT K1/X60 and 16 GiB RAM. The main release
+retains Q4\_0 weights, F16 K/V, complete inputs, and direct decoding.
+The 256-bit RVV attention path reduces 8,192-token first-token latency
+by 49.2\% on 2B and 64.0\% on 4B. Separate IME1 routing tests reduce
+64-token decode time by 14.40\% and 28.62\%. These comparisons use
+different controls and do not establish a cumulative speedup.
+
+Later candidates improve selected prefill or decode workloads on the
+optimized baseline. Their complete-answer tests contain 48 identical
+pairs, but shared model errors remain. The three-candidate combination
+fails one decode gate with a 3.0220477\% regression against the
+attention-only candidate. Its second round and complete-answer stages do
+not run. The verified October 7 release remains the pinned package;
+routing stays opt-in.
+
+The project also provides a portable performance evaluator and native
+operator data. V7 covers all nine reserved groups with wide intervals,
+but its point directions agree with measurements in only 9/27 cases. The
+first operator batch contains 1,344 observations across 32
+configurations. These training data do not establish independent
+prediction accuracy. K1 remote access fails before a confirmed second
+batch. Recovery remains pending; this document does not authorize new
+board work.
+
+\hypertarget{report-status-and-evidence-levels}{%
+\section{Report status and evidence
+levels}\label{report-status-and-evidence-levels}}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Evidence level\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Meaning in this report\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Implemented\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Source code or an executable tool exists. This status does not establish
+a performance gain.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Verified\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+The stated checks pass for the named configuration and records.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Failed gate\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+A measured result does not meet its declared criterion. Later versions
+do not remove that result.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Pending\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+A measurement or independent check is incomplete.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Not implemented\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+The project does not provide the stated capability.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+This report separates the verified release, later candidates, and
+performance-model work. Dated reports describe their original campaigns.
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-EVIDENCE.md}{evidence
+appendix} maps claims to records and tools. The report and appendix form
+one review package. No external competition submission is recorded.
+
+\hypertarget{objective-and-scope}{%
+\section{1. Objective and scope}\label{objective-and-scope}}
+
+The task deploys both required Qwen3.5 models locally through the
+SpaceMiT fork. It targets prefill, decode, and long-context inference.
+Deliverables include baseline comparisons, executable code, and
+reproducible test results.
+
+The current optimization mission concerns infrastructure. It retains
+complete inputs, Q4\_0 weights and F16 K/V. Retrieval, prompt
+shortening, token pruning and model replacement are excluded. Earlier
+Q8\_0 and speculative experiments are included as supporting evidence
+with their separate settings and limits. All model generation runs
+locally. An optional cloud judge is used only for evaluation of
+completed answers, including cache reuse and MTP comparisons; inference
+does not require that judge.
+
+\hypertarget{requirement-coverage}{%
+\subsection{Requirement coverage}\label{requirement-coverage}}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Requirement\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Evidence and boundary\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Both 2B and 4B models\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Both have local inference, matched prefill comparisons and routing
+decode comparisons.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+SpaceMiT open-source llama.cpp\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Current release pins official-fork \nolinkurl{a990751} and measured
+source hashes. The historical patch stack targets
+\nolinkurl{5ad05d8}.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Baseline and optimized results\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Matched RVV off/on and GEMM staging/bypass tables below; each comparison
+states its baseline.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Quantifiable infrastructure improvement\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+RVV reduces long-prompt TTFT; the new routing screen improves both
+phases on both models.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Deployment, scripts and tests\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Integration guide, patch helper, native harnesses, tmux runners and
+archived evidence are provided.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Generation above 1 token/s\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Demonstrated in short/moderate-context decode tests; this is not
+guaranteed at every long context.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Cross-architecture comparison\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Excluded from the release requirements at the user's direction.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-27-next-steps-and-measures.md}{original
+requested checklist} and
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/env/competition-background.md}{competition
+background} have different scopes. This report states the measured
+coverage rather than treating every suggested advanced challenge as
+completed.
+
+\hypertarget{platform-models-and-measurement-method}{%
+\section{2. Platform, models and measurement
+method}\label{platform-models-and-measurement-method}}
+
+The board runs Bianbu 2.3.5 with a RISC-V Linux environment. The
+evaluated backend uses RVV and SpaceMiT IME1; four inference workers are
+used because the IME-capable cores are 0--3. Build instructions specify
+GCC 14 and the matching SPERT runtime. The latest runtime audit records
+the performance governor at 1.6 GHz. Runtime libraries and original
+build flags are preserved in experiment provenance.
+
+The principal benchmark files are:
+
+\begin{itemize}
+\tightlist
+\item
+  \nolinkurl{Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf}
+\item
+  \nolinkurl{Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf}
+\end{itemize}
+
+These are the project's conversational checkpoint derivatives; their
+filenames omit the word \nolinkurl{Instruct}. MTP tensors are present,
+but the principal RVV and routing results use \textbf{direct decoding}.
+Weight and cache precision are distinct: Q4\_0 weights with F16 K/V is
+the common current configuration.
+
+\hypertarget{controls-and-metrics}{%
+\subsection{Controls and metrics}\label{controls-and-metrics}}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Item\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Protocol\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Model/runtime controls\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Same model and full prompt within each comparison; four workers,
+batch/microbatch 32, flash attention; direct greedy decoding.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Run order\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Four cold ABBA requests for each routing comparison: control, candidate,
+candidate, control. Earlier campaign repetitions are stated
+separately.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Cache isolation\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Cold requests require zero reused prompt tokens and the complete
+intended input count.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+TTFT\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Client time to first token; includes work visible to the requesting
+client.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Prefill time\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Server prompt-processing time; a one-token request isolates this phase
+but does not establish answer quality.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Decode rate/time\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Server generation measurements after prefill; latest screen captures all
+64 requested tokens.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Memory\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Whole-process RSS is distinguished from estimated KV payload.\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Correctness\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Native finite-output/guard checks plus input, token and text hashes,
+completion counts and actual kernel activation logs.\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+For the routing screen, a candidate's mean time reduction must exceed
+both 3\% and the observed full control range. Required comparisons must
+have no clear regression. This is a predeclared engineering gate, not a
+statistical significance test. Two samples per arm do not establish a
+population confidence interval. Exact output agreement is limited to the
+tested inputs and settings.
+
+Time reduction and throughput increase use different denominators. For
+control time \(t_b\) and candidate time \(t_c\), the time reduction is
+
+\[R_t = 100\left(1-\frac{t_c}{t_b}\right)\%. \]
+
+For equal output counts, the throughput increase is
+
+\[G_q = 100\left(\frac{t_b}{t_c}-1\right)\%. \]
+
+The tables state whether they use means, medians, or median paired
+ratios. A ratio of medians need not equal the median paired ratio.
+
+\hypertarget{implemented-optimizations}{%
+\section{3. Implemented optimizations}\label{implemented-optimizations}}
+
+\hypertarget{rvv-attention-for-the-k1s-vector-width}{%
+\subsection{3.1 RVV attention for the K1's vector
+width}\label{rvv-attention-for-the-k1s-vector-width}}
+
+The original wide-vector prototype did not activate on the K1. The
+subsequent 256-bit implementation enables the F16-KV wide-head prefill
+path and is packaged as optional patch 0009. It is enabled with
+\nolinkurl{SPINE_FA_WIDE_TILE=1}; activation is checked in the server
+logs. It improves prompt processing and does not establish a
+single-token decode gain. Quantized K/V and other model head shapes are
+outside its demonstrated dispatch.
+
+\hypertarget{production-q4_0-gemm-routing}{%
+\subsection{3.2 Production Q4\_0 GEMM
+routing}\label{production-q4_0-gemm-routing}}
+
+Production attribution identified substantial staging-copy work: 9.55\%
+/ 9.93\% of summed instrumented prefill worker elapsed time for 2B / 4B.
+These sums include overlapping waits and instrumentation overhead, so
+they are not removable wall-time estimates. The new code instead tests
+the existing direct-memory branch in production
+\nolinkurl{forward_mul_mat}.
+
+Eligibility is restricted to Q4\_0 K32/N16 traits using IME1, with K
+divisible by 32 and N divisible by 16. The selected buffer is set to
+null with size zero; weight packing, activation quantization and IME
+arithmetic are retained. The generated library is isolated from the
+original build.
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+\nolinkurl{SPINE_K1_GEMM_ROUTE}\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Selection\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Validation status\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Unset, invalid or 0\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Original staging\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Control\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Bypass for M \textgreater{} 1\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Numerical, operator and model prefill gates passed\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Bypass for M = 1\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Numerical, operator and 64-token model decode gates passed\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Bypass for both\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Combined 8k phase gates pass on both models; overall quality gate
+remains open\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Mode 2 can affect single-row work during prefill as well as decoding.
+The current TCM API reports unavailable/fake/zero geometry, while SPERT
+supplies non-null 128 KiB worker buffers. Their physical placement is
+unverified; the measured result concerns staging policy under this
+runtime.
+
+\hypertarget{earlier-kernel-and-runtime-work}{%
+\subsection{3.3 Earlier kernel and runtime
+work}\label{earlier-kernel-and-runtime-work}}
+
+The packaged work also includes recurrent-state in-place write-back,
+microbatch selection, Q8\_0 IME1 support, Q4\_0 M4 scale construction
+and workload-specific speculative policies. Q8\_0 IME1 raised 4B pp64
+from 1.117 to 7.472 token/s and tg32 from 0.866 to 1.349 token/s in its
+separate higher-precision comparison. Q4\_0 remained faster overall.
+
+M4 scale construction raised 4B Q4\_0 pp128 from 9.058 to 9.360 token/s
+(3.34\%). Corrected analysis gives a conditional independent-launch
+Welch 95\% interval of +0.095 to +0.511 token/s, with only two launches
+per arm. The roughly 1.8\% English/Chinese mapped-MTP gains have
+intervals including zero. These small effects remain workload-specific.
+Detailed implementation, attribution and statistics are linked in the
+evidence appendix.
+
+\hypertarget{matched-performance-results}{%
+\section{4. Matched performance
+results}\label{matched-performance-results}}
+
+\hypertarget{rvv-attention-versus-the-generic-attention-path}{%
+\subsection{4.1 RVV attention versus the generic attention
+path}\label{rvv-attention-versus-the-generic-attention-path}}
+
+Both arms use the same model and configuration within each comparison,
+Q4\_0 weights, F16 K/V, direct decoding and 32 generated tokens. The
+baseline here has RVV wide attention disabled.
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+Model / input tokens & Generic TTFT & RVV TTFT & TTFT reduction &
+Launches per arm\tabularnewline
+\midrule
+\endhead
+2B / 2,048 & 113.78 s & 92.45 s & 18.7\% & 2\tabularnewline
+4B / 2,048 & 343.95 s & 231.54 s & 32.7\% & 2\tabularnewline
+2B / 8,192 & 862.62 s & 438.05 s & 49.2\% & 2\tabularnewline
+4B / 8,192 & 3,194.99 s & 1,150.42 s & 64.0\% & 2\tabularnewline
+2B / 16,384 & 2,808.28 s & 1,124.57 s & 60.0\% & 1\tabularnewline
+4B / 16,384 & 11,062.98 s & 3,216.23 s & 70.9\% & 1\tabularnewline
+\bottomrule
+\end{longtable}
+
+All these comparisons have complete matching token/text hashes. The
+2k/8k rows use the isolated build; 16k uses the integrated build. The
+single-pair 16k observations need replication. Decode and peak RSS were
+effectively unchanged within these attention comparisons.
+
+A single RVV-enabled 2B request with an actual 32,768-token prompt
+completed at 3,291.21 s TTFT, 9.96 prefill token/s and 2,768.4 MiB peak
+RSS. Its 32 output tokens completed; decode was 0.95 token/s. This
+establishes bounded feasibility, with no matched 32k control or
+answer-quality claim. 4B/32k and 64k are unmeasured.
+
+\hypertarget{new-gemm-routing-versus-the-current-optimized-baseline}{%
+\subsection{4.2 New GEMM routing versus the current optimized
+baseline}\label{new-gemm-routing-versus-the-current-optimized-baseline}}
+
+The baseline already includes accepted wide attention and layout 0. Each
+row has two launches per arm. Prefill rows use mode 1 and one output
+token; decode rows use mode 2, a full 256-token prompt and 64 captured
+output tokens.
+
+\begin{longtable}[]{@{}lrrr@{}}
+\toprule
+Model / measured phase & Control mean & Candidate mean & Time
+reduction\tabularnewline
+\midrule
+\endhead
+2B / 512-token prefill & 22.052917 s & 20.625322 s &
+6.47\%\tabularnewline
+4B / 512-token prefill & 56.740043 s & 52.304415 s &
+7.82\%\tabularnewline
+2B / 2,048-token prefill & 92.634959 s & 86.709042 s &
+\textbf{6.40\%}\tabularnewline
+4B / 1,024-token prefill & 115.551047 s & 106.596561 s &
+\textbf{7.75\%}\tabularnewline
+2B / 64-token decode & 17.016656 s & 14.566911 s &
+\textbf{14.40\%}\tabularnewline
+4B / 64-token decode & 43.553046 s & 31.087887 s &
+\textbf{28.62\%}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Decode throughput rose from \textbf{3.76 to 4.39 token/s} for 2B and
+\textbf{1.47 to 2.06 token/s} for 4B. Mode 2 showed no clear prefill
+regression. All six comparisons cleared their declared gates. These are
+time reductions; throughput increases have a different percentage
+denominator.
+
+The board run completed successfully in 38.16 minutes. Validation
+included 104 real production graph cases per arm across five arms, 144
+production operator records, and 24 model requests. Every model
+comparison matched input/output hashes and uncached counts. All 236
+collected artifact hashes were independently verified, and end-of-run
+checks matched 46 original source/object/build files. The verifier
+recomputes the required gates from individual records.
+
+These initial routing modes were tested separately. Their gains must not
+be added or combined with older RVV percentages to claim cumulative
+acceleration. The subsequent
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-staged-validation-results.md}{staged
+validation} completed in 4.16 hours with 83 artifact hashes verified.
+Combined mode 3 at 8192 input/64 output tokens reduces prefill/decode
+time by 4.43\%/9.49\% on 2B and 5.79\%/15.06\% on 4B. All eight requests
+match hashes and cold counts. The 12 full-document answers stop
+naturally and match paired baseline text. Both 2B arms lack required
+tracing citations, so the overall gate remains open. The protocol skips
+4B/32k. These are bounded engineering pilots.
+
+\hypertarget{independent-memory-bandwidth-and-routing-confirmation}{%
+\subsection{4.3 Independent memory-bandwidth and routing
+confirmation}\label{independent-memory-bandwidth-and-routing-confirmation}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-k1-roofline-results.md}{October
+6 campaign} completed 150 native full-read scans, 24 cold
+direct-inference requests and two separate prefill profiles. The
+four-core model-sized streaming reference is approximately 7 GB/s. Main
+weight-read proxies, excluding MTP draft tensors, are 1.060 GB for 2B
+and 2.369 GB for 4B, giving weight-only references of 6.60/2.94 tok/s.
+These are traffic references rather than measured DDR utilization or
+attainable inference guarantees.
+
+At 256 prompt tokens, route-0/route-3 decode medians are 3.79/4.48 tok/s
+for 2B and 1.48/2.06 for 4B; median paired throughput gains are
+18.01\%/38.70\%. At 2,048 tokens the medians are 3.31/3.83 and
+1.22/1.62, with paired gains 15.47\%/32.36\%. All requests generate the
+same 64 capped output tokens and match their paired control. This
+confirms the existing routing mechanism; these gains must not be
+multiplied by previous routing measurements.
+
+The profiles identify convolution and synchronization as investigation
+targets, but sampled prefill CPU shares are not wall-time savings or
+decode attribution. This campaign adds no useful-answer qualification
+and does not demonstrate that the hardware limit has been reached.
+
+\hypertarget{later-candidates-and-the-stopped-combination}{%
+\section{5. Later candidates and the stopped
+combination}\label{later-candidates-and-the-stopped-combination}}
+
+\hypertarget{independent-candidates-on-the-optimized-baseline}{%
+\subsection{5.1 Independent candidates on the optimized
+baseline}\label{independent-candidates-on-the-optimized-baseline}}
+
+These comparisons retain the fixed 2B/4B GGUF files, four workers, batch
+and microbatch 32, F16 K/V, route 3, temperature 0, and seed 42. MTP is
+disabled. Prefill tests use 512 or 2,048 input tokens. The ranges below
+describe observed configurations across two rounds. They are not
+population confidence intervals.
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule
+\begin{minipage}[b]{0.22\columnwidth}\raggedright
+Candidate\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Change\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Measured model result\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedright
+Scope\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+C1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Hybrid convolution; original path for small batches\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+One-output-token TTFT falls 4.26--6.53\%\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+64 cold requests across two rounds; 24 complete answers\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+C2-r2\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+GDN register kernel reduces intermediate state access\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+One-output-token TTFT falls 4.35--5.95\%\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+96 cold requests across the screen and two rounds; 24 complete
+answers\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+C3\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+C1 with the older C2\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+TTFT falls 8.35--9.73\% against its disabled control; 3.53--4.63\%
+against C1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+128 cold requests across two controls and two rounds; 24 complete
+answers\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.22\columnwidth}\raggedright
+B1-r2\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+Shared attention path with a fallback for small work groups\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+At 2,048 input/65 output tokens, decode time falls 10.48--10.64\% on 2B
+and 16.95--20.32\% on 4B\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedright
+64 cold requests across two rounds; 24 complete answers\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+GDN means gated delta network, the recurrent-state component in these
+models. C3 contains the older C2, not C2-r2. All four versions complete
+96 answers with 48 identical text pairs. Shared arithmetic, citation,
+code, and Chinese-language errors remain. These tests do not show an
+answer-quality improvement.
+
+C2-r2 increases 4B/512/65 decode time by 2.9480\% in its first round.
+This result is near the 3\% regression gate and is not a decode gain.
+The old controller deletes some native dumps before the later review.
+Saved logs cannot replace a fresh comparison of those dumps.
+Complete-answer requests also lack full operating-system thread
+snapshots. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-09-local-candidate-result-rejudgment.md}{candidate
+review} records these limits.
+
+\hypertarget{combined-r1-a-valid-performance-stop}{%
+\subsection{5.2 Combined-r1: a valid performance
+stop}\label{combined-r1-a-valid-performance-stop}}
+
+The combination uses one library with independent switches. C0 disables
+the three new candidates but retains wide RVV attention and route 3. B
+enables B1-r2 only. P enables C1 and C2-r2. F enables B1-r2, C1, and
+C2-r2. C0 is an optimized control, not the initial vendor source.
+
+The run stops on October 11, 2026, at 18:28 Asia/Singapore with exit
+code 0 and state \nolinkurl{performance-gate-stopped}. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-combined-stop-audit.md}{October
+12 audit} recomputes all 48 comparisons from the first round's 96
+requests. It confirms zero reused prompt tokens, output receipts, input
+hashes, and saved thread snapshots. One required comparison fails: F
+versus B for 4B/2,048 input/65 output tokens. Decode time rises
+3.0220477\%, above the declared 3\% gate. The full control range is
+0.0726418\%.
+
+Each table value is the mean of two requests in that arm. All times are
+milliseconds.
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+Model / input tokens & B prefill & F prefill & B decode & F
+decode\tabularnewline
+\midrule
+\endhead
+2B / 512 & 20959.891 & 18769.821 & 14913.766 & 14920.559\tabularnewline
+2B / 2048 & 88041.229 & 79032.342 & 15716.909 & 15714.604\tabularnewline
+4B / 512 & 52863.175 & 47537.975 & 30820.230 & 31336.530\tabularnewline
+4B / 2048 & 226049.395 & 203459.167 & 33608.751 &
+34624.424\tabularnewline
+\bottomrule
+\end{longtable}
+
+For the failed configuration, F prefill time falls 9.9935\% against B. F
+decode time also falls 17.5476\% against C0. Neither result clears the
+required F-versus-B regression gate. The second round and
+complete-answer tests do not run. The combination does not complete
+acceptance.
+
+The audit does not recollect or compare all 536 formal state dumps. It
+checks saved input and text hashes, not reconstructed inputs or new
+answers. Startup thread snapshots allow CPU 0--7 and do not establish
+worker positions during decode. This gap does not prove incorrect core
+placement. Both failed-comparison arms emit 2,048 shared-attention log
+lines per request. The evidence does not establish extra attention logs
+as the cause. Logging cost remains part of the measured result.
+
+\hypertarget{local-revision-and-comparison-boundary}{%
+\subsection{5.3 Local revision and comparison
+boundary}\label{local-revision-and-comparison-boundary}}
+
+The local dispatch revision changes one GDN condition order. It returns
+single-token and non-128-state calls before it reads the prefill switch.
+All 90 dispatch combinations select the same paths. The cross-compiler
+syntax check and four local tool checks pass. Full numerical checks,
+target assembly, operator tests, and model tests remain pending. This
+revision is not a verified fix for the regression. The stopped
+combination remains a failed result.
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-11-original-current-comparison.md}{original/current
+comparison} contains historical phase measurements and explicit version
+identities. Its October 11 pending entries predate the stop audit. Use
+the October 12 audit for the combination's current status. No matched
+test compares the initial vendor source directly with a final accepted
+combination. The separate RVV, routing, and candidate gains must not be
+added or multiplied.
+
+\hypertarget{negative-results-and-correctness-limits}{%
+\section{6. Negative results and correctness
+limits}\label{negative-results-and-correctness-limits}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Candidate\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Measured outcome\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Decision\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Compact attention layouts\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Original 2k pilot gains of 0.89\% / 1.98\%; later fast-screen model
+gains below 3\%\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Retain layout 0\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Further IME scheduling / scale gathering\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Numerical checks pass; operator screens do not qualify\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Retain original schedule\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Hybrid SSM convolution/RVV\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Exact graph/state checks and 24 natural answers pass; total latency
+falls 2.92\% / 2.13\%, below the adoption gate\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Disabled in the release\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Shared dense FFN activation packing\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Duplicate work is only 0.024--0.035\% of summed GEMM worker elapsed in
+the decode audit\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Implementation declined\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Fixed K32 M1 inner-loop specialization\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Exact raw/production/full-output checks pass; 144 operator samples fail
+advancement\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Disabled; model stages skipped\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Recurrent prefill fusion\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Operator time falls 24--28\%; 2B/512 model time falls 2.38\%, below
+gate\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Experimental; no advancement\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Direct V attention access\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Operator gains do not become model gains: 2B/2k is 1.67\% slower; 4B/1k
+effectively unchanged\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+No adoption\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Larger QK grouping\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Operator qualification insufficient\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+No model advancement\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Occupied-page gathering\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Throughput falls about 2--3\%; backing allocation retained; resumed
+telemetry shows no compacted spans\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+No speed or full-paged-scheduling claim\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+OpenCL GPU offload\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Zero layers transferred; backend rejects the PowerVR device\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+No GPU acceleration claim\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Vulkan route\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Dropped before measured offload\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+No GPU acceleration claim\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Speculative timing gate / hybrid IME-RVV dispatch\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Regress tested workloads\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Excluded\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Long-code MTP outputs differ from direct outputs beginning at generated
+index 179 for 2B and 303 for 4B. Smaller draft lengths and RS rollback
+did not fix this. Full-vocabulary target verification does not prove
+numerical identity between different execution paths. Historical
+matching 128-token samples therefore do not justify calling MTP
+universally lossless. Direct decoding is used for the principal results
+here.
+
+The newer 512-output checkpoint/RS samples match direct outputs on both
+models. Native RS rollback replay fails strict logit checks. Each model
+has 18 mismatches, including argmax changes. Full-state restore and
+same-shape controls pass. This newer evidence narrows the next diagnosis
+and does not establish general MTP identity or supersede the older
+long-output traces.
+
+The separate
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-mtp-usefulness-results.md}{complete-answer
+MTP pilot} completed 24 requests with RS disabled. Total paired task
+latency falls 8.63\% on 2B and 15.22\% on 4B; both models pass the
+predeclared relative fact/code/judge quality gate. The 4B Unicode code
+differs from direct but passes all 106 functional checks. Absolute
+usefulness still fails shared interval-code errors and 2B arithmetic,
+while Chinese prose becomes slower. Checkpoint MTP remains optional.
+These single-pair task results support workload-specific usefulness, not
+universal losslessness or general adoption.
+
+The later
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-05-adaptive-mtp-results.md}{adaptive
+infrastructure screen} completed 54 timing requests and verified 47
+artifacts. Median paired code throughput rises 50.74\% on 2B and 53.35\%
+on 4B. The 2B code is capped. The 4B code is shorter under adaptive MTP
+and fails reconstruction in every arm. Prose/QA wall time increases
+5.77\%/4.76\% on 2B and 2.97\%/3.62\% on 4B despite disabled drafting.
+The relative judge gate passes on 4B, but both models fail absolute
+correctness and overall timing gates. This establishes bounded
+throughput, not faster useful answers. Adaptive MTP remains unqualified
+and optional.
+
+Two complete 4,096-token requests per model and direct/MTP mode
+demonstrated bounded generation stability, including a roughly 43-minute
+4B direct request. These earlier traces are not a long-duration
+validation of the new routing candidate, and they do not establish
+indefinite service stability.
+
+\hypertarget{full-input-cache-reuse-separate-supporting-evidence}{%
+\section{7. Full-input cache reuse: separate supporting
+evidence}\label{full-input-cache-reuse-separate-supporting-evidence}}
+
+Same-process prefix reuse preserves the complete document and sends
+changed questions through a local server slot. It avoids recomputing an
+unchanged prefix and is separate from the cold-kernel comparisons.
+Cached and cold answers need not be token-identical; usefulness is
+checked on complete answers.
+
+The original alternating quality protocol evaluated both models, 4k/8k
+documents and six questions: 24 naturally completed cached/cold pairs.
+An optional MiMo judge scored each pair in both answer orders,
+supplementing fact, citation, completion, cache and slot checks.
+
+\begin{longtable}[]{@{}lrrl@{}}
+\toprule
+\begin{minipage}[b]{0.19\columnwidth}\raggedright
+Model / document\strut
+\end{minipage} & \begin{minipage}[b]{0.25\columnwidth}\raggedleft
+Cold / cached mean score\strut
+\end{minipage} & \begin{minipage}[b]{0.25\columnwidth}\raggedleft
+Median cold / cached TTFT\strut
+\end{minipage} & \begin{minipage}[b]{0.19\columnwidth}\raggedright
+Descriptive decision\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+2B / 4k\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+4.50 / 4.50 out of 5\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+211.11 / 3.90 s\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\raggedright
+Review required\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+2B / 8k\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+4.83 / 4.83\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+474.31 / 5.01 s\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\raggedright
+Pilot pass\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+4B / 4k\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+4.83 / 4.83\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+551.91 / 10.80 s\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\raggedright
+Pilot pass\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.19\columnwidth}\raggedright
+4B / 8k\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+4.83 / 5.00\strut
+\end{minipage} & \begin{minipage}[t]{0.25\columnwidth}\raggedleft
+1,271.37 / 14.65 s\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\raggedright
+Pilot pass\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+One 2B/4k question scores 2/5 in both arms. The matrix has no universal
+quality pass. That question does not show a cache-specific regression.
+One judge and six questions per configuration cannot establish general
+quality equivalence. These results also do not validate the new
+GEMM-routing candidate. Length-capped one-, 32- or 64-token speed
+samples are not complete-answer evidence.
+
+\hypertarget{performance-evaluator-and-native-operator-data}{%
+\section{8. Performance evaluator and native operator
+data}\label{performance-evaluator-and-native-operator-data}}
+
+\hypertarget{purpose-and-accuracy-boundary}{%
+\subsection{8.1 Purpose and accuracy
+boundary}\label{purpose-and-accuracy-boundary}}
+
+The evaluator combines actual instruction traces with measured component
+costs. Its portable examples retain frozen models, error bounds, and
+independent test results. QEMU supplies instruction and numerical
+evidence; it does not simulate K1 cycle timing. A component-cost
+estimate is not a verified full-model latency prediction. All
+performance candidates remain available in this evaluator. Its accuracy
+checks do not use candidate elimination gates.
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-k1-model-v7.md}{V7
+audit} fixes 28 configuration groups before measurements. It uses 19
+groups to calibrate errors and reserves nine groups for independent
+tests. The groups include 1, 2, and 4 accumulator chains with 0--9
+independent integer instructions. Each configuration has two arms and 8,
+32, or 128 unrolled iterations. Both arms also change input-register
+reuse; instruction order is not the only difference.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+V7 check\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Recorded result\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Numerical scope\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+168 native complete dumps match QEMU for the same ELF; all-one signed
+8-bit inputs\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Actual traces\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+336 complete traces; vendor QEMU 10.0.2 executes the IME ELF\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Native timing\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+CPU 0; 512/2048/8192 loops; seven repetitions; raw user-cycle event
+0x22\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Samples\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+2,394 calibration samples; 1,134 reserved-test samples\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Frozen ratio-error factor\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+2.1216883936561333\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Interval coverage\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+9/9 reserved groups and 27/27 unrolled versions\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Point-direction agreement\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+9/27 versions\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Absolute gain error\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Median 29.540 percentage points; maximum 50.990 percentage points\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Portable replay\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Identical key predictions on the local host and K1; 62 tool checks
+pass\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Five two-chain reserved groups contain 15 versions with an incorrect
+predicted direction. The single-chain measurements are near zero and do
+not establish a statistically supported change. The reserved set
+contains no four-chain group. Wide interval coverage does not establish
+reliable point predictions or an optimization priority order. Nine
+observed groups cannot confirm a population coverage rate of 95\%. The
+stated coverage requires exchangeable groups within the fixed binary and
+data scope. The target is the next paired fixture measurement, not a
+noise-free hardware mean.
+
+The all-one numerical fixture does not establish correctness for
+arbitrary data. Upstream QEMU 11.1.1 rejects the ELF with an illegal
+instruction; the failure record remains. Vendor QEMU executes the same
+ELF with VLEN 256. Frequency snapshots read 1,600,000 kHz but do not
+establish a constant frequency during each measurement. V7 replay takes
+approximately 0.44 s locally and 8.11 s on K1 after integrity checks.
+Those times measure the host tool, not the target algorithm. V7 server
+replay remains pending.
+
+V5 retains its 7/9 coverage gap. V6's 9/9 aligned-loop group coverage
+does not transfer to mixed IME loops. Shared-cache traffic, multithread
+synchronization costs, and full IME operator time remain pending. A gem5
+backend calibrated on K1 is not implemented. Independent prediction
+confidence for arbitrary new algorithms is not established.
+
+\hypertarget{first-native-operator-training-batch}{%
+\subsection{8.2 First native operator training
+batch}\label{first-native-operator-training-batch}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-k1-operator-data.md}{operator
+report} records a successful first batch. The run covers October 12,
+2026, 09:24:08--09:25:44 Asia/Singapore. It holds the shared board lock
+and exits with code 0. The local host and project server verify
+identical summaries and receipts.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Batch item\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Verified scope\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Shape groups\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+16 training groups; eight per operator family\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Configurations\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+32; one-thread and four-thread settings per shape\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Numerical dumps\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+64; paired versions match byte for byte\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Timing observations\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+1,344; all retained\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+IME worker observations\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+1,680\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+File receipts\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+327 final hashes and 97 hashes fixed before measurements\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Independent numerical checks\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Reference outputs, guards, unchanged inputs, and state write-back
+pass\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Calibration and reserved tests\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Not measured\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The IME data call the actual M4 kernel with K32 packing. They exclude
+production packing, tile scheduling, and backend synchronization. Four
+threads retain the work per thread and increase total output columns.
+The SSM data measure the complete convolution graph, including layout
+conversion and state write-back. They keep total work fixed between
+one-thread and four-thread settings. The convolution kernel length is 4
+and the sequence count is 1. Both families reuse warm inputs from fixed
+numerical fixtures. These data do not represent the shape frequencies or
+cache states of full model inference.
+
+The next table first takes the median paired time reduction for each
+configuration. It then reports the median and range across the eight
+configurations in that row. Positive values mean a faster candidate.
+These ranges are observed training results, not prediction confidence
+intervals.
+
+\begin{longtable}[]{@{}lrrrl@{}}
+\toprule
+Operator scope & Threads & Configurations & Median reduction &
+Configuration range\tabularnewline
+\midrule
+\endhead
+IME M4 kernel slice & 1 & 8 & -12.90\% & -14.63\% to
+-10.48\%\tabularnewline
+IME M4 kernel slice & 4 & 8 & -12.73\% & -19.26\% to
+-1.60\%\tabularnewline
+SSM convolution graph & 1 & 8 & 37.68\% & 2.36\% to
+92.00\%\tabularnewline
+SSM convolution graph & 4 & 8 & -0.90\% & -41.26\% to
+82.68\%\tabularnewline
+\bottomrule
+\end{longtable}
+
+All 16 IME configurations have negative median reductions. Convolution
+results depend on the shape and thread count. The batch retains all
+candidates and all observations. It records 1,853 involuntary IME thread
+switches. The generic instruction event's user filter still needs an
+independent check. Foreground-thread cycles do not represent all
+convolution graph threads.
+
+The first batch chooses the common iteration count from the control arm
+only. Its shortest formal sample is 0.864482 ms. Fixed overhead and
+scheduler variation can affect short samples. The revised collector
+probes both versions twice and raises the common count until all four
+probes reach 10 ms. This revision has no verified second native batch.
+Each operator family reserves 19 calibration shapes and nine independent
+test shapes. Thread configurations of one shape remain in one group. The
+model must freeze before calibration; its error bounds must freeze
+before independent tests. Training observations cannot serve as
+independent test evidence.
+
+\hypertarget{connection-interruption-and-recovery-status}{%
+\subsection{8.3 Connection interruption and recovery
+status}\label{connection-interruption-and-recovery-status}}
+
+K1 remote access fails during preparation for the second batch. The
+available records cannot distinguish power loss, reboot, network
+failure, or remote-service failure. They do not confirm a second-batch
+start. A client disconnect does not establish that a board task stops.
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-k1-connection-interruption.md}{connection
+report} retains that uncertainty.
+
+The bounded remote client disables connection reuse and limits the total
+client wait. It records unverified board task status as
+\nolinkurl{unknown} and does not dispatch automatic retries. Six local
+fake-client tests pass; actual recovery tests remain pending. Board work
+waits for the requested physical check. After access returns, task,
+tmux, lock, and batch records must be checked before any authorized
+restart. This documentation update does not resume the stopped
+combination or operator collection.
+
+\hypertarget{reproduction-and-deliverables}{%
+\section{9. Reproduction and
+deliverables}\label{reproduction-and-deliverables}}
+
+Use the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/README.md}{deployment
+guide} for model preparation and the historical patch stack. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/release/README.md}{current
+infrastructure release} pins the later \nolinkurl{a990751} source and
+packages its measured RVV/routing code with exact source hashes. The
+older patch helper targets \nolinkurl{5ad05d8}; use separate checkouts.
+Routing remains opt-in, and unsuccessful SSM/K32 candidates stay
+disabled. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-release-verification.md}{fresh
+release verification} passes a complete clean build and 104 exact
+production graph cases per routing arm. All four code responses stop
+naturally and pass 106 held-out checks each. All 35 archived artifacts
+and source/build/runtime checks pass; both exit statuses are zero. The
+one-pair natural-code observations show 508/521 tokens with identical
+baseline/optimized/prior text. They support package verification,
+without adding a new statistical speedup or general quality claim.
+
+From the repository root, the latest checks are:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/test{-}k1{-}gemm{-}routing.py}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/test{-}k1{-}fast{-}test.py}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/test{-}k1{-}ime{-}test.py}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/verify{-}k1{-}gemm{-}routing.py }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{spacemit/reports/raw/k1{-}gemm{-}routing{-}20261003{-}005740}
+\end{Highlighting}
+\end{Shaded}
+
+To reproduce the board experiment, inspect its
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-03-gemm-routing.md}{protocol}
+and run \nolinkurl{python3 spacemit/bench/start-k1-gemm-routing.py} with
+the matching board source/runtime/model prerequisites. The launcher runs
+the benchmark and collector in tmux under a shared board lock, with
+explicit time limits. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/README.md}{benchmark
+guide} covers the other campaigns.
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-EVIDENCE.md}{evidence
+appendix} maps every principal claim to source code, provenance, raw
+records and verification commands. No model weights or private API
+credentials are included in the report.
+
+\hypertarget{release-decisions-and-optional-further-work}{%
+\section{10. Release decisions and optional further
+work}\label{release-decisions-and-optional-further-work}}
+
+The bounded infrastructure release is verified and reproducible. The
+current submission report, evidence appendix, source package and test
+records form the completed deliverable. ARM/x86 comparison is excluded
+from the release scope.
+
+The strongest replicated long-input result is the activated RVV F16
+attention kernel. The opt-in production GEMM routing also improves
+measured prefill and bounded decode on both required models while
+preserving tested outputs. Its scope is the current board/runtime and
+the recorded workload; the release packages the measured mechanisms
+within that scope. Routing remains opt-in.
+
+Combined mode has independent 8k phase measurements and a
+complete-answer pilot. The release uses direct decoding and keeps
+routing opt-in. Baseline citation errors, native RS rollback mismatches
+and the advanced context cases remain documented limitations; they
+require separately declared follow-up protocols if pursued. Further
+unused infrastructure leads are shared K packing across grouped query
+heads, a Q4\_0 RVV lookup-table prototype, and compiler comparisons for
+measured hotspots. Their platform fit and primary research references
+are in the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-infrastructure-research.md}{October
+3 research review}. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-next-infrastructure-methods.md}{October
+6 source audit} identifies channels-major SSM convolution with an RVV
+channel loop and shared dense FFN activation packing. It also requires
+separate decode attribution before changes to the worker schedule. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-ssm-conv-repaired-results.md}{repaired
+convolution screen} now passes 432 exact graph cases in each of four
+arms. RVV graph time falls 73.72\%/78.93\% at 32 tokens for the 2B/4B
+shapes but rises 69.00\%/85.10\% at one token. This rejects
+unconditional replacement; full-model state and timing were skipped in
+that unconditional screen. The subsequent
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-ssm-complete-answer-results.md}{hybrid
+complete-answer pilot} selects RVV only for batches of at least 32
+tokens. Three arms pass 432 graph cases each; both models pass 16 exact
+mixed-chunk/reset/RS-reference-fallback comparisons. All 24 answers stop
+naturally and all 12 pairs are text-identical. Total answer latency
+falls 2.92\%/2.13\% for 2B/4B, while absolute usefulness remains 2/6 and
+5/6. Shared model errors and gains below the \textgreater3\% gate
+prevent adoption. RS reference fallback does not resolve rollback
+qualification. No production defaults change. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-local-clean-reference-results.md}{same-seed
+clean local reference} uses the exact GGUFs and unpatched matching
+source on generic x86 CPU, without custom K1 paths, flash attention or
+MTP. All model/source/request hashes pass. It reproduces the 2B wrong
+sum and missing citations, and both models still fail interval code.
+Useful answers are 1/6 and 5/6 locally, versus 2/6 and 5/6 on both board
+arms; one local 4B answer is length-capped. This supports limits of the
+tested weights/settings without proving causality for every earlier
+optimization across different CPUs. Local timing is not a matched x86/K1
+performance comparison.
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-decode-packing-results.md}{October
+7 sustained-decode diagnostic} passes 104 production graph cases in each
+of three arms and eight matched cold requests with exact
+prompt/token/text identity. Four decode profiles and all 86 artifact
+hashes are verified. Duplicate FFN branch packing costs only
+0.024--0.035\% of summed GEMM worker elapsed, so a shared-packing
+implementation is not pursued. IME assembly accounts for 48.61--66.57\%
+of sampled self CPU; approximately 20\% is calling-thread synchronous
+waiting, which is not proven removable wall time. No new acceleration or
+useful-answer result is claimed. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-ime-m1-k32-results.md}{fixed
+K32 M1 inner-loop specialization} then passed 480 raw cases, 104
+production cases per arm and all actual FFN/full output-head
+comparisons. Its 144 operator measurements produced no gain above both
+3\% and control spread; the candidate remains disabled. Full-model and
+useful-answer stages were skipped, so it adds no measured inference
+speedup. Separate load scheduling/dataflow, output-head partitioning and
+dependency- preserving worker-barrier changes remain unmeasured leads.
+
+Remaining advanced coverage limits include unmeasured 4B/32k and 64k
+workloads, unresolved MTP long-code identity, and unavailable measured
+GPU offload/full paged scheduling. These are stated explicitly so the
+submission represents the completed work.
+
+Validation priorities and primary-source practices for these remaining
+checks are documented in the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-validation-practice.md}{October
+3 validation review}.
+
+\Needspace{250pt}
+
+\hypertarget{current-handover-and-remaining-work}{%
+\section{11. Current handover and remaining
+work}\label{current-handover-and-remaining-work}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Area\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+State at the evidence cutoff\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Next evidence needed\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Pinned RVV/routing release\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Verified; routing stays opt-in\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+A new protocol for any broader quality claim\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Independent B1-r2/C1/C2-r2/C3 candidates\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Measured within their stated limits; not production defaults\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+New release tests before integration\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Combined-r1\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Failed one declared decode gate; stopped\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+A separately declared revised-candidate protocol\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Dispatch revision\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Local path checks and syntax check pass\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Native numerical, assembly, operator, and model checks\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+V7 evaluator\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Portable evidence replay passes; point directions unreliable\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Target-algorithm costs and independent error data\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Operator data\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+First training batch verified on two hosts\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Native checks for longer samples; separate calibration and tests\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Board access\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Remote failure confirmed; physical cause unknown\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Physical check and bounded task/lock inspection\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Initial-to-final speedup\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+No matched complete comparison\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Fixed-source, fixed-model direct regression\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The strongest replicated long-input result remains the RVV attention
+comparison. Routing adds measured phase gains on its optimized control.
+Later individual gains do not override the combined regression or shared
+quality failures. The project retains negative results, unresolved
+mechanisms, and incomplete measurements.
+
+\clearpage
+
+\hypertarget{evidence-appendix}{%
+\section{Evidence appendix}\label{evidence-appendix}}
+
+Evidence cutoff: October 12, 2026, Asia/Singapore. This appendix
+supports the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-REPORT.md}{submission
+report}. File dates identify campaigns; historical work queues do not
+describe current board activity.
+
+\hypertarget{claim-to-artifact-map}{%
+\subsection{1. Claim-to-artifact map}\label{claim-to-artifact-map}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Submission claim\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Authoritative records\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Verification / implementation\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+RVV 2k/8k TTFT improvement on both models\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/2026-09-25-lifecycle/lifecycle-rvv32.jsonl}{2k
+requests},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/2026-09-25-lifecycle/lifecycle-rvv32-long.jsonl}{8k
+requests}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/verify-results-matrix.py}{Matrix
+verifier},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/patches/0009-wide-rvv-vlen256.patch}{RVV
+patch 0009}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Actual 16k pairs and 2B 32k feasibility\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-27-resumed-measures.md}{Resumed
+measurement matrix},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/2026-09-25-lifecycle}{lifecycle
+raw directory}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Same matrix verifier; individual server logs and requests are linked in
+the matrix report\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+New routing model results\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/summary.json}{Routing
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740}{individual
+requests/logs}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/verify-k1-gemm-routing.py}{Independent
+verifier},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/verification.json}{verification
+output}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Combined routing at 8k, complete-answer pilot and RS replay
+failures\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-staged-validation-results.md}{Staged
+validation results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-validation-20261003-124720/summary.json}{summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-validation-20261003-124720/collection-receipt.json}{83-artifact
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/verify-k1-validation.py}{Validation
+verifier},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-validation-20261003-124720/verification.json}{verification
+output}; 4B/32k explicitly skipped\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Native and operator routing gates\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/operator.jsonl}{Operator
+records}, numerical logs in the same directory\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/test-k1-gemm-routing.cpp}{Production
+graph harness},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/k1-gemm-routing.py}{controller}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+236 collected artifacts and baseline preservation\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/collection-receipt.json}{Collection
+receipt},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/baseline-preservation-check.json}{46-file
+preservation check}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Independent artifact hashing; preservation compares end-of-run board
+hashes to starting manifests\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Source/build/model provenance\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/expected-provenance.json}{Expected
+baseline},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/provenance.json}{build
+provenance},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-gemm-routing-20261003-005740/candidate-gemm-routing.patch}{tested
+patch}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/make-k1-gemm-routing.py}{Generator},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/start-k1-gemm-routing.py}{launcher}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Q8\_0 IME1 and M4 scale results\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-24-integrated-k1.md}{September
+24 integrated report},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/2026-09-24-integrated}{raw
+arms}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/patches/0007-q8-ime1.patch}{Patch
+0007},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/patches/0008-ime-m4-scale.patch}{patch
+0008}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Corrected small-effect statistics\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-28-local-verification.md}{Local
+verification}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/paired-stats.py}{Statistics
+script}; fractional Welch degrees of freedom\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+MTP long-code mismatch and bounded decode traces\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-27-resumed-measures.md}{Resumed
+diagnostics},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/2026-09-25-lifecycle/lifecycle-code-long.jsonl}{long-code
+traces}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/audit-lifecycle.py}{Lifecycle
+auditor}; smaller drafts/RS/target-logit/FA-off evidence in the resumed
+report\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Complete-answer checkpoint MTP usefulness\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-mtp-usefulness-results.md}{Results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/mtp-quality-20261003-173915/quality-summary.json}{quality
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/mtp-quality-20261003-173915/collection-receipt.json}{21-artifact
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-03-mtp-usefulness.md}{Protocol},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/mtp-quality-checks.py}{functional
+checks},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/mtp-quality-20261003-173915/scoring-recovery.json}{scoring
+recovery}; relative gates pass, absolute usefulness fails\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Adaptive MTP bounded infrastructure screen\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-05-adaptive-mtp-results.md}{Results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/adaptive-mtp-infra-20261005-153716/adaptive-quality-summary.json}{final
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/adaptive-mtp-infra-20261005-153716/collection-receipt.json}{47-artifact
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-05-adaptive-mtp-infrastructure.md}{Protocol},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/adaptive-mtp-infra-20261005-153716/adaptive-scoring-recovery.json}{grading
+recovery}; throughput positive, overall candidate unqualified\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Complete-answer cache matrix\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-30-chat-quality-benchmark.md}{Quality
+report},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/document-quality-20260930-full-v2/summary.md}{completed
+24-pair summary}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/run-all-document-quality.py}{Quality
+runner},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/bench-shared-document-cache.py}{document
+benchmark}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Negative compact-layout screen\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-01-fast-method.md}{Fast
+method results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-fast-20261001-224957/summary.md}{completed
+run}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-09-30-fast-test-design.md}{Staged
+test design}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Negative IME / recurrent / attention screens\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-02-ime-scheduling.md}{IME
+scheduling},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-02-recurrent-prefill.md}{recurrent
+fusion},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-02-attention-infrastructure.md}{attention
+infrastructure}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Their linked native tests, operator records and gated model runs\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+GPU and page-gather boundaries\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-27-completed-gates.md}{Completed
+gates},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-09-27-resumed-measures.md}{later
+telemetry and backend findings}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Zero transferred OpenCL layers; Vulkan dropped; page gathering retains
+full backing allocation\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Independent bandwidth and routing confirmation\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-k1-roofline-results.md}{October
+6 results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-roofline-20261005-225502/summary.json}{summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-roofline-20261005-225502/collection-receipt.json}{150-artifact
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-05-k1-roofline.md}{Protocol},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-roofline-20261005-225502/ARCHIVE.md}{compressed
+evidence storage}; traffic references are not hardware-limit proof\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Same-seed local clean-reference quality\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-local-clean-reference-results.md}{Results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/local-reference-quality-20261006-194015/summary.json}{summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/local-reference-quality-20261006-194015/completion-verification.json}{verification}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-06-local-clean-reference.md}{Protocol},
+exact GGUF/source/request hashes, 12 audits and 11 two-order judgment
+pairs; errors persist, cross-backend causal/speed claims excluded\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Hybrid SSM complete useful answers\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-ssm-complete-answer-results.md}{Measured
+results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ssm-quality-20261006-131234/ssm-quality-summary.json}{final
+quality summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ssm-quality-20261006-131234/collection-receipt.json}{114-artifact
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ssm-quality-20261006-131234/completion-verification.json}{Completion
+verification},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-ssm-useful-answer-example.md}{passing
+answer}; exact graph/state pass, 24 natural answers, adoption gates
+fail; local scoring files additional to receipt\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Sustained decode and negative shared-packing priority\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-decode-packing-results.md}{October
+7 results},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-decode-audit-20261007-074314/summary.json}{summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-decode-audit-20261007-074314/collection-receipt.json}{86-artifact
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-decode-analysis-20261007/verify-completion.py}{Independent
+verifier},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-decode-analysis-20261007/verification.json}{verification};
+eight exact matched requests, four decode profiles, native identity;
+packing declined, CPU shares are not wall-time savings\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Unused research opportunities\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-03-infrastructure-research.md}{October
+3 GitHub/arXiv/Scholar review},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-next-infrastructure-methods.md}{October
+6 source audit}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Dated primary-source/source reviews; convolution and decode packing
+subsequently measured; M1 kernel scheduling and worker-barrier
+implementation remain unqualified\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{baseline-identities}{%
+\subsection{2. Baseline identities}\label{baseline-identities}}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Source state\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Role\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Official SpaceMiT fork \nolinkurl{5ad05d8}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Clean starting point for the packaged patch helper\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{6562c22} plus separately selected options\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Earlier recurrent/MTP integration state\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{a990751} plus recorded wide-RVV source changes\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Later board baseline; build-specific provenance is required\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Original library versus generated mode 0\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Routing operator control for unintended effects of the isolated library
+build\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Generated mode 0 versus mode 1 or 2\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Routing model comparisons; the baseline already has wide
+attention/layout 0\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Historical documentation values with different quantization, model
+derivative, prompt length or runtime state are not matched baseline
+arms. In particular, the old Q4\_1 documentation rates must not be used
+to calculate a controlled Q4\_0 optimization percentage. Baselines from
+different campaigns must not be treated as one continuous cumulative
+curve.
+
+\hypertarget{latest-model-identity}{%
+\subsection{3. Latest model identity}\label{latest-model-identity}}
+
+The routing run hashes the exact local files; model preparation is
+described in the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/models/tools/README.md}{model
+tools guide}.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Model file\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+SHA-256\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{56f0ddd9\allowbreak{}0dfa0e24\allowbreak{}56af6cb4\allowbreak{}718ece41\allowbreak{}9678d21a\allowbreak{}75d65e27\allowbreak{}353319b5\allowbreak{}e431a2fa}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{0adf6cce\allowbreak{}5df53921\allowbreak{}606033c3\allowbreak{}9a13fae2\allowbreak{}054543b7\allowbreak{}8af0e7ff\allowbreak{}98860e86\allowbreak{}f078ac0f}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Model weights remain outside this repository. The current kernel
+comparisons do not replace the model, alter its Q4\_0 weights or trim
+input tokens.
+
+\hypertarget{re-run-local-verification}{%
+\subsection{4. Re-run local
+verification}\label{re-run-local-verification}}
+
+From the repository root:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/verify{-}results{-}matrix.py }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{spacemit/reports/2026{-}09{-}27{-}resumed{-}measures.md} \KeywordTok{\textbackslash{}}
+  \ExtensionTok{spacemit/reports/raw/2026{-}09{-}25{-}lifecycle}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/verify{-}k1{-}gemm{-}routing.py }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{spacemit/reports/raw/k1{-}gemm{-}routing{-}20261003{-}005740}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/test{-}k1{-}gemm{-}routing.py}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/test{-}k1{-}fast{-}test.py}
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/test{-}k1{-}ime{-}test.py}
+\end{Highlighting}
+\end{Shaded}
+
+The matrix verifier checks 21 rows / 105 numeric cells. The routing
+verifier checks archived hashes, numerical logs, operator and model
+gates, input/output counts, actual runtime configuration and per-phase
+kernel markers. The three local regression scripts contain 2, 6 and 3
+checks respectively. These local tests supplement the board runs; they
+do not substitute for them.
+
+The routing run's environment telemetry allowlist omitted
+\nolinkurl{SPINE_K1_GEMM_ROUTE}. Actual mandatory kernel markers record
+mode, eligibility and bypass for each phase and establish activation
+independently. The verifier requires those markers and checks the
+environment value if recorded. Future runs also capture the environment
+field. Original raw records were preserved.
+
+The 236-artifact receipt covers collected board evidence. The
+independently generated local verification and preservation records are
+additional files, not members of that original collection count. Native
+binary output dumps remain on the board; numerical logs and summaries
+record their identical SHA-256 values. End-of-run board hashing
+independently confirmed those dumps.
+
+\hypertarget{fixed-k32-m1-screen-negative-evidence}{%
+\subsection{Fixed K32 M1 screen: negative
+evidence}\label{fixed-k32-m1-screen-negative-evidence}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-ime-m1-k32-results.md}{October
+7 M1 specialization results} have the following evidence: the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ime-m1-k32-20261007-121231/summary.json}{frozen
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ime-m1-k32-20261007-121231/operator.jsonl}{144
+operator samples},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ime-m1-k32-20261007-121231/collection-receipt.json}{211-artifact
+receipt},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ime-m1-analysis-20261007/verify-completion.py}{independent
+verifier},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ime-m1-analysis-20261007/verification.json}{verification
+output} and
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ime-m1-analysis-20261007/remote-preservation.json}{40-file
+remote preservation check}. Both exit statuses are zero. All 480 raw
+cases, 104 production cases per arm and six actual
+FFN/full-248320-column shapes per arm pass exact outputs and guards.
+Recreated route-3 baseline hash is exact; generated assembly removes the
+inner counter/branches while retaining dot/load/FMA order and fallbacks.
+No operator clears both 3\% and control spread. Full-model state, cold
+ABBA and useful-answer stages were skipped. Candidate disabled; no new
+inference or quality gain enters the submission. Independent analysis
+files are outside the original 211-artifact receipt.
+
+\hypertarget{submission-document-roles}{%
+\subsection{5. Submission document
+roles}\label{submission-document-roles}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-06-ssm-conv-repaired-results.md}{October
+6 repaired SSM screen} is supported by
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ssm-conv-20261006-115459/summary.json}{its
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ssm-conv-20261006-115459/operator.jsonl}{operator
+samples} and
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ssm-conv-20261006-115459/collection-receipt.json}{97-artifact
+receipt}. All four arms pass 432 exact output/history cases. Warm graph
+gains at 32 tokens accompany single-token regressions, so model-state
+and inference timing stages were skipped. These measurements support no
+full-model gain.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Material\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Use\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-REPORT.md}{SUBMISSION-REPORT.md}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Current report; edit this file before a new export\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-REPORT.tex}{SUBMISSION-REPORT.tex}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Standalone TeX export of the report and this appendix\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-REPORT.pdf}{SUBMISSION-REPORT.pdf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+PDF export for review\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/REPORT-BUILD.md}{REPORT-BUILD.md}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Export commands and document update rules\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+This appendix\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Evidence and reproduction references accompanying the report\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/DOCS.md}{Current
+documentation guide}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Operational status and navigation\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/README.md}{Integration
+guide} /
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/README.md}{benchmark
+guide}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Deployment and executable procedures\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Dated reports and experiments\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Campaign-specific details and historical decisions\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{raw/}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Reproducibility records; preserve original measurements\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/k1-llm-inference-optimizations.tex}{September
+24 LaTeX} and
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/k1-llm-inference-optimizations.pdf}{PDF}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Historical export; predates later findings and is not the current
+submission\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/FINAL-REPORT.md}{Root
+FINAL-REPORT.md}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Historical short-prompt campaign, with later annotations; not the
+current submission\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+No required final-report template, author list or external submission
+destination has been supplied. The report is organized for review; it
+has not been submitted externally.
+
+\hypertarget{current-release-package}{%
+\subsection{Current release package}\label{current-release-package}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/release/manifest.json}{release
+manifest} pins the exact source revision, patch and measured files,
+model hashes and matched route0/3 profiles.
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/release-20261007/clean-apply-verification.json}{Offline
+clean-source verification} checks the 3,266-file snapshot and exact
+patch round trip. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-release-verification.md}{fresh
+full board build and complete-answer verification} passes in
+\nolinkurl{k1-release-check-20261007-125712}. It checks 104 exact
+production graph cases per routing arm. All four Unicode code answers
+stop naturally and pass 106 held-out checks each. All 35 archived
+artifacts, 18 staged code files and three collector files pass checksum
+verification; post-run source, binary, compiler and vendor-runtime
+checks pass. Board/collector exit statuses are zero. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/release-20261007/verification.json}{independent
+result} records exact paired/prior text identity and the descriptive
+natural-answer timings. ARM/x86 comparison is excluded by user
+instruction. Release smoke timings do not add a new statistical speedup
+claim.
+
+\hypertarget{evidence-added-after-october-7}{%
+\subsection{6. Evidence added after October
+7}\label{evidence-added-after-october-7}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Claim\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Records\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Tools and limits\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Independent C1, C2-r2, C3, and B1-r2 results\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-09-local-candidate-result-rejudgment.md}{Candidate
+review},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-11-project-progress.md}{progress
+snapshot},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-11-original-current-comparison.csv}{phase
+comparison CSV}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-11-original-current-comparison.md}{Version
+comparison}; C0 already has RVV attention and route 3; no cumulative
+speedup\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Combined-r1 fails one decode gate\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-combined-stop-audit.md}{Stop
+audit},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-combined-stop-audit-20261012/input/summary.json}{saved
+original summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-combined-stop-audit-20261012/local-audit.json}{independent
+audit}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/local-candidates/audit-combined-stop.py}{Audit
+tool}; 96 first-round requests and 48 comparisons; no second round or
+complete-answer stage\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Dispatch revision remains local\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/experiments/2026-10-12-combined-dispatch-r2-local-protocol.md}{Protocol},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-combined-stop-audit-20261012/dispatch-manifest.json}{manifest},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-combined-stop-audit-20261012/tests.log}{local
+checks}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Full numerical, target assembly, operator, and model checks remain
+pending\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+V7 wide intervals and incorrect point directions\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-k1-model-v7.md}{V7
+report},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-model-v7-20261012/evaluation.json}{evaluation},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-model-v7-20261012/calibration.json}{calibration},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-model-v7-20261012/cross-host-check.json}{cross-host
+check}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/qemu-screen/predictor/README.md}{Evaluator
+guide}; 9/9 group coverage does not establish reliable point
+predictions\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+First native operator training batch\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-k1-operator-data.md}{Operator
+report},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-operator-data-20261012-r1/plan.json}{plan},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-operator-data-20261012-r1/observations.jsonl}{observations},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-operator-data-20261012-r1/summary.json}{summary}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/operator-data/README.md}{Operator
+tools},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-operator-data-20261012-r1/numeric-receipts.json}{numerical
+receipts},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-operator-data-20261012-r1/transfer-receipt.json}{transfer
+receipt}; training only\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Access failure and unknown second-batch state\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-k1-connection-interruption.md}{Connection
+report}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/operator-data/remote.py}{Bounded
+client}; no automatic retry or new board task\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The October 11 progress report and comparison CSV retain their original
+snapshots. The October 12 stop audit supplies the later combination
+decision. A saved summary is not a new independent comparison of the 536
+formal state dumps. The report retains that evidence gap.
+
+\Needspace{250pt}
+
+\hypertarget{portable-evaluator-replay}{%
+\subsection{7. Portable evaluator
+replay}\label{portable-evaluator-replay}}
+
+Run these commands from the repository root. The output directory must
+not exist.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/qemu{-}screen/predictor/model{-}bundle.py }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{{-}{-}include{-}ime{-}audit}\NormalTok{ {-}{-}output lab/k1{-}portable{-}v7}
+\end{Highlighting}
+\end{Shaded}
+
+Check the generated archive against its external SHA-256 receipt.
+Extract the archive. Run this command from its \nolinkurl{k1-models-v7/}
+directory.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3}\NormalTok{ run{-}examples.py {-}{-}output ../k1{-}replay}
+\end{Highlighting}
+\end{Shaded}
+
+The replay checks fixed evidence and frozen model identities. It does
+not collect new native measurements or qualify a new algorithm. Complete
+archives and binary dumps remain outside Git. Full archive checks
+require those retained files. The portable examples include the data
+needed for their own replay.
+\end{document}

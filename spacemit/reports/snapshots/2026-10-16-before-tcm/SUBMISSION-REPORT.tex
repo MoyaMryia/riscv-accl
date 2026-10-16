@@ -1,0 +1,888 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=22mm,headheight=14pt]{geometry}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb}
+\usepackage{longtable,booktabs,array,calc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{fvextra}
+\usepackage{hyperref}
+\definecolor{reportblue}{HTML}{164B70}
+\hypersetup{colorlinks=true,linkcolor=reportblue,urlcolor=reportblue,
+  pdftitle={Qwen3.5 Inference on the SpaceMiT
+K1},pdfauthor={riscv-accl project}}
+\urlstyle{tt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{8pt}
+\setcounter{secnumdepth}{-1}
+\setcounter{tocdepth}{1}
+\renewcommand{\arraystretch}{1.10}
+\setlist{nosep,leftmargin=1.5em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{reportblue}{riscv-accl / SpaceMiT K1}}
+\fancyhead[R]{\small 2026-10-16}
+\fancyfoot[C]{\small\thepage}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\RecustomVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,fontsize=\small,commandchars=\\\{\}}
+\begin{document}
+\begin{titlepage}
+\vspace*{15mm}
+{\large\textcolor{reportblue}{RISC-V LOCAL INFERENCE}}\par
+\vspace{12mm}
+{\Huge\bfseries Qwen3.5 Inference on the SpaceMiT K1\par}
+\vspace{8mm}
+{\Large Infrastructure Optimization and Performance Evaluation\par}
+\vspace{12mm}
+{\large Evidence cutoff: October 16, 2026 (Asia/Singapore)\par}
+\vspace{14mm}
+\begin{tabular}{@{}ll@{}}
+\textbf{Platform} & MUSE-Pi-Pro, K1/X60, nominal 16 GB RAM \\
+\textbf{Models} & Qwen3.5 2B and 4B \\
+\textbf{Implementation} & SpaceMiT llama.cpp fork \\
+\textbf{Package} & Technical report and evidence appendix \\
+\end{tabular}
+\vfill
+\textcolor{reportblue}{\rule{\textwidth}{1pt}}\par
+This report compares one compiled default build with the original compatibility baseline.
+Long-input results have one pair per model. Formal acceptance gaps remain.\par
+\vspace{6mm}
+\href{https://github.com/MoyaMryia/riscv-accl}{github.com/MoyaMryia/riscv-accl}
+\end{titlepage}
+{\small\tableofcontents}
+\clearpage
+\textbf{Evidence cutoff: October 16, 2026, Asia/Singapore}
+
+\hypertarget{abstract}{%
+\section{Abstract}\label{abstract}}
+
+The project provides one K1 build for the two tested Qwen3.5 models.
+Version \nolinkurl{k1-final-20261013-r3} sets the selected parameters in
+the source. Normal startup requires no performance flags or experiment
+variables. The same build passes native checks, state checks, natural
+code answers, and relocation checks.
+
+A new comparison uses the original vendor commit \nolinkurl{5ad05d8}
+with two compatibility changes. Both arms use identical Q4\_0 weights,
+F16 cache, inputs, and output histories. At 512/2048 input tokens, 2B
+decode throughput increases by 26.69\%/34.68\%. The corresponding 4B
+increases are 62.17\%/73.37\%. Each short shape has three pairs. At 8192
+input tokens, first-token time decreases by 51.77\% on 2B and 65.17\% on
+4B. Each long shape has only one pair. These long observations do not
+establish repeat stability. A separate capacity extension completes 12
+matched requests at 16384 and 32768 inputs. It uses the same production
+binaries and retains the ordinary context default of 12288.
+
+The default is a balanced choice within a frozen search. It is not a
+claim of a global optimum for all workloads. Model origin, full
+conversion, long state correctness, and formal multi-turn quality retain
+acceptance gaps. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/SUBMISSION-REPORT.pdf}{October
+12 report} preserves the previous report in full. Its source and SHA-256
+receipts remain available in the same snapshot directory.
+
+\hypertarget{requirements-and-status}{%
+\section{1. Requirements and status}\label{requirements-and-status}}
+
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/Requirements.md}{Requirements.md}
+is the sole current acceptance reference. It requires both specified
+model bases, local inference, the vendor fork, matched improvements, and
+reproducible deployment materials. It does not set an 8 GB device
+requirement or a 32k/64k context requirement. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-requirements-gap.md}{gap
+report} retains the complete requirement map.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Status\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Verified scope or limit\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Implemented\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+One complete source tree, one production build, fixed defaults,
+dependency checks, and a common launcher\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Verified\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Both current GGUF files run locally on K1 without a cloud API\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Verified\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+28 ordinary-default performance requests, 12 capacity-extension
+requests, and six complete natural code answers\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Verified\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Exact native dumps, 64 short state records, and two relocated model
+launches\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Pending\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Full official model origin and reproducible conversion of both final
+weights\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Pending\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Repeated long-context stability, long state acceptance, and the fixed
+multi-turn quality suite\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Not implemented in this release\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+GPU acceleration, KV compression, and memory reduction through page
+allocation\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+A passing Unicode code task does not establish general answer quality.
+Earlier shared model errors remain relevant to formal quality
+acceptance. No external competition submission is recorded.
+
+\hypertarget{platform-and-software-identity}{%
+\section{2. Platform and software
+identity}\label{platform-and-software-identity}}
+
+The tested board is a MUSE-Pi-Pro with eight K1/X60 CPU cores. Its
+nominal RAM is 16 GB; Linux reports approximately 15.528 GiB. Recorded
+CPU frequency is 1.6 GHz. Tests use an ordinary user in tmux under the
+common board lock. No device permission or system change forms part of
+this campaign.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Item\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+Identity\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Final version\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{k1-final-20261013-r3}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Vendor source\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{a990751d\allowbreak{}55a4c54a\allowbreak{}cf2bb77d\allowbreak{}44282c20\allowbreak{}93652359}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Complete source count\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+3271 files\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Final patch SHA-256\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{b03d193f\allowbreak{}618d8303\allowbreak{}ce563c4f\allowbreak{}cd4e0372\allowbreak{}6a1f6f45\allowbreak{}2dcc10ec\allowbreak{}edb1a793\allowbreak{}8550477b}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Server SHA-256\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{f254f174\allowbreak{}919c0a97\allowbreak{}ef34366f\allowbreak{}116705f6\allowbreak{}d22574ca\allowbreak{}b4c2bfc3\allowbreak{}9928c0d3\allowbreak{}15b5bfbd}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Policy SHA-256\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{aeef14e2\allowbreak{}356dc9e3\allowbreak{}3b1fc6ab\allowbreak{}595545eb\allowbreak{}67af8189\allowbreak{}4f2c7cbd\allowbreak{}28294862\allowbreak{}8453bdb0}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Compiler\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+GCC 14.2.0 with vendor IME support\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Runtime\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+SPERT 0.6.2 and \nolinkurl{libspine_tcm.so.3.0.1}; exact file hashes
+remain in the build receipt\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Build\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Release, IME1 enabled, OpenMP disabled, Native disabled, ZBA enabled,
+repack disabled, CPU backend\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+The two model files use Q4\_0 weights and Q4\_0 embeddings. Their names
+contain MTP tensors, but this release uses direct decode. The package
+does not contain weights or vendor runtime libraries. Exact dependencies
+do not yet have a unified public download archive.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+Model\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+GGUF SHA-256\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{56f0ddd9\allowbreak{}0dfa0e24\allowbreak{}56af6cb4\allowbreak{}718ece41\allowbreak{}9678d21a\allowbreak{}75d65e27\allowbreak{}353319b5\allowbreak{}e431a2fa}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{0adf6cce\allowbreak{}5df53921\allowbreak{}606033c3\allowbreak{}9a13fae2\allowbreak{}054543b7\allowbreak{}8af0e7ff\allowbreak{}98860e86\allowbreak{}f078ac0f}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Runtime fallback does not prove that inference buffers use real TCM. The
+earlier sudo device audit does not establish a TCM bandwidth or
+inference gain. This campaign does not add such a claim.
+
+\hypertarget{original-baseline-and-compatibility}{%
+\section{3. Original baseline and
+compatibility}\label{original-baseline-and-compatibility}}
+
+The original source is
+\texttt{5ad05d87\allowbreak{}96cb094e\allowbreak{}e23a3a01\allowbreak{}52874f8a\allowbreak{}2b3060f8}
+from the SpaceMiT fork. Its K1 build includes an IME2 file and fails.
+The first compatibility change removes that single CMake source-list
+entry. The resulting build cannot load the current reduced MTP draft
+head. The second change loads \nolinkurl{d2t} and uses the stored draft
+head width. Neither arm enables the draft decoder.
+
+Only the CMake list and the tensor loader in
+\nolinkurl{src/models/qwen35.cpp} change. The main output head, graph
+code, and all compute kernels retain their original bytes. The
+compatibility patch SHA-256 is
+\texttt{2e8c40a4\allowbreak{}a0567873\allowbreak{}80e37750\allowbreak{}bab00577\allowbreak{}7580978d\allowbreak{}3d9a58d9\allowbreak{}01e911dc\allowbreak{}12fe01d7}.
+Both failures and both compatibility records remain in the evidence.
+This is a compatibility baseline, not an unmodified binary.
+
+Both arms use four threads, batch 32, context 12288, one slot, and F16
+K/V. They use the same compiler and runtime libraries. The measured gain
+spans the original software state to the final software state. It
+excludes historical weight quantization changes. It does not isolate
+each individual kernel contribution.
+
+\hypertarget{balanced-default-selection}{%
+\section{4. Balanced default
+selection}\label{balanced-default-selection}}
+
+The frozen search uses one verified RC1 build and 104 requests. Four
+preflight requests check both models on the original and candidate
+builds. The mask stage tests eight combinations on two models and two
+lengths, with two rounds. The parameter stage tests 2/4 threads and
+batch sizes 16/32/64/128. Four natural answers complete the selection
+checks. The parameter stage retains four threads and batch 32. No
+additional parameter confirmation or fallback is required.
+
+The balanced score gives equal weight to both models, both lengths,
+TTFT, and decode time. TTFT means client time to the first output token.
+A difference within 3\% of the lowest score is unresolved under the
+frozen rule. This rule prefers fewer enabled candidates within that
+interval. Mask 7 has the lowest observed score, 0.8904876472483813. Mask
+3 scores 0.915536301962804 and lies within that interval. The rule
+therefore selects mask 3. The selection score uses the same-build C0
+control, not the original baseline.
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Compiled default & Value\tabularnewline
+\midrule
+\endhead
+Threads and batch threads & 4 / 4\tabularnewline
+Batch and physical batch & 32 / 32\tabularnewline
+Context and slots & 12288 / 1\tabularnewline
+Cache and attention & F16 K/V, flash attention enabled\tabularnewline
+GPU layers and decode & 0, direct decode\tabularnewline
+Common paths & Wide RVV attention and IME route 3 enabled\tabularnewline
+Candidate mask & 3: B1-r2 and C1 enabled; C2-r2 disabled\tabularnewline
+\bottomrule
+\end{longtable}
+
+The launcher clears inherited experiment variables. The measured final
+server receives only the model, alias, host, and port. Runtime logs and
+server properties confirm the actual defaults.
+
+\hypertarget{matched-performance-results}{%
+\section{5. Matched performance
+results}\label{matched-performance-results}}
+
+Performance requests use complete fixed input token lists and 65 fixed
+output tokens. A single-token bias forces identical decode histories
+across versions. This synthetic workload measures performance, not
+answer quality. Natural answers use a separate request without this
+bias.
+
+All requests have zero prompt-cache reuse. The tests do not clear the
+operating-system file cache. Each server starts before one request;
+server load time is outside request timing. All 28 requests complete and
+generate exactly 65 tokens. Input hashes, output tokens, full text, and
+finite timings match the protocol.
+
+Short shapes use three pairs with alternating arm order. Long shapes use
+one pair per model, with opposite order between models. Tables show
+arithmetic means of per-request metrics. Each slash separates original
+and final values, in that order. Time reductions and throughput
+increases use different formulas.
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+Model & Input & Pairs & TTFT, s & Server prefill, s & Prefill,
+tokens/s\tabularnewline
+\midrule
+\endhead
+2B & 512 & 3 & 23.835 / 19.556 & 23.831 / 19.551 & 21.485 /
+26.188\tabularnewline
+2B & 2048 & 3 & 115.639 / 81.633 & 115.632 / 81.626 & 17.712 /
+25.090\tabularnewline
+2B & 8192 & 1 & 846.321 / 408.162 & 846.303 / 408.145 & 9.680 /
+20.071\tabularnewline
+4B & 512 & 3 & 63.697 / 49.865 & 63.692 / 49.860 & 8.039 /
+10.269\tabularnewline
+4B & 2048 & 3 & 354.441 / 213.497 & 354.434 / 213.490 & 5.778 /
+9.593\tabularnewline
+4B & 8192 & 1 & 3234.172 / 1126.535 & 3234.155 / 1126.518 & 2.533 /
+7.272\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+Model & Input & Decode, tokens/s & Throughput change & Request, s & Peak
+RSS, MiB\tabularnewline
+\midrule
+\endhead
+2B & 512 & 3.387 / 4.292 & +26.69\% & 43.031 / 34.714 & 2471.97 /
+2469.73\tabularnewline
+2B & 2048 & 3.108 / 4.186 & +34.68\% & 136.554 / 97.169 & 2472.29 /
+2469.96\tabularnewline
+2B & 8192 & 2.239 / 3.600 & +60.82\% & 875.359 / 426.221 & 2473.30 /
+2471.19\tabularnewline
+4B & 512 & 1.315 / 2.133 & +62.17\% & 113.128 / 80.346 & 5342.20 /
+5340.58\tabularnewline
+4B & 2048 & 1.133 / 1.965 & +73.37\% & 411.793 / 246.579 & 5342.20 /
+5340.88\tabularnewline
+4B & 8192 & 0.724 / 1.485 & +104.91\% & 3323.894 / 1170.324 & 5342.88 /
+5342.11\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+Model & Input & TTFT reduction & Prefill throughput change & Decode time
+reduction\tabularnewline
+\midrule
+\endhead
+2B & 512 & 17.96\% & +21.89\% & 21.04\%\tabularnewline
+2B & 2048 & 29.41\% & +41.66\% & 25.72\%\tabularnewline
+2B & 8192 & 51.77\% & +107.35\% & 37.82\%\tabularnewline
+4B & 512 & 21.72\% & +27.74\% & 38.34\%\tabularnewline
+4B & 2048 & 39.77\% & +66.02\% & 42.32\%\tabularnewline
+4B & 8192 & 65.17\% & +187.09\% & 51.20\%\tabularnewline
+\bottomrule
+\end{longtable}
+
+RSS is resident memory for the server process. The table reports the
+mean of sampled request peaks, with a 0.2 s sample interval. It does not
+measure whole-machine memory or an instantaneous hardware peak. The
+independent summary retains means, medians, minima, maxima, and each
+request identity. No shape has a clear TTFT or decode-time regression
+under the frozen threshold. The threshold is the greater of 3\% and the
+full original-arm variation range. Three samples do not establish a
+population confidence interval. One long pair does not establish
+stability or complete long-context acceptance.
+
+\hypertarget{final-build-capacity-extension}{%
+\subsection{5.1. Final-build capacity
+extension}\label{final-build-capacity-extension}}
+
+A separate frozen protocol extends capacity to 20480 or 36864 for actual
+16384 or 32768 input tokens. The final server receives only the capacity
+flag in addition to model, alias, host, and port. Its optimization
+defaults remain unchanged; ordinary context remains 12288. Both models
+complete all requests with 65 matched output tokens and zero prompt
+reuse. The test uses two pairs per model at 16384 inputs and one pair
+per model at 32768 inputs.
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+Model & Input & Pairs & TTFT, s & Prefill, s & Prefill,
+tokens/s\tabularnewline
+\midrule
+\endhead
+2B & 16384 & 2 & 2829.646 / 1034.907 & 2829.614 / 1034.876 & 5.797 /
+15.832\tabularnewline
+2B & 32768 & 1 & 10761.012 / 2983.902 & 10760.952 / 2983.845 & 3.045 /
+10.982\tabularnewline
+4B & 16384 & 2 & 11256.195 / 2975.716 & 11256.164 / 2975.685 & 1.456 /
+5.506\tabularnewline
+4B & 32768 & 1 & 42070.823 / 8866.022 & 42070.765 / 8865.966 & 0.779 /
+3.696\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+Model & Input & Decode, tokens/s & Request, s & Peak RSS,
+MiB\tabularnewline
+\midrule
+\endhead
+2B & 16384 & 1.659 / 2.914 & 2868.832 / 1057.226 & 2571.781 /
+2569.617\tabularnewline
+2B & 32768 & 1.051 / 2.141 & 10822.886 / 3014.282 & 2767.641 /
+2766.426\tabularnewline
+4B & 16384 & 0.490 / 1.117 & 11388.985 / 3033.905 & 5600.367 /
+5600.611\tabularnewline
+4B & 32768 & 0.291 / 0.752 & 42294.220 / 8952.505 & 6117.164 /
+6117.809\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+Model & Input & TTFT reduction & Prefill gain & Decode
+gain\tabularnewline
+\midrule
+\endhead
+2B & 16384 & 63.43\% & +173.13\% & +75.59\%\tabularnewline
+2B & 32768 & 72.27\% & +260.64\% & +103.72\%\tabularnewline
+4B & 16384 & 73.56\% & +278.29\% & +128.23\%\tabularnewline
+4B & 32768 & 78.93\% & +374.52\% & +158.34\%\tabularnewline
+\bottomrule
+\end{longtable}
+
+Each slash separates baseline and final means. The independent check
+verifies 12 requests, 221 receipts, and 101704 memory samples. Total
+controller time is 28.381 h; no request reaches its frozen time or
+memory limit. RSS samples include server load and the request at a
+nominal 1 s interval. The minimum sampled system availability is
+11396.441 MiB; the maximum sampled server RSS is 6117.809 MiB. These
+observations apply to the tested nominal 16 GB board. They do not
+establish operation on an 8 GB device.
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-ultralong-final-comparison.md}{capacity-extension
+report} retains the complete protocol, sample ranges, archive identity,
+and repeat command. This synthetic output does not test long semantic
+quality or long state correctness. Two 16k pairs and one 32k pair do not
+establish general repeat stability. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-14-final-r3/SUBMISSION-REPORT.pdf}{previous
+report snapshot} retains the pre-supplement report and its original
+claims.
+
+\hypertarget{correctness-and-failure-records}{%
+\section{6. Correctness and failure
+records}\label{correctness-and-failure-records}}
+
+The final build passes 104 route, 95 attention, 432 SSM, and 158 GDN
+native cases. Its dump hashes match the verified RC1 reference. Two
+models produce 64 bitwise-equal full-vocabulary state records. These
+records cover RS 0/3, reset states, and prefixes 32/33/64/96 at context
+4096. They do not replace long state acceptance.
+
+Six complete natural answers cover original, RC1 C0, and final arms for
+both models. Each answer stops naturally and passes the frozen Unicode
+task's 106 functional checks. All 2B answers have identical text and 508
+output tokens. The 4B original answer has 595 tokens and different text.
+The RC1 and final 4B answers have identical text and 521 tokens. Both 4B
+texts pass the functional checks. This single task does not establish
+broad quality or multi-turn acceptance.
+
+The r1 delivery passes numerical checks but fails an argument-parser
+GPU-default assertion. The r2 delivery fixes that assertion but starts
+with four automatic slots. The r3 source fixes the server default to one
+slot and receives a fresh complete build. Both failed versions retain
+their source, build identities, and logs. No manual performance flag
+bypasses these checks.
+
+The previous full-combination regression remains 3.0220477\% for
+4B/2048/65 against B1 under its original conditions. The new search does
+not erase that failed gate. The IME scalar schedule remains excluded
+after its failed performance screen. Earlier MTP output differences
+require direct decode when exact output identity is required. GPU
+offload and page-allocation memory benefits remain unqualified.
+Predictor errors and wide intervals remain separate from measured model
+results.
+
+\hypertarget{deployment-and-evidence-package}{%
+\section{7. Deployment and evidence
+package}\label{deployment-and-evidence-package}}
+
+The committee directory \nolinkurl{final-release} collects runnable
+code, a one-command deployment entry, official conversion scripts,
+deployment guides, performance reports, and a design document. It
+includes complete production source and binaries, a fixed clean
+converter tree, model identity metadata, and separate evidence archives.
+The same production binaries retain the original verified hashes. The
+new entry creates tmux and acquires the fixed common lock before the
+server starts. Both model launches pass identity, actual-default, lock,
+and health checks without an inference request. The full official
+conversion remains untested; script availability does not establish a
+completed conversion.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bash}\NormalTok{ deploy.sh /absolute/path/to/model.gguf}
+\end{Highlighting}
+\end{Shaded}
+
+The committee manifest, checklist, and file hashes describe its complete
+contents and retained acceptance limits. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/final-release/SUBMISSION-PLAN.md}{submission
+plan} maps all six requested materials.
+
+The package contains the complete source, production binaries, fixed
+launcher, policy, dependency guide, and complete evidence. Both models
+use the same binary and defaults. Only the model path changes. Run this
+command in tmux from the extracted version directory:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bash}\NormalTok{ package/with{-}lock.sh python3 package/start.py {-}{-}model /path/to/model.gguf}
+\end{Highlighting}
+\end{Shaded}
+
+Use \nolinkurl{--spert} and \nolinkurl{--tcm} only when dependency
+locations differ. These options select library locations, not
+performance profiles. The launcher checks binary, model, and runtime
+hashes. The final build passes two model launches after binary
+relocation.
+
+The archive is
+\nolinkurl{lab/final-default-20261013/release/k1-final-20261013-r3.tar.gz}.
+Its external sidecar records the archive SHA-256 without a
+self-reference. The evidence appendix records the final archive identity
+after the archive check. The Git text view omits large dumps, thread
+samples, and binaries. Strict receipt replay requires the retained
+complete archive. The local check verifies 338 comparison receipts and
+119 final-validation receipts. The separate search check verifies 951
+search receipts and 19 native receipts.
+
+\hypertarget{historical-evidence-and-remaining-acceptance}{%
+\section{8. Historical evidence and remaining
+acceptance}\label{historical-evidence-and-remaining-acceptance}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/SUBMISSION-REPORT.pdf}{October
+12 snapshot} retains all previous report claims and caveats. Its
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/SUBMISSION-EVIDENCE.md}{evidence
+appendix} and
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/receipts.json}{receipts}
+preserve the previous record. Historical percentages with different
+controls must not be added or multiplied. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-release-verification.md}{October
+7 release} and
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-unified-release-candidate.md}{October
+13 RC1} remain comparison records. The new r3 package supplies the fixed
+default delivery for this campaign.
+
+\clearpage
+
+\hypertarget{evidence-appendix}{%
+\section{Evidence appendix}\label{evidence-appendix}}
+
+Evidence cutoff: October 16, 2026, Asia/Singapore. This appendix
+supports the
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/SUBMISSION-REPORT.md}{current
+report}. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/SUBMISSION-EVIDENCE.md}{October
+12 appendix} retains the previous claim map in full.
+
+\hypertarget{current-claim-map}{%
+\subsection{1. Current claim map}\label{current-claim-map}}
+
+\begin{longtable}[]{@{}lll@{}}
+\toprule
+\begin{minipage}[b]{0.30\columnwidth}\raggedright
+Claim\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Records\strut
+\end{minipage} & \begin{minipage}[b]{0.30\columnwidth}\raggedright
+Check and limit\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+One compiled default for both models\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-r3/package/default-policy.json}{Policy},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-r3/build/build-receipt.json}{build
+receipt}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/final-default/build_default.py}{Source
+generator}; 3271 source files\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Actual default startup\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-validation-r3/summary.json}{Final
+validation},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-validation-r3/relocated-2B.server.log}{2B
+log},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-validation-r3/relocated-4B.server.log}{4B
+log}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/bench/final-default/effective.py}{Default
+checker}; no performance flags or experiment variables\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Original compatibility boundary\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/baseline-load-build/build-receipt.json}{Baseline
+receipt},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/baseline-load-compatibility.patch}{compatibility
+patch}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Original graph and compute kernels retain their bytes; MTP remains
+disabled\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Frozen balanced selection\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/search-r2/summary.json}{Search
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/search-r2/masks-cycle-0.json}{mask
+decision},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/search-verification.json}{independent
+check}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+104 requests; mask 3 selected under the frozen 3\% tie rule\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Matched original-to-final performance\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/comparison-r3/summary.json}{Comparison
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-verification.json}{independent
+summary}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+24 short requests and four long requests; each long shape has one
+pair\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Natural answer quality\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/comparison-r3/answer-2B-final/answer.json}{2B
+final},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/comparison-r3/answer-4B-final/answer.json}{4B
+final}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+106 checks per answer; one Unicode task does not establish general
+quality\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Native and default state identity\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-validation-r3/summary.json}{Validation
+summary},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-validation-r3/state.json}{state
+records}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+789 native cases and 64 short state records; long state remains
+pending\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Preserved default failures\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/r1-failure-verification.json}{r1
+check},
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/r2-failure-verification.json}{r2
+check}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Parser assertion and automatic four-slot startup remain in the
+evidence\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.30\columnwidth}\raggedright
+Previous report preserved\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/receipts.json}{Snapshot
+receipts}\strut
+\end{minipage} & \begin{minipage}[t]{0.30\columnwidth}\raggedright
+Original Markdown, TeX, PDF, template, filter, and export script retain
+their bytes\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\hypertarget{complete-archive-and-compact-text-view}{%
+\subsection{2. Complete archive and compact text
+view}\label{complete-archive-and-compact-text-view}}
+
+The archive path is
+\nolinkurl{lab/final-default-20261013/release/k1-final-20261013-r3.tar.gz}.
+The archive SHA-256 is
+\texttt{d2adc88a\allowbreak{}fcb39960\allowbreak{}47b6e925\allowbreak{}d40b0bcc\allowbreak{}0054a449\allowbreak{}f9616238\allowbreak{}f698eee1\allowbreak{}c092855a}.
+Its size is 1,503,683,264 bytes. The internal check verifies 5331 file
+receipts, 12 symbolic links, and 28 binary hashes. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/final-release/archive-receipt.json}{archive
+receipt} records the complete check result. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/ARCHIVE.md}{text
+evidence guide} describes omitted large files. A receipt that names an
+omitted dump cannot be fully replayed from Git alone. The complete local
+evidence passes all recorded final checks.
+
+\hypertarget{repeat-the-checks}{%
+\subsection{3. Repeat the checks}\label{repeat-the-checks}}
+
+Use the retained complete archive for strict receipt replay. Run checks
+in tmux. Board builds, inference, and tests must hold the fixed common
+lock. Do not modify old raw records.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ExtensionTok{python3}\NormalTok{ spacemit/bench/final{-}default/verify\_final.py }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{{-}{-}board}\NormalTok{ lab/final{-}default{-}20261013/board }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{{-}{-}delivery}\NormalTok{ lab/final{-}default{-}20261013/delivery{-}r3 }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{{-}{-}version}\NormalTok{ r3 {-}{-}output /tmp/k1{-}final{-}verification{-}new.json}
+\end{Highlighting}
+\end{Shaded}
+
+The output file must not exist. The command above uses the complete
+local collection. An extracted archive stores production binaries only
+in its root \nolinkurl{build/bin/}. Create the following internal link
+before a receipt replay from the extracted version directory:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ln}\NormalTok{ {-}s ../../../build/bin evidence/final{-}r3/build/bin}
+\ExtensionTok{python3}\NormalTok{ evidence/verification{-}tools/verify\_final.py }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{{-}{-}board}\NormalTok{ evidence {-}{-}delivery . {-}{-}version r3 }\KeywordTok{\textbackslash{}}
+  \ExtensionTok{{-}{-}output}\NormalTok{ /tmp/k1{-}extracted{-}verification{-}new.json}
+\end{Highlighting}
+\end{Shaded}
+
+The link supplies the original evidence layout without a second
+production build. The checker verifies request order, identities, actual
+defaults, token history, cold counts, and sampled RSS. It preserves
+arithmetic means and observed ranges. The frozen selection replay uses
+\nolinkurl{verify_search.py} and the original selected policy. The
+current package acceptance metadata differs from the pre-test manifest
+only in its acceptance status. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-final-default-20261014-r3/final-package-receipt.json}{package
+receipt} records that change. Source, policy, and binary bytes retain
+their tested hashes.
+
+\hypertarget{acceptance-and-historical-limits}{%
+\subsection{4. Acceptance and historical
+limits}\label{acceptance-and-historical-limits}}
+
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/Requirements.md}{Requirements.md}
+controls acceptance. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-requirements-gap.md}{gap
+map} retains official model origin, conversion, long-state, and
+multi-turn gaps. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-combined-stop-audit.md}{previous
+stop audit} retains the 3.0220477\% decode regression under its original
+conditions. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md}{scalar
+schedule screen} retains its failed performance gate. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-k1-tcm-access.md}{TCM
+audit} does not establish inference performance gains. Historical
+evidence remains dated and must not be combined into an unmatched
+speedup.
+
+\hypertarget{final-build-capacity-supplement}{%
+\subsection{5. Final-build capacity
+supplement}\label{final-build-capacity-supplement}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-ultralong-final-comparison.md}{supplement
+report} separates explicit capacity extension from ordinary default
+startup. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ultralong-20261016-r1/PROTOCOL.md}{frozen
+protocol} fixes actual 16384/32768 inputs and 65 outputs. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ultralong-20261016-r1/verification-v2.json}{independent
+check} verifies all 12 requests, 221 receipts, and 101704 memory
+samples. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ultralong-20261016-r1/board/k1-ultralong-20261014-r1/results/summary.json}{controller
+summary} records completion and no failures. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-ultralong-20261016-r1/archive-receipt.json}{archive
+receipt} records the separate supplement archive and file checks. Its
+complete layout supports an independent replay without the original
+local directory paths. The production archive and all previous raw
+records retain their original bytes. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-14-final-r3/snapshot-receipt.json}{pre-update
+snapshot receipt} fixes the previous report set.
+
+The supplement uses two pairs at 16384 inputs and one pair at 32768
+inputs for each model. Only allocated capacity changes; optimization
+defaults and binaries retain their original identity. The ordinary
+context default remains 12288. Fixed-output completion does not
+establish long semantic quality, long state correctness, or formal
+multi-turn acceptance.
+
+\hypertarget{committee-deployment-entry}{%
+\subsection{6. Committee deployment
+entry}\label{committee-deployment-entry}}
+
+The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-committee-entry-20261016-r1/smoke-summary.json}{entry
+checks} cover both fixed models. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/raw/k1-committee-entry-20261016-r1/receipts.json}{receipts}
+retain launch commands, effective defaults, properties, health replies,
+and common-lock records. The new entry sends no inference request. The
+first upload fails because scp rejects the directory name \nolinkurl{.};
+no model starts. Its log and exit status remain in the same evidence
+directory. A second upload uses explicit filenames and both model checks
+pass.
+\end{document}

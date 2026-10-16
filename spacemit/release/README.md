@@ -1,5 +1,10 @@
 # K1 infrastructure release
 
+[Requirements.md](../../Requirements.md) is the sole current acceptance reference.
+Use the [deployment guide](../DEPLOYMENT.md) for the complete local procedure and the shared lock.
+Use the [test guide](../bench/TESTS.md) for tmux, logs, and completion checks.
+The [result index](../reports/RESULTS.md) separates these profiles from later candidates.
+
 This package reproduces the measured Qwen3.5 2B/4B infrastructure source on
 SpaceMiT's llama.cpp revision
 `a990751d55a4c54acf2bb77d44282c2093652359`. The package includes the integrated
@@ -51,7 +56,7 @@ tested execution environment. The package does not claim physical TCM placement.
 
 Supply a local model that matches the [manifest](manifest.json). The exact
 tested GGUF hashes are pinned. The
-[integration guide](../README.md) describes the model preparation. No weights
+[model guide](../models/README.md) describes model preparation and source evidence. No weights
 or credentials are distributed. The presence of MTP tensors does not enable
 speculative decoding.
 
@@ -95,9 +100,10 @@ python3 spacemit/bench/start-k1-release-check.py --board musepipro
 python3 spacemit/release/test-release.py
 ```
 
-Existing matched performance, full-document quality limits and negative results
-are in the [submission report](../reports/SUBMISSION-REPORT.md) and
-[evidence appendix](../reports/SUBMISSION-EVIDENCE.md). Raw large generated
+Existing matched performance, quality limits, and negative results
+are in the [result index](../reports/RESULTS.md).
+The [English report](../reports/SUBMISSION-REPORT.md) and
+[evidence appendix](../reports/SUBMISSION-EVIDENCE.md) retain the October 12 snapshot. Raw large generated
 binary dumps and archives stay in the measurement workspace. Git contains
 source, text records and checksum receipts. Reproduce the runner to regenerate
 them or obtain the retained files before running strict full-artifact verifiers.

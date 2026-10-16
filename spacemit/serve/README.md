@@ -1,10 +1,15 @@
 # Reuse a document prefix for follow-up questions
 
+[Requirements.md](../../Requirements.md) is the sole current acceptance reference.
+Use the [deployment guide](../DEPLOYMENT.md) to start the current release with the shared lock.
+Use `--port 18085` with that launcher, and use `--ctx-size 6144` with this client.
+The older 8,192-token server scripts below retain the historical integration path.
+Hold the shared lock for those scripts too.
 See the [documentation guide](../DOCS.md) for current benchmark status.
 
 `llama-server` can keep a prompt prefix in a live slot. The client here sends the same system instruction and document for each question. It adds the changing question at the end and requests `cache_prompt: true` on `/v1/chat/completions`. It pins requests to slot 0 of a single-slot server. The first question still prefills the document. Later questions can reuse the common prefix. This repository stores no model weights or document contents.
 
-## Start the board server
+## Historical board server
 
 On MUSE-Pi-Pro, use the integrated build with optional RVV patch 0009. From this repository on the workstation, copy the three scripts to the board:
 
@@ -44,7 +49,7 @@ The answer streams to stdout. Prompt length, time to first answer text, and tota
 
 ## Reproduce a short smoke test
 
-On the board, `smoke-cached-document-board.sh` builds a public 8,000-character excerpt of the server README. It asks two different questions. It checks that the second first-token latency is under one-quarter of the cold one. It writes `result.jsonl`, `client.log`, and `server.log` under `~/Projects/riscv-accl-bench-2026-09-27/cached-document-smoke`. Set `RUN_DIR` to a fresh path for another run. Run it in `tmux` if you want to disconnect.
+On the board, `smoke-cached-document-board.sh` builds a public 8,000-character excerpt of the server README. It asks two different questions. It checks that the second first-token latency is under one-quarter of the cold one. It writes `result.jsonl`, `client.log`, and `server.log` under `~/Projects/riscv-accl-bench-2026-09-27/cached-document-smoke`. Set `RUN_DIR` to a fresh path for another run. Run this test in `tmux` and hold the project shared lock.
 
 In the 2B board smoke on 2026-09-30, the public excerpt produced 2,605/2,606 input tokens. The first answer started after 120.00 s. The changed-question answer started after 2.54 s (47.2× shorter). The server log reported 33 prompt tokens evaluated for the second request. Both answers completed with `stop`. This measures latency and cache reuse for one document. It does not measure answer quality across tasks.
 

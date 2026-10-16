@@ -1,10 +1,40 @@
 # Reports index
 
+Document check: October 16, 2026, Asia/Singapore.
+[Requirements.md](../../Requirements.md) is the sole current acceptance reference.
+
+- [Final-build capacity extension](2026-10-16-ultralong-final-comparison.md): 12 matched requests at 16k and 32k inputs; ordinary context remains 12288.
+- [Final-build TCM trace](2026-10-16-final-release-tcm.md): device access during two short requests, heap fallback, and the user API.
+- [Final default comparison](2026-10-14-final-default-comparison.md): one compiled default for both models, original compatibility baseline, 28 matched requests, quality checks, and retained limits.
+- [Fixed default delivery](../final-release/README.md): archive identity and normal startup.
+- [Current gap report](2026-10-13-requirements-gap.md): each basic, score, advanced, and measurement item maps to evidence and missing checks.
+- [Result index](RESULTS.md): baseline, optimized release, independent candidates, and negative results.
+- [Deployment guide](../DEPLOYMENT.md) and [test guide](../bench/TESTS.md): callable procedures, locks, and completion records.
+- [File organization and checks](2026-10-13-project-file-organization.md): this task and its local check logs.
+- [Live inspection and scalar schedule](2026-10-13-k1-live-inspect-and-scalar-schedule.md): existing C1, actual hotspots, exact checks, and a failed performance screen.
+- [TCM access audit](2026-10-13-k1-tcm-access.md): ordinary user permissions and successful sudo access to four real blocks.
+- [History guide](HISTORY.md): dated exports and earlier source packages.
+
 ## K1 performance evaluator
+
+- [Finite fragment timing R4](2026-10-13-k1-fragment-timing-r4.md): complete-call point estimates and 840 native observations. Same-family checks retain a 30.70% maximum cycle error.
+- [Complete fragment calls R3](2026-10-12-k1-fragment-call-r3.md): six complete calls include library paths. K1 selects the same vector clear function. Cycle predictions remain unavailable.
+- [Fragment source workflow R2](2026-10-12-k1-fragment-source-r2.md): real Q8 payload code, 360 native observations, exact output checks, and WG peer transfer. Full-function predictions remain unavailable.
+- [Code fragment evaluator R1](2026-10-12-k1-fragment-evaluator-r1.md): a bounded pair interface, 87 tool checks, and identical replay on two hosts. Two historical misses remain.
+- [CPU completion model R8](2026-10-12-k1-cpu-completion-model-r8.md): 312 new functions and 9,360 samples. Mechanism cycle errors improve, but two positive pairs remain missed.
+- [CPU model methods R7](2026-10-12-k1-cpu-model-research-r7.md): 482 scalar loops compare LLVM with frozen models. Historical positive direction agreement is 12/36 for LLVM.
+- [CPU queue model R6](2026-10-12-k1-cpu-queue-model-r6.md): 9/9 fixed groups covered with a wide bound; gain and rank errors remain.
+- [CPU write model R5](2026-10-12-k1-cpu-write-model-r5.md): 168 new functions retain a 2.7143 cycle error factor. Source swaps do not explain the gap.
+- [CPU probes R4](2026-10-12-k1-cpu-mechanism-probes-r4.md): 18 fixed scalar pairs improve; write hazards retain large cycle errors.
+- [CPU state model R3](2026-10-12-k1-cpu-state-model-r3.md): 306 loops, 13/13 group coverage with a wide bound, and 26 slower candidates.
+- [CPU state model R2](2026-10-12-k1-cpu-state-model-r2.md): semantic checks, 12,012 samples, 7/9 group coverage, and 18/18 direction agreement. Gain errors remain.
+- [CPU state model R1](2026-10-12-k1-cpu-state-model-r1.md): native probes, frozen state estimates, 7/9 group coverage, and retained prediction failures.
 
 - [Model tools](../bench/qemu-screen/predictor/README.md): portable cost estimates and fixed examples.
 - [V7 audit](2026-10-12-k1-model-v7.md): broad bounds and incorrect point directions remain visible.
 - [Operator data](2026-10-12-k1-operator-data.md): 32 training configurations, exact paired dumps, and 1,344 observations.
+- [Fixed operator shape model](2026-10-12-k1-operator-model-v1.md): frozen models, independent calibration and tests, portable replay, and retained convolution failures.
+- [Second operator batch](2026-10-12-k1-operator-data-r2.md): direct access, longer samples, 1,344 more observations, and identical replay on two hosts.
 - [Connection interruption](2026-10-12-k1-connection-interruption.md): confirmed access failures, unknown hardware cause, and recovery steps.
 
 All performance candidates remain available. Calibration and test shapes remain separate from the new training data.
@@ -15,18 +45,22 @@ For the current work and the commands, use the
 [documentation guide](../DOCS.md). A historical queue statement describes the
 date of its report.
 
-## Current report package
+## Report packages
 
-Evidence cutoff: October 12, 2026, Asia/Singapore.
+The English report, appendix, TeX, and PDF include the October 16 supplements to the fixed default delivery.
+The complete October 12 report remains in [the snapshot directory](snapshots/2026-10-12/receipts.json).
+The new results do not close official model origin, full conversion, long state, or multi-turn acceptance gaps.
+Use the [history guide](HISTORY.md) for these limits.
 
+- [Chinese submission draft](SUBMISSION-ZH.md): current requirements, vendor source identity, measured gains, repeat commands, and open acceptance items.
 - [PDF report](SUBMISSION-REPORT.pdf): the technical report and evidence appendix.
 - [Standalone TeX](SUBMISSION-REPORT.tex): source for the PDF.
-- [Report text](SUBMISSION-REPORT.md): editable report with current results and limits.
+- [Report text](SUBMISSION-REPORT.md): editable source of the current English report.
 - [Evidence appendix](SUBMISSION-EVIDENCE.md): claim-to-record map and check commands.
 - [Export instructions](REPORT-BUILD.md): repeatable document export.
 - [Combined stop audit](2026-10-12-combined-stop-audit.md): one decode gate fails; second-round and complete-answer tests do not run.
 
-The pinned release remains the October 7 package.
+The fixed default delivery is r3. The October 7 package remains a historical reference.
 Later candidates and performance-model work have separate evidence boundaries.
 The October 11 snapshots predate the combination stop.
 The root `FINAL-REPORT.md` and September TeX/PDF remain historical reports.
