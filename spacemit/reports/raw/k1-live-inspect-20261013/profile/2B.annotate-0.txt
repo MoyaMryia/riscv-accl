@@ -1,0 +1,956 @@
+ Percent |	Source code & Disassembly of libggml-cpu.so.0.16.0 for cpu-clock:u (1076 samples, percent: local period)
+------------------------------------------------------------------------------------------------------------------------
+         :
+         :
+         :
+         : 3     Disassembly of section .text:
+         :
+         : 5     00000000000ff47c <ggml_compute_forward_gated_delta_net>:
+         : 6     ggml_compute_forward_gated_delta_net():
+    0.00 :   ff47c:  ld      a5,152(a1)
+    0.00 :   ff47e:  addi    sp,sp,-672
+    0.00 :   ff482:  sd      s10,576(sp)
+    0.00 :   ff486:  lw      a5,0(a5)
+    0.00 :   ff488:  auipc   s10,0x12d
+    0.00 :   ff48c:  ld      s10,304(s10) # 22c5b8 <__stack_chk_guard@GLIBC_2.27>
+    0.00 :   ff490:  sd      ra,664(sp)
+    0.00 :   ff494:  ld      a4,0(s10)
+    0.00 :   ff498:  sd      a4,520(sp)
+    0.00 :   ff49c:  li      a4,0
+    0.00 :   ff49e:  bnez    a5,ffce2 <ggml_compute_forward_gated_delta_net+0x866>
+    0.00 :   ff4a2:  ld      a5,168(a1)
+    0.00 :   ff4a4:  sd      s1,648(sp)
+    0.00 :   ff4a8:  sd      s6,608(sp)
+    0.00 :   ff4ac:  ld      a4,24(a5)
+    0.00 :   ff4ae:  ld      a5,40(a5)
+    0.00 :   ff4b0:  sd      s8,592(sp)
+    0.00 :   ff4b4:  sd      s9,584(sp)
+    0.00 :   ff4b8:  mv      s8,a0
+    0.00 :   ff4ba:  mul     s6,a4,a5
+    0.00 :   ff4be:  mv      s9,a1
+    0.00 :   ff4c0:  jal     86190 <ggml_is_numa@plt>
+    0.00 :   ff4c4:  lw      a1,4(s8)
+    0.00 :   ff4c8:  li      a5,1
+    0.00 :   ff4ca:  lw      s1,0(s8)
+    0.00 :   ff4ce:  sd      a1,136(sp)
+    0.00 :   ff4d0:  beq     a1,a5,ff4f0 <ggml_compute_forward_gated_delta_net+0x74>
+    0.00 :   ff4d4:  slliw   a5,a1,0x2
+    0.00 :   ff4d8:  add     a4,s6,a5
+    0.00 :   ff4dc:  addi    a4,a4,-1
+    0.00 :   ff4de:  div     a4,a4,a5
+    0.00 :   ff4e2:  add     a5,s6,a4
+    0.00 :   ff4e6:  addi    a5,a5,-1
+    0.00 :   ff4e8:  div     a5,a5,a4
+    0.00 :   ff4ec:  bge     a5,a1,ffcd8 <ggml_compute_forward_gated_delta_net+0x85c>
+    0.00 :   ff4f0:  beqz    s1,ffccc <ggml_compute_forward_gated_delta_net+0x850>
+    0.00 :   ff4f4:  ld      a0,24(s8)
+    0.00 :   ff4f8:  jal     87340 <ggml_barrier@plt>
+    0.00 :   ff4fc:  ld      a4,136(sp)
+    0.00 :   ff4fe:  add     a5,s6,a4
+    0.00 :   ff502:  addi    a5,a5,-1
+    0.00 :   ff504:  div     a5,a5,a4
+    0.00 :   ff508:  sd      a5,440(sp)
+    0.00 :   ff50a:  bge     s1,a4,ff94e <ggml_compute_forward_gated_delta_net+0x4d2>
+    0.00 :   ff50e:  fsd     fs1,544(sp)
+    0.00 :   ff512:  auipc   a5,0xcb
+    0.00 :   ff516:  flw     fs1,1370(a5) # 1caa6c <__func__.1+0x24>
+    0.00 :   ff51a:  sd      s3,632(sp)
+    0.00 :   ff51e:  csrr    a5,vlenb
+    0.00 :   ff522:  addi    a5,a5,-8
+    0.00 :   ff524:  sd      s9,72(sp)
+    0.00 :   ff526:  sd      s0,656(sp)
+    0.00 :   ff52a:  sd      s2,640(sp)
+    0.00 :   ff52e:  sd      s4,624(sp)
+    0.00 :   ff532:  sd      s5,616(sp)
+    0.00 :   ff536:  sd      s7,600(sp)
+    0.00 :   ff53a:  sd      s11,568(sp)
+    0.00 :   ff53e:  fsd     fs0,552(sp)
+    0.00 :   ff542:  fsd     fs2,536(sp)
+    0.00 :   ff546:  fsd     fs3,528(sp)
+    0.00 :   ff54a:  sd      a5,480(sp)
+    0.00 :   ff54c:  mv      s3,s8
+    0.00 :   ff54e:  mv      s9,s6
+    0.00 :   ff550:  ld      a5,440(sp)
+    0.00 :   ff552:  mul     s2,a5,s1
+    0.00 :   ff556:  add     a5,a5,s2
+    0.00 :   ff558:  sd      a5,80(sp)
+    0.00 :   ff55a:  bge     s9,a5,ff560 <ggml_compute_forward_gated_delta_net+0xe4>
+    0.00 :   ff55e:  sd      s9,80(sp)
+    0.00 :   ff560:  ld      a5,72(sp)
+    0.00 :   ff562:  ld      a4,168(a5)
+    0.09 :   ff564:  ld      a3,160(a5)
+    0.00 :   ff566:  ld      a0,152(a5)
+    0.00 :   ff568:  ld      s11,16(a4)
+    0.00 :   ff56c:  ld      s8,24(a4)
+    0.09 :   ff570:  ld      s1,40(a4)
+    0.00 :   ff572:  sd      a4,152(sp)
+    0.00 :   ff574:  sd      a3,144(sp)
+    0.00 :   ff576:  ld      a3,32(a4)
+    0.00 :   ff578:  ld      a4,176(a5)
+    0.00 :   ff57a:  ld      s0,192(a5)
+    0.00 :   ff57c:  sd      a0,344(sp)
+    0.00 :   ff57e:  sd      a4,88(sp)
+    0.00 :   ff580:  ld      a4,184(a5)
+    0.00 :   ff582:  sd      a3,56(sp)
+    0.00 :   ff584:  sd      a4,96(sp)
+    0.00 :   ff586:  jal     864d0 <ggml_is_contiguous_rows@plt>
+    0.00 :   ff58a:  beqz    a0,fff44 <ggml_compute_forward_gated_delta_net+0xac8>
+    0.09 :   ff58e:  ld      a0,144(sp)
+    0.00 :   ff590:  jal     864d0 <ggml_is_contiguous_rows@plt>
+    0.00 :   ff594:  beqz    a0,fff12 <ggml_compute_forward_gated_delta_net+0xa96>
+    0.00 :   ff598:  ld      a0,152(sp)
+    0.00 :   ff59a:  jal     864d0 <ggml_is_contiguous_rows@plt>
+    0.00 :   ff59e:  beqz    a0,ffee0 <ggml_compute_forward_gated_delta_net+0xa64>
+    0.00 :   ff5a2:  ld      a0,88(sp)
+    0.00 :   ff5a4:  jal     84540 <ggml_is_contiguous@plt>
+    0.00 :   ff5a8:  beqz    a0,ffeae <ggml_compute_forward_gated_delta_net+0xa32>
+    0.00 :   ff5ac:  ld      a0,96(sp)
+    0.00 :   ff5ae:  jal     84540 <ggml_is_contiguous@plt>
+    0.00 :   ff5b2:  beqz    a0,ffe7c <ggml_compute_forward_gated_delta_net+0xa00>
+    0.00 :   ff5b6:  mv      a0,s0
+    0.00 :   ff5b8:  jal     84540 <ggml_is_contiguous@plt>
+    0.00 :   ff5bc:  mv      a5,a0
+    0.00 :   ff5be:  beqz    a0,ffe4c <ggml_compute_forward_gated_delta_net+0x9d0>
+    0.00 :   ff5c2:  ld      a4,88(sp)
+    0.00 :   ff5c4:  ld      a4,16(a4)
+    0.00 :   ff5c6:  mv      a3,a4
+    0.00 :   ff5c8:  sd      a4,448(sp)
+    0.00 :   ff5ca:  li      a4,1
+    0.00 :   ff5cc:  beq     a3,a4,ff5d4 <ggml_compute_forward_gated_delta_net+0x158>
+    0.00 :   ff5d0:  bne     s11,a3,ffe1c <ggml_compute_forward_gated_delta_net+0x9a0>
+    0.00 :   ff5d4:  ld      a4,96(sp)
+    0.00 :   ff5d6:  ld      a3,16(a4)
+    0.00 :   ff5d8:  li      a4,1
+    0.00 :   ff5da:  bne     a3,a4,ffdec <ggml_compute_forward_gated_delta_net+0x970>
+    0.00 :   ff5de:  ld      a4,344(sp)
+    0.00 :   ff5e0:  beqz    a4,ffcb4 <ggml_compute_forward_gated_delta_net+0x838>
+    0.00 :   ff5e4:  ld      a3,24(a4)
+    0.00 :   ff5e6:  ld      a1,40(a4)
+    0.00 :   ff5e8:  sd      a3,160(sp)
+    0.00 :   ff5ea:  ld      a3,56(a4)
+    0.00 :   ff5ec:  sd      a3,168(sp)
+    0.00 :   ff5ee:  ld      a3,64(a4)
+    0.00 :   ff5f0:  ld      a4,72(a4)
+    0.00 :   ff5f2:  sd      a3,104(sp)
+    0.00 :   ff5f4:  sd      a4,176(sp)
+    0.00 :   ff5f6:  ld      a4,144(sp)
+    0.00 :   ff5f8:  beqz    a4,ffca8 <ggml_compute_forward_gated_delta_net+0x82c>
+    0.00 :   ff5fc:  ld      a3,24(a4)
+    0.00 :   ff5fe:  ld      a2,56(a4)
+    0.00 :   ff600:  sd      a3,184(sp)
+    0.00 :   ff602:  sd      a2,192(sp)
+    0.00 :   ff604:  ld      a3,40(a4)
+    0.00 :   ff606:  ld      a2,64(a4)
+    0.00 :   ff608:  ld      a4,72(a4)
+    0.00 :   ff60a:  sd      a2,112(sp)
+    0.00 :   ff60c:  sd      a4,200(sp)
+    0.00 :   ff60e:  ld      a0,152(sp)
+    0.00 :   ff610:  ld      a4,72(sp)
+    0.00 :   ff612:  ld      a6,56(a0)
+    0.00 :   ff616:  ld      a2,40(a0)
+    0.00 :   ff618:  lw      s6,84(a4)
+    0.00 :   ff61c:  sd      a6,352(sp)
+    0.00 :   ff61e:  ld      a6,64(a0)
+    0.00 :   ff622:  ld      a0,72(a0)
+    0.00 :   ff624:  li      a4,1
+    0.00 :   ff626:  sd      a6,208(sp)
+    0.00 :   ff628:  sd      a0,360(sp)
+    0.00 :   ff62a:  ld      a0,88(sp)
+    0.09 :   ff62c:  ld      a6,56(a0)
+    0.00 :   ff630:  sd      a6,368(sp)
+    0.00 :   ff632:  ld      a6,64(a0)
+    0.00 :   ff636:  ld      a0,72(a0)
+    0.00 :   ff638:  sd      a6,216(sp)
+    0.00 :   ff63a:  sd      a0,376(sp)
+    0.00 :   ff63c:  ld      a0,96(sp)
+    0.00 :   ff63e:  ld      a6,56(a0)
+    0.00 :   ff642:  sd      a6,384(sp)
+    0.00 :   ff644:  ld      a6,64(a0)
+    0.00 :   ff648:  ld      a0,72(a0)
+    0.00 :   ff64a:  sd      a6,224(sp)
+    0.00 :   ff64c:  sd      a0,392(sp)
+    0.00 :   ff64e:  beq     s6,a4,ffc3e <ggml_compute_forward_gated_delta_net+0x7c2>
+    0.00 :   ff652:  blez    s6,ffdbc <ggml_compute_forward_gated_delta_net+0x940>
+    0.00 :   ff656:  mul     s4,s11,s8
+    0.00 :   ff65a:  ld      a4,72(s0)
+    0.00 :   ff65c:  ld      a5,72(sp)
+    0.00 :   ff65e:  lw      t1,0(s3)
+    0.00 :   ff662:  srli    a4,a4,0x2
+    0.00 :   ff664:  sd      a4,128(sp)
+    0.00 :   ff666:  ld      a4,56(sp)
+    0.00 :   ff668:  ld      t3,248(a5)
+    0.00 :   ff66c:  ld      a5,248(s0)
+    0.00 :   ff66e:  ld      a7,16(s3)
+    0.00 :   ff672:  sd      t3,232(sp)
+    0.00 :   ff674:  mul     a6,s11,s11
+    0.00 :   ff678:  sd      a5,248(sp)
+    0.00 :   ff67a:  sd      zero,256(sp)
+    0.00 :   ff67c:  li      a5,0
+    0.00 :   ff67e:  sd      zero,264(sp)
+    0.00 :   ff680:  mul     a0,a4,s4
+    0.00 :   ff684:  add     a4,s11,a6
+    0.00 :   ff688:  mul     s0,s8,a6
+    0.00 :   ff68c:  mul     a4,a4,t1
+    0.00 :   ff690:  mul     a0,a0,s1
+    0.00 :   ff694:  addi    a4,a4,16
+    0.00 :   ff696:  sh2add  s5,a4,a7
+    0.00 :   ff69a:  sh2add  a4,s11,s5
+    0.00 :   ff69e:  sd      a4,120(sp)
+    0.00 :   ff6a0:  mul     s0,s0,s1
+    0.00 :   ff6a4:  sh2add  a4,a0,t3
+    0.00 :   ff6a8:  sd      a4,240(sp)
+    0.00 :   ff6aa:  fcvt.s.l        fa0,s11
+    0.00 :   ff6ae:  fmv.w.x fa5,zero
+    0.00 :   ff6b2:  div     a4,a2,a1
+    0.00 :   ff6b6:  sd      a4,400(sp)
+    0.00 :   ff6b8:  div     a4,a2,a3
+    0.00 :   ff6bc:  sd      a4,408(sp)
+    0.00 :   ff6be:  frflags a2
+    0.00 :   ff6c2:  flt.s   a3,fa0,fa5
+    0.00 :   ff6c6:  fsflags a2
+    0.00 :   ff6ca:  bnez    a3,ffdae <ggml_compute_forward_gated_delta_net+0x932>
+    0.00 :   ff6ce:  fsqrt.s fa0,fa0
+    0.00 :   ff6d2:  ld      a4,80(sp)
+    0.00 :   ff6d4:  fdiv.s  fs0,fs1,fa0
+    0.00 :   ff6d8:  bge     s2,a4,ff910 <ggml_compute_forward_gated_delta_net+0x494>
+    0.00 :   ff6dc:  mulw    a3,s11,s11
+    0.00 :   ff6e0:  ld      a4,56(sp)
+    0.00 :   ff6e2:  neg     a2,s0
+    0.00 :   ff6e6:  slli    a1,s4,0x2
+    0.00 :   ff6ea:  addi    a4,a4,-1
+    0.00 :   ff6ec:  sd      a4,424(sp)
+    0.00 :   ff6ee:  sext.w  s4,s11
+    0.00 :   ff6f2:  slli    s1,s11,0x2
+    0.00 :   ff6f6:  sd      a5,496(sp)
+    0.00 :   ff6f8:  sd      a1,288(sp)
+    0.00 :   ff6fa:  mv      a5,s8
+    0.00 :   ff6fc:  mul     s0,a4,s0
+    0.00 :   ff700:  sd      a3,472(sp)
+    0.00 :   ff702:  addiw   a3,s11,-1
+    0.00 :   ff706:  sh2add  a4,s11,s5
+    0.00 :   ff70a:  slli.uw a3,a3,0x2
+    0.00 :   ff70e:  addi    a3,a3,4
+    0.00 :   ff710:  sd      a4,464(sp)
+    0.00 :   ff712:  ld      a4,240(sp)
+    0.00 :   ff714:  add     a3,a3,s5
+    0.00 :   ff716:  sd      a3,456(sp)
+    0.00 :   ff718:  slli    a3,a2,0x2
+    0.00 :   ff71c:  mul     a7,s2,a6
+    0.00 :   ff720:  sh2add  a4,s0,a4
+    0.00 :   ff724:  sd      a3,296(sp)
+    0.00 :   ff726:  slli    a3,a6,0x2
+    0.00 :   ff72a:  sd      a4,416(sp)
+    0.00 :   ff72c:  mv      s8,s5
+    0.00 :   ff72e:  sd      a3,272(sp)
+    0.00 :   ff730:  mv      s5,s11
+    0.00 :   ff732:  sd      s9,488(sp)
+    0.00 :   ff734:  mv      s11,s2
+    0.00 :   ff736:  sd      s3,504(sp)
+    0.00 :   ff738:  mv      a4,a7
+    0.00 :   ff73a:  sd      a6,432(sp)
+    0.00 :   ff73c:  rem     a2,s11,a5
+    0.00 :   ff740:  ld      a1,160(sp)
+    0.00 :   ff742:  ld      s9,120(sp)
+    0.00 :   ff744:  div     a3,s11,a5
+    0.00 :   ff748:  rem     t1,a2,a1
+    0.00 :   ff74c:  ld      a1,184(sp)
+    0.00 :   ff74e:  mul     t5,s5,a2
+    0.00 :   ff752:  rem     a0,a2,a1
+    0.00 :   ff756:  ld      a1,400(sp)
+    0.00 :   ff758:  div     t3,a3,a1
+    0.00 :   ff75c:  ld      a1,408(sp)
+    0.00 :   ff75e:  div     a6,a3,a1
+    0.00 :   ff762:  li      a1,1
+    0.00 :   ff764:  mul     t5,t5,s5
+    0.00 :   ff768:  beq     s6,a1,ffbfc <ggml_compute_forward_gated_delta_net+0x780>
+    0.00 :   ff76c:  ld      a1,128(sp)
+    0.00 :   ff76e:  mul     t4,a3,a1
+    0.00 :   ff772:  ld      a1,248(sp)
+    0.00 :   ff774:  add     t4,t4,t5
+    0.00 :   ff776:  sh2add  t4,t4,a1
+    0.00 :   ff77a:  beq     t4,s9,ff79a <ggml_compute_forward_gated_delta_net+0x31e>
+    0.00 :   ff77e:  ld      t6,272(sp)
+    0.00 :   ff780:  mv      t0,s9
+    0.00 :   ff782:  vsetvli a1,t6,e8,m8,ta,ma
+    0.09 :   ff786:  vle8.v  v8,(t4)
+    4.00 :   ff78a:  sub     t6,t6,a1
+    0.00 :   ff78e:  add     t4,t4,a1
+    0.00 :   ff790:  vse8.v  v8,(t0)
+    2.23 :   ff794:  add     t0,t0,a1
+    0.00 :   ff796:  bnez    t6,ff782 <ggml_compute_forward_gated_delta_net+0x306>
+    0.00 :   ff79a:  ld      a1,56(sp)
+    0.09 :   ff79c:  ld      a7,232(sp)
+    0.00 :   ff79e:  mul     s0,a1,a3
+    0.00 :   ff7a2:  mul     s0,s0,a5
+    0.00 :   ff7a6:  add     s0,s0,a2
+    0.00 :   ff7a8:  mul     s0,s0,s5
+    0.00 :   ff7ac:  sh2add  s0,s0,a7
+    0.00 :   ff7b0:  blez    a1,ff900 <ggml_compute_forward_gated_delta_net+0x484>
+    0.00 :   ff7b4:  ld      a1,176(sp)
+    0.00 :   ff7b6:  fmv.w.x fs2,zero
+    0.00 :   ff7ba:  ld      s7,424(sp)
+    0.00 :   ff7bc:  mul     t3,t3,a1
+    0.00 :   ff7c0:  ld      a1,416(sp)
+    0.00 :   ff7c2:  sd      a5,304(sp)
+    0.00 :   ff7c4:  sd      s11,312(sp)
+    0.00 :   ff7c6:  sh2add  a1,a4,a1
+    0.00 :   ff7ca:  sd      a1,0(sp)
+    0.00 :   ff7cc:  ld      a1,168(sp)
+    0.00 :   ff7ce:  sd      a4,320(sp)
+    0.00 :   ff7d0:  mul     t1,t1,a1
+    0.00 :   ff7d4:  ld      a1,200(sp)
+    0.00 :   ff7d6:  mul     a6,a6,a1
+    0.00 :   ff7da:  add     a1,t3,t1
+    0.00 :   ff7de:  sd      a1,24(sp)
+    0.00 :   ff7e0:  ld      a1,192(sp)
+    0.00 :   ff7e2:  mul     a0,a0,a1
+    0.00 :   ff7e6:  ld      a1,360(sp)
+    0.00 :   ff7e8:  mul     t1,a1,a3
+    0.00 :   ff7ec:  add     a1,a6,a0
+    0.00 :   ff7f0:  sd      a1,16(sp)
+    0.00 :   ff7f2:  ld      a1,352(sp)
+    0.00 :   ff7f4:  mul     a0,a1,a2
+    0.00 :   ff7f8:  ld      a1,392(sp)
+    0.00 :   ff7fa:  mul     a6,a1,a3
+    0.00 :   ff7fe:  add     a1,t1,a0
+    0.00 :   ff802:  sd      a1,48(sp)
+    0.00 :   ff804:  ld      a1,376(sp)
+    0.00 :   ff806:  mul     a3,a1,a3
+    0.00 :   ff80a:  ld      a1,384(sp)
+    0.00 :   ff80c:  mul     a0,a1,a2
+    0.00 :   ff810:  ld      a1,368(sp)
+    0.00 :   ff812:  mul     a2,a1,a2
+    0.00 :   ff816:  add     a1,a6,a0
+    0.00 :   ff81a:  sd      a1,40(sp)
+    0.00 :   ff81c:  addi    a1,sp,516
+    0.00 :   ff81e:  sd      a1,8(sp)
+    0.00 :   ff820:  add     a3,a3,a2
+    0.00 :   ff822:  sd      a3,32(sp)
+    0.00 :   ff824:  ld      a5,96(sp)
+    0.00 :   ff826:  ld      a0,40(sp)
+    0.00 :   ff828:  ld      a4,344(sp)
+    0.00 :   ff82a:  ld      a5,248(a5)
+    0.00 :   ff82c:  ld      a1,248(a4)
+    0.09 :   ff82e:  add     a5,a5,a0
+    0.00 :   ff830:  flw     fs3,0(a5)
+    0.09 :   ff834:  ld      a5,24(sp)
+    0.09 :   ff836:  ld      a4,144(sp)
+    0.00 :   ff838:  add     a5,a5,a1
+    0.00 :   ff83a:  ld      a2,248(a4)
+    0.00 :   ff83c:  sd      a5,64(sp)
+    0.00 :   ff83e:  ld      a4,152(sp)
+    0.00 :   ff840:  ld      a5,16(sp)
+    0.00 :   ff842:  ld      a3,248(a4)
+    0.00 :   ff844:  add     s2,a2,a5
+    0.28 :   ff848:  ld      a5,48(sp)
+    0.00 :   ff84a:  ld      a4,88(sp)
+    0.00 :   ff84c:  add     a5,a5,a3
+    0.00 :   ff84e:  ld      a4,248(a4)
+    0.00 :   ff850:  sd      a5,280(sp)
+    0.00 :   ff852:  ld      a5,32(sp)
+    0.00 :   ff854:  add     a5,a5,a4
+    0.28 :   ff856:  mv      s3,a5
+    0.00 :   ff858:  ld      a5,448(sp)
+    0.00 :   ff85a:  beq     s5,a5,ffa1e <ggml_compute_forward_gated_delta_net+0x5a2>
+    0.09 :   ff85e:  li      a5,1
+    0.00 :   ff860:  bne     s6,a5,ff9a2 <ggml_compute_forward_gated_delta_net+0x526>
+    0.00 :   ff864:  ld      a5,56(sp)
+    0.00 :   ff866:  beq     a5,s6,ff97c <ggml_compute_forward_gated_delta_net+0x500>
+    0.00 :   ff86a:  auipc   a0,0xc8
+    0.00 :   ff86e:  addi    a0,a0,-562 # 1c7638 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2960>
+    0.00 :   ff872:  jal     86d80 <getenv@plt>
+    0.00 :   ff876:  beqz    a0,ff9a2 <ggml_compute_forward_gated_delta_net+0x526>
+    0.00 :   ff87a:  auipc   a0,0xc8
+    0.00 :   ff87e:  addi    a0,a0,-578 # 1c7638 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2960>
+    0.00 :   ff882:  jal     86d80 <getenv@plt>
+    0.00 :   ff886:  lbu     a3,0(a0)
+    0.00 :   ff88a:  addiw   a3,a3,-49
+    0.00 :   ff88e:  sext.w  a5,a3
+    0.00 :   ff892:  bnez    a3,ff898 <ggml_compute_forward_gated_delta_net+0x41c>
+    0.00 :   ff894:  lbu     a5,1(a0)
+    0.00 :   ff898:  bnez    a5,ff9a2 <ggml_compute_forward_gated_delta_net+0x526>
+    0.00 :   ff89c:  auipc   a0,0xc8
+    0.00 :   ff8a0:  addi    a0,a0,-588 # 1c7650 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2978>
+    0.00 :   ff8a4:  jal     86d80 <getenv@plt>
+    0.00 :   ff8a8:  beqz    a0,ff8c2 <ggml_compute_forward_gated_delta_net+0x446>
+    0.00 :   ff8aa:  auipc   a0,0xc8
+    0.00 :   ff8ae:  addi    a0,a0,-602 # 1c7650 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2978>
+    0.00 :   ff8b2:  jal     86d80 <getenv@plt>
+    0.00 :   ff8b6:  lbu     a4,0(a0)
+    0.00 :   ff8ba:  li      a5,48
+    0.00 :   ff8be:  beq     a4,a5,ff9a2 <ggml_compute_forward_gated_delta_net+0x526>
+    0.00 :   ff8c2:  auipc   a5,0x1b5
+    0.00 :   ff8c6:  lbu     a5,862(a5) # 2b4c20 <guard variable for ggml_compute_forward_gated_delta_net_one_chunk(ggml_compute_params const*, ggml_tensor*, long, long)::logged>
+    0.00 :   ff8ca:  fence   r,rw
+    0.00 :   ff8ce:  beqz    a5,ffbc2 <ggml_compute_forward_gated_delta_net+0x746>
+    0.00 :   ff8d2:  flw     fa0,0(s3)
+    0.00 :   ff8d6:  jal     85190 <expf@plt>
+    0.00 :   ff8da:  fmv.s   fa2,fs0
+    0.00 :   ff8de:  fmv.s   fa1,fs3
+    0.00 :   ff8e2:  ld      a3,64(sp)
+    0.00 :   ff8e4:  ld      a2,280(sp)
+    0.00 :   ff8e6:  mv      a5,s0
+    0.00 :   ff8e8:  mv      a4,s5
+    0.00 :   ff8ea:  mv      a1,s2
+    0.00 :   ff8ec:  mv      a0,s9
+    0.00 :   ff8ee:  jal     e2f3a <ggml_gdn_decode_step_rvv(float*, float const*, float const*, float const*, float, float, float, long, float*)>
+    0.00 :   ff8f2:  addi    s7,s7,-1
+    0.00 :   ff8f4:  li      a5,-1
+    0.00 :   ff8f6:  bne     s7,a5,ffb8c <ggml_compute_forward_gated_delta_net+0x710>
+    0.00 :   ff8fa:  ld      a5,304(sp)
+    0.00 :   ff8fc:  ld      s11,312(sp)
+    0.00 :   ff8fe:  ld      a4,320(sp)
+    0.00 :   ff900:  ld      a3,432(sp)
+    0.00 :   ff902:  addi    s11,s11,1
+    0.00 :   ff904:  add     a4,a4,a3
+    0.00 :   ff906:  ld      a3,80(sp)
+    0.00 :   ff908:  bne     a3,s11,ff73c <ggml_compute_forward_gated_delta_net+0x2c0>
+    0.00 :   ff90c:  ld      s9,488(sp)
+    0.00 :   ff90e:  ld      s3,504(sp)
+    0.00 :   ff910:  ld      a0,24(s3)
+    0.00 :   ff914:  li      a1,1
+    0.00 :   ff916:  jal     84700 <ggml_threadpool_chunk_add@plt>
+    0.00 :   ff91a:  ld      a5,136(sp)
+    0.00 :   ff91c:  mv      s1,a0
+    0.00 :   ff91e:  blt     a0,a5,ff550 <ggml_compute_forward_gated_delta_net+0xd4>
+    0.00 :   ff922:  ld      s0,656(sp)
+    0.00 :   ff926:  ld      s2,640(sp)
+    0.00 :   ff92a:  ld      s3,632(sp)
+    0.00 :   ff92e:  ld      s4,624(sp)
+    0.00 :   ff932:  ld      s5,616(sp)
+    0.00 :   ff936:  ld      s7,600(sp)
+    0.00 :   ff93a:  ld      s11,568(sp)
+    0.00 :   ff93e:  fld     fs0,552(sp)
+    0.00 :   ff942:  fld     fs1,544(sp)
+    0.00 :   ff946:  fld     fs2,536(sp)
+    0.00 :   ff94a:  fld     fs3,528(sp)
+    0.00 :   ff94e:  ld      a4,520(sp)
+    0.00 :   ff952:  ld      a5,0(s10)
+    0.00 :   ff956:  xor     a5,a5,a4
+    0.00 :   ff958:  li      a4,0
+    0.00 :   ff95a:  bnez    a5,ffd46 <ggml_compute_forward_gated_delta_net+0x8ca>
+    0.00 :   ff95e:  ld      ra,664(sp)
+    0.00 :   ff962:  ld      s1,648(sp)
+    0.00 :   ff966:  ld      s6,608(sp)
+    0.00 :   ff96a:  ld      s8,592(sp)
+    0.00 :   ff96e:  ld      s9,584(sp)
+    0.00 :   ff972:  ld      s10,576(sp)
+    0.00 :   ff976:  addi    sp,sp,672
+    0.00 :   ff97a:  ret
+    0.00 :   ff97c:  auipc   a0,0xc8
+    0.00 :   ff980:  addi    a0,a0,-812 # 1c7650 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2978>
+    0.00 :   ff984:  jal     86d80 <getenv@plt>
+    0.00 :   ff988:  beqz    a0,ff8d2 <ggml_compute_forward_gated_delta_net+0x456>
+    0.00 :   ff98a:  auipc   a0,0xc8
+    0.00 :   ff98e:  addi    a0,a0,-826 # 1c7650 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2978>
+    0.00 :   ff992:  jal     86d80 <getenv@plt>
+    0.00 :   ff996:  lbu     a4,0(a0)
+    0.00 :   ff99a:  li      a5,48
+    0.00 :   ff99e:  bne     a4,a5,ff8d2 <ggml_compute_forward_gated_delta_net+0x456>
+    0.00 :   ff9a2:  flw     fa0,0(s3)
+    0.00 :   ff9a6:  jal     85190 <expf@plt>
+    0.00 :   ff9aa:  ld      a2,472(sp)
+    0.00 :   ff9ac:  fmv.s   fa5,fa0
+    0.19 :   ff9b0:  blez    a2,ff9d4 <ggml_compute_forward_gated_delta_net+0x558>
+    0.00 :   ff9b4:  li      a4,0
+    0.00 :   ff9b6:  subw    a5,a2,a4
+    0.19 :   ff9ba:  vsetvli a5,a5,e32,m8,ta,ma
+    0.74 :   ff9be:  sh2add  a3,a4,s9
+    0.56 :   ff9c2:  vle32.v v8,(a3)
+   19.14 :   ff9c6:  addw    a4,a4,a5
+    0.00 :   ff9c8:  vfmul.vf        v8,v8,fa5
+    0.46 :   ff9cc:  vse32.v v8,(a3)
+   10.41 :   ff9d0:  blt     a4,a2,ff9b6 <ggml_compute_forward_gated_delta_net+0x53a>
+    0.00 :   ff9d4:  bgtz    s5,ffa9a <ggml_compute_forward_gated_delta_net+0x61e>
+    0.00 :   ff9d8:  li      a5,1
+    0.00 :   ff9da:  beq     s6,a5,ff8f2 <ggml_compute_forward_gated_delta_net+0x476>
+    0.00 :   ff9de:  bltz    s7,ff9e6 <ggml_compute_forward_gated_delta_net+0x56a>
+    0.00 :   ff9e2:  blt     s7,s6,ffb6a <ggml_compute_forward_gated_delta_net+0x6ee>
+    0.00 :   ff9e6:  ld      a5,24(sp)
+    0.00 :   ff9e8:  ld      a4,104(sp)
+    0.00 :   ff9ea:  addi    s7,s7,-1
+    0.00 :   ff9ec:  add     a5,a5,a4
+    0.00 :   ff9ee:  sd      a5,24(sp)
+    0.00 :   ff9f0:  ld      a4,112(sp)
+    0.00 :   ff9f2:  ld      a5,16(sp)
+    0.00 :   ff9f4:  add     a5,a5,a4
+    0.00 :   ff9f6:  sd      a5,16(sp)
+    0.00 :   ff9f8:  ld      a4,208(sp)
+    0.00 :   ff9fa:  ld      a5,48(sp)
+    0.00 :   ff9fc:  add     a5,a5,a4
+    0.00 :   ff9fe:  sd      a5,48(sp)
+    0.00 :   ffa00:  ld      a4,224(sp)
+    0.00 :   ffa02:  ld      a5,40(sp)
+    0.00 :   ffa04:  add     a5,a5,a4
+    0.00 :   ffa06:  sd      a5,40(sp)
+    0.00 :   ffa08:  ld      a4,216(sp)
+    0.00 :   ffa0a:  ld      a5,32(sp)
+    0.00 :   ffa0c:  add     a5,a5,a4
+    0.00 :   ffa0e:  sd      a5,32(sp)
+    0.00 :   ffa10:  ld      a5,288(sp)
+    0.00 :   ffa12:  ld      a4,296(sp)
+    0.00 :   ffa14:  add     s0,s0,a5
+    0.00 :   ffa16:  ld      a5,0(sp)
+    0.00 :   ffa18:  add     a5,a5,a4
+    0.00 :   ffa1a:  sd      a5,0(sp)
+    0.00 :   ffa1c:  j       ff824 <ggml_compute_forward_gated_delta_net+0x3a8>
+    0.00 :   ffa1e:  mv      a5,s3
+    0.00 :   ffa20:  add     s11,s3,s1
+    0.00 :   ffa24:  mv      s3,s8
+    0.00 :   ffa26:  blez    s5,ff9d8 <ggml_compute_forward_gated_delta_net+0x55c>
+    0.00 :   ffa2a:  mv      a4,s1
+    0.00 :   ffa2c:  sd      s0,328(sp)
+    0.00 :   ffa2e:  mv      s1,s11
+    0.00 :   ffa30:  mv      s0,a5
+    0.00 :   ffa32:  mv      s11,a4
+    0.00 :   ffa34:  flw     fa0,0(s0)
+    0.00 :   ffa38:  addi    s0,s0,4
+    0.00 :   ffa3a:  addi    s3,s3,4
+    0.00 :   ffa3c:  jal     85190 <expf@plt>
+    0.00 :   ffa40:  fsw     fa0,-4(s3)
+    0.00 :   ffa44:  bne     s1,s0,ffa34 <ggml_compute_forward_gated_delta_net+0x5b8>
+    0.00 :   ffa48:  ld      s0,328(sp)
+    0.00 :   ffa4a:  mv      s1,s11
+    0.00 :   ffa4c:  blez    s4,ffa9a <ggml_compute_forward_gated_delta_net+0x61e>
+    0.00 :   ffa50:  ld      t1,456(sp)
+    0.00 :   ffa52:  mv      a2,s9
+    0.00 :   ffa54:  li      a6,0
+    0.00 :   ffa56:  addi    a7,s8,4
+    0.00 :   ffa5a:  ld      a4,480(sp)
+    0.00 :   ffa5c:  sub     a5,a2,a7
+    0.00 :   ffa60:  mv      a0,a2
+    0.00 :   ffa62:  bgeu    a4,a5,ffc18 <ggml_compute_forward_gated_delta_net+0x79c>
+    0.00 :   ffa66:  zext.w  a3,s5
+    0.00 :   ffa6a:  mv      a4,a2
+    0.00 :   ffa6c:  mv      a1,s8
+    0.00 :   ffa6e:  vsetvli a5,a3,e32,m1,ta,ma
+    0.00 :   ffa72:  vle32.v v2,(a0)
+    0.00 :   ffa76:  sub     a3,a3,a5
+    0.00 :   ffa78:  vle32.v v1,(a1)
+    0.00 :   ffa7c:  sh2add  a0,a5,a0
+    0.00 :   ffa80:  sh2add  a1,a5,a1
+    0.00 :   ffa84:  vfmul.vv        v1,v1,v2
+    0.00 :   ffa88:  vse32.v v1,(a4)
+    0.00 :   ffa8c:  sh2add  a4,a5,a4
+    0.00 :   ffa90:  bnez    a3,ffa6e <ggml_compute_forward_gated_delta_net+0x5f2>
+    0.00 :   ffa92:  addi    a6,a6,1
+    0.00 :   ffa94:  add     a2,a2,s1
+    0.00 :   ffa96:  bne     s5,a6,ffa5a <ggml_compute_forward_gated_delta_net+0x5de>
+    0.09 :   ffa9a:  ld      t5,280(sp)
+    0.00 :   ffa9c:  sd      s7,328(sp)
+    0.00 :   ffa9e:  sd      s6,280(sp)
+    0.00 :   ffaa0:  sd      s0,336(sp)
+    0.00 :   ffaa2:  mv      s6,s4
+    0.00 :   ffaa4:  mv      s7,s1
+    0.00 :   ffaa6:  mv      s4,s2
+    0.00 :   ffaa8:  mv      s11,s9
+    0.00 :   ffaaa:  li      s3,0
+    0.00 :   ffaac:  mv      s0,s8
+    0.00 :   ffaae:  mv      s1,t5
+    0.00 :   ffab0:  mv      s2,s9
+    0.00 :   ffab2:  ld      a1,8(sp)
+    1.86 :   ffab4:  mv      a3,s2
+    0.09 :   ffab6:  li      a7,1
+    0.28 :   ffab8:  li      a6,0
+    0.00 :   ffaba:  mv      a5,s4
+    0.09 :   ffabc:  li      a4,0
+    0.00 :   ffabe:  li      a2,0
+    0.28 :   ffac0:  mv      a0,s6
+    0.00 :   ffac2:  fsw     fs2,516(sp)
+    0.37 :   ffac6:  jal     86150 <ggml_vec_dot_f32@plt>
+    0.00 :   ffaca:  flw     fa5,0(s1)
+    0.46 :   fface:  flw     fa4,516(sp)
+    0.56 :   ffad2:  addi    s3,s3,1
+    0.00 :   ffad4:  add     s2,s2,s7
+    0.37 :   ffad6:  fsub.s  fa5,fa5,fa4
+    0.00 :   ffada:  addi    s1,s1,4
+    0.09 :   ffadc:  addi    s0,s0,4
+    0.00 :   ffade:  fmul.s  fa5,fa5,fs3
+    0.84 :   ffae2:  fsw     fa5,-4(s0)
+    0.93 :   ffae6:  bne     s5,s3,ffab2 <ggml_compute_forward_gated_delta_net+0x636>
+    0.00 :   ffaea:  mv      s2,s4
+    0.09 :   ffaec:  mv      s4,s6
+    0.00 :   ffaee:  mv      s1,s7
+    0.00 :   ffaf0:  ld      s6,280(sp)
+    0.00 :   ffaf2:  ld      s0,336(sp)
+    0.00 :   ffaf4:  ld      s7,328(sp)
+    0.00 :   ffaf6:  blez    s4,ffb36 <ggml_compute_forward_gated_delta_net+0x6ba>
+    0.00 :   ffafa:  mv      a5,s8
+    0.00 :   ffafc:  li      a0,0
+    0.37 :   ffafe:  flw     fa5,0(a5)
+    0.09 :   ffb02:  li      a3,0
+    0.46 :   ffb04:  subw    a4,s4,a3
+    0.19 :   ffb08:  sh2add  a2,a3,a0
+    0.09 :   ffb0c:  vsetvli a4,a4,e32,m8,ta,ma
+    1.21 :   ffb10:  sh2add  a1,a3,s2
+    0.46 :   ffb14:  add     a2,a2,s9
+    0.00 :   ffb16:  vle32.v v8,(a1)
+   10.32 :   ffb1a:  vle32.v v16,(a2)
+   12.55 :   ffb1e:  addw    a3,a3,a4
+    0.00 :   ffb20:  vfmadd.vf       v8,fa5,v16
+    0.56 :   ffb24:  vse32.v v8,(a2)
+   11.25 :   ffb28:  blt     a3,s4,ffb04 <ggml_compute_forward_gated_delta_net+0x688>
+    0.00 :   ffb2c:  ld      a4,464(sp)
+   11.15 :   ffb2e:  addi    a5,a5,4
+    0.00 :   ffb30:  add     a0,a0,s1
+    0.19 :   ffb32:  bne     a5,a4,ffafe <ggml_compute_forward_gated_delta_net+0x682>
+    0.00 :   ffb36:  mv      s3,s0
+    0.00 :   ffb38:  li      s2,0
+    0.19 :   ffb3a:  ld      a5,64(sp)
+    3.62 :   ffb3c:  ld      a1,8(sp)
+    0.09 :   ffb3e:  mv      a3,s11
+    0.00 :   ffb40:  li      a7,1
+    0.09 :   ffb42:  li      a6,0
+    0.00 :   ffb44:  li      a4,0
+    0.28 :   ffb46:  li      a2,0
+    0.00 :   ffb48:  mv      a0,s4
+    0.09 :   ffb4a:  fsw     fs2,516(sp)
+    0.00 :   ffb4e:  jal     86150 <ggml_vec_dot_f32@plt>
+    0.00 :   ffb52:  flw     fa5,516(sp)
+    0.19 :   ffb56:  addi    s2,s2,1
+    0.00 :   ffb58:  add     s11,s11,s1
+    0.28 :   ffb5a:  fmul.s  fa5,fa5,fs0
+    0.09 :   ffb5e:  addi    s3,s3,4
+    0.00 :   ffb60:  fsw     fa5,-4(s3)
+    0.28 :   ffb64:  bne     s5,s2,ffb3a <ggml_compute_forward_gated_delta_net+0x6be>
+    0.00 :   ffb68:  j       ff9d8 <ggml_compute_forward_gated_delta_net+0x55c>
+    0.00 :   ffb6a:  ld      a3,0(sp)
+    0.00 :   ffb6c:  ld      a4,272(sp)
+    0.00 :   ffb6e:  mv      a2,s9
+    0.00 :   ffb70:  vsetvli a5,a4,e8,m8,ta,ma
+    0.00 :   ffb74:  vle8.v  v8,(a2)
+    0.00 :   ffb78:  sub     a4,a4,a5
+    0.00 :   ffb7a:  add     a2,a2,a5
+    0.00 :   ffb7c:  vse8.v  v8,(a3)
+    0.00 :   ffb80:  add     a3,a3,a5
+    0.00 :   ffb82:  bnez    a4,ffb70 <ggml_compute_forward_gated_delta_net+0x6f4>
+    0.00 :   ffb84:  addi    s7,s7,-1
+    0.00 :   ffb86:  li      a5,-1
+    0.00 :   ffb88:  beq     s7,a5,ff8fa <ggml_compute_forward_gated_delta_net+0x47e>
+    0.00 :   ffb8c:  ld      a5,24(sp)
+    0.00 :   ffb8e:  ld      a4,104(sp)
+    0.00 :   ffb90:  add     a5,a5,a4
+    0.00 :   ffb92:  sd      a5,24(sp)
+    0.00 :   ffb94:  ld      a4,112(sp)
+    0.00 :   ffb96:  ld      a5,16(sp)
+    0.00 :   ffb98:  add     a5,a5,a4
+    0.09 :   ffb9a:  sd      a5,16(sp)
+    0.00 :   ffb9c:  ld      a4,208(sp)
+    0.00 :   ffb9e:  ld      a5,48(sp)
+    0.00 :   ffba0:  add     a5,a5,a4
+    0.00 :   ffba2:  sd      a5,48(sp)
+    0.00 :   ffba4:  ld      a4,224(sp)
+    0.00 :   ffba6:  ld      a5,40(sp)
+    0.00 :   ffba8:  add     a5,a5,a4
+    0.00 :   ffbaa:  sd      a5,40(sp)
+    0.00 :   ffbac:  ld      a4,216(sp)
+    0.00 :   ffbae:  ld      a5,32(sp)
+    0.00 :   ffbb0:  add     a5,a5,a4
+    0.00 :   ffbb2:  sd      a5,32(sp)
+    0.00 :   ffbb4:  ld      a5,288(sp)
+    0.00 :   ffbb6:  ld      a4,296(sp)
+    0.00 :   ffbb8:  add     s0,s0,a5
+    0.00 :   ffbba:  ld      a5,0(sp)
+    0.00 :   ffbbc:  add     a5,a5,a4
+    0.00 :   ffbbe:  sd      a5,0(sp)
+    0.00 :   ffbc0:  j       ff824 <ggml_compute_forward_gated_delta_net+0x3a8>
+    0.00 :   ffbc2:  auipc   a0,0x1b5
+    0.00 :   ffbc6:  addi    a0,a0,94 # 2b4c20 <guard variable for ggml_compute_forward_gated_delta_net_one_chunk(ggml_compute_params const*, ggml_tensor*, long, long)::logged>
+    0.00 :   ffbca:  jal     85df0 <__cxa_guard_acquire@plt>
+    0.00 :   ffbce:  beqz    a0,ff8d2 <ggml_compute_forward_gated_delta_net+0x456>
+    0.00 :   ffbd2:  auipc   a5,0x12e
+    0.00 :   ffbd6:  ld      a5,-1442(a5) # 22d630 <stderr@GLIBC_2.27>
+    0.00 :   ffbda:  ld      a3,0(a5)
+    0.00 :   ffbdc:  li      a2,53
+    0.00 :   ffbe0:  li      a1,1
+    0.00 :   ffbe2:  auipc   a0,0xc8
+    0.00 :   ffbe6:  addi    a0,a0,-1410 # 1c7660 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2988>
+    0.00 :   ffbea:  jal     85d20 <fwrite@plt>
+    0.00 :   ffbee:  auipc   a0,0x1b5
+    0.00 :   ffbf2:  addi    a0,a0,50 # 2b4c20 <guard variable for ggml_compute_forward_gated_delta_net_one_chunk(ggml_compute_params const*, ggml_tensor*, long, long)::logged>
+    0.00 :   ffbf6:  jal     84600 <__cxa_guard_release@plt>
+    0.00 :   ffbfa:  j       ff8d2 <ggml_compute_forward_gated_delta_net+0x456>
+    0.00 :   ffbfc:  ld      a1,240(sp)
+    0.00 :   ffbfe:  sh2add  s9,a4,a1
+    0.00 :   ffc02:  ld      a1,496(sp)
+    0.00 :   ffc04:  beqz    a1,ff76c <ggml_compute_forward_gated_delta_net+0x2f0>
+    0.00 :   ffc08:  ld      a1,264(sp)
+    0.00 :   ffc0a:  ld      s0,256(sp)
+    0.00 :   ffc0c:  mul     a1,a3,a1
+    0.00 :   ffc10:  add     a1,a1,t5
+    0.00 :   ffc12:  sh2add  s9,a1,s0
+    0.00 :   ffc16:  j       ff76c <ggml_compute_forward_gated_delta_net+0x2f0>
+    0.00 :   ffc18:  mv      a4,s8
+    0.00 :   ffc1a:  mv      a5,a2
+    0.00 :   ffc1c:  flw     fa5,0(a5)
+    0.00 :   ffc20:  flw     fa4,0(a4)
+    0.00 :   ffc24:  addi    a4,a4,4
+    0.00 :   ffc26:  addi    a5,a5,4
+    0.00 :   ffc28:  fmul.s  fa5,fa5,fa4
+    0.00 :   ffc2c:  fsw     fa5,-4(a5)
+    0.00 :   ffc30:  bne     t1,a4,ffc1c <ggml_compute_forward_gated_delta_net+0x7a0>
+    0.00 :   ffc34:  addi    a6,a6,1
+    0.00 :   ffc36:  add     a2,a2,s1
+    0.00 :   ffc38:  bne     s5,a6,ffa5a <ggml_compute_forward_gated_delta_net+0x5de>
+    0.00 :   ffc3c:  j       ffa9a <ggml_compute_forward_gated_delta_net+0x61e>
+    0.00 :   ffc3e:  ld      a0,72(sp)
+    0.00 :   ffc40:  lw      a4,88(a0)
+    0.00 :   ffc42:  andi    a4,a4,1
+    0.00 :   ffc44:  beqz    a4,ffcc0 <ggml_compute_forward_gated_delta_net+0x844>
+    0.00 :   ffc46:  ld      a4,200(a0)
+    0.00 :   ffc48:  beqz    a4,ffd7e <ggml_compute_forward_gated_delta_net+0x902>
+    0.00 :   ffc4c:  ld      a4,72(s0)
+    0.00 :   ffc4e:  mv      t1,a0
+    0.00 :   ffc50:  srli    a4,a4,0x2
+    0.00 :   ffc52:  sd      a4,128(sp)
+    0.00 :   ffc54:  mul     s4,s11,s8
+    0.00 :   ffc58:  ld      a0,248(s0)
+    0.00 :   ffc5a:  lw      a4,0(s3)
+    0.00 :   ffc5e:  ld      t3,248(t1)
+    0.00 :   ffc62:  sd      a0,248(sp)
+    0.00 :   ffc64:  ld      a0,56(sp)
+    0.00 :   ffc66:  ld      a7,16(s3)
+    0.00 :   ffc6a:  sd      t3,232(sp)
+    0.00 :   ffc6c:  mul     a0,a0,s4
+    0.00 :   ffc70:  mul     a6,s11,s11
+    0.00 :   ffc74:  mul     a4,a4,s11
+    0.00 :   ffc78:  mul     a0,a0,s1
+    0.00 :   ffc7c:  addi    a4,a4,16
+    0.00 :   ffc7e:  sh2add  s5,a4,a7
+    0.00 :   ffc82:  mul     s0,s8,a6
+    0.00 :   ffc86:  sh2add  a4,a0,t3
+    0.00 :   ffc8a:  sd      a4,240(sp)
+    0.00 :   ffc8c:  mul     s0,s0,s1
+    0.00 :   ffc90:  beqz    a5,ffd76 <ggml_compute_forward_gated_delta_net+0x8fa>
+    0.00 :   ffc92:  ld      a0,200(t1)
+    0.00 :   ffc96:  sd      zero,120(sp)
+    0.00 :   ffc98:  ld      a4,248(a0)
+    0.00 :   ffc9a:  ld      a7,72(a0)
+    0.00 :   ffc9e:  sd      a4,256(sp)
+    0.00 :   ffca0:  srli    a4,a7,0x2
+    0.00 :   ffca4:  sd      a4,264(sp)
+    0.00 :   ffca6:  j       ff6aa <ggml_compute_forward_gated_delta_net+0x22e>
+    0.00 :   ffca8:  sd      zero,112(sp)
+    0.00 :   ffcaa:  sd      zero,192(sp)
+    0.00 :   ffcac:  li      a3,0
+    0.00 :   ffcae:  sd      zero,184(sp)
+    0.00 :   ffcb0:  sd      zero,200(sp)
+    0.00 :   ffcb2:  j       ff60e <ggml_compute_forward_gated_delta_net+0x192>
+    0.00 :   ffcb4:  sd      zero,104(sp)
+    0.00 :   ffcb6:  sd      zero,168(sp)
+    0.00 :   ffcb8:  li      a1,0
+    0.00 :   ffcba:  sd      zero,160(sp)
+    0.00 :   ffcbc:  sd      zero,176(sp)
+    0.00 :   ffcbe:  j       ff5f6 <ggml_compute_forward_gated_delta_net+0x17a>
+    0.00 :   ffcc0:  ld      a4,72(s0)
+    0.00 :   ffcc2:  li      a5,0
+    0.00 :   ffcc4:  mv      t1,a0
+    0.00 :   ffcc6:  srli    a4,a4,0x2
+    0.00 :   ffcc8:  sd      a4,128(sp)
+    0.00 :   ffcca:  j       ffc54 <ggml_compute_forward_gated_delta_net+0x7d8>
+    0.00 :   ffccc:  ld      a0,24(s8)
+    0.00 :   ffcd0:  jal     85e80 <ggml_threadpool_chunk_set@plt>
+    0.00 :   ffcd4:  j       ff4f4 <ggml_compute_forward_gated_delta_net+0x78>
+    0.00 :   ffcd8:  bnez    a0,ff4f0 <ggml_compute_forward_gated_delta_net+0x74>
+    0.00 :   ffcdc:  sd      a5,136(sp)
+    0.00 :   ffcde:  j       ff4f0 <ggml_compute_forward_gated_delta_net+0x74>
+    0.00 :   ffce2:  ld      a4,520(sp)
+    0.00 :   ffce6:  ld      a5,0(s10)
+    0.00 :   ffcea:  xor     a5,a5,a4
+    0.00 :   ffcec:  li      a4,0
+    0.00 :   ffcee:  sd      s0,656(sp)
+    0.00 :   ffcf2:  sd      s1,648(sp)
+    0.00 :   ffcf6:  sd      s2,640(sp)
+    0.00 :   ffcfa:  sd      s3,632(sp)
+    0.00 :   ffcfe:  sd      s4,624(sp)
+    0.00 :   ffd02:  sd      s5,616(sp)
+    0.00 :   ffd06:  sd      s6,608(sp)
+    0.00 :   ffd0a:  sd      s7,600(sp)
+    0.00 :   ffd0e:  sd      s8,592(sp)
+    0.00 :   ffd12:  sd      s9,584(sp)
+    0.00 :   ffd16:  sd      s11,568(sp)
+    0.00 :   ffd1a:  fsd     fs0,552(sp)
+    0.00 :   ffd1e:  fsd     fs1,544(sp)
+    0.00 :   ffd22:  fsd     fs2,536(sp)
+    0.00 :   ffd26:  fsd     fs3,528(sp)
+    0.00 :   ffd2a:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffd2c:  lui     a1,0x3
+    0.00 :   ffd2e:  addi    a1,a1,-1266 # 2b0e <std::__once_callable+0x2a4e>
+    0.00 :   ffd32:  auipc   a2,0xc5
+    0.00 :   ffd36:  addi    a2,a2,270 # 1c4e40 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x168>
+    0.00 :   ffd3a:  auipc   a0,0xc6
+    0.00 :   ffd3e:  addi    a0,a0,446 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffd42:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffd46:  sd      s0,656(sp)
+    0.00 :   ffd4a:  sd      s2,640(sp)
+    0.00 :   ffd4e:  sd      s3,632(sp)
+    0.00 :   ffd52:  sd      s4,624(sp)
+    0.00 :   ffd56:  sd      s5,616(sp)
+    0.00 :   ffd5a:  sd      s7,600(sp)
+    0.00 :   ffd5e:  sd      s11,568(sp)
+    0.00 :   ffd62:  fsd     fs0,552(sp)
+    0.00 :   ffd66:  fsd     fs1,544(sp)
+    0.00 :   ffd6a:  fsd     fs2,536(sp)
+    0.00 :   ffd6e:  fsd     fs3,528(sp)
+    0.00 :   ffd72:  jal     87320 <__stack_chk_fail@plt>
+    0.00 :   ffd76:  sd      zero,120(sp)
+    0.00 :   ffd78:  sd      zero,256(sp)
+    0.00 :   ffd7a:  sd      zero,264(sp)
+    0.00 :   ffd7c:  j       ff6aa <ggml_compute_forward_gated_delta_net+0x22e>
+    0.00 :   ffd7e:  ld      a4,520(sp)
+    0.00 :   ffd82:  ld      a5,0(s10)
+    0.00 :   ffd86:  xor     a5,a5,a4
+    0.00 :   ffd88:  li      a4,0
+    0.00 :   ffd8a:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffd8c:  lui     a1,0x3
+    0.00 :   ffd8e:  addi    a1,a1,-1458 # 2a4e <std::__once_callable+0x298e>
+    0.00 :   ffd92:  auipc   a3,0xc8
+    0.00 :   ffd96:  addi    a3,a3,-1938 # 1c7600 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2928>
+    0.00 :   ffd9a:  auipc   a2,0xc5
+    0.00 :   ffd9e:  addi    a2,a2,326 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffda2:  auipc   a0,0xc6
+    0.00 :   ffda6:  addi    a0,a0,342 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffdaa:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffdae:  sd      a6,8(sp)
+    0.00 :   ffdb0:  sd      a5,0(sp)
+    0.00 :   ffdb2:  jal     84ea0 <sqrtf@plt>
+    0.00 :   ffdb6:  ld      a6,8(sp)
+    0.00 :   ffdb8:  ld      a5,0(sp)
+    0.00 :   ffdba:  j       ff6d2 <ggml_compute_forward_gated_delta_net+0x256>
+    0.00 :   ffdbc:  ld      a4,520(sp)
+    0.00 :   ffdc0:  ld      a5,0(s10)
+    0.00 :   ffdc4:  xor     a5,a5,a4
+    0.00 :   ffdc6:  li      a4,0
+    0.00 :   ffdc8:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffdca:  lui     a1,0x3
+    0.00 :   ffdcc:  addi    a1,a1,-1457 # 2a4f <std::__once_callable+0x298f>
+    0.00 :   ffdd0:  auipc   a3,0xc8
+    0.00 :   ffdd4:  addi    a3,a3,-1952 # 1c7630 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2958>
+    0.00 :   ffdd8:  auipc   a2,0xc5
+    0.00 :   ffddc:  addi    a2,a2,264 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffde0:  auipc   a0,0xc6
+    0.00 :   ffde4:  addi    a0,a0,280 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffde8:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffdec:  ld      a4,520(sp)
+    0.00 :   ffdf0:  ld      a5,0(s10)
+    0.00 :   ffdf4:  xor     a5,a5,a4
+    0.00 :   ffdf6:  li      a4,0
+    0.00 :   ffdf8:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffdfa:  lui     a1,0x3
+    0.00 :   ffdfc:  addi    a1,a1,-1476 # 2a3c <std::__once_callable+0x297c>
+    0.00 :   ffe00:  auipc   a3,0xc7
+    0.00 :   ffe04:  addi    a3,a3,2024 # 1c75e8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2910>
+    0.00 :   ffe08:  auipc   a2,0xc5
+    0.00 :   ffe0c:  addi    a2,a2,216 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffe10:  auipc   a0,0xc6
+    0.00 :   ffe14:  addi    a0,a0,232 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffe18:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffe1c:  ld      a4,520(sp)
+    0.00 :   ffe20:  ld      a5,0(s10)
+    0.00 :   ffe24:  xor     a5,a5,a4
+    0.00 :   ffe26:  li      a4,0
+    0.00 :   ffe28:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffe2a:  lui     a1,0x3
+    0.00 :   ffe2c:  addi    a1,a1,-1477 # 2a3b <std::__once_callable+0x297b>
+    0.00 :   ffe30:  auipc   a3,0xc7
+    0.00 :   ffe34:  addi    a3,a3,1928 # 1c75b8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x28e0>
+    0.00 :   ffe38:  auipc   a2,0xc5
+    0.00 :   ffe3c:  addi    a2,a2,168 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffe40:  auipc   a0,0xc6
+    0.00 :   ffe44:  addi    a0,a0,184 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffe48:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffe4c:  ld      a4,520(sp)
+    0.00 :   ffe50:  ld      a5,0(s10)
+    0.00 :   ffe54:  xor     a5,a5,a4
+    0.00 :   ffe56:  li      a4,0
+    0.00 :   ffe58:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffe5a:  lui     a1,0x3
+    0.00 :   ffe5c:  addi    a1,a1,-1479 # 2a39 <std::__once_callable+0x2979>
+    0.00 :   ffe60:  auipc   a3,0xc7
+    0.00 :   ffe64:  addi    a3,a3,1848 # 1c7598 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x28c0>
+    0.00 :   ffe68:  auipc   a2,0xc5
+    0.00 :   ffe6c:  addi    a2,a2,120 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffe70:  auipc   a0,0xc6
+    0.00 :   ffe74:  addi    a0,a0,136 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffe78:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffe7c:  ld      a4,520(sp)
+    0.00 :   ffe80:  ld      a5,0(s10)
+    0.00 :   ffe84:  xor     a5,a5,a4
+    0.00 :   ffe86:  li      a4,0
+    0.00 :   ffe88:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffe8c:  lui     a1,0x3
+    0.00 :   ffe8e:  addi    a1,a1,-1480 # 2a38 <std::__once_callable+0x2978>
+    0.00 :   ffe92:  auipc   a3,0xc7
+    0.00 :   ffe96:  addi    a3,a3,1766 # 1c7578 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x28a0>
+    0.00 :   ffe9a:  auipc   a2,0xc5
+    0.00 :   ffe9e:  addi    a2,a2,70 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffea2:  auipc   a0,0xc6
+    0.00 :   ffea6:  addi    a0,a0,86 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffeaa:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffeae:  ld      a4,520(sp)
+    0.00 :   ffeb2:  ld      a5,0(s10)
+    0.00 :   ffeb6:  xor     a5,a5,a4
+    0.00 :   ffeb8:  li      a4,0
+    0.00 :   ffeba:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffebe:  lui     a1,0x3
+    0.00 :   ffec0:  addi    a1,a1,-1481 # 2a37 <std::__once_callable+0x2977>
+    0.00 :   ffec4:  auipc   a3,0xc7
+    0.00 :   ffec8:  addi    a3,a3,1684 # 1c7558 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2880>
+    0.00 :   ffecc:  auipc   a2,0xc5
+    0.00 :   ffed0:  addi    a2,a2,20 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   ffed4:  auipc   a0,0xc6
+    0.00 :   ffed8:  addi    a0,a0,36 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   ffedc:  jal     85410 <ggml_abort@plt>
+    0.00 :   ffee0:  ld      a4,520(sp)
+    0.00 :   ffee4:  ld      a5,0(s10)
+    0.00 :   ffee8:  xor     a5,a5,a4
+    0.00 :   ffeea:  li      a4,0
+    0.00 :   ffeec:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   ffef0:  lui     a1,0x3
+    0.00 :   ffef2:  addi    a1,a1,-1482 # 2a36 <std::__once_callable+0x2976>
+    0.00 :   ffef6:  auipc   a3,0xc7
+    0.00 :   ffefa:  addi    a3,a3,1602 # 1c7538 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2860>
+    0.00 :   ffefe:  auipc   a2,0xc5
+    0.00 :   fff02:  addi    a2,a2,-30 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   fff06:  auipc   a0,0xc6
+    0.00 :   fff0a:  addi    a0,a0,-14 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   fff0e:  jal     85410 <ggml_abort@plt>
+    0.00 :   fff12:  ld      a4,520(sp)
+    0.00 :   fff16:  ld      a5,0(s10)
+    0.00 :   fff1a:  xor     a5,a5,a4
+    0.00 :   fff1c:  li      a4,0
+    0.00 :   fff1e:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   fff22:  lui     a1,0x3
+    0.00 :   fff24:  addi    a1,a1,-1483 # 2a35 <std::__once_callable+0x2975>
+    0.00 :   fff28:  auipc   a3,0xc7
+    0.00 :   fff2c:  addi    a3,a3,1520 # 1c7518 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2840>
+    0.00 :   fff30:  auipc   a2,0xc5
+    0.00 :   fff34:  addi    a2,a2,-80 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   fff38:  auipc   a0,0xc6
+    0.00 :   fff3c:  addi    a0,a0,-64 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   fff40:  jal     85410 <ggml_abort@plt>
+    0.00 :   fff44:  ld      a4,520(sp)
+    0.00 :   fff48:  ld      a5,0(s10)
+    0.00 :   fff4c:  xor     a5,a5,a4
+    0.00 :   fff4e:  li      a4,0
+    0.00 :   fff50:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   fff54:  lui     a1,0x3
+    0.00 :   fff56:  addi    a1,a1,-1484 # 2a34 <std::__once_callable+0x2974>
+    0.00 :   fff5a:  auipc   a3,0xc7
+    0.00 :   fff5e:  addi    a3,a3,1438 # 1c74f8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x2820>
+    0.00 :   fff62:  auipc   a2,0xc5
+    0.00 :   fff66:  addi    a2,a2,-130 # 1c4ee0 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x208>
+    0.00 :   fff6a:  auipc   a0,0xc6
+    0.00 :   fff6e:  addi    a0,a0,-114 # 1c5ef8 <std::__is_ios_failure_handler(__cxxabiv1::__class_type_info const*)+0x1220>
+    0.00 :   fff72:  jal     85410 <ggml_abort@plt>
+    0.00 :   fff76:  mv      s0,a0
+    0.00 :   fff78:  auipc   a0,0x1b5
+    0.00 :   fff7c:  addi    a0,a0,-856 # 2b4c20 <guard variable for ggml_compute_forward_gated_delta_net_one_chunk(ggml_compute_params const*, ggml_tensor*, long, long)::logged>
+    0.00 :   fff80:  jal     85760 <__cxa_guard_abort@plt>
+    0.00 :   fff84:  ld      a4,520(sp)
+    0.00 :   fff88:  ld      a5,0(s10)
+    0.00 :   fff8c:  xor     a5,a5,a4
+    0.00 :   fff8e:  li      a4,0
+    0.00 :   fff90:  bnez    a5,ffd72 <ggml_compute_forward_gated_delta_net+0x8f6>
+    0.00 :   fff94:  mv      a0,s0
+    0.00 :   fff96:  jal     87020 <_Unwind_Resume@plt>
