@@ -17,6 +17,7 @@ GGUF 是当前推理引擎读取的模型文件格式。
 | 使用最终单一构建与编译默认值 | [固定默认交付](spacemit/final-release/README.md) |
 | 核对真实起点到最终默认的实测提升 | [最终对照报告](spacemit/reports/2026-10-14-final-default-comparison.md) |
 | 使用统一源码、同次构建和独立候选开关 | [统一发布候选](spacemit/release-candidate/README.md) |
+| 查明做过什么、采用什么及停止原因 | [项目工作总账](spacemit/reports/WORK-LEDGER.md) |
 | 确认基线版、优化版和历史版本 | [版本与结果索引](spacemit/reports/RESULTS.md) |
 | 获取补丁、构建脚本、模型哈希和启动器 | [固定发布包](spacemit/release/README.md) |
 | 复现模型加工并核对来源 | [模型材料](spacemit/models/README.md) |
