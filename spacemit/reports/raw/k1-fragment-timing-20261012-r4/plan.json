@@ -1,0 +1,96 @@
+{
+  "schema": 1,
+  "id": "fragment_timing_r4",
+  "sources": [
+    {
+      "path": "/home/moyamryia/Projects/riscv-accl/spacemit/bench/cpu-model/fragment-timing-probes.c",
+      "sha256": "9e076b6f2e977754c6268c759f041e7776aa65b3f2d93866889cfb11d91be9b3"
+    }
+  ],
+  "baseline": "byte",
+  "kernels": [
+    {
+      "id": "byte",
+      "symbol": "probe_byte"
+    },
+    {
+      "id": "unroll4",
+      "symbol": "probe_unroll4"
+    },
+    {
+      "id": "unroll8",
+      "symbol": "probe_unroll8"
+    },
+    {
+      "id": "twopass",
+      "symbol": "probe_twopass"
+    },
+    {
+      "id": "callee",
+      "symbol": "probe_callee"
+    },
+    {
+      "id": "clear_m1",
+      "symbol": "probe_clear_m1"
+    },
+    {
+      "id": "clear_m8",
+      "symbol": "probe_clear_m8"
+    }
+  ],
+  "cases": [
+    {
+      "id": "bytes64_offset0",
+      "work_units": 64,
+      "input_bytes": 64,
+      "output_bytes": 64,
+      "offset": 0,
+      "split": "training"
+    },
+    {
+      "id": "bytes512_offset0",
+      "work_units": 512,
+      "input_bytes": 512,
+      "output_bytes": 512,
+      "offset": 0,
+      "split": "training"
+    },
+    {
+      "id": "bytes64_offset1",
+      "work_units": 64,
+      "input_bytes": 64,
+      "output_bytes": 64,
+      "offset": 1,
+      "split": "validation"
+    },
+    {
+      "id": "bytes512_offset1",
+      "work_units": 512,
+      "input_bytes": 512,
+      "output_bytes": 512,
+      "offset": 1,
+      "split": "validation"
+    }
+  ],
+  "compiler_flags": [
+    "-O3",
+    "-std=c11",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-march=rv64gcv",
+    "-mabi=lp64d",
+    "-mstrict-align",
+    "-fno-tree-vectorize",
+    "-fno-lto",
+    "-static"
+  ],
+  "contract": {
+    "boundary": "完整片段与相同调用循环；热输入、单线程、CPU 0。"
+  },
+  "trace_call_counts": [
+    3,
+    9
+  ],
+  "fit_source": "Only offset0 mechanism probes; no Q8 observations."
+}

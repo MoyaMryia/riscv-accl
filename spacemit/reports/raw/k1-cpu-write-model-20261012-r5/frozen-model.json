@@ -1,0 +1,1473 @@
+{
+  "schema": 5,
+  "parameters": {
+    "width": 2,
+    "scalar_units": 2,
+    "lsu_units": 1,
+    "shared_vector": false,
+    "waw": true,
+    "latency": {
+      "add": 1,
+      "mul": 5,
+      "load": 1,
+      "vadd": 4,
+      "ime": 6,
+      "vload": 3
+    },
+    "occupancy": {
+      "add": 1,
+      "mul": 3,
+      "load": 1,
+      "vadd": 1,
+      "ime": 1,
+      "vload": 3
+    },
+    "read_hold_ime": 3,
+    "vector_gap": {
+      "vadd:ime": 1,
+      "ime:vadd": 4,
+      "vload:ime": 0,
+      "ime:vload": 0,
+      "vload:vadd": 0,
+      "vadd:vload": 0
+    },
+    "bypass": {
+      "add:mul": 1,
+      "mul:add": 5,
+      "load:add": 2,
+      "load:mul": 1
+    },
+    "branch_boundary_gap": 0,
+    "forbidden_pairs": [
+      "add:mul",
+      "ime:vadd",
+      "mul:add",
+      "mul:load",
+      "vadd:ime",
+      "vload:ime"
+    ],
+    "arithmetic_queue_depth": 4,
+    "separate_multiply": true,
+    "multiply_units": 1,
+    "waw_policy": "completion",
+    "write_gap": {
+      "add:add": 1,
+      "add:mul": 10,
+      "add:load": 2,
+      "mul:add": 0,
+      "mul:mul": 0,
+      "mul:load": 2,
+      "load:add": 0,
+      "load:mul": 8,
+      "load:load": 0
+    }
+  },
+  "prior_model_sha256": "044bd247ace3074501d82fbf26838d40a8ee374bb5f52bfda2e51a1b7f16b34f",
+  "training_plan_sha256": "116d1eee1c0cde2f6adcb28d6debb43461e370a22a2d2596c7e4556d4e26d4d7",
+  "probe_plan_sha256": "f4ef8ac6ba7d3c8eb2da081fac2f72c8a0c9b29fbbe77bcc61bc85b836d27c8f",
+  "assessment_sha256": "7556f3665bbaa8090e21fcce4b944bf296a244db0fea0021d741567341517117",
+  "training_functions": 226,
+  "initial_mean_squared_log_error": 0.03721092277659398,
+  "training_mean_squared_log_error": 0.007535787724777235,
+  "fit_history": [
+    {
+      "round": 0,
+      "key": "add:add",
+      "value": 1,
+      "loss": 0.03554763029077015
+    },
+    {
+      "round": 0,
+      "key": "add:load",
+      "value": 2,
+      "loss": 0.03248750119143971
+    },
+    {
+      "round": 0,
+      "key": "add:mul",
+      "value": 10,
+      "loss": 0.020035126008191823
+    },
+    {
+      "round": 0,
+      "key": "load:mul",
+      "value": 8,
+      "loss": 0.007576695692230849
+    },
+    {
+      "round": 0,
+      "key": "mul:load",
+      "value": 2,
+      "loss": 0.007535787724777235
+    }
+  ],
+  "training_predictions": [
+    {
+      "group": "r3-isolated-add-c1",
+      "id": "cpu_000",
+      "cycles": 16.0,
+      "observed_cycles": 16.00014423188709
+    },
+    {
+      "group": "r3-isolated-add-c1",
+      "id": "cpu_001",
+      "cycles": 64.0,
+      "observed_cycles": 64.0003031776065
+    },
+    {
+      "group": "r3-isolated-add-c2",
+      "id": "cpu_002",
+      "cycles": 9.0,
+      "observed_cycles": 9.999949137369791
+    },
+    {
+      "group": "r3-isolated-add-c2",
+      "id": "cpu_003",
+      "cycles": 33.0,
+      "observed_cycles": 34.0003282456171
+    },
+    {
+      "group": "r3-isolated-add-c4",
+      "id": "cpu_004",
+      "cycles": 9.0,
+      "observed_cycles": 10.000032697405134
+    },
+    {
+      "group": "r3-isolated-add-c4",
+      "id": "cpu_005",
+      "cycles": 33.0,
+      "observed_cycles": 34.00023015340169
+    },
+    {
+      "group": "r3-isolated-add-c8",
+      "id": "cpu_006",
+      "cycles": 9.0,
+      "observed_cycles": 10.000124613444012
+    },
+    {
+      "group": "r3-isolated-add-c8",
+      "id": "cpu_007",
+      "cycles": 33.0,
+      "observed_cycles": 34.00031153361003
+    },
+    {
+      "group": "r3-isolated-mul-c1",
+      "id": "cpu_008",
+      "cycles": 80.0,
+      "observed_cycles": 80.00030644734701
+    },
+    {
+      "group": "r3-isolated-mul-c1",
+      "id": "cpu_009",
+      "cycles": 320.0,
+      "observed_cycles": 320.0022417704264
+    },
+    {
+      "group": "r3-isolated-mul-c2",
+      "id": "cpu_010",
+      "cycles": 48.0,
+      "observed_cycles": 48.00023887270973
+    },
+    {
+      "group": "r3-isolated-mul-c2",
+      "id": "cpu_011",
+      "cycles": 192.0,
+      "observed_cycles": 192.00112024943033
+    },
+    {
+      "group": "r3-isolated-mul-c4",
+      "id": "cpu_012",
+      "cycles": 48.0,
+      "observed_cycles": 48.000212351481125
+    },
+    {
+      "group": "r3-isolated-mul-c4",
+      "id": "cpu_013",
+      "cycles": 192.0,
+      "observed_cycles": 192.00061343965075
+    },
+    {
+      "group": "r3-isolated-mul-c8",
+      "id": "cpu_014",
+      "cycles": 48.0,
+      "observed_cycles": 48.00007738385882
+    },
+    {
+      "group": "r3-isolated-mul-c8",
+      "id": "cpu_015",
+      "cycles": 192.0,
+      "observed_cycles": 192.00063741774787
+    },
+    {
+      "group": "r3-isolated-load-c1",
+      "id": "cpu_016",
+      "cycles": 16.0,
+      "observed_cycles": 16.000144958496094
+    },
+    {
+      "group": "r3-isolated-load-c1",
+      "id": "cpu_017",
+      "cycles": 64.0,
+      "observed_cycles": 64.00179890223913
+    },
+    {
+      "group": "r3-isolated-load-c2",
+      "id": "cpu_018",
+      "cycles": 16.0,
+      "observed_cycles": 16.000156947544646
+    },
+    {
+      "group": "r3-isolated-load-c2",
+      "id": "cpu_019",
+      "cycles": 64.0,
+      "observed_cycles": 64.00265430268787
+    },
+    {
+      "group": "r3-isolated-load-c4",
+      "id": "cpu_020",
+      "cycles": 16.0,
+      "observed_cycles": 15.999977293468659
+    },
+    {
+      "group": "r3-isolated-load-c4",
+      "id": "cpu_021",
+      "cycles": 64.0,
+      "observed_cycles": 64.00126865931921
+    },
+    {
+      "group": "r3-isolated-load-c8",
+      "id": "cpu_022",
+      "cycles": 16.0,
+      "observed_cycles": 16.00023378644671
+    },
+    {
+      "group": "r3-isolated-load-c8",
+      "id": "cpu_023",
+      "cycles": 64.0,
+      "observed_cycles": 64.00111443655831
+    },
+    {
+      "group": "r3-transfer-add-add-g0",
+      "id": "cpu_024",
+      "cycles": 16.0,
+      "observed_cycles": 16.000091552734375
+    },
+    {
+      "group": "r3-transfer-add-add-g1",
+      "id": "cpu_025",
+      "cycles": 16.0,
+      "observed_cycles": 16.00018128894624
+    },
+    {
+      "group": "r3-transfer-add-add-g2",
+      "id": "cpu_026",
+      "cycles": 18.0,
+      "observed_cycles": 18.000374930245535
+    },
+    {
+      "group": "r3-transfer-add-add-g3",
+      "id": "cpu_027",
+      "cycles": 24.0,
+      "observed_cycles": 24.00009009951637
+    },
+    {
+      "group": "r3-transfer-add-add-g4",
+      "id": "cpu_028",
+      "cycles": 26.0,
+      "observed_cycles": 26.000077747163317
+    },
+    {
+      "group": "r3-transfer-add-add-g6",
+      "id": "cpu_029",
+      "cycles": 34.0,
+      "observed_cycles": 34.00030154273624
+    },
+    {
+      "group": "r3-transfer-add-add-g8",
+      "id": "cpu_030",
+      "cycles": 42.0,
+      "observed_cycles": 42.000357128324964
+    },
+    {
+      "group": "r3-transfer-add-mul-g0",
+      "id": "cpu_031",
+      "cycles": 48.0,
+      "observed_cycles": 48.00049227759952
+    },
+    {
+      "group": "r3-transfer-add-mul-g1",
+      "id": "cpu_032",
+      "cycles": 48.0,
+      "observed_cycles": 48.00052188691639
+    },
+    {
+      "group": "r3-transfer-add-mul-g2",
+      "id": "cpu_033",
+      "cycles": 56.0,
+      "observed_cycles": 48.00015567597889
+    },
+    {
+      "group": "r3-transfer-add-mul-g3",
+      "id": "cpu_034",
+      "cycles": 56.0,
+      "observed_cycles": 48.00048555646624
+    },
+    {
+      "group": "r3-transfer-add-mul-g4",
+      "id": "cpu_035",
+      "cycles": 64.0,
+      "observed_cycles": 48.000460670107884
+    },
+    {
+      "group": "r3-transfer-add-mul-g6",
+      "id": "cpu_036",
+      "cycles": 72.0,
+      "observed_cycles": 64.0004406883603
+    },
+    {
+      "group": "r3-transfer-add-mul-g8",
+      "id": "cpu_037",
+      "cycles": 80.0,
+      "observed_cycles": 72.00037602015904
+    },
+    {
+      "group": "r3-transfer-mul-add-g0",
+      "id": "cpu_038",
+      "cycles": 48.0,
+      "observed_cycles": 48.000063033331
+    },
+    {
+      "group": "r3-transfer-mul-add-g1",
+      "id": "cpu_039",
+      "cycles": 48.0,
+      "observed_cycles": 48.00035676502046
+    },
+    {
+      "group": "r3-transfer-mul-add-g2",
+      "id": "cpu_040",
+      "cycles": 48.0,
+      "observed_cycles": 48.00038473946708
+    },
+    {
+      "group": "r3-transfer-mul-add-g3",
+      "id": "cpu_041",
+      "cycles": 48.0,
+      "observed_cycles": 48.00048537481399
+    },
+    {
+      "group": "r3-transfer-mul-add-g4",
+      "id": "cpu_042",
+      "cycles": 48.0,
+      "observed_cycles": 48.000125521705264
+    },
+    {
+      "group": "r3-transfer-mul-add-g6",
+      "id": "cpu_043",
+      "cycles": 48.0,
+      "observed_cycles": 48.00027102515811
+    },
+    {
+      "group": "r3-transfer-mul-add-g8",
+      "id": "cpu_044",
+      "cycles": 48.0,
+      "observed_cycles": 57.000511714390356
+    },
+    {
+      "group": "r3-transfer-mul-mul-g0",
+      "id": "cpu_045",
+      "cycles": 80.0,
+      "observed_cycles": 80.00052806309291
+    },
+    {
+      "group": "r3-transfer-mul-mul-g1",
+      "id": "cpu_046",
+      "cycles": 80.0,
+      "observed_cycles": 80.00020326886859
+    },
+    {
+      "group": "r3-transfer-mul-mul-g2",
+      "id": "cpu_047",
+      "cycles": 80.0,
+      "observed_cycles": 80.00019345964705
+    },
+    {
+      "group": "r3-transfer-mul-mul-g3",
+      "id": "cpu_048",
+      "cycles": 80.0,
+      "observed_cycles": 80.00049373081752
+    },
+    {
+      "group": "r3-transfer-mul-mul-g4",
+      "id": "cpu_049",
+      "cycles": 80.0,
+      "observed_cycles": 80.00014731997535
+    },
+    {
+      "group": "r3-transfer-mul-mul-g6",
+      "id": "cpu_050",
+      "cycles": 80.0,
+      "observed_cycles": 80.00061561947777
+    },
+    {
+      "group": "r3-transfer-mul-mul-g8",
+      "id": "cpu_051",
+      "cycles": 80.0,
+      "observed_cycles": 80.00066648210799
+    },
+    {
+      "group": "r3-transfer-load-add-g0",
+      "id": "cpu_052",
+      "cycles": 17.0,
+      "observed_cycles": 13.00003396897089
+    },
+    {
+      "group": "r3-transfer-load-add-g1",
+      "id": "cpu_053",
+      "cycles": 17.0,
+      "observed_cycles": 16.000157855805895
+    },
+    {
+      "group": "r3-transfer-load-add-g2",
+      "id": "cpu_054",
+      "cycles": 17.0,
+      "observed_cycles": 18.00014187040783
+    },
+    {
+      "group": "r3-transfer-load-add-g3",
+      "id": "cpu_055",
+      "cycles": 21.0,
+      "observed_cycles": 22.000366937546502
+    },
+    {
+      "group": "r3-transfer-load-add-g4",
+      "id": "cpu_056",
+      "cycles": 25.0,
+      "observed_cycles": 25.90763237362816
+    },
+    {
+      "group": "r3-transfer-load-add-g6",
+      "id": "cpu_057",
+      "cycles": 33.0,
+      "observed_cycles": 34.00029663812546
+    },
+    {
+      "group": "r3-transfer-load-add-g8",
+      "id": "cpu_058",
+      "cycles": 41.0,
+      "observed_cycles": 42.000335693359375
+    },
+    {
+      "group": "r3-transfer-load-mul-g0",
+      "id": "cpu_059",
+      "cycles": 24.0,
+      "observed_cycles": 24.00015440441313
+    },
+    {
+      "group": "r3-transfer-load-mul-g1",
+      "id": "cpu_060",
+      "cycles": 25.0,
+      "observed_cycles": 24.000276838030135
+    },
+    {
+      "group": "r3-transfer-load-mul-g2",
+      "id": "cpu_061",
+      "cycles": 25.0,
+      "observed_cycles": 24.00030989873977
+    },
+    {
+      "group": "r3-transfer-load-mul-g3",
+      "id": "cpu_062",
+      "cycles": 26.0,
+      "observed_cycles": 29.000674293154763
+    },
+    {
+      "group": "r3-transfer-load-mul-g4",
+      "id": "cpu_063",
+      "cycles": 33.0,
+      "observed_cycles": 32.000622340611045
+    },
+    {
+      "group": "r3-transfer-load-mul-g6",
+      "id": "cpu_064",
+      "cycles": 41.0,
+      "observed_cycles": 40.00042688278925
+    },
+    {
+      "group": "r3-transfer-load-mul-g8",
+      "id": "cpu_065",
+      "cycles": 49.0,
+      "observed_cycles": 51.63846188499814
+    },
+    {
+      "group": "r3-independent-add-mul-c1",
+      "id": "cpu_066",
+      "cycles": 40.0,
+      "observed_cycles": 40.00007029942104
+    },
+    {
+      "group": "r3-independent-add-mul-c1",
+      "id": "cpu_067",
+      "cycles": 45.0,
+      "observed_cycles": 42.00021144321987
+    },
+    {
+      "group": "r3-independent-add-mul-c1",
+      "id": "cpu_068",
+      "cycles": 44.0,
+      "observed_cycles": 43.0000977289109
+    },
+    {
+      "group": "r3-independent-add-mul-c1",
+      "id": "cpu_069",
+      "cycles": 160.0,
+      "observed_cycles": 160.00045631045387
+    },
+    {
+      "group": "r3-independent-add-mul-c1",
+      "id": "cpu_070",
+      "cycles": 189.0,
+      "observed_cycles": 187.00060835338775
+    },
+    {
+      "group": "r3-independent-add-mul-c1",
+      "id": "cpu_071",
+      "cycles": 188.0,
+      "observed_cycles": 187.00102397373746
+    },
+    {
+      "group": "r3-independent-add-mul-c2",
+      "id": "cpu_072",
+      "cycles": 24.0,
+      "observed_cycles": 23.99997856503441
+    },
+    {
+      "group": "r3-independent-add-mul-c2",
+      "id": "cpu_073",
+      "cycles": 28.0,
+      "observed_cycles": 28.00027138846261
+    },
+    {
+      "group": "r3-independent-add-mul-c2",
+      "id": "cpu_074",
+      "cycles": 27.0,
+      "observed_cycles": 28.000130063011532
+    },
+    {
+      "group": "r3-independent-add-mul-c2",
+      "id": "cpu_075",
+      "cycles": 96.0,
+      "observed_cycles": 96.00053859892346
+    },
+    {
+      "group": "r3-independent-add-mul-c2",
+      "id": "cpu_076",
+      "cycles": 112.0,
+      "observed_cycles": 112.00065848940895
+    },
+    {
+      "group": "r3-independent-add-mul-c2",
+      "id": "cpu_077",
+      "cycles": 111.0,
+      "observed_cycles": 112.0007785615467
+    },
+    {
+      "group": "r3-independent-add-mul-c4",
+      "id": "cpu_078",
+      "cycles": 24.0,
+      "observed_cycles": 24.00006775628953
+    },
+    {
+      "group": "r3-independent-add-mul-c4",
+      "id": "cpu_079",
+      "cycles": 28.0,
+      "observed_cycles": 27.00014913649786
+    },
+    {
+      "group": "r3-independent-add-mul-c4",
+      "id": "cpu_080",
+      "cycles": 27.0,
+      "observed_cycles": 27.00016076224191
+    },
+    {
+      "group": "r3-independent-add-mul-c4",
+      "id": "cpu_081",
+      "cycles": 96.0,
+      "observed_cycles": 96.00094822474888
+    },
+    {
+      "group": "r3-independent-add-mul-c4",
+      "id": "cpu_082",
+      "cycles": 112.0,
+      "observed_cycles": 111.00064250401088
+    },
+    {
+      "group": "r3-independent-add-mul-c4",
+      "id": "cpu_083",
+      "cycles": 111.0,
+      "observed_cycles": 111.00077710832869
+    },
+    {
+      "group": "r3-independent-add-load-c1",
+      "id": "cpu_084",
+      "cycles": 9.0,
+      "observed_cycles": 10.0001829238165
+    },
+    {
+      "group": "r3-independent-add-load-c1",
+      "id": "cpu_085",
+      "cycles": 15.0,
+      "observed_cycles": 15.000242687406994
+    },
+    {
+      "group": "r3-independent-add-load-c1",
+      "id": "cpu_086",
+      "cycles": 15.0,
+      "observed_cycles": 15.000139145624072
+    },
+    {
+      "group": "r3-independent-add-load-c1",
+      "id": "cpu_087",
+      "cycles": 33.0,
+      "observed_cycles": 34.000150226411364
+    },
+    {
+      "group": "r3-independent-add-load-c1",
+      "id": "cpu_088",
+      "cycles": 63.0,
+      "observed_cycles": 63.001084282284694
+    },
+    {
+      "group": "r3-independent-add-load-c1",
+      "id": "cpu_089",
+      "cycles": 63.0,
+      "observed_cycles": 63.00071480160668
+    },
+    {
+      "group": "r3-independent-add-load-c2",
+      "id": "cpu_090",
+      "cycles": 9.0,
+      "observed_cycles": 9.999995821998233
+    },
+    {
+      "group": "r3-independent-add-load-c2",
+      "id": "cpu_091",
+      "cycles": 12.0,
+      "observed_cycles": 12.000145866757347
+    },
+    {
+      "group": "r3-independent-add-load-c2",
+      "id": "cpu_092",
+      "cycles": 12.0,
+      "observed_cycles": 12.000208536783854
+    },
+    {
+      "group": "r3-independent-add-load-c2",
+      "id": "cpu_093",
+      "cycles": 33.0,
+      "observed_cycles": 34.000766935802645
+    },
+    {
+      "group": "r3-independent-add-load-c2",
+      "id": "cpu_094",
+      "cycles": 48.0,
+      "observed_cycles": 48.0005376906622
+    },
+    {
+      "group": "r3-independent-add-load-c2",
+      "id": "cpu_095",
+      "cycles": 48.0,
+      "observed_cycles": 48.00091661725725
+    },
+    {
+      "group": "r3-independent-add-load-c4",
+      "id": "cpu_096",
+      "cycles": 9.0,
+      "observed_cycles": 10.000146230061848
+    },
+    {
+      "group": "r3-independent-add-load-c4",
+      "id": "cpu_097",
+      "cycles": 12.0,
+      "observed_cycles": 12.000039418538412
+    },
+    {
+      "group": "r3-independent-add-load-c4",
+      "id": "cpu_098",
+      "cycles": 12.0,
+      "observed_cycles": 12.000064123244513
+    },
+    {
+      "group": "r3-independent-add-load-c4",
+      "id": "cpu_099",
+      "cycles": 33.0,
+      "observed_cycles": 34.00014150710333
+    },
+    {
+      "group": "r3-independent-add-load-c4",
+      "id": "cpu_100",
+      "cycles": 48.0,
+      "observed_cycles": 48.00109009515671
+    },
+    {
+      "group": "r3-independent-add-load-c4",
+      "id": "cpu_101",
+      "cycles": 48.0,
+      "observed_cycles": 48.000460125151136
+    },
+    {
+      "group": "r3-independent-mul-load-c1",
+      "id": "cpu_102",
+      "cycles": 40.0,
+      "observed_cycles": 40.00016820998419
+    },
+    {
+      "group": "r3-independent-mul-load-c1",
+      "id": "cpu_103",
+      "cycles": 44.0,
+      "observed_cycles": 43.000419435046965
+    },
+    {
+      "group": "r3-independent-mul-load-c1",
+      "id": "cpu_104",
+      "cycles": 44.0,
+      "observed_cycles": 42.00012951805478
+    },
+    {
+      "group": "r3-independent-mul-load-c1",
+      "id": "cpu_105",
+      "cycles": 160.0,
+      "observed_cycles": 160.0008223397391
+    },
+    {
+      "group": "r3-independent-mul-load-c1",
+      "id": "cpu_106",
+      "cycles": 188.0,
+      "observed_cycles": 187.00129136585053
+    },
+    {
+      "group": "r3-independent-mul-load-c1",
+      "id": "cpu_107",
+      "cycles": 188.0,
+      "observed_cycles": 186.00169717697872
+    },
+    {
+      "group": "r3-independent-mul-load-c2",
+      "id": "cpu_108",
+      "cycles": 24.0,
+      "observed_cycles": 24.000450134277344
+    },
+    {
+      "group": "r3-independent-mul-load-c2",
+      "id": "cpu_109",
+      "cycles": 30.0,
+      "observed_cycles": 29.000366937546502
+    },
+    {
+      "group": "r3-independent-mul-load-c2",
+      "id": "cpu_110",
+      "cycles": 30.0,
+      "observed_cycles": 28.000226338704426
+    },
+    {
+      "group": "r3-independent-mul-load-c2",
+      "id": "cpu_111",
+      "cycles": 96.0,
+      "observed_cycles": 96.00032206944056
+    },
+    {
+      "group": "r3-independent-mul-load-c2",
+      "id": "cpu_112",
+      "cycles": 126.0,
+      "observed_cycles": 125.00176511492049
+    },
+    {
+      "group": "r3-independent-mul-load-c2",
+      "id": "cpu_113",
+      "cycles": 126.0,
+      "observed_cycles": 124.00214059012276
+    },
+    {
+      "group": "r3-independent-mul-load-c4",
+      "id": "cpu_114",
+      "cycles": 24.0,
+      "observed_cycles": 24.000077202206565
+    },
+    {
+      "group": "r3-independent-mul-load-c4",
+      "id": "cpu_115",
+      "cycles": 30.0,
+      "observed_cycles": 29.00058346702939
+    },
+    {
+      "group": "r3-independent-mul-load-c4",
+      "id": "cpu_116",
+      "cycles": 30.0,
+      "observed_cycles": 28.00012715657552
+    },
+    {
+      "group": "r3-independent-mul-load-c4",
+      "id": "cpu_117",
+      "cycles": 96.0,
+      "observed_cycles": 96.00036203293573
+    },
+    {
+      "group": "r3-independent-mul-load-c4",
+      "id": "cpu_118",
+      "cycles": 126.0,
+      "observed_cycles": 125.00142687842958
+    },
+    {
+      "group": "r3-independent-mul-load-c4",
+      "id": "cpu_119",
+      "cycles": 126.0,
+      "observed_cycles": 124.00162978399368
+    },
+    {
+      "group": "r3-isolated-vadd-c1",
+      "id": "cpu_120",
+      "cycles": 64.0,
+      "observed_cycles": 64.00007375081381
+    },
+    {
+      "group": "r3-isolated-vadd-c1",
+      "id": "cpu_121",
+      "cycles": 256.0,
+      "observed_cycles": 256.0003273373559
+    },
+    {
+      "group": "r3-isolated-vadd-c2",
+      "id": "cpu_122",
+      "cycles": 32.0,
+      "observed_cycles": 32.00024650210426
+    },
+    {
+      "group": "r3-isolated-vadd-c2",
+      "id": "cpu_123",
+      "cycles": 128.0,
+      "observed_cycles": 128.0008108956473
+    },
+    {
+      "group": "r3-isolated-vadd-c4",
+      "id": "cpu_124",
+      "cycles": 16.0,
+      "observed_cycles": 16.000061216808504
+    },
+    {
+      "group": "r3-isolated-vadd-c4",
+      "id": "cpu_125",
+      "cycles": 64.0,
+      "observed_cycles": 64.00048246837798
+    },
+    {
+      "group": "r3-isolated-ime-c1",
+      "id": "cpu_126",
+      "cycles": 96.0,
+      "observed_cycles": 95.99973951067244
+    },
+    {
+      "group": "r3-isolated-ime-c1",
+      "id": "cpu_127",
+      "cycles": 384.0,
+      "observed_cycles": 383.99909155709406
+    },
+    {
+      "group": "r3-isolated-ime-c2",
+      "id": "cpu_128",
+      "cycles": 48.0,
+      "observed_cycles": 48.000177655901226
+    },
+    {
+      "group": "r3-isolated-ime-c2",
+      "id": "cpu_129",
+      "cycles": 192.0,
+      "observed_cycles": 192.00111098516555
+    },
+    {
+      "group": "r3-isolated-ime-c4",
+      "id": "cpu_130",
+      "cycles": 24.0,
+      "observed_cycles": 24.000206538609095
+    },
+    {
+      "group": "r3-isolated-ime-c4",
+      "id": "cpu_131",
+      "cycles": 96.0,
+      "observed_cycles": 96.00079890659876
+    },
+    {
+      "group": "r3-isolated-vload-c1",
+      "id": "cpu_132",
+      "cycles": 48.0,
+      "observed_cycles": 48.00074295770554
+    },
+    {
+      "group": "r3-isolated-vload-c1",
+      "id": "cpu_133",
+      "cycles": 192.0,
+      "observed_cycles": 192.00225466773622
+    },
+    {
+      "group": "r3-isolated-vload-c2",
+      "id": "cpu_134",
+      "cycles": 48.0,
+      "observed_cycles": 48.00069481985909
+    },
+    {
+      "group": "r3-isolated-vload-c2",
+      "id": "cpu_135",
+      "cycles": 192.0,
+      "observed_cycles": 192.00244867234005
+    },
+    {
+      "group": "r3-isolated-vload-c4",
+      "id": "cpu_136",
+      "cycles": 48.0,
+      "observed_cycles": 48.00080599103656
+    },
+    {
+      "group": "r3-isolated-vload-c4",
+      "id": "cpu_137",
+      "cycles": 192.0,
+      "observed_cycles": 192.00181761242095
+    },
+    {
+      "group": "r3-vector-ime-vadd-c1-g0",
+      "id": "cpu_138",
+      "cycles": 48.0,
+      "observed_cycles": 48.000071752639045
+    },
+    {
+      "group": "r3-vector-ime-vadd-c1-g1",
+      "id": "cpu_139",
+      "cycles": 48.0,
+      "observed_cycles": 48.000229426792686
+    },
+    {
+      "group": "r3-vector-ime-vadd-c1-g4",
+      "id": "cpu_140",
+      "cycles": 48.0,
+      "observed_cycles": 48.00019146147228
+    },
+    {
+      "group": "r3-vector-ime-vadd-c1-g12",
+      "id": "cpu_141",
+      "cycles": 58.0,
+      "observed_cycles": 58.000201815650584
+    },
+    {
+      "group": "r3-vector-ime-vadd-c1-g24",
+      "id": "cpu_142",
+      "cycles": 106.0,
+      "observed_cycles": 106.00188155401321
+    },
+    {
+      "group": "r3-vector-ime-vadd-c4-g0",
+      "id": "cpu_143",
+      "cycles": 40.0,
+      "observed_cycles": 40.000089917864116
+    },
+    {
+      "group": "r3-vector-ime-vadd-c4-g1",
+      "id": "cpu_144",
+      "cycles": 40.0,
+      "observed_cycles": 40.00007738385882
+    },
+    {
+      "group": "r3-vector-ime-vadd-c4-g4",
+      "id": "cpu_145",
+      "cycles": 40.0,
+      "observed_cycles": 40.00010862804594
+    },
+    {
+      "group": "r3-vector-ime-vadd-c4-g12",
+      "id": "cpu_146",
+      "cycles": 58.0,
+      "observed_cycles": 58.00083596365792
+    },
+    {
+      "group": "r3-vector-ime-vadd-c4-g24",
+      "id": "cpu_147",
+      "cycles": 106.0,
+      "observed_cycles": 106.0007821945917
+    },
+    {
+      "group": "r3-vector-vadd-ime-c1-g0",
+      "id": "cpu_148",
+      "cycles": 48.0,
+      "observed_cycles": 48.00005122593471
+    },
+    {
+      "group": "r3-vector-vadd-ime-c1-g1",
+      "id": "cpu_149",
+      "cycles": 48.0,
+      "observed_cycles": 48.000036148797896
+    },
+    {
+      "group": "r3-vector-vadd-ime-c1-g4",
+      "id": "cpu_150",
+      "cycles": 48.0,
+      "observed_cycles": 48.00029264177594
+    },
+    {
+      "group": "r3-vector-vadd-ime-c1-g12",
+      "id": "cpu_151",
+      "cycles": 58.0,
+      "observed_cycles": 58.000488644554494
+    },
+    {
+      "group": "r3-vector-vadd-ime-c1-g24",
+      "id": "cpu_152",
+      "cycles": 106.0,
+      "observed_cycles": 106.00136765979585
+    },
+    {
+      "group": "r3-vector-vadd-ime-c4-g0",
+      "id": "cpu_153",
+      "cycles": 40.0,
+      "observed_cycles": 39.99998183477493
+    },
+    {
+      "group": "r3-vector-vadd-ime-c4-g1",
+      "id": "cpu_154",
+      "cycles": 40.0,
+      "observed_cycles": 40.000248500279014
+    },
+    {
+      "group": "r3-vector-vadd-ime-c4-g4",
+      "id": "cpu_155",
+      "cycles": 40.0,
+      "observed_cycles": 40.00013969058082
+    },
+    {
+      "group": "r3-vector-vadd-ime-c4-g12",
+      "id": "cpu_156",
+      "cycles": 58.0,
+      "observed_cycles": 58.00099527268182
+    },
+    {
+      "group": "r3-vector-vadd-ime-c4-g24",
+      "id": "cpu_157",
+      "cycles": 106.0,
+      "observed_cycles": 106.00197928292411
+    },
+    {
+      "group": "r3-vector-ime-vload-c1-g0",
+      "id": "cpu_158",
+      "cycles": 48.0,
+      "observed_cycles": 48.00013751075382
+    },
+    {
+      "group": "r3-vector-ime-vload-c1-g1",
+      "id": "cpu_159",
+      "cycles": 48.0,
+      "observed_cycles": 48.000278654552645
+    },
+    {
+      "group": "r3-vector-ime-vload-c1-g4",
+      "id": "cpu_160",
+      "cycles": 48.0,
+      "observed_cycles": 48.000238691057476
+    },
+    {
+      "group": "r3-vector-ime-vload-c1-g12",
+      "id": "cpu_161",
+      "cycles": 58.0,
+      "observed_cycles": 58.00117274693079
+    },
+    {
+      "group": "r3-vector-ime-vload-c1-g24",
+      "id": "cpu_162",
+      "cycles": 106.0,
+      "observed_cycles": 106.00341415405273
+    },
+    {
+      "group": "r3-vector-ime-vload-c4-g0",
+      "id": "cpu_163",
+      "cycles": 48.0,
+      "observed_cycles": 48.000646137055895
+    },
+    {
+      "group": "r3-vector-ime-vload-c4-g1",
+      "id": "cpu_164",
+      "cycles": 48.0,
+      "observed_cycles": 48.0003912789481
+    },
+    {
+      "group": "r3-vector-ime-vload-c4-g4",
+      "id": "cpu_165",
+      "cycles": 48.0,
+      "observed_cycles": 48.00070444742839
+    },
+    {
+      "group": "r3-vector-ime-vload-c4-g12",
+      "id": "cpu_166",
+      "cycles": 58.0,
+      "observed_cycles": 58.000407627650674
+    },
+    {
+      "group": "r3-vector-ime-vload-c4-g24",
+      "id": "cpu_167",
+      "cycles": 106.0,
+      "observed_cycles": 106.00120126633416
+    },
+    {
+      "group": "r3-vector-vload-ime-c1-g0",
+      "id": "cpu_168",
+      "cycles": 48.0,
+      "observed_cycles": 48.00013133457729
+    },
+    {
+      "group": "r3-vector-vload-ime-c1-g1",
+      "id": "cpu_169",
+      "cycles": 48.0,
+      "observed_cycles": 48.000083923339844
+    },
+    {
+      "group": "r3-vector-vload-ime-c1-g4",
+      "id": "cpu_170",
+      "cycles": 48.0,
+      "observed_cycles": 48.000779833112446
+    },
+    {
+      "group": "r3-vector-vload-ime-c1-g12",
+      "id": "cpu_171",
+      "cycles": 72.0,
+      "observed_cycles": 58.000825609479634
+    },
+    {
+      "group": "r3-vector-vload-ime-c1-g24",
+      "id": "cpu_172",
+      "cycles": 120.0,
+      "observed_cycles": 106.00090717134022
+    },
+    {
+      "group": "r3-vector-vload-ime-c4-g0",
+      "id": "cpu_173",
+      "cycles": 48.0,
+      "observed_cycles": 48.00010699317569
+    },
+    {
+      "group": "r3-vector-vload-ime-c4-g1",
+      "id": "cpu_174",
+      "cycles": 48.0,
+      "observed_cycles": 48.00011843726749
+    },
+    {
+      "group": "r3-vector-vload-ime-c4-g4",
+      "id": "cpu_175",
+      "cycles": 48.0,
+      "observed_cycles": 48.00024650210426
+    },
+    {
+      "group": "r3-vector-vload-ime-c4-g12",
+      "id": "cpu_176",
+      "cycles": 72.0,
+      "observed_cycles": 58.0009286063058
+    },
+    {
+      "group": "r3-vector-vload-ime-c4-g24",
+      "id": "cpu_177",
+      "cycles": 120.0,
+      "observed_cycles": 106.00282705397834
+    },
+    {
+      "group": "probe-060",
+      "id": "cpu_000",
+      "cycles": 25.0,
+      "observed_cycles": 24.000225067138672
+    },
+    {
+      "group": "probe-020",
+      "id": "cpu_001",
+      "cycles": 25.0,
+      "observed_cycles": 24.000233423142205
+    },
+    {
+      "group": "probe-053",
+      "id": "cpu_002",
+      "cycles": 132.0,
+      "observed_cycles": 120.00181488763718
+    },
+    {
+      "group": "probe-070",
+      "id": "cpu_003",
+      "cycles": 120.0,
+      "observed_cycles": 120.00097274780273
+    },
+    {
+      "group": "probe-012",
+      "id": "cpu_004",
+      "cycles": 133.0,
+      "observed_cycles": 120.0007467724028
+    },
+    {
+      "group": "probe-030",
+      "id": "cpu_005",
+      "cycles": 132.0,
+      "observed_cycles": 120.00037166050504
+    },
+    {
+      "group": "probe-000",
+      "id": "cpu_006",
+      "cycles": 24.0,
+      "observed_cycles": 24.000137147449312
+    },
+    {
+      "group": "probe-040",
+      "id": "cpu_007",
+      "cycles": 72.0,
+      "observed_cycles": 72.00063233148484
+    },
+    {
+      "group": "probe-080",
+      "id": "cpu_008",
+      "cycles": 24.0,
+      "observed_cycles": 24.000275203159877
+    },
+    {
+      "group": "probe-065",
+      "id": "cpu_009",
+      "cycles": 13.0,
+      "observed_cycles": 14.00035385858445
+    },
+    {
+      "group": "probe-021",
+      "id": "cpu_010",
+      "cycles": 25.0,
+      "observed_cycles": 24.00030753726051
+    },
+    {
+      "group": "probe-061",
+      "id": "cpu_011",
+      "cycles": 36.0,
+      "observed_cycles": 24.000233423142205
+    },
+    {
+      "group": "probe-090",
+      "id": "cpu_012",
+      "cycles": 14.0,
+      "observed_cycles": 14.00012188866025
+    },
+    {
+      "group": "probe-100",
+      "id": "cpu_013",
+      "cycles": 72.0,
+      "observed_cycles": 60.00045849028088
+    },
+    {
+      "group": "probe-110",
+      "id": "cpu_014",
+      "cycles": 25.0,
+      "observed_cycles": 18.000214168003627
+    },
+    {
+      "group": "probe-120",
+      "id": "cpu_015",
+      "cycles": 60.0,
+      "observed_cycles": 60.00050608317058
+    },
+    {
+      "group": "probe-130",
+      "id": "cpu_016",
+      "cycles": 96.0,
+      "observed_cycles": 96.00035131545295
+    },
+    {
+      "group": "probe-140",
+      "id": "cpu_017",
+      "cycles": 60.0,
+      "observed_cycles": 60.00037438528878
+    },
+    {
+      "group": "probe-095",
+      "id": "cpu_018",
+      "cycles": 13.0,
+      "observed_cycles": 14.000092460995628
+    },
+    {
+      "group": "probe-105",
+      "id": "cpu_019",
+      "cycles": 36.0,
+      "observed_cycles": 36.00011498587472
+    },
+    {
+      "group": "probe-115",
+      "id": "cpu_020",
+      "cycles": 13.0,
+      "observed_cycles": 14.000112624395461
+    },
+    {
+      "group": "probe-125",
+      "id": "cpu_021",
+      "cycles": 36.0,
+      "observed_cycles": 36.000297364734465
+    },
+    {
+      "group": "probe-135",
+      "id": "cpu_022",
+      "cycles": 72.0,
+      "observed_cycles": 72.0003429594494
+    },
+    {
+      "group": "probe-145",
+      "id": "cpu_023",
+      "cycles": 36.0,
+      "observed_cycles": 36.00018528529576
+    },
+    {
+      "group": "probe-150",
+      "id": "cpu_024",
+      "cycles": 13.0,
+      "observed_cycles": 14.000114440917969
+    },
+    {
+      "group": "probe-160",
+      "id": "cpu_025",
+      "cycles": 60.0,
+      "observed_cycles": 60.0005863734654
+    },
+    {
+      "group": "probe-170",
+      "id": "cpu_026",
+      "cycles": 72.0,
+      "observed_cycles": 60.00027865455264
+    },
+    {
+      "group": "probe-180",
+      "id": "cpu_027",
+      "cycles": 96.0,
+      "observed_cycles": 96.00038473946708
+    },
+    {
+      "group": "probe-190",
+      "id": "cpu_028",
+      "cycles": 25.0,
+      "observed_cycles": 19.00023487636021
+    },
+    {
+      "group": "probe-200",
+      "id": "cpu_029",
+      "cycles": 60.0,
+      "observed_cycles": 60.00053714570545
+    },
+    {
+      "group": "probe-155",
+      "id": "cpu_030",
+      "cycles": 13.0,
+      "observed_cycles": 14.000203450520832
+    },
+    {
+      "group": "probe-165",
+      "id": "cpu_031",
+      "cycles": 36.0,
+      "observed_cycles": 37.00037456694103
+    },
+    {
+      "group": "probe-175",
+      "id": "cpu_032",
+      "cycles": 72.0,
+      "observed_cycles": 37.000140962146574
+    },
+    {
+      "group": "probe-185",
+      "id": "cpu_033",
+      "cycles": 96.0,
+      "observed_cycles": 96.00042324974423
+    },
+    {
+      "group": "probe-195",
+      "id": "cpu_034",
+      "cycles": 25.0,
+      "observed_cycles": 19.000262124197825
+    },
+    {
+      "group": "probe-205",
+      "id": "cpu_035",
+      "cycles": 36.0,
+      "observed_cycles": 36.00046775454567
+    },
+    {
+      "group": "probe-215",
+      "id": "cpu_036",
+      "cycles": 36.0,
+      "observed_cycles": 36.00031571161179
+    },
+    {
+      "group": "probe-225",
+      "id": "cpu_037",
+      "cycles": 36.0,
+      "observed_cycles": 36.00035095214844
+    },
+    {
+      "group": "probe-216",
+      "id": "cpu_038",
+      "cycles": 36.0,
+      "observed_cycles": 36.00059309459868
+    },
+    {
+      "group": "probe-226",
+      "id": "cpu_039",
+      "cycles": 36.0,
+      "observed_cycles": 36.000496092296785
+    },
+    {
+      "group": "probe-217",
+      "id": "cpu_040",
+      "cycles": 36.0,
+      "observed_cycles": 36.00022434052967
+    },
+    {
+      "group": "probe-227",
+      "id": "cpu_041",
+      "cycles": 36.0,
+      "observed_cycles": 36.00038074311756
+    },
+    {
+      "group": "probe-218",
+      "id": "cpu_042",
+      "cycles": 37.0,
+      "observed_cycles": 38.00041307721819
+    },
+    {
+      "group": "probe-228",
+      "id": "cpu_043",
+      "cycles": 37.0,
+      "observed_cycles": 38.00043142409552
+    },
+    {
+      "group": "probe-210",
+      "id": "cpu_044",
+      "cycles": 48.0,
+      "observed_cycles": 60.000393822079616
+    },
+    {
+      "group": "probe-220",
+      "id": "cpu_045",
+      "cycles": 48.0,
+      "observed_cycles": 60.00021543956938
+    },
+    {
+      "group": "probe-211",
+      "id": "cpu_046",
+      "cycles": 48.0,
+      "observed_cycles": 60.00020980834961
+    },
+    {
+      "group": "probe-221",
+      "id": "cpu_047",
+      "cycles": 48.0,
+      "observed_cycles": 60.000193459647036
+    }
+  ],
+  "engine_files": {
+    "state5.py": "9dcf9e92a52a43cc19da4dfa3266b0508e9cc35a6c94cb557d6a43e8c3d2f653",
+    "fit-write-r5.py": "245cb8fe426aae60a4c24f9d3031b3d34299337259c5b55fc5596f45db74c1bf"
+  },
+  "prediction_confidence": null,
+  "limits": [
+    "仅修改标量重复写入间隔。",
+    "公开的第四轮重排检查不参与拟合。",
+    "未宣称全局最优或真实硬件结构。",
+    "没有新算法预测置信区间。"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "schema": 1,
+  "platform": "Spacemit X60; musepipro-wg",
+  "source_batch": "k1-cpu-model-20261012-r1",
+  "source_sysfs_sha256": "5aaaa41810385b02be2185e2c26832c5ffe0b01c190812c3b49ab6d163e62d3e",
+  "evidence_archive": "spacemit/reports/raw/k1-cpu-state-model-20261012-r1/k1-cpu-state-r1-full.tar.gz",
+  "evidence_archive_sha256": "d31b3776681fed05a539e144783847b3d06b850ebf53911d1454c3f8680420b5",
+  "caches": {
+    "status": "system-reported",
+    "records": [
+      {
+        "representative_cpu": 0,
+        "level": "1",
+        "type": "Instruction",
+        "size": "32K",
+        "coherency_line_size": "64",
+        "number_of_sets": "128",
+        "ways_of_associativity": "4",
+        "shared_cpu_list": "0"
+      },
+      {
+        "representative_cpu": 0,
+        "level": "1",
+        "type": "Data",
+        "size": "32K",
+        "coherency_line_size": "64",
+        "number_of_sets": "128",
+        "ways_of_associativity": "4",
+        "shared_cpu_list": "0"
+      },
+      {
+        "representative_cpu": 0,
+        "level": "2",
+        "type": "Unified",
+        "size": "512K",
+        "coherency_line_size": "64",
+        "number_of_sets": "512",
+        "ways_of_associativity": "16",
+        "shared_cpu_list": "0-3"
+      },
+      {
+        "representative_cpu": 4,
+        "level": "1",
+        "type": "Instruction",
+        "size": "32K",
+        "coherency_line_size": "64",
+        "number_of_sets": "128",
+        "ways_of_associativity": "4",
+        "shared_cpu_list": "4"
+      },
+      {
+        "representative_cpu": 4,
+        "level": "1",
+        "type": "Data",
+        "size": "32K",
+        "coherency_line_size": "64",
+        "number_of_sets": "128",
+        "ways_of_associativity": "4",
+        "shared_cpu_list": "4"
+      },
+      {
+        "representative_cpu": 4,
+        "level": "2",
+        "type": "Unified",
+        "size": "512K",
+        "coherency_line_size": "64",
+        "number_of_sets": "512",
+        "ways_of_associativity": "16",
+        "shared_cpu_list": "4-7"
+      }
+    ]
+  },
+  "vector_probe": {
+    "status": "verified-fixed-probe",
+    "cpus": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "sew": 8,
+    "lmul": 1,
+    "vl": 32
+  },
+  "ime_probe": {
+    "status": "verified-fixed-probe",
+    "success_cpus": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "illegal_instruction_cpus": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "encoding": "0xe210382b"
+  },
+  "limits": [
+    "系统报告值不是缓存访问时序或替换策略标定。",
+    "固定探针不证明完整扩展指令集能力。",
+    "本资料不改变既有封存模型。"
+  ]
+}
