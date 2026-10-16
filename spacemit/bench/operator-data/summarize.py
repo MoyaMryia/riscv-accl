@@ -41,17 +41,24 @@ def summarize(root):
         for arm in receipt['arms']:
             if file_hash(root/'numeric'/f'{case_id}-a{arm}.bin')!=receipt['sha256']: raise ValueError('numeric pair')
     plan = json.loads((root/'plan.json').read_text())
+    split = state.get('split', 'train')
+    if split not in ('train', 'calibration', 'test'): raise ValueError('split')
     groups = {g['id']:g for g in plan['groups']}
-    cases = json.loads((root/'training-cases.json').read_text())
+    cases = json.loads((root/('training-cases.json' if split=='train' else 'cases.json')).read_text())
+    expected_cases = {f'{g["id"]}-t{t}':dict(g,id=f'{g["id"]}-t{t}',thread_count=t)
+                      for g in plan['groups'] if g['split']==split for t in g['threads']}
+    if len(cases)!=len(expected_cases) or {c['id']:c for c in cases}!=expected_cases: raise ValueError('planned cases')
+    if len(receipts)!=len(cases) or set(numeric)!=set(expected_cases): raise ValueError('numeric coverage')
     data = collections.defaultdict(list)
     for line in (root/'observations.jsonl').read_text().splitlines():
         value = json.loads(line)
         case = value['case']
         if value['artifact_sha256']!=identity: raise ValueError('artifact identity')
         if value['numeric_sha256']!=numeric[case['id']]['sha256']: raise ValueError('numeric identity')
-        if case['split']!='train': raise ValueError('held-out observation')
+        if case!=expected_cases.get(case['id']): raise ValueError('observation case')
+        if case['split']!=split: raise ValueError('split observation')
         group = groups[case['id'].rsplit('-t',1)[0]]
-        if group['split']!='train' or group['shape']!=case['shape']: raise ValueError('group identity')
+        if group['split']!=split or group['shape']!=case['shape']: raise ValueError('group identity')
         data[case['id']].append(value)
     if set(data)!={c['id'] for c in cases}: raise ValueError('case coverage')
     summary=[]
@@ -89,11 +96,13 @@ def summarize(root):
             'paired_gain_percent_min':min(gains),'paired_gain_percent_max':max(gains),
             'fits':fits,'involuntary_switches':sum(w['involuntary_switches'] for w in workers),
             'nonpositive_slope':any(x<=0 for f in fits.values() for x in f['slope_ms_per_call'])})
-    return {'schema':1,'status':'verified','measurement_scope':'hot-repeated-input',
+    result = {'schema':1,'status':'verified','measurement_scope':'hot-repeated-input',
         'prediction_confidence':None,'rows':sum(len(v) for v in data.values()),
         'cases':len(cases),'worker_samples':worker_count,'file_hashes_verified':len(files),
         'frozen_artifact_hashes_verified':len(frozen),'numeric_pairs_verified':len(receipts),
-        'held_out_measured':False,'results':summary}
+        'held_out_measured':split=='test','results':summary}
+    if split!='train': result['split']=split
+    return result
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser()

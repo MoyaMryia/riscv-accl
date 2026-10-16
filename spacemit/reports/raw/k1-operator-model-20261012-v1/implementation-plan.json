@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "status": "pre-calibration",
+  "training_batches": [
+    "k1-operator-data-20261012-r2"
+  ],
+  "target": "median execution-length slope in ms per call",
+  "fitting": "R2 only; family models; per-thread baseline and paired ratio",
+  "selection": "leave one shape group out; retain all threads and arms in each held-out group",
+  "basis_candidates": [
+    "constant",
+    "log-shape",
+    "log-shape-padding"
+  ],
+  "ridge_candidates": [
+    0.01,
+    0.1,
+    1.0,
+    10.0
+  ],
+  "selection_loss": "mean group maximum absolute log error across baseline, candidate and ratio",
+  "calibration_score": "group maximum absolute log error across baseline, candidate and ratio, both thread counts",
+  "calibration_groups_per_family": 19,
+  "coverage": 0.95,
+  "test_groups_per_family": 9,
+  "recompile": false,
+  "test_refit": false,
+  "candidate_elimination": false,
+  "claim_scope": "fixed binaries, controlled hot repeated inputs, predeclared shape grids",
+  "diagnostic_batches": [
+    "k1-operator-data-20261012-r1"
+  ],
+  "training_choice_reason": "R1 uses a different measurement binary; calibration and tests reuse the exact R2 binaries"
+}

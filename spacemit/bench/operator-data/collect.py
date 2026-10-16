@@ -115,20 +115,22 @@ def arguments(case, mode, arm, dump):
     if case['family']=='conv': result.append(str(case['padding']))
     return result + [str(arm), str(dump)]
 
-def main():
+def main(split='train', preparation=prepare):
+    if split not in ('train', 'calibration', 'test'): raise ValueError('split')
     if Path('state.json').exists(): raise RuntimeError('batch exists; do not repeat')
-    state = {'status':'prepare','started':now(),'pending':['numeric','train'],'held_out_measured':False}
+    state = {'status':'prepare','started':now(),'pending':['numeric',split],'held_out_measured':False}
+    if split!='train': state['split']=split
     save('state.json',state)
-    identity = prepare()
+    identity = preparation()
     plan = json.loads(Path('plan.json').read_text())
     cases = []
     for group in plan['groups']:
-        if group['split']!='train': continue
+        if group['split']!=split: continue
         for threads in group['threads']:
             cases.append(dict(group, id=f'{group["id"]}-t{threads}', thread_count=threads))
     rng = __import__('random').Random(plan['seed']+1)
     rng.shuffle(cases)
-    save('training-cases.json', cases)
+    save('training-cases.json' if split=='train' else 'cases.json', cases)
     receipts = []
     state.update(status='numeric',artifact_sha256=identity)
     save('state.json',state)
@@ -145,7 +147,7 @@ def main():
         receipts.append({'case':case, 'arms':arms, 'sha256':hashes[0], 'bytes':path.stat().st_size})
         save('numeric-receipts.json', receipts)
         print('NUMERIC', case['id'], flush=True)
-    state.update(status='train',pending=['train'],numeric_cases=len(receipts))
+    state.update(status=split,pending=[split],numeric_cases=len(receipts))
     save('state.json',state)
     rows = 0
     for case in cases:
@@ -173,7 +175,7 @@ def main():
         state.update(timing_cases=rows//42,rows=rows)
         save('state.json',state)
         print('TIMING',case['id'],rows,flush=True)
-    state.update(status='complete',pending=[],finished=now(),cases=len(cases),rows=rows)
+    state.update(status='complete',pending=[],finished=now(),cases=len(cases),rows=rows,held_out_measured=split=='test')
     save('state.json',state)
     save('sha256.json',{str(p.relative_to(ROOT)):digest(p) for p in ROOT.rglob('*') if p.is_file() and p.name not in ['sha256.json','driver.log']})
     print('COMPLETE',rows,flush=True)
