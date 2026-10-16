@@ -1,6 +1,13 @@
 # GGUF preparation tools
 
+Use the [model guide](../README.md) for artifact identity and source limits.
+[Requirements.md](../../../Requirements.md) is the sole current acceptance reference.
 These scripts keep the model recipe for the SpaceMiT X60. Supply the model files separately. This repository does not commit GGUF weights. Run the scripts from an official `spacemit-com/llama.cpp` checkout with the source patches applied. Set `LD_LIBRARY_PATH` as described in `spacemit/README.md`.
+
+The [source and reproduction record](../REPRODUCIBILITY.md) separates the historical Unsloth artifacts from the new official-checkpoint recipe.
+`reproduce-official.sh` requires fixed official input files and the recorded SpaceMiT source snapshot.
+`record-reproduction.py` verifies input identities and records artifact hashes.
+The complete official conversion remains untested.
 
 ## Fast Q4_0 weights
 
