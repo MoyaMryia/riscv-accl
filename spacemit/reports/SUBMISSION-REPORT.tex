@@ -104,30 +104,195 @@ Long-input results have one pair per model. Formal acceptance gaps remain.\par
 \hypertarget{abstract}{%
 \section{Abstract}\label{abstract}}
 
-The project provides one K1 build for the two tested Qwen3.5 models.
-Version \nolinkurl{k1-final-20261013-r3} sets the selected parameters in
-the source. Normal startup requires no performance flags or experiment
-variables. The same build passes native checks, state checks, natural
-code answers, and relocation checks.
+The final build completes one request 1.24 to 3.59 times faster on 2B
+and 1.41 to 4.72 times faster on 4B. The comparison is against the
+original vendor commit \nolinkurl{5ad05d8} with two compatibility
+changes. The gain increases with input length. Server memory stays the
+same: the two arms differ by less than 3 MiB.
 
-A new comparison uses the original vendor commit \nolinkurl{5ad05d8}
-with two compatibility changes. Both arms use identical Q4\_0 weights,
-F16 cache, inputs, and output histories. At 512/2048 input tokens, 2B
-decode throughput increases by 26.69\%/34.68\%. The corresponding 4B
-increases are 62.17\%/73.37\%. Each short shape has three pairs. At 8192
-input tokens, first-token time decreases by 51.77\% on 2B and 65.17\% on
-4B. Each long shape has only one pair. These long observations do not
-establish repeat stability. A separate capacity extension completes 12
-matched requests at 16384 and 32768 inputs. It uses the same production
-binaries and retains the ordinary context default of 12288.
+\begin{longtable}[]{@{}lrrrrrr@{}}
+\toprule
+\begin{minipage}[b]{0.06\columnwidth}\raggedright
+Model\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\raggedleft
+Input tokens\strut
+\end{minipage} & \begin{minipage}[b]{0.06\columnwidth}\raggedleft
+Pairs\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\raggedleft
+Request time, s\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\raggedleft
+Faster by\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\raggedleft
+TTFT reduction\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\raggedleft
+Decode, tokens/s\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+2B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+512\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+43.031 / 34.714\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+1.24x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+17.96\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+3.387 / 4.292\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+2B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+2048\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+136.554 / 97.169\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+1.41x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+29.41\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+3.108 / 4.186\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+2B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+8192\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+875.359 / 426.221\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+2.05x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+51.77\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+2.239 / 3.600\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+2B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+16384\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+2868.832 / 1057.226\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+2.71x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+63.43\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+1.659 / 2.914\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+2B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+32768\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+10822.886 / 3014.282\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+3.59x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+72.27\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+1.051 / 2.141\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+4B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+512\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+113.128 / 80.346\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+1.41x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+21.72\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+1.315 / 2.133\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+4B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+2048\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+411.793 / 246.579\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+1.67x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+39.77\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+1.133 / 1.965\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+4B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+8192\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+3323.894 / 1170.324\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+2.84x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+65.17\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+0.724 / 1.485\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+4B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+16384\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+2\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+11388.985 / 3033.905\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+3.75x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+73.56\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+0.490 / 1.117\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.06\columnwidth}\raggedright
+4B\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+32768\strut
+\end{minipage} & \begin{minipage}[t]{0.06\columnwidth}\raggedleft
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\raggedleft
+42294.220 / 8952.505\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+4.72x\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\raggedleft
+78.93\%\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\raggedleft
+0.291 / 0.752\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
 
-The default is a balanced choice within a frozen search. It is not a
-claim of a global optimum for all workloads. Model origin, full
-conversion, long state correctness, and formal multi-turn quality retain
-acceptance gaps. The
-\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/SUBMISSION-REPORT.pdf}{October
-12 report} preserves the previous report in full. Its source and SHA-256
-receipts remain available in the same snapshot directory.
+Each slash separates original and final means. "Faster by" is the
+original request time divided by the final request time. Both arms use
+identical Q4\_0 weights, F16 cache, inputs, and 65 output tokens.
+Sections 5 and 5.1 give the complete tables.
+
+Version \nolinkurl{k1-final-20261013-r3} is one build for both models.
+It sets the selected parameters in the source. Normal startup requires
+no performance flags or experiment variables. The build passes native
+checks, state checks, natural code answers, and relocation checks. The
+default is the balanced choice of a frozen search. The Scope section at
+the end lists the sample counts and the open acceptance items.
 
 \hypertarget{requirements-and-status}{%
 \section{1. Requirements and status}\label{requirements-and-status}}
@@ -193,9 +358,7 @@ allocation\strut
 \bottomrule
 \end{longtable}
 
-A passing Unicode code task does not establish general answer quality.
-Earlier shared model errors remain relevant to formal quality
-acceptance. No external competition submission is recorded.
+No external competition submission is recorded.
 
 \hypertarget{platform-and-software-identity}{%
 \section{2. Platform and software
@@ -268,8 +431,7 @@ repack disabled, CPU backend\strut
 
 The two model files use Q4\_0 weights and Q4\_0 embeddings. Their names
 contain MTP tensors, but this release uses direct decode. The package
-does not contain weights or vendor runtime libraries. Exact dependencies
-do not yet have a unified public download archive.
+does not contain weights or vendor runtime libraries.
 
 \begin{longtable}[]{@{}ll@{}}
 \toprule
@@ -454,9 +616,7 @@ measure whole-machine memory or an instantaneous hardware peak. The
 independent summary retains means, medians, minima, maxima, and each
 request identity. No shape has a clear TTFT or decode-time regression
 under the frozen threshold. The threshold is the greater of 3\% and the
-full original-arm variation range. Three samples do not establish a
-population confidence interval. One long pair does not establish
-stability or complete long-context acceptance.
+full original-arm variation range.
 
 \hypertarget{final-build-capacity-extension}{%
 \subsection{5.1. Final-build capacity
@@ -523,15 +683,12 @@ controller time is 28.381 h; no request reaches its frozen time or
 memory limit. RSS samples include server load and the request at a
 nominal 1 s interval. The minimum sampled system availability is
 11396.441 MiB; the maximum sampled server RSS is 6117.809 MiB. These
-observations apply to the tested nominal 16 GB board. They do not
-establish operation on an 8 GB device.
+observations apply to the tested nominal 16 GB board.
 
 The
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-ultralong-final-comparison.md}{capacity-extension
 report} retains the complete protocol, sample ranges, archive identity,
-and repeat command. This synthetic output does not test long semantic
-quality or long state correctness. Two 16k pairs and one 32k pair do not
-establish general repeat stability. The
+and repeat command. The
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-14-final-r3/SUBMISSION-REPORT.pdf}{previous
 report snapshot} retains the pre-supplement report and its original
 claims.
@@ -551,8 +708,7 @@ both models. Each answer stops naturally and passes the frozen Unicode
 task's 106 functional checks. All 2B answers have identical text and 508
 output tokens. The 4B original answer has 595 tokens and different text.
 The RC1 and final 4B answers have identical text and 521 tokens. Both 4B
-texts pass the functional checks. This single task does not establish
-broad quality or multi-turn acceptance.
+texts pass the functional checks.
 
 The r1 delivery passes numerical checks but fails an argument-parser
 GPU-default assertion. The r2 delivery fixes that assertion but starts
@@ -564,11 +720,18 @@ bypasses these checks.
 The previous full-combination regression remains 3.0220477\% for
 4B/2048/65 against B1 under its original conditions. The new search does
 not erase that failed gate. The IME scalar schedule remains excluded
-after its failed performance screen. Earlier MTP output differences
-require direct decode when exact output identity is required. GPU
-offload and page-allocation memory benefits remain unqualified.
-Predictor errors and wide intervals remain separate from measured model
-results.
+after its failed performance screen. The final search tests eight
+combinations of B1-r2, C1, and C2-r2; none of them enables MTP. The
+earlier MTP pilot passes the relative quality gate on both models. Its
+six-task total time decreases by 8.63\% on 2B and by 15.22\% on 4B. MTP
+stays off because that pilot also applies an absolute usefulness gate.
+Direct decode fails the same gate on the interval-code task and on 2B
+arithmetic. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-next-plan.md}{next
+plan} tests MTP again on r3 with the relative quality gate and a
+per-category speed gate. GPU offload and page-allocation memory benefits
+remain unqualified. Predictor errors and wide intervals remain separate
+from measured model results.
 
 \hypertarget{deployment-and-evidence-package}{%
 \section{7. Deployment and evidence
@@ -582,9 +745,9 @@ converter tree, model identity metadata, and separate evidence archives.
 The same production binaries retain the original verified hashes. The
 new entry creates tmux and acquires the fixed common lock before the
 server starts. Both model launches pass identity, actual-default, lock,
-and health checks without an inference request. The full official
-conversion remains untested; script availability does not establish a
-completed conversion.
+and health checks without an inference request. The conversion scripts
+are included; the Scope section lists the full official conversion as an
+open item.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -640,7 +803,57 @@ controls must not be added or multiplied. The
 7 release} and
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-unified-release-candidate.md}{October
 13 RC1} remain comparison records. The new r3 package supplies the fixed
-default delivery for this campaign.
+default delivery for this campaign. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/WORK-LEDGER.md}{work
+ledger} lists all work, the adopted items, and the reason for each
+stopped item. The
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-next-plan.md}{next
+plan} orders the remaining experiments by expected gain.
+
+\hypertarget{scope}{%
+\section{Scope}\label{scope}}
+
+Configuration: MUSE-Pi-Pro, K1/X60, nominal 16 GB RAM, version
+\nolinkurl{k1-final-20261013-r3}, 4 threads, batch 32, F16 K/V, one
+slot. Samples: 512 and 2048 inputs have three pairs per shape; 8192 and
+32768 inputs have one pair per model; 16384 inputs have two pairs per
+model. The natural-answer check uses one Unicode code task per model and
+arm. The default is the balanced choice of the frozen search space. The
+overall comparison does not separate the contribution of each adopted
+path. The tested board has 16 GB of RAM.
+
+\begin{itemize}
+\tightlist
+\item
+  Pending: repeat stability at 8192, 16384, and 32768 inputs. Blocker:
+  these shapes have one or two pairs. Release condition: measure at
+  least three pairs per shape.
+\item
+  Pending: general and multi-turn answer quality. Blocker: the fixed
+  multi-turn quality suite has no run on r3. Release condition: run the
+  suite on both models with the relative quality gate.
+\item
+  Pending: long semantic quality and long state correctness. Blocker:
+  the 16k and 32k requests use 65 forced output tokens. Release
+  condition: run natural long-document answers and long state checks on
+  r3.
+\item
+  Pending: full official model origin and conversion. Blocker: the two
+  official checkpoints have no complete download and conversion run.
+  Release condition: convert both checkpoints with the included scripts,
+  then compare files and answers with the current GGUF files.
+\item
+  Pending: contribution of wide RVV, route 3, B1-r2, and C1. Blocker:
+  the final comparison measures the whole version. Release condition:
+  disable one path at a time on the same r3 binary and measure pairs.
+\item
+  Pending: a unified public download archive for the exact dependencies.
+  Blocker: the vendor runtime libraries are not in the package. Release
+  condition: publish the exact runtime files with their SHA-256 values.
+\item
+  Pending: operation on an 8 GB device. Blocker: no 8 GB board was
+  tested. Release condition: run the capacity protocol on an 8 GB board.
+\end{itemize}
 
 \clearpage
 

@@ -1,0 +1,67 @@
+\documentclass[10pt,a4paper,fontset=none]{ctexart}
+\setCJKmainfont{Noto Serif CJK SC}[BoldFont={Noto Sans CJK SC}]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\usepackage[margin=22mm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{longtable,booktabs,array,calc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{fvextra}
+\usepackage{hyperref}
+\definecolor{reportblue}{HTML}{164B70}
+\hypersetup{colorlinks=true,linkcolor=reportblue,urlcolor=reportblue,
+  pdftitle={$title$},pdfauthor={riscv-accl project}}
+\urlstyle{tt}
+\ctexset{section/format=\Large\bfseries\raggedright,
+  subsection/format=\large\bfseries\raggedright}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{8pt}
+\setcounter{secnumdepth}{-1}
+\setcounter{tocdepth}{1}
+\renewcommand{\arraystretch}{1.10}
+\setlist{nosep,leftmargin=1.5em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{reportblue}{riscv-accl / SpaceMiT K1}}
+\fancyhead[R]{\small 2026-10-16}
+\fancyfoot[C]{\small\thepage}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+$if(highlighting-macros)$
+$highlighting-macros$
+\RecustomVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,fontsize=\small,commandchars=\\\{\}}
+$endif$
+\begin{document}
+\begin{titlepage}
+\vspace*{15mm}
+{\large\textcolor{reportblue}{RISC-V 本地推理}}\par
+\vspace{12mm}
+{\Huge\bfseries $title$\par}
+\vspace{8mm}
+{\Large $subtitle$\par}
+\vspace{12mm}
+{\large $date$\par}
+\vspace{14mm}
+\begin{tabular}{@{}ll@{}}
+\textbf{平台} & MUSE-Pi-Pro，K1／X60，标称 16 GB 内存 \\
+\textbf{模型} & Qwen3.5 2B 和 4B \\
+\textbf{实现} & SpaceMiT llama.cpp 分支 \\
+\textbf{内容} & 中文技术报告 \\
+\end{tabular}
+\vfill
+\textcolor{reportblue}{\rule{\textwidth}{1pt}}\par
+本报告比较最终默认构建与厂商起点。证据附录见英文报告。\par
+\vspace{6mm}
+\href{https://github.com/MoyaMryia/riscv-accl}{github.com/MoyaMryia/riscv-accl}
+\end{titlepage}
+{\small\tableofcontents}
+\clearpage
+$body$
+\end{document}

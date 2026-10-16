@@ -4,27 +4,35 @@
 
 ## Abstract
 
-The project provides one K1 build for the two tested Qwen3.5 models.
-Version `k1-final-20261013-r3` sets the selected parameters in the source.
+The final build completes one request 1.24 to 3.59 times faster on 2B and 1.41 to 4.72 times faster on 4B.
+The comparison is against the original vendor commit `5ad05d8` with two compatibility changes.
+The gain increases with input length.
+Server memory stays the same: the two arms differ by less than 3 MiB.
+
+| Model | Input tokens | Pairs | Request time, s | Faster by | TTFT reduction | Decode, tokens/s |
+| ---- | -----: | ---: | -------------: | -----: | -----: | ----------: |
+| 2B | 512 | 3 | 43.031 / 34.714 | 1.24x | 17.96% | 3.387 / 4.292 |
+| 2B | 2048 | 3 | 136.554 / 97.169 | 1.41x | 29.41% | 3.108 / 4.186 |
+| 2B | 8192 | 1 | 875.359 / 426.221 | 2.05x | 51.77% | 2.239 / 3.600 |
+| 2B | 16384 | 2 | 2868.832 / 1057.226 | 2.71x | 63.43% | 1.659 / 2.914 |
+| 2B | 32768 | 1 | 10822.886 / 3014.282 | 3.59x | 72.27% | 1.051 / 2.141 |
+| 4B | 512 | 3 | 113.128 / 80.346 | 1.41x | 21.72% | 1.315 / 2.133 |
+| 4B | 2048 | 3 | 411.793 / 246.579 | 1.67x | 39.77% | 1.133 / 1.965 |
+| 4B | 8192 | 1 | 3323.894 / 1170.324 | 2.84x | 65.17% | 0.724 / 1.485 |
+| 4B | 16384 | 2 | 11388.985 / 3033.905 | 3.75x | 73.56% | 0.490 / 1.117 |
+| 4B | 32768 | 1 | 42294.220 / 8952.505 | 4.72x | 78.93% | 0.291 / 0.752 |
+
+Each slash separates original and final means.
+"Faster by" is the original request time divided by the final request time.
+Both arms use identical Q4_0 weights, F16 cache, inputs, and 65 output tokens.
+Sections 5 and 5.1 give the complete tables.
+
+Version `k1-final-20261013-r3` is one build for both models.
+It sets the selected parameters in the source.
 Normal startup requires no performance flags or experiment variables.
-The same build passes native checks, state checks, natural code answers, and relocation checks.
-
-A new comparison uses the original vendor commit `5ad05d8` with two compatibility changes.
-Both arms use identical Q4_0 weights, F16 cache, inputs, and output histories.
-At 512/2048 input tokens, 2B decode throughput increases by 26.69%/34.68%.
-The corresponding 4B increases are 62.17%/73.37%.
-Each short shape has three pairs.
-At 8192 input tokens, first-token time decreases by 51.77% on 2B and 65.17% on 4B.
-Each long shape has only one pair.
-These long observations do not establish repeat stability.
-A separate capacity extension completes 12 matched requests at 16384 and 32768 inputs.
-It uses the same production binaries and retains the ordinary context default of 12288.
-
-The default is a balanced choice within a frozen search.
-It is not a claim of a global optimum for all workloads.
-Model origin, full conversion, long state correctness, and formal multi-turn quality retain acceptance gaps.
-The [October 12 report](snapshots/2026-10-12/SUBMISSION-REPORT.pdf) preserves the previous report in full.
-Its source and SHA-256 receipts remain available in the same snapshot directory.
+The build passes native checks, state checks, natural code answers, and relocation checks.
+The default is the balanced choice of a frozen search.
+The Scope section at the end lists the sample counts and the open acceptance items.
 
 ## 1. Requirements and status
 
@@ -43,8 +51,6 @@ The [gap report](2026-10-13-requirements-gap.md) retains the complete requiremen
 | Pending | Repeated long-context stability, long state acceptance, and the fixed multi-turn quality suite |
 | Not implemented in this release | GPU acceleration, KV compression, and memory reduction through page allocation |
 
-A passing Unicode code task does not establish general answer quality.
-Earlier shared model errors remain relevant to formal quality acceptance.
 No external competition submission is recorded.
 
 ## 2. Platform and software identity
@@ -70,7 +76,6 @@ No device permission or system change forms part of this campaign.
 The two model files use Q4_0 weights and Q4_0 embeddings.
 Their names contain MTP tensors, but this release uses direct decode.
 The package does not contain weights or vendor runtime libraries.
-Exact dependencies do not yet have a unified public download archive.
 
 | Model | GGUF SHA-256 |
 | --- | --- |
@@ -190,8 +195,6 @@ It does not measure whole-machine memory or an instantaneous hardware peak.
 The independent summary retains means, medians, minima, maxima, and each request identity.
 No shape has a clear TTFT or decode-time regression under the frozen threshold.
 The threshold is the greater of 3% and the full original-arm variation range.
-Three samples do not establish a population confidence interval.
-One long pair does not establish stability or complete long-context acceptance.
 
 ### 5.1. Final-build capacity extension
 
@@ -228,11 +231,8 @@ Total controller time is 28.381 h; no request reaches its frozen time or memory 
 RSS samples include server load and the request at a nominal 1 s interval.
 The minimum sampled system availability is 11396.441 MiB; the maximum sampled server RSS is 6117.809 MiB.
 These observations apply to the tested nominal 16 GB board.
-They do not establish operation on an 8 GB device.
 
 The [capacity-extension report](2026-10-16-ultralong-final-comparison.md) retains the complete protocol, sample ranges, archive identity, and repeat command.
-This synthetic output does not test long semantic quality or long state correctness.
-Two 16k pairs and one 32k pair do not establish general repeat stability.
 The [previous report snapshot](snapshots/2026-10-14-final-r3/SUBMISSION-REPORT.pdf) retains the pre-supplement report and its original claims.
 
 ## 6. Correctness and failure records
@@ -249,7 +249,6 @@ All 2B answers have identical text and 508 output tokens.
 The 4B original answer has 595 tokens and different text.
 The RC1 and final 4B answers have identical text and 521 tokens.
 Both 4B texts pass the functional checks.
-This single task does not establish broad quality or multi-turn acceptance.
 
 The r1 delivery passes numerical checks but fails an argument-parser GPU-default assertion.
 The r2 delivery fixes that assertion but starts with four automatic slots.
@@ -260,7 +259,12 @@ No manual performance flag bypasses these checks.
 The previous full-combination regression remains 3.0220477% for 4B/2048/65 against B1 under its original conditions.
 The new search does not erase that failed gate.
 The IME scalar schedule remains excluded after its failed performance screen.
-Earlier MTP output differences require direct decode when exact output identity is required.
+The final search tests eight combinations of B1-r2, C1, and C2-r2; none of them enables MTP.
+The earlier MTP pilot passes the relative quality gate on both models.
+Its six-task total time decreases by 8.63% on 2B and by 15.22% on 4B.
+MTP stays off because that pilot also applies an absolute usefulness gate.
+Direct decode fails the same gate on the interval-code task and on 2B arithmetic.
+The [next plan](2026-10-16-next-plan.md) tests MTP again on r3 with the relative quality gate and a per-category speed gate.
 GPU offload and page-allocation memory benefits remain unqualified.
 Predictor errors and wide intervals remain separate from measured model results.
 
@@ -271,7 +275,7 @@ It includes complete production source and binaries, a fixed clean converter tre
 The same production binaries retain the original verified hashes.
 The new entry creates tmux and acquires the fixed common lock before the server starts.
 Both model launches pass identity, actual-default, lock, and health checks without an inference request.
-The full official conversion remains untested; script availability does not establish a completed conversion.
+The conversion scripts are included; the Scope section lists the full official conversion as an open item.
 
 ```sh
 bash deploy.sh /absolute/path/to/model.gguf
@@ -309,3 +313,22 @@ Its [evidence appendix](snapshots/2026-10-12/SUBMISSION-EVIDENCE.md) and [receip
 Historical percentages with different controls must not be added or multiplied.
 The [October 7 release](2026-10-07-release-verification.md) and [October 13 RC1](2026-10-13-unified-release-candidate.md) remain comparison records.
 The new r3 package supplies the fixed default delivery for this campaign.
+The [work ledger](WORK-LEDGER.md) lists all work, the adopted items, and the reason for each stopped item.
+The [next plan](2026-10-16-next-plan.md) orders the remaining experiments by expected gain.
+
+## Scope
+
+Configuration: MUSE-Pi-Pro, K1/X60, nominal 16 GB RAM, version `k1-final-20261013-r3`, 4 threads, batch 32, F16 K/V, one slot.
+Samples: 512 and 2048 inputs have three pairs per shape; 8192 and 32768 inputs have one pair per model; 16384 inputs have two pairs per model.
+The natural-answer check uses one Unicode code task per model and arm.
+The default is the balanced choice of the frozen search space.
+The overall comparison does not separate the contribution of each adopted path.
+The tested board has 16 GB of RAM.
+
+- Pending: repeat stability at 8192, 16384, and 32768 inputs. Blocker: these shapes have one or two pairs. Release condition: measure at least three pairs per shape.
+- Pending: general and multi-turn answer quality. Blocker: the fixed multi-turn quality suite has no run on r3. Release condition: run the suite on both models with the relative quality gate.
+- Pending: long semantic quality and long state correctness. Blocker: the 16k and 32k requests use 65 forced output tokens. Release condition: run natural long-document answers and long state checks on r3.
+- Pending: full official model origin and conversion. Blocker: the two official checkpoints have no complete download and conversion run. Release condition: convert both checkpoints with the included scripts, then compare files and answers with the current GGUF files.
+- Pending: contribution of wide RVV, route 3, B1-r2, and C1. Blocker: the final comparison measures the whole version. Release condition: disable one path at a time on the same r3 binary and measure pairs.
+- Pending: a unified public download archive for the exact dependencies. Blocker: the vendor runtime libraries are not in the package. Release condition: publish the exact runtime files with their SHA-256 values.
+- Pending: operation on an 8 GB device. Blocker: no 8 GB board was tested. Release condition: run the capacity protocol on an 8 GB board.

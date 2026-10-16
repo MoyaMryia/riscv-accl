@@ -4,12 +4,14 @@
 [Requirements.md](Requirements.md) 是要求、验收目标和评分口径的唯一现行依据。
 文档核对日期：2026-10-16，Asia/Singapore。
 
+最终版完成一次请求的速度，2B 为厂商起点的 1.24～3.59 倍，4B 为 1.41～4.72 倍。
+输入越长，倍数越大；服务器内存两臂之差小于 3 MiB。
+逐形状数据见[中文报告](spacemit/reports/SUBMISSION-ZH.pdf)和[英文报告](spacemit/reports/SUBMISSION-REPORT.pdf)。
+
 GGUF 是当前推理引擎读取的模型文件格式。
 已验证：现有两个 GGUF 产物均有 K1 本地推理记录。
-已验证：项目已有匹配对照的预填充和解码优化。
 已实现：固定源码发布包、模型加工脚本、测试工具与证据索引。
-待验证：指定基座的完整来源链、官方检查点全链转换及现行质量验收。
-逐项状态见[独立缺口报告](spacemit/reports/2026-10-13-requirements-gap.md)。
+指定基座的来源链、官方检查点全链转换及现行质量验收的状态见[独立缺口报告](spacemit/reports/2026-10-13-requirements-gap.md)。
 
 | 任务 | 可用入口 |
 | --- | --- |
@@ -22,7 +24,7 @@ GGUF 是当前推理引擎读取的模型文件格式。
 | 获取补丁、构建脚本、模型哈希和启动器 | [固定发布包](spacemit/release/README.md) |
 | 复现模型加工并核对来源 | [模型材料](spacemit/models/README.md) |
 | 检查已有证据或运行新测试 | [测试入口](spacemit/bench/TESTS.md) |
-| 阅读现行要求对应的提交说明 | [中文提交说明稿](spacemit/reports/SUBMISSION-ZH.md) |
+| 阅读中文技术报告 | [SUBMISSION-ZH.md](spacemit/reports/SUBMISSION-ZH.md)、[PDF](spacemit/reports/SUBMISSION-ZH.pdf) |
 | 查找全部报告与协议 | [报告索引](spacemit/reports/README.md)、[实验索引](spacemit/experiments/README.md) |
 | 查看本次整理和检查记录 | [整理记录](spacemit/reports/2026-10-13-project-file-organization.md) |
 
@@ -42,7 +44,7 @@ C1 有独立模型验证记录，统一包中的候选配置保持实验状态�
 [TCM 权限检查](spacemit/reports/2026-10-13-k1-tcm-access.md)确认 sudo 可以识别并只读映射四块真实 TCM。
 普通用户的访问限制不能单独证明当前性能瓶颈。
 
-英文综合报告与 TeX／PDF 已更新为 2026-10-16，旧版快照单独保留。
+中文与英文技术报告及 TeX／PDF 已更新为 2026-10-16，旧版快照单独保留。
 [16k／32k 补测](spacemit/reports/2026-10-16-ultralong-final-comparison.md)记录 12 次匹配请求。
 [最终版 TCM 调查](spacemit/reports/2026-10-16-final-release-tcm.md)确认普通用户下两个模型的短推理没有使用真实 TCM。
 `FINAL-REPORT.md`、早期补丁栈及旧 `lab/` 记录保留历史范围。

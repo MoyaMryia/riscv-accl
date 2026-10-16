@@ -1,0 +1,601 @@
+\documentclass[10pt,a4paper,fontset=none]{ctexart}
+\setCJKmainfont{Noto Serif CJK SC}[BoldFont={Noto Sans CJK SC}]
+\setCJKsansfont{Noto Sans CJK SC}
+\setCJKmonofont{Noto Sans Mono CJK SC}
+\usepackage[margin=22mm,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{longtable,booktabs,array,calc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{xurl}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{needspace}
+\usepackage{fvextra}
+\usepackage{hyperref}
+\definecolor{reportblue}{HTML}{164B70}
+\hypersetup{colorlinks=true,linkcolor=reportblue,urlcolor=reportblue,
+  pdftitle={面向进迭时空 K1 的 Qwen3.5
+本地推理优化},pdfauthor={riscv-accl project}}
+\urlstyle{tt}
+\ctexset{section/format=\Large\bfseries\raggedright,
+  subsection/format=\large\bfseries\raggedright}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{3em}
+\setlength{\LTpre}{8pt}
+\setlength{\LTpost}{8pt}
+\setcounter{secnumdepth}{-1}
+\setcounter{tocdepth}{1}
+\renewcommand{\arraystretch}{1.10}
+\setlist{nosep,leftmargin=1.5em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{reportblue}{riscv-accl / SpaceMiT K1}}
+\fancyhead[R]{\small 2026-10-16}
+\fancyfoot[C]{\small\thepage}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
+\RecustomVerbatimEnvironment{Highlighting}{Verbatim}{breaklines=true,fontsize=\small,commandchars=\\\{\}}
+\begin{document}
+\begin{titlepage}
+\vspace*{15mm}
+{\large\textcolor{reportblue}{RISC-V 本地推理}}\par
+\vspace{12mm}
+{\Huge\bfseries 面向进迭时空 K1 的 Qwen3.5 本地推理优化\par}
+\vspace{8mm}
+{\Large 基础设施优化与性能评估\par}
+\vspace{12mm}
+{\large 证据截止：2026-10-16（Asia/Singapore）\par}
+\vspace{14mm}
+\begin{tabular}{@{}ll@{}}
+\textbf{平台} & MUSE-Pi-Pro，K1／X60，标称 16 GB 内存 \\
+\textbf{模型} & Qwen3.5 2B 和 4B \\
+\textbf{实现} & SpaceMiT llama.cpp 分支 \\
+\textbf{内容} & 中文技术报告 \\
+\end{tabular}
+\vfill
+\textcolor{reportblue}{\rule{\textwidth}{1pt}}\par
+本报告比较最终默认构建与厂商起点。证据附录见英文报告。\par
+\vspace{6mm}
+\href{https://github.com/MoyaMryia/riscv-accl}{github.com/MoyaMryia/riscv-accl}
+\end{titlepage}
+{\small\tableofcontents}
+\clearpage
+证据截止：2026-10-16，Asia/Singapore。
+
+\hypertarget{ux6458ux8981}{%
+\section{摘要}\label{ux6458ux8981}}
+
+最终版完成一次请求的速度，2B 为起点的 1.24～3.59 倍，4B 为起点的
+1.41～4.72 倍。 起点为厂商 \nolinkurl{5ad05d8} 加两项兼容修改。
+输入越长，收益越大。 服务器内存基本不变，两臂之差小于 3 MiB。
+
+\begin{longtable}[]{@{}lrrrrrr@{}}
+\toprule
+模型 & 输入词元 & 配对数 & 请求时长，s & 加速倍数 & 首词元时间减少 &
+解码，词元/s\tabularnewline
+\midrule
+\endhead
+2B & 512 & 3 & 43.031／34.714 & 1.24 倍 & 17.96\% &
+3.387／4.292\tabularnewline
+2B & 2048 & 3 & 136.554／97.169 & 1.41 倍 & 29.41\% &
+3.108／4.186\tabularnewline
+2B & 8192 & 1 & 875.359／426.221 & 2.05 倍 & 51.77\% &
+2.239／3.600\tabularnewline
+2B & 16384 & 2 & 2868.832／1057.226 & 2.71 倍 & 63.43\% &
+1.659／2.914\tabularnewline
+2B & 32768 & 1 & 10822.886／3014.282 & 3.59 倍 & 72.27\% &
+1.051／2.141\tabularnewline
+4B & 512 & 3 & 113.128／80.346 & 1.41 倍 & 21.72\% &
+1.315／2.133\tabularnewline
+4B & 2048 & 3 & 411.793／246.579 & 1.67 倍 & 39.77\% &
+1.133／1.965\tabularnewline
+4B & 8192 & 1 & 3323.894／1170.324 & 2.84 倍 & 65.17\% &
+0.724／1.485\tabularnewline
+4B & 16384 & 2 & 11388.985／3033.905 & 3.75 倍 & 73.56\% &
+0.490／1.117\tabularnewline
+4B & 32768 & 1 & 42294.220／8952.505 & 4.72 倍 & 78.93\% &
+0.291／0.752\tabularnewline
+\bottomrule
+\end{longtable}
+
+斜线前为起点均值，斜线后为最终版均值。
+加速倍数为起点请求时长除以最终版请求时长。 两臂使用相同的 Q4\_0
+权重、F16 缓存、输入和 65 个输出词元。 完整数据见第 5 节。
+
+版本 \nolinkurl{k1-final-20261013-r3} 是两个模型共用的一份构建。
+选定参数写在源码中，普通启动不需要性能参数或实验变量。
+该构建通过原生检查、状态检查、自然代码回答和迁移启动检查。
+默认配置是冻结搜索中的均衡选择。 样本数和待验收项见文末``适用范围''。
+
+\hypertarget{ux8981ux6c42ux4e0eux72b6ux6001}{%
+\section{1. 要求与状态}\label{ux8981ux6c42ux4e0eux72b6ux6001}}
+
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/Requirements.md}{Requirements.md}
+是唯一的现行验收依据。
+它要求两个指定基座模型、本地推理、厂商分支、匹配对照提升和可复现部署材料。
+它没有规定 8 GB 设备或 32k／64k 上下文。
+完整要求对照见\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-requirements-gap.md}{缺口报告}。
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+状态 & 内容\tabularnewline
+\midrule
+\endhead
+已实现 &
+一套完整源码、一份生产构建、固化默认值、依赖检查和统一启动器\tabularnewline
+已验证 & 两个现用 GGUF 在 K1 上本地运行，不调用云端 API\tabularnewline
+已验证 & 28 次普通默认性能请求、12 次容量扩展请求和 6
+次完整自然代码回答\tabularnewline
+已验证 & 原生转储逐位一致、64
+条短状态记录和两个模型的迁移启动\tabularnewline
+待验收 & 官方模型来源和两个最终权重的可复现转换\tabularnewline
+待验收 & 长上下文重复稳定性、长状态和固定多轮质量套件\tabularnewline
+本版未实现 & GPU 加速、KV 压缩和分页分配的内存收益\tabularnewline
+\bottomrule
+\end{longtable}
+
+本项目没有对外比赛提交记录。
+
+\hypertarget{ux5e73ux53f0ux4e0eux8f6fux4ef6ux8eabux4efd}{%
+\section{2.
+平台与软件身份}\label{ux5e73ux53f0ux4e0eux8f6fux4ef6ux8eabux4efd}}
+
+测试板为 MUSE-Pi-Pro，有 8 个 K1／X60 CPU 核。 标称内存为 16 GB，Linux
+报告约 15.528 GiB。 记录的 CPU 频率为 1.6 GHz。 测试在 tmux
+中以普通用户执行，并持有板端共用锁。
+本轮测试没有修改设备权限或系统设置。
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+项目\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+身份\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+最终版本\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{k1-final-20261013-r3}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+厂商源码\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{a990751d\allowbreak{}55a4c54a\allowbreak{}cf2bb77d\allowbreak{}44282c20\allowbreak{}93652359}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+完整源码文件数\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+3271\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+最终补丁 SHA-256\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{b03d193f\allowbreak{}618d8303\allowbreak{}ce563c4f\allowbreak{}cd4e0372\allowbreak{}6a1f6f45\allowbreak{}2dcc10ec\allowbreak{}edb1a793\allowbreak{}8550477b}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+服务器 SHA-256\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{f254f174\allowbreak{}919c0a97\allowbreak{}ef34366f\allowbreak{}116705f6\allowbreak{}d22574ca\allowbreak{}b4c2bfc3\allowbreak{}9928c0d3\allowbreak{}15b5bfbd}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+配置记录 SHA-256\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{aeef14e2\allowbreak{}356dc9e3\allowbreak{}3b1fc6ab\allowbreak{}595545eb\allowbreak{}67af8189\allowbreak{}4f2c7cbd\allowbreak{}28294862\allowbreak{}8453bdb0}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+编译器\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+GCC 14.2.0，含厂商 IME 支持\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+运行库\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+SPERT 0.6.2 和
+\nolinkurl{libspine_tcm.so.3.0.1}，文件散列见构建收据\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+构建\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Release，IME1 开，OpenMP 关，Native 关，ZBA 开，repack 关，CPU
+后端\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+两个模型文件均为 Q4\_0 权重和 Q4\_0 嵌入。 文件名含
+MTP，表示文件带有草稿张量；本版使用直接解码。
+交付包不含模型权重和厂商运行库。
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+\begin{minipage}[b]{0.47\columnwidth}\raggedright
+模型\strut
+\end{minipage} & \begin{minipage}[b]{0.47\columnwidth}\raggedright
+GGUF SHA-256\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{56f0ddd9\allowbreak{}0dfa0e24\allowbreak{}56af6cb4\allowbreak{}718ece41\allowbreak{}9678d21a\allowbreak{}75d65e27\allowbreak{}353319b5\allowbreak{}e431a2fa}\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+\nolinkurl{Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf}\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+\texttt{0adf6cce\allowbreak{}5df53921\allowbreak{}606033c3\allowbreak{}9a13fae2\allowbreak{}054543b7\allowbreak{}8af0e7ff\allowbreak{}98860e86\allowbreak{}f078ac0f}\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-final-release-tcm.md}{最终版
+TCM 跟踪}核对了两次短请求的设备访问。
+两个服务器都加载了固定库，但访问硬件 TCM 返回 \nolinkurl{EACCES}。 13
+份进程映射中没有 \nolinkurl{/dev/tcm}。 \nolinkurl{/dev/tcm_sync_mem}
+不存在，共享屏障回退到堆内存。
+这两次请求只用于跟踪设备访问，没有产生新的性能或质量结果。
+
+\hypertarget{ux8d77ux70b9ux4e0eux517cux5bb9ux4feeux6539}{%
+\section{3.
+起点与兼容修改}\label{ux8d77ux70b9ux4e0eux517cux5bb9ux4feeux6539}}
+
+起点为 SpaceMiT 分支的
+\texttt{5ad05d87\allowbreak{}96cb094e\allowbreak{}e23a3a01\allowbreak{}52874f8a\allowbreak{}2b3060f8}。
+原版 K1 构建纳入了一个 IME2 文件，构建失败。 第一项兼容修改只删除这一个
+CMake 源文件列表项。 修改后的构建无法加载当前模型的缩减 MTP 草稿头。
+第二项兼容修改读取 \nolinkurl{d2t}，并按存储宽度加载草稿头。
+两臂都没有启用草稿解码。
+
+修改只涉及 CMake 列表和 \nolinkurl{src/models/qwen35.cpp}
+中的张量加载函数。 主输出头、计算图代码和全部计算内核保持原版字节。
+兼容补丁 SHA-256 为
+\texttt{2e8c40a4\allowbreak{}a0567873\allowbreak{}80e37750\allowbreak{}bab00577\allowbreak{}7580978d\allowbreak{}3d9a58d9\allowbreak{}01e911dc\allowbreak{}12fe01d7}。
+两次失败和两项兼容修改的记录都保存在证据中。
+
+两臂都使用 4 线程、批大小 32、上下文 12288、单槽和 F16 键值缓存。
+两臂使用相同的编译器和运行库。
+测得的收益是从原始软件到最终软件的整体收益。
+历史权重量化的变化不计入收益。
+
+\hypertarget{ux5747ux8861ux9ed8ux8ba4ux914dux7f6eux7684ux9009ux62e9}{%
+\section{4.
+均衡默认配置的选择}\label{ux5747ux8861ux9ed8ux8ba4ux914dux7f6eux7684ux9009ux62e9}}
+
+冻结搜索使用一份已核验的 RC1 构建，共 104 次请求。 4
+次预检在原版和候选构建上检查两个模型。
+掩码阶段在两个模型、两种长度上测试 8 种组合，各两轮。 参数阶段测试 2／4
+线程和 16／32／64／128 批大小。 4 次自然回答完成选型检查。 参数阶段保留
+4 线程和批大小 32，没有触发额外复验或回退。
+
+均衡分数对两个模型、两种长度、首词元时间和解码耗时赋相同权重。
+首词元时间指客户端从发出请求到收到第一个输出词元的时间。 与最低分相差
+3\% 以内的组合，按冻结规则视为无法区分。
+在该区间内，规则优先选择启用候选较少的组合。 掩码 7 的观测分数最低，为
+0.8904876472483813。 掩码 3 的分数为
+0.915536301962804，处于该区间内，因此规则选择掩码 3。
+选型分数相对同构建的 C0 对照计算，与第 5 节的真实起点对照分开。
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+编译默认值 & 取值\tabularnewline
+\midrule
+\endhead
+工作线程与批线程 & 4／4\tabularnewline
+批大小与微批大小 & 32／32\tabularnewline
+上下文与槽位 & 12288／1\tabularnewline
+缓存与注意力 & F16 键值缓存，闪存注意力开\tabularnewline
+GPU 层数与解码 & 0，直接解码\tabularnewline
+公共路径 & 宽 RVV 注意力和 IME route 3 开\tabularnewline
+候选掩码 & 3：B1-r2 和 C1 开，C2-r2 关\tabularnewline
+\bottomrule
+\end{longtable}
+
+启动器清除继承的实验变量。 最终服务器只接收模型、别名、主机和端口参数。
+运行日志和服务器属性确认了实际默认值。
+
+\hypertarget{ux5339ux914dux6027ux80fdux7ed3ux679c}{%
+\section{5. 匹配性能结果}\label{ux5339ux914dux6027ux80fdux7ed3ux679c}}
+
+性能请求使用固定的完整输入词元列表和 65 个固定输出词元。
+单词元偏置使两个版本的解码历史完全相同。
+这一合成负载只测性能，答案质量由单独的自然回答请求检查。
+
+所有请求的提示缓存复用为 0。 测试不清理操作系统文件缓存。
+每次请求前重新启动服务器，加载时间不计入请求计时。 28
+次请求全部完成，每次都生成 65 个词元。
+输入散列、输出词元、全文和计时都符合协议。
+
+短输入每形状 3 对，两臂顺序交替。 8192 输入每个模型 1
+对，两个模型采用相反顺序。
+表中数值为每臂请求指标的算术均值，斜线前为起点，斜线后为最终版。
+时间减少和吞吐增加使用不同的计算公式。
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+模型 & 输入 & 配对数 & 首词元时间，s & 服务端预填充，s &
+预填充，词元/s\tabularnewline
+\midrule
+\endhead
+2B & 512 & 3 & 23.835／19.556 & 23.831／19.551 &
+21.485／26.188\tabularnewline
+2B & 2048 & 3 & 115.639／81.633 & 115.632／81.626 &
+17.712／25.090\tabularnewline
+2B & 8192 & 1 & 846.321／408.162 & 846.303／408.145 &
+9.680／20.071\tabularnewline
+4B & 512 & 3 & 63.697／49.865 & 63.692／49.860 &
+8.039／10.269\tabularnewline
+4B & 2048 & 3 & 354.441／213.497 & 354.434／213.490 &
+5.778／9.593\tabularnewline
+4B & 8192 & 1 & 3234.172／1126.535 & 3234.155／1126.518 &
+2.533／7.272\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+模型 & 输入 & 解码，词元/s & 吞吐变化 & 请求时长，s & 采样峰值
+RSS，MiB\tabularnewline
+\midrule
+\endhead
+2B & 512 & 3.387／4.292 & +26.69\% & 43.031／34.714 &
+2471.97／2469.73\tabularnewline
+2B & 2048 & 3.108／4.186 & +34.68\% & 136.554／97.169 &
+2472.29／2469.96\tabularnewline
+2B & 8192 & 2.239／3.600 & +60.82\% & 875.359／426.221 &
+2473.30／2471.19\tabularnewline
+4B & 512 & 1.315／2.133 & +62.17\% & 113.128／80.346 &
+5342.20／5340.58\tabularnewline
+4B & 2048 & 1.133／1.965 & +73.37\% & 411.793／246.579 &
+5342.20／5340.88\tabularnewline
+4B & 8192 & 0.724／1.485 & +104.91\% & 3323.894／1170.324 &
+5342.88／5342.11\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+模型 & 输入 & 首词元时间减少 & 预填充吞吐变化 &
+解码耗时减少\tabularnewline
+\midrule
+\endhead
+2B & 512 & 17.96\% & +21.89\% & 21.04\%\tabularnewline
+2B & 2048 & 29.41\% & +41.66\% & 25.72\%\tabularnewline
+2B & 8192 & 51.77\% & +107.35\% & 37.82\%\tabularnewline
+4B & 512 & 21.72\% & +27.74\% & 38.34\%\tabularnewline
+4B & 2048 & 39.77\% & +66.02\% & 42.32\%\tabularnewline
+4B & 8192 & 65.17\% & +187.09\% & 51.20\%\tabularnewline
+\bottomrule
+\end{longtable}
+
+RSS 指服务器进程的驻留内存。 表中为每次请求采样峰值的均值，采样间隔 0.2
+s。 独立汇总保存了均值、中位数、最小值、最大值和每次请求的身份。
+按冻结门槛，所有形状的首词元时间和解码耗时都没有明确退化。 门槛取 3\%
+与起点臂完整波动范围中的较大值。
+
+\hypertarget{ux6700ux7ec8ux7248ux5bb9ux91cfux6269ux5c55}{%
+\subsection{5.1
+最终版容量扩展}\label{ux6700ux7ec8ux7248ux5bb9ux91cfux6269ux5c55}}
+
+单独的冻结协议把容量扩展到 20480 或 36864，对应实际输入 16384 或 32768
+词元。 最终服务器除模型、别名、主机和端口外，只额外接收容量参数。
+优化默认值不变，普通默认上下文仍为 12288。
+两个模型的全部请求都完成，输出 65 个匹配词元，提示复用为 0。 16384
+输入每个模型 2 对，32768 输入每个模型 1 对。
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\toprule
+模型 & 输入 & 配对数 & 首词元时间，s & 预填充，s &
+预填充，词元/s\tabularnewline
+\midrule
+\endhead
+2B & 16384 & 2 & 2829.646／1034.907 & 2829.614／1034.876 &
+5.797／15.832\tabularnewline
+2B & 32768 & 1 & 10761.012／2983.902 & 10760.952／2983.845 &
+3.045／10.982\tabularnewline
+4B & 16384 & 2 & 11256.195／2975.716 & 11256.164／2975.685 &
+1.456／5.506\tabularnewline
+4B & 32768 & 1 & 42070.823／8866.022 & 42070.765／8865.966 &
+0.779／3.696\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+模型 & 输入 & 解码，词元/s & 请求时长，s & 峰值 RSS，MiB\tabularnewline
+\midrule
+\endhead
+2B & 16384 & 1.659／2.914 & 2868.832／1057.226 &
+2571.781／2569.617\tabularnewline
+2B & 32768 & 1.051／2.141 & 10822.886／3014.282 &
+2767.641／2766.426\tabularnewline
+4B & 16384 & 0.490／1.117 & 11388.985／3033.905 &
+5600.367／5600.611\tabularnewline
+4B & 32768 & 0.291／0.752 & 42294.220／8952.505 &
+6117.164／6117.809\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}lrrrr@{}}
+\toprule
+模型 & 输入 & 首词元时间减少 & 预填充提升 & 解码提升\tabularnewline
+\midrule
+\endhead
+2B & 16384 & 63.43\% & +173.13\% & +75.59\%\tabularnewline
+2B & 32768 & 72.27\% & +260.64\% & +103.72\%\tabularnewline
+4B & 16384 & 73.56\% & +278.29\% & +128.23\%\tabularnewline
+4B & 32768 & 78.93\% & +374.52\% & +158.34\%\tabularnewline
+\bottomrule
+\end{longtable}
+
+独立检查核对了 12 次请求、221 份收据和 101704 个内存采样。 控制器总耗时
+28.381 h，没有请求达到冻结的时间或内存上限。 RSS
+采样覆盖服务器加载和请求，标称间隔 1 s。 采样到的最低系统可用内存为
+11396.441 MiB，最高服务器 RSS 为 6117.809 MiB。
+完整协议、样本范围和复现命令见\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-ultralong-final-comparison.md}{容量报告}。
+
+\hypertarget{ux6b63ux786eux6027ux4e0eux5931ux8d25ux8bb0ux5f55}{%
+\section{6.
+正确性与失败记录}\label{ux6b63ux786eux6027ux4e0eux5931ux8d25ux8bb0ux5f55}}
+
+最终构建通过 104 项 route、95 项注意力、432 项 SSM 和 158 项 GDN
+原生检查。 转储散列与已核验的 RC1 参考一致。 两个模型共 64
+条全词表状态记录逐位一致。 这些记录覆盖 RS 0／3、状态清空，以及上下文
+4096 下的 32／33／64／96 前缀。
+
+6 次完整自然回答覆盖两个模型的起点、RC1 C0 和最终版三臂。
+每次回答都自然停止，并通过冻结 Unicode 任务的 106 项功能检查。 2B
+三臂全文一致，各生成 508 个词元。 4B 起点生成 595 个词元，全文不同。 RC1
+与最终版的 4B 回答全文一致，各生成 521 个词元。 两种 4B
+文本都通过功能检查。
+
+r1 交付通过数值检查，但参数解析器的 GPU 默认值断言失败。 r2
+修正了该断言，但启动时自动使用 4 个槽位。 r3
+在源码中把服务器默认槽位固定为 1，并完整重新构建。
+两个失败版本的源码、构建身份和日志都已保存。
+
+旧的三项全开组合在 4B／2048／65 上相对 B1 退化
+3.0220477\%，该结论在原测量条件下保留。 IME
+标量调度候选未通过性能初筛，继续排除。 GPU
+卸载和分页分配的内存收益没有合格结果。
+预测器的误差和宽区间与实测模型结果分开记录。
+
+最终搜索测试 B1-r2、C1 和 C2-r2 的 8 种组合，都没有启用 MTP。 此前的 MTP
+试验在两个模型上都通过了相对质量门槛。 该试验的六题总耗时，2B 减少
+8.63\%，4B 减少 15.22\%。 MTP
+保持关闭，原因是该试验另设了绝对可用性门槛。 直接解码在区间代码题和 2B
+算术题上同样未通过该门槛。
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-next-plan.md}{下一步计划}将在
+r3 上按相对质量门槛和分类速度门槛重新测试 MTP。
+
+\hypertarget{ux90e8ux7f72ux4e0eux8bc1ux636eux5305}{%
+\section{7. 部署与证据包}\label{ux90e8ux7f72ux4e0eux8bc1ux636eux5305}}
+
+成果包目录 \nolinkurl{final-release}
+包含可运行代码、一键部署入口、官方转换脚本、部署说明、性能报告和设计说明。
+它包含完整生产源码与二进制、固定的转换源码、模型身份元数据和独立证据归档。
+生产二进制保持原核验散列。 新入口先创建 tmux
+会话并取得共用锁，再启动服务器。
+两个模型的启动都通过身份、实际默认值、锁和健康检查。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bash}\NormalTok{ deploy.sh /absolute/path/to/model.gguf}
+\end{Highlighting}
+\end{Shaded}
+
+成果包清单、检查表和文件散列记录了完整内容。
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/final-release/SUBMISSION-PLAN.md}{交付计划}列出六项材料的对应位置。
+
+归档版本也可以直接启动。
+两个模型使用同一个二进制和同一组默认值，只更换模型路径。 在 tmux
+中，从解压后的版本目录执行：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{bash}\NormalTok{ package/with{-}lock.sh python3 package/start.py {-}{-}model /path/to/model.gguf}
+\end{Highlighting}
+\end{Shaded}
+
+依赖目录不同时，使用 \nolinkurl{--spert} 和 \nolinkurl{--tcm}
+指定库位置。 这两个参数只选择库位置，不选择性能配置。
+启动器核对二进制、模型和运行库散列。
+二进制迁移后，两个模型的启动都通过检查。
+
+归档为
+\nolinkurl{lab/final-default-20261013/release/k1-final-20261013-r3.tar.gz}。
+外部旁注文件记录归档 SHA-256。 Git
+文本视图省略大型转储、线程采样和二进制。
+严格重放收据需要保留的完整归档。 本地检查核对 338 份对照收据和 119
+份最终验证收据。 搜索检查另核对 951 份搜索收据和 19 份原生收据。
+
+\hypertarget{ux5386ux53f2ux8bc1ux636e}{%
+\section{8. 历史证据}\label{ux5386ux53f2ux8bc1ux636e}}
+
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/snapshots/2026-10-12/SUBMISSION-REPORT.pdf}{10
+月 12 日快照}保存旧版报告的全部内容。
+不同对照下的历史百分比不能相加或相乘。
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-07-release-verification.md}{10
+月 7 日发布}和
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-unified-release-candidate.md}{10
+月 13 日 RC1} 保留为对照记录。
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/WORK-LEDGER.md}{项目工作总账}列出全部工作、采用项和每个停止事项的原因。
+\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-next-plan.md}{下一步计划}按预期收益排列剩余实验。
+
+\hypertarget{ux9002ux7528ux8303ux56f4}{%
+\section{适用范围}\label{ux9002ux7528ux8303ux56f4}}
+
+配置：MUSE-Pi-Pro，K1／X60，标称 16 GB 内存，版本
+\nolinkurl{k1-final-20261013-r3}，4 线程，批大小 32，F16
+键值缓存，单槽。 样本：512 和 2048 输入每形状 3 对；8192 和 32768
+输入每个模型 1 对；16384 输入每个模型 2 对。
+自然回答检查每个模型每臂使用一个 Unicode 代码任务。
+默认配置是冻结搜索范围内的均衡选择。
+整体对照没有分离各项已采用路径的贡献。
+
+\begin{itemize}
+\tightlist
+\item
+  待验证：8192、16384 和 32768 输入的重复稳定性。阻塞：这些形状只有 1～2
+  对。解除条件：每形状至少测量 3 对。
+\item
+  待验证：通用质量和多轮质量。阻塞：固定多轮质量套件没有在 r3
+  上执行。解除条件：在两个模型上按相对质量门槛执行该套件。
+\item
+  待验证：长文语义质量和长状态正确性。阻塞：16k 和 32k 请求使用 65
+  个强制输出词元。解除条件：在 r3 上执行自然长文回答和长状态检查。
+\item
+  待验证：官方模型来源和完整转换。阻塞：两个官方检查点没有完整的下载与转换记录。解除条件：用随包脚本转换两个检查点，再与现用
+  GGUF 比较文件和回答。
+\item
+  待验证：宽 RVV、route 3、B1-r2 和 C1
+  各自的贡献。阻塞：最终对照只比较整体版本。解除条件：在同一 r3
+  二进制上逐项关闭并配对测量。
+\item
+  待验证：确切依赖的统一公开下载归档。阻塞：厂商运行库不在交付包中。解除条件：发布确切运行库文件及其
+  SHA-256。
+\item
+  待验证：8 GB 设备上的运行。阻塞：没有测试 8 GB 板。解除条件：在 8 GB
+  板上执行容量协议。
+\end{itemize}
+\end{document}

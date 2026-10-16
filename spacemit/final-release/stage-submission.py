@@ -55,6 +55,7 @@ def main():
     reports = output / 'reports'
     reports.mkdir()
     for name in ('SUBMISSION-REPORT.md', 'SUBMISSION-REPORT.tex', 'SUBMISSION-REPORT.pdf',
+                 'SUBMISSION-ZH.md', 'SUBMISSION-ZH.tex', 'SUBMISSION-ZH.pdf',
                  'SUBMISSION-EVIDENCE.md', '2026-10-14-final-default-comparison.md'):
         shutil.copy2(repo / 'spacemit/reports' / name, reports / name)
     evidence = output / 'evidence'
