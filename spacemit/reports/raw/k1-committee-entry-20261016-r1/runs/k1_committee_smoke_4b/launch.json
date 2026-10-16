@@ -1,0 +1,48 @@
+{
+  "version": "k1-final-20261013-r3",
+  "model": "4B",
+  "model_sha256": "0adf6cce5df53921606033c39a13fae2054543b78af0e7ff98860e86f078ac0f",
+  "argv": [
+    "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-committee-release-20261016-r1/runtime/build/bin/llama-server",
+    "-m",
+    "/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-4B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+    "--alias",
+    "local",
+    "--port",
+    "18555"
+  ],
+  "environment": {
+    "LD_LIBRARY_PATH": "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-committee-release-20261016-r1/runtime/build/bin:/home/moyamryia/Projects/llm-bench/.toolchain/spine-tcm:/home/moyamryia/Projects/spacemit-llama/spert/spine-runtime.riscv64.0.6.2/lib"
+  },
+  "compiled_policy": {
+    "version": "k1-final-20261013-r3",
+    "config": {
+      "mask": 3,
+      "threads": 4,
+      "ubatch": 32
+    },
+    "objective": "balanced tested configurations",
+    "context": 12288,
+    "cache_type_k": "f16",
+    "cache_type_v": "f16",
+    "gpu_layers": 0,
+    "flash_attention": true,
+    "parallel": 1,
+    "source": "combined-r1",
+    "quality": {
+      "2B": {
+        "control": "78452b26413a09aa0627ec509f4a999de25036b6eac78eff986b969e7bf276df",
+        "selected": "78452b26413a09aa0627ec509f4a999de25036b6eac78eff986b969e7bf276df",
+        "checks": 106
+      },
+      "4B": {
+        "control": "ca5846d8abbae58588847578fddde235d093991bf143cce8320279fdeffae7d8",
+        "selected": "ca5846d8abbae58588847578fddde235d093991bf143cce8320279fdeffae7d8",
+        "checks": 106
+      }
+    },
+    "search_converged": true,
+    "supersedes": "k1-final-20261013-r2",
+    "selection_policy_sha256": "5575f1d2089dab8fce89e7197ef222da9d7b35ac7e4148c8e0fb128efd711c7d"
+  }
+}
