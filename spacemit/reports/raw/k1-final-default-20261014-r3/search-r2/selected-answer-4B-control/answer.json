@@ -1,0 +1,28 @@
+{
+  "answer": "def encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    \n    Args:\n        text (str): The input string to encode.\n        \n    Returns:\n        List[tuple]: A list of tuples where each tuple contains a character and its run count.\n                     Returns an empty list for empty input.\n    \"\"\"\n    if not text:\n        return []\n    \n    result = []\n    current_char = text[0]\n    count = 1\n    \n    for char in text[1:]:\n        if char == current_char:\n            count += 1\n        else:\n            result.append((current_char, count))\n            current_char = char\n            count = 1\n    \n    result.append((current_char, count))\n    return result\n\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into the original string.\n    \n    Args:\n        runs (list): A list of tuples where each tuple contains a character and its run count.\n                     Each character must be a one-character string, and count must be a positive int.\n                     Returns an empty string for empty input.\n                     \n    Returns:\n        str: The reconstructed string.\n        \n    Raises:\n        ValueError: If any item is not a two-element list/tuple, character is not a one-char string,\n                   or count is not a positive int (excluding bool).\n    \"\"\"\n    if not runs:\n        return \"\"\n    \n    result = []\n    \n    for item in runs:\n        # Check if item is a list or tuple with exactly 2 elements\n        if not isinstance(item, (list, tuple)) or len(item) != 2:\n            raise ValueError(\"Each item must be a two-element list or tuple.\")\n        \n        char, count = item[0], item[1]\n        \n        # Check if character is a one-character string\n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        # Check if count is a positive int (excluding bool)\n        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:\n            raise ValueError(\"Count must be a positive int, excluding bool.\")\n        \n        result.append(char * count)\n    \n    return ''.join(result)",
+  "ttft_s": 17.784,
+  "wall_s": 281.149,
+  "finish_reason": "stop",
+  "answer_sha256": "ca5846d8abbae58588847578fddde235d093991bf143cce8320279fdeffae7d8",
+  "usage": {
+    "completion_tokens": 521,
+    "prompt_tokens": 162,
+    "total_tokens": 683,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "timings": {
+    "cache_n": 0,
+    "prompt_n": 162,
+    "prompt_ms": 17619.44,
+    "prompt_per_token_ms": 108.76197530864196,
+    "prompt_per_second": 9.194389833048042,
+    "predicted_n": 521,
+    "predicted_ms": 263363.211,
+    "predicted_per_token_ms": 505.49560652591174,
+    "predicted_per_second": 1.978256560670503
+  },
+  "server_slot": 0,
+  "reasoning_text": ""
+}
