@@ -1,0 +1,624 @@
+{
+  "status": "verified-limited",
+  "stages": {
+    "identity": "pass",
+    "native": {
+      "status": "pass",
+      "route_cases_per_arm": 104,
+      "attention": 95,
+      "ssm_per_mode": 432,
+      "gdn_per_mode": 158,
+      "hashes": {
+        "route-0": "e31997719879fb9a858f9e970af7e11ceb68124657d41c53bd3b3f82c4dbd4dc",
+        "route-3": "e31997719879fb9a858f9e970af7e11ceb68124657d41c53bd3b3f82c4dbd4dc",
+        "reference-attention": "61a2487e550c7e334b3a3dbd854901d6098481512ea746f50ea33a4323ed8c21",
+        "reference-ssm": "7e154f0a52c2475581a62a64f549a17c7d342d46c55dae7adf05d09c05001c69",
+        "reference-gdn": "9b0a78abc67a76aa2461a07a72a839b4a87c55f55c12b9724af45b7a75b07b86",
+        "unified-attention": "61a2487e550c7e334b3a3dbd854901d6098481512ea746f50ea33a4323ed8c21",
+        "unified-ssm": "7e154f0a52c2475581a62a64f549a17c7d342d46c55dae7adf05d09c05001c69",
+        "unified-gdn": "9b0a78abc67a76aa2461a07a72a839b4a87c55f55c12b9724af45b7a75b07b86",
+        "unified-ssm-c1": "7e154f0a52c2475581a62a64f549a17c7d342d46c55dae7adf05d09c05001c69",
+        "unified-gdn-legacy": "9b0a78abc67a76aa2461a07a72a839b4a87c55f55c12b9724af45b7a75b07b86"
+      }
+    },
+    "state": {
+      "status": "pass",
+      "records": 224,
+      "max_prefix": 96,
+      "long_state_acceptance": "pending"
+    },
+    "answers": {
+      "status": "pass",
+      "results": {
+        "answer-2B-baseline": {
+          "output_tokens": 508,
+          "checks": 106,
+          "same_as_preserved": true,
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 162,
+            "prompt_ms": 7405.176,
+            "prompt_per_token_ms": 45.71096296296297,
+            "prompt_per_second": 21.87659010400293,
+            "predicted_n": 508,
+            "predicted_ms": 140145.875,
+            "predicted_per_token_ms": 275.87770669291336,
+            "predicted_per_second": 3.6247945221363094
+          }
+        },
+        "answer-2B-optimized": {
+          "output_tokens": 508,
+          "checks": 106,
+          "same_as_preserved": true,
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 162,
+            "prompt_ms": 6827.076,
+            "prompt_per_token_ms": 42.14244444444444,
+            "prompt_per_second": 23.729045934159807,
+            "predicted_n": 508,
+            "predicted_ms": 116541.101,
+            "predicted_per_token_ms": 229.41161614173228,
+            "predicted_per_second": 4.358977181792714
+          }
+        },
+        "answer-4B-baseline": {
+          "output_tokens": 521,
+          "checks": 106,
+          "same_as_preserved": true,
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 162,
+            "prompt_ms": 18867.399,
+            "prompt_per_token_ms": 116.46542592592593,
+            "prompt_per_second": 8.586239152519115,
+            "predicted_n": 521,
+            "predicted_ms": 356141.611,
+            "predicted_per_token_ms": 683.5731497120921,
+            "predicted_per_second": 1.462901227792784
+          }
+        },
+        "answer-4B-optimized": {
+          "output_tokens": 521,
+          "checks": 106,
+          "same_as_preserved": true,
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 162,
+            "prompt_ms": 17605.928,
+            "prompt_per_token_ms": 108.67856790123457,
+            "prompt_per_second": 9.201446240152748,
+            "predicted_n": 521,
+            "predicted_ms": 259587.533,
+            "predicted_per_token_ms": 498.2486238003839,
+            "predicted_per_second": 2.007030129601794
+          }
+        }
+      },
+      "general_quality": "pending"
+    },
+    "performance": {
+      "status": "pass",
+      "requests": 24,
+      "samples_per_arm_shape": 2,
+      "comparisons": [
+        {
+          "model": "2B",
+          "input_tokens": 512,
+          "output_tokens": 65,
+          "control": "baseline",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "baseline": [
+                  22791.333,
+                  22369.563
+                ],
+                "optimized": [
+                  20904.461,
+                  20820.051
+                ]
+              },
+              "baseline_mean_ms": 22580.447999999997,
+              "optimized_mean_ms": 20862.256,
+              "time_reduction_percent": 7.609202439207563,
+              "baseline_range_percent": 1.867854880470044,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "baseline": [
+                  17759.426,
+                  18208.562
+                ],
+                "optimized": [
+                  15136.471,
+                  15148.93
+                ]
+              },
+              "baseline_mean_ms": 17983.994,
+              "optimized_mean_ms": 15142.700499999999,
+              "time_reduction_percent": 15.799012722090545,
+              "baseline_range_percent": 2.4974207620398574,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "baseline": [
+                  22795.727,
+                  22374.014
+                ],
+                "optimized": [
+                  20909.218,
+                  20824.305
+                ]
+              },
+              "baseline_mean_ms": 22584.870499999997,
+              "optimized_mean_ms": 20866.7615,
+              "time_reduction_percent": 7.607344925887427,
+              "baseline_range_percent": 1.8672367415168478,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "2B",
+          "input_tokens": 512,
+          "output_tokens": 65,
+          "control": "reference",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "reference": [
+                  20648.522,
+                  20666.549
+                ],
+                "optimized": [
+                  20904.461,
+                  20820.051
+                ]
+              },
+              "baseline_mean_ms": 20657.535499999998,
+              "optimized_mean_ms": 20862.256,
+              "time_reduction_percent": -0.9910209279321069,
+              "baseline_range_percent": 0.08726597613736753,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "reference": [
+                  15121.255,
+                  15027.157
+                ],
+                "optimized": [
+                  15136.471,
+                  15148.93
+                ]
+              },
+              "baseline_mean_ms": 15074.205999999998,
+              "optimized_mean_ms": 15142.700499999999,
+              "time_reduction_percent": -0.454382141255083,
+              "baseline_range_percent": 0.6242318832580632,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "reference": [
+                  20653.409,
+                  20670.885
+                ],
+                "optimized": [
+                  20909.218,
+                  20824.305
+                ]
+              },
+              "baseline_mean_ms": 20662.146999999997,
+              "optimized_mean_ms": 20866.7615,
+              "time_reduction_percent": -0.9902867306093688,
+              "baseline_range_percent": 0.08457978737639778,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "4B",
+          "input_tokens": 512,
+          "output_tokens": 65,
+          "control": "baseline",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "baseline": [
+                  57461.968,
+                  57004.909
+                ],
+                "optimized": [
+                  52667.452,
+                  52457.492
+                ]
+              },
+              "baseline_mean_ms": 57233.438500000004,
+              "optimized_mean_ms": 52562.471999999994,
+              "time_reduction_percent": 8.161254368807514,
+              "baseline_range_percent": 0.7985873502952318,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "baseline": [
+                  46013.774,
+                  45402.012
+                ],
+                "optimized": [
+                  33099.515,
+                  32421.957
+                ]
+              },
+              "baseline_mean_ms": 45707.893,
+              "optimized_mean_ms": 32760.735999999997,
+              "time_reduction_percent": 28.325867044451158,
+              "baseline_range_percent": 1.3384165400054542,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "baseline": [
+                  57466.315,
+                  57009.291
+                ],
+                "optimized": [
+                  52671.806,
+                  52462.285
+                ]
+              },
+              "baseline_mean_ms": 57237.803,
+              "optimized_mean_ms": 52567.0455,
+              "time_reduction_percent": 8.16026691310986,
+              "baseline_range_percent": 0.7984653079713855,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "4B",
+          "input_tokens": 512,
+          "output_tokens": 65,
+          "control": "reference",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "reference": [
+                  52404.828,
+                  52157.001
+                ],
+                "optimized": [
+                  52667.452,
+                  52457.492
+                ]
+              },
+              "baseline_mean_ms": 52280.9145,
+              "optimized_mean_ms": 52562.471999999994,
+              "time_reduction_percent": -0.538547389028543,
+              "baseline_range_percent": 0.47402958110077587,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "reference": [
+                  32429.701,
+                  32413.474
+                ],
+                "optimized": [
+                  33099.515,
+                  32421.957
+                ]
+              },
+              "baseline_mean_ms": 32421.5875,
+              "optimized_mean_ms": 32760.735999999997,
+              "time_reduction_percent": -1.0460576614269579,
+              "baseline_range_percent": 0.050049985985425885,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "reference": [
+                  52409.625,
+                  52161.479
+                ],
+                "optimized": [
+                  52671.806,
+                  52462.285
+                ]
+              },
+              "baseline_mean_ms": 52285.551999999996,
+              "optimized_mean_ms": 52567.0455,
+              "time_reduction_percent": -0.5383772174768264,
+              "baseline_range_percent": 0.47459764793149867,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "2B",
+          "input_tokens": 2048,
+          "output_tokens": 65,
+          "control": "baseline",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "baseline": [
+                  93646.606,
+                  93179.309
+                ],
+                "optimized": [
+                  87083.6,
+                  87228.09
+                ]
+              },
+              "baseline_mean_ms": 93412.95749999999,
+              "optimized_mean_ms": 87155.845,
+              "time_reduction_percent": 6.698334650200954,
+              "baseline_range_percent": 0.5002485870335558,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "baseline": [
+                  19714.432,
+                  19692.138
+                ],
+                "optimized": [
+                  16879.112,
+                  16804.162
+                ]
+              },
+              "baseline_mean_ms": 19703.285,
+              "optimized_mean_ms": 16841.637000000002,
+              "time_reduction_percent": 14.5237101325997,
+              "baseline_range_percent": 0.11314864501021879,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "baseline": [
+                  93653.547,
+                  93186.294
+                ],
+                "optimized": [
+                  87091.072,
+                  87235.159
+                ]
+              },
+              "baseline_mean_ms": 93419.92050000001,
+              "optimized_mean_ms": 87163.1155,
+              "time_reduction_percent": 6.6975062347650045,
+              "baseline_range_percent": 0.500164202130756,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "2B",
+          "input_tokens": 2048,
+          "output_tokens": 65,
+          "control": "reference",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "reference": [
+                  87067.61,
+                  87542.629
+                ],
+                "optimized": [
+                  87083.6,
+                  87228.09
+                ]
+              },
+              "baseline_mean_ms": 87305.1195,
+              "optimized_mean_ms": 87155.845,
+              "time_reduction_percent": 0.17098023673171037,
+              "baseline_range_percent": 0.5440906589675996,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "reference": [
+                  17059.449,
+                  16994.463
+                ],
+                "optimized": [
+                  16879.112,
+                  16804.162
+                ]
+              },
+              "baseline_mean_ms": 17026.956,
+              "optimized_mean_ms": 16841.637000000002,
+              "time_reduction_percent": 1.0883859686957265,
+              "baseline_range_percent": 0.38166540161377516,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "reference": [
+                  87074.911,
+                  87549.643
+                ],
+                "optimized": [
+                  87091.072,
+                  87235.159
+                ]
+              },
+              "baseline_mean_ms": 87312.277,
+              "optimized_mean_ms": 87163.1155,
+              "time_reduction_percent": 0.1708367999611382,
+              "baseline_range_percent": 0.5437173514556305,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "4B",
+          "input_tokens": 2048,
+          "output_tokens": 65,
+          "control": "baseline",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "baseline": [
+                  240827.105,
+                  241904.412
+                ],
+                "optimized": [
+                  225213.88,
+                  223583.401
+                ]
+              },
+              "baseline_mean_ms": 241365.7585,
+              "optimized_mean_ms": 224398.6405,
+              "time_reduction_percent": 7.029629266986515,
+              "baseline_range_percent": 0.4463379589114339,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "baseline": [
+                  53784.874,
+                  53656.533
+                ],
+                "optimized": [
+                  41096.114,
+                  40389.255
+                ]
+              },
+              "baseline_mean_ms": 53720.7035,
+              "optimized_mean_ms": 40742.6845,
+              "time_reduction_percent": 24.158319147849582,
+              "baseline_range_percent": 0.23890416848320004,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "baseline": [
+                  240835.009,
+                  241911.972
+                ],
+                "optimized": [
+                  225220.948,
+                  223590.352
+                ]
+              },
+              "baseline_mean_ms": 241373.4905,
+              "optimized_mean_ms": 224405.65000000002,
+              "time_reduction_percent": 7.0297034131011955,
+              "baseline_range_percent": 0.44618114349223365,
+              "clear_regression": false
+            }
+          }
+        },
+        {
+          "model": "4B",
+          "input_tokens": 2048,
+          "output_tokens": 65,
+          "control": "reference",
+          "candidate": "optimized",
+          "metrics": {
+            "prefill": {
+              "values_ms": {
+                "reference": [
+                  223907.047,
+                  222027.668
+                ],
+                "optimized": [
+                  225213.88,
+                  223583.401
+                ]
+              },
+              "baseline_mean_ms": 222967.35749999998,
+              "optimized_mean_ms": 224398.6405,
+              "time_reduction_percent": -0.6419249059809173,
+              "baseline_range_percent": 0.8428942339687486,
+              "clear_regression": false
+            },
+            "decode": {
+              "values_ms": {
+                "reference": [
+                  40603.319,
+                  41440.259
+                ],
+                "optimized": [
+                  41096.114,
+                  40389.255
+                ]
+              },
+              "baseline_mean_ms": 41021.789000000004,
+              "optimized_mean_ms": 40742.6845,
+              "time_reduction_percent": 0.680381101857852,
+              "baseline_range_percent": 2.040232813834606,
+              "clear_regression": false
+            },
+            "ttft": {
+              "values_ms": {
+                "reference": [
+                  223915.259,
+                  222034.709
+                ],
+                "optimized": [
+                  225220.948,
+                  223590.352
+                ]
+              },
+              "baseline_mean_ms": 222974.984,
+              "optimized_mean_ms": 224405.65000000002,
+              "time_reduction_percent": -0.6416262373181825,
+              "baseline_range_percent": 0.8433905751507929,
+              "clear_regression": false
+            }
+          }
+        }
+      ],
+      "scope": "limited matched observations"
+    },
+    "relocation": {
+      "status": "pass",
+      "models": [
+        "2B",
+        "4B"
+      ],
+      "library_paths": "package, explicit runtimes, system"
+    }
+  },
+  "requests": [
+    "cold-2B-p512-0-reference",
+    "cold-2B-p512-1-baseline",
+    "cold-2B-p512-2-optimized",
+    "cold-2B-p512-3-optimized",
+    "cold-2B-p512-4-baseline",
+    "cold-2B-p512-5-reference",
+    "cold-4B-p512-0-reference",
+    "cold-4B-p512-1-baseline",
+    "cold-4B-p512-2-optimized",
+    "cold-4B-p512-3-optimized",
+    "cold-4B-p512-4-baseline",
+    "cold-4B-p512-5-reference",
+    "cold-2B-p2048-0-reference",
+    "cold-2B-p2048-1-baseline",
+    "cold-2B-p2048-2-optimized",
+    "cold-2B-p2048-3-optimized",
+    "cold-2B-p2048-4-baseline",
+    "cold-2B-p2048-5-reference",
+    "cold-4B-p2048-0-reference",
+    "cold-4B-p2048-1-baseline",
+    "cold-4B-p2048-2-optimized",
+    "cold-4B-p2048-3-optimized",
+    "cold-4B-p2048-4-baseline",
+    "cold-4B-p2048-5-reference"
+  ],
+  "elapsed_s": 6697.184087542992
+}

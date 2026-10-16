@@ -1,0 +1,31 @@
+identity
+native numeric and fallback
+both models short state and reset
+state-2B--1
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 289, in run
+    self.identity();self.native();self.state();self.answers();self.performance();self.relocate()
+                                  ^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 130, in state
+    log=self.command([self.build/'bin/test-state',path,max(arm,0),dump,'short'],label,env,1200)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 65, in command
+    proc.check_returncode()
+  File "/usr/lib/python3.12/subprocess.py", line 502, in check_returncode
+    raise CalledProcessError(self.returncode, self.args, self.stdout,
+subprocess.CalledProcessError: Command '['/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/build/bin/test-state', '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf', '0', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/validation/state-2B--1.data', 'short']' died with <Signals.SIGABRT: 6>.
+failed
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 307, in <module>
+    Run(parser.parse_args()).run()
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 289, in run
+    self.identity();self.native();self.state();self.answers();self.performance();self.relocate()
+                                  ^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 130, in state
+    log=self.command([self.build/'bin/test-state',path,max(arm,0),dump,'short'],label,env,1200)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/package/validate.py", line 65, in command
+    proc.check_returncode()
+  File "/usr/lib/python3.12/subprocess.py", line 502, in check_returncode
+    raise CalledProcessError(self.returncode, self.args, self.stdout,
+subprocess.CalledProcessError: Command '['/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/build/bin/test-state', '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf', '0', '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/k1-unified-20261013-rc1/validation/state-2B--1.data', 'short']' died with <Signals.SIGABRT: 6>.
