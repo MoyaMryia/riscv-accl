@@ -1,6 +1,10 @@
 # K1 四个隔离候选
 
-日期：2026-10-08。
+准备记录日期：2026-10-08。
+当前判定见[版本结果索引](../../reports/RESULTS.md)和[独立候选判定](../../reports/2026-10-09-local-candidate-result-rejudgment.md)。
+C1、C2-r2、旧 C3 与 B1-r2 已有独立模型验证。
+三项全开组合的[停止复核](../../reports/2026-10-12-combined-stop-audit.md)保留解码退化。
+下列初始准备状态只描述当时范围，不表示这些后续检查仍未执行。
 
 本目录遵循根目录的 [AGENTS.md](../../../AGENTS.md)。
 设计来源见[四个候选设计](../../experiments/2026-10-08-local-candidate-designs.md)。

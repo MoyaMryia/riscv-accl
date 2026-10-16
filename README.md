@@ -1,36 +1,50 @@
 # riscv-accl
 
-Local Qwen3.5 inference on the SpaceMiT K1/X60 RISC-V platform.
-The project contains optimization code, native tests, measurement records, and a portable performance evaluator.
+本项目在进迭时空 K1 平台上部署 Qwen3.5 2B 和 4B 本地文本推理。
+[Requirements.md](Requirements.md) 是要求、验收目标和评分口径的唯一现行依据。
+文档核对日期：2026-10-16，Asia/Singapore。
 
-## Project report
+GGUF 是当前推理引擎读取的模型文件格式。
+已验证：现有两个 GGUF 产物均有 K1 本地推理记录。
+已验证：项目已有匹配对照的预填充和解码优化。
+已实现：固定源码发布包、模型加工脚本、测试工具与证据索引。
+待验证：指定基座的完整来源链、官方检查点全链转换及现行质量验收。
+逐项状态见[独立缺口报告](spacemit/reports/2026-10-13-requirements-gap.md)。
 
-Evidence cutoff: October 12, 2026, Asia/Singapore.
-
-- [PDF report](spacemit/reports/SUBMISSION-REPORT.pdf): the report with its evidence appendix.
-- [TeX source](spacemit/reports/SUBMISSION-REPORT.tex): a standalone source file for the PDF.
-- [Report text](spacemit/reports/SUBMISSION-REPORT.md) and [evidence appendix](spacemit/reports/SUBMISSION-EVIDENCE.md): editable source documents.
-- [Export instructions](spacemit/reports/REPORT-BUILD.md): commands to reproduce the TeX and PDF.
-
-The verified release contains wide RVV attention and opt-in GEMM routing.
-Later individual candidates have bounded gains, but their three-part combination fails one decode gate.
-V7 retains incorrect point predictions and wide error intervals.
-The first operator training batch passes its recorded checks; independent prediction accuracy remains unverified.
-Board recovery remains pending after the recorded access failure.
-
-## Project documents
-
-| Need | Entry point |
+| 任务 | 可用入口 |
 | --- | --- |
-| Current status and document map | [Documentation guide](spacemit/DOCS.md) |
-| Pinned source and launch commands | [Infrastructure release](spacemit/release/README.md) |
-| Model preparation and historical patches | [Integration guide](spacemit/README.md) |
-| Native benchmarks and evidence collection | [Benchmark guide](spacemit/bench/README.md) |
-| Performance evaluator and fixed examples | [Evaluator guide](spacemit/bench/qemu-screen/predictor/README.md) |
-| Native operator data | [Operator tools](spacemit/bench/operator-data/README.md) |
-| Dated measurements | [Reports index](spacemit/reports/README.md) |
-| Experiment protocols | [Experiments index](spacemit/experiments/README.md) |
+| 从依赖准备到两个模型的本地请求 | [部署入口](spacemit/DEPLOYMENT.md) |
+| 使用最终单一构建与编译默认值 | [固定默认交付](spacemit/final-release/README.md) |
+| 核对真实起点到最终默认的实测提升 | [最终对照报告](spacemit/reports/2026-10-14-final-default-comparison.md) |
+| 使用统一源码、同次构建和独立候选开关 | [统一发布候选](spacemit/release-candidate/README.md) |
+| 确认基线版、优化版和历史版本 | [版本与结果索引](spacemit/reports/RESULTS.md) |
+| 获取补丁、构建脚本、模型哈希和启动器 | [固定发布包](spacemit/release/README.md) |
+| 复现模型加工并核对来源 | [模型材料](spacemit/models/README.md) |
+| 检查已有证据或运行新测试 | [测试入口](spacemit/bench/TESTS.md) |
+| 阅读现行要求对应的提交说明 | [中文提交说明稿](spacemit/reports/SUBMISSION-ZH.md) |
+| 查找全部报告与协议 | [报告索引](spacemit/reports/README.md)、[实验索引](spacemit/experiments/README.md) |
+| 查看本次整理和检查记录 | [整理记录](spacemit/reports/2026-10-13-project-file-organization.md) |
 
-`FINAL-REPORT.md`, the September TeX/PDF, and `lab/` notes describe historical campaigns.
-Their dates and configurations limit their claims.
-Files in `spacemit/reports/raw/` are unchanged evidence, not editable report prose.
+已验证：最终单一构建已完成两模型普通启动与真实起点匹配对照。
+默认启用 B1-r2、C1、宽 RVV 与 route 3，具体范围见[最终交付](spacemit/final-release/README.md)。
+下面的 RC1 和历史候选结论继续按原条件保留。
+
+10 月 7 日已核验的 `a990751` 包保留为固定对照。
+新的[统一发布候选](spacemit/release-candidate/README.md)合入 C1、C2-r2 和 B1-r2。
+本次实际状态见[整合记录](spacemit/reports/2026-10-13-unified-release-candidate.md)。
+基线版和优化版都启用宽向量注意力，分别使用矩阵路由配置 route 0 和 route 3。
+C1 有独立模型验证记录，统一包中的候选配置保持实验状态。
+三项全开组合未通过解码门槛。
+新增 IME 标量调度候选通过数值检查，但未通过性能初筛，发布路径保留原内核。
+
+[10 月 13 日实机诊断](spacemit/reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md)确认板端访问和 C1 路径。
+[TCM 权限检查](spacemit/reports/2026-10-13-k1-tcm-access.md)确认 sudo 可以识别并只读映射四块真实 TCM。
+普通用户的访问限制不能单独证明当前性能瓶颈。
+
+英文综合报告与 TeX／PDF 已更新为 2026-10-16，旧版快照单独保留。
+[16k／32k 补测](spacemit/reports/2026-10-16-ultralong-final-comparison.md)记录 12 次匹配请求。
+[最终版 TCM 调查](spacemit/reports/2026-10-16-final-release-tcm.md)确认普通用户下两个模型的短推理没有使用真实 TCM。
+`FINAL-REPORT.md`、早期补丁栈及旧 `lab/` 记录保留历史范围。
+其适用日期、源码和限制见[历史材料说明](spacemit/reports/HISTORY.md)。
+`spacemit/reports/raw/` 保存不可改写的原始记录与 SHA-256 收据。
+模型权重、部分二进制转储和完整归档不随 Git 分发。

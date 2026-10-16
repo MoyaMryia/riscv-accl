@@ -87,8 +87,8 @@ def run(args):
             config['question_token_counts'] = list(map(len, question_tokens))
             config['prompt_lengths'] = list(map(len, prompts))
             write_record(output, config)
-            # B has not been sent when the cached B request begins. Thus its only
-            # possible shared content in this single slot is the document in A.
+            # The first B request follows A in the same slot.
+            # The shared prefix contains the document from A.
             for name, prompt, cache_prompt in (
                 ('question_a_cold', prompts[0], True),
                 ('question_b_warm', prompts[1], True),

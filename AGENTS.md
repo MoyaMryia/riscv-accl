@@ -43,8 +43,9 @@ English and Chinese sentences in the same paragraph.
 11. Keep all numbers, units, dates, file paths, commands, flags, product
     names, and code exactly as they are. ASD-STE100 changes the language, not
     the data.
-12. Keep every warning, limit, and measured claim. Do not remove a caveat when
-    you rewrite a sentence.
+12. Keep every measured value, configuration, and sample count. Do not remove
+    data when you rewrite a sentence. The limit rules are in "Limits and open
+    items" below.
 
 ## Chinese rules
 
@@ -71,9 +72,108 @@ different purposes, and together they are not called a "Chinese STE".
 8. Do not infer current whole-machine performance from an old isolated
    baseline. Limit a hardware capability conclusion to the tested platform and
    configuration.
+9. Write the claim before the limit. Put the scope in one section at the end of
+   the document. Write a limit that a measurement can remove as a task.
+10. Do not repeat a limit in more than one document. Link to the document that
+    owns the limit.
 
 Quoted text keeps its original language. A quoted log line, a verbatim model
 answer, and a literary quotation stay as they are.
+
+## Limits and open items
+
+Write the claim before the limit. Write each limit one time.
+Put the scope in one section at the end of the document. List the configuration,
+the sample count, and the open items.
+Write a limit that a measurement can remove as a task. Do not close a resolvable
+item with a limitation sentence.
+Use "does not establish" only for a limit that you cannot remove. Then give the
+blocker and the release condition.
+Do not repeat a limit in more than one document. Link to the document that owns
+the limit.
+
+Example:
+
+- Do not write: "Three samples do not establish a population confidence
+  interval."
+- Write: "The interval uses three samples. Task: measure 30 samples."
+
+## Code checks and fallbacks
+
+Check external input at the entry point one time. External input includes
+command lines, files, environment variables, and remote responses.
+Inner functions trust the checked values. An inner function does not check the
+same value again.
+Define a limit in one place. Other code reads that definition.
+Do not keep a check that only a test can reach.
+Fail with a clear error. Do not continue after an internal error.
+Hash an artifact only when a requirement or a recorded failure needs the hash.
+Do not seal and re-verify every intermediate result.
+Do not write a limitation into a machine-readable artifact. Put the scope in the
+report.
+If the caller clamps a value, do not check that value again. Remove the check
+or remove the clamp.
+A check must fail when the error that it guards against occurs. Make that
+error and run the check. If the check passes, delete the check or rewrite it.
+Do not compare a result with the output of the same implementation. Compare it
+with an independent reference.
+Catch only the exceptions that the code can handle. Do not catch an internal
+error, write it into a result field, and continue.
+
+Example from this repository:
+
+- `spacemit/bench/qemu-screen/predictor/freeze-sources.py:44-45` catches every
+  `Exception`, writes it into the `error` field, and continues. Then the script
+  writes `SHA256SUMS`. Write instead: catch the network error types only. Let
+  other errors stop the script.
+
+Run `python3 tools/writing_lint.py` before you deliver a change. It finds
+limitation sentences and broad `except` handlers that do not raise again. The
+baseline can only become smaller. Read the script docstring for the rules.
+
+Before you commit, run `tools/ci-local.sh --staged`. The pre-commit hook runs
+the same command. To install the hook, run `tools/install-hooks.sh` one time.
+Do not use `--no-verify`. The lint step reads the staged content. If a checked
+path has unstaged or untracked changes, the hook stops. Stage, restore, or move
+those changes, and then commit. CI runs the stages of the same script. Define
+each check command only in `tools/ci-local.sh`.
+
+## Review
+
+Review the computed result, not the check branches.
+A test that only asserts a rejection does not cover the function. Test the
+numbers.
+Start a review pass in a fresh context. The author of a change does not approve
+it.
+
+After you change code, start a `reviewer` subagent on the diff before you
+deliver. Give the subagent this list. Tell it to give the file and the line for
+each item:
+
+1. An inner function checks a value that the caller already checked or
+   clamped.
+2. A check or a branch that only a test can reach.
+3. A limit, a constant, or a threshold that has more than one definition.
+4. A broad `except`, or a caught error that the code records and then ignores.
+5. A gate that is less strict, a self-comparison, or a failure that became a
+   record field. For each check and each gate, make the error that it guards
+   against. Tell if the check fails.
+6. A limitation sentence in a document or a comment, or an open item without
+   a blocker and a release condition.
+
+The subagent reports problems only. It does not change files. Fix each item, or
+write the reason to keep it in your reply. Do not deliver on the subagent
+result alone. After the fixes, run the tests and `tools/writing_lint.py` again.
+
+## One deliverable
+
+This rule applies to all agents and all subagents.
+
+Deliver one result for each task. Do not give the user candidates to choose
+from. If you write more than one draft, merge the drafts into one result
+before you deliver. Delete the other drafts or keep them out of the delivery.
+If two options need a user decision, give one recommendation and the reason.
+State the other option in one sentence.
 
 ## Records that are not documents
 

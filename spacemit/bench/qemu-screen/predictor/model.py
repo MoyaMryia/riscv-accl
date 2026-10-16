@@ -39,7 +39,7 @@ def vector_context(event):
 
 
 def semantics(item, context):
-    """未覆盖语义必须返回缺口，不给出完整依赖结论。"""
+    """对模型支持范围外的语义返回缺口，并标记依赖信息不完整。"""
     name, operands = item['objdump_mnemonic'], item['operands']
     words = operands.split(',')
     groups = [registers(word) for word in words]

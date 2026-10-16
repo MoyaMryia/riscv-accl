@@ -1,13 +1,31 @@
 # X60 server benchmark runner
 
+[Requirements.md](../../Requirements.md) is the sole current acceptance reference.
+Start with the [test guide](TESTS.md) for test selection, tmux, the shared lock, and completion records.
+Use the [result index](../reports/RESULTS.md) before a new board run.
+The [latest inspection](../reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md) confirms C1 and retains a failed scalar schedule screen.
+The [TCM audit](../reports/2026-10-13-k1-tcm-access.md) confirms real TCM access through sudo; it provides no performance result.
+
 ## K1 performance evaluator and operator data
+
+Use the [fragment comparison interface](cpu-model/FRAGMENT-COMPARE.md) before broad tests of an optimization.
+It supports fixed scalar loop pairs and reports model gaps. New fragment accuracy remains unverified.
+
+Use the [CPU model tools](cpu-model/README.md) for controlled instruction experiments and frozen state estimates.
+The [sixth round](../reports/2026-10-12-k1-cpu-queue-model-r6.md) completes fixed loop checks and portable replay.
+Wide bounds, gain errors, and rank errors remain.
+The [fifth round](../reports/2026-10-12-k1-cpu-write-model-r5.md) retains a model regression.
+Direction signs agree in 18/18 versions, but the median gain error remains 12.4224 percentage points.
 
 Use the [model tools](qemu-screen/predictor/README.md) to replay fixed K1 examples on another host.
 Use the [operator collector](operator-data/README.md) for controlled native training data.
-The first batch has 32 configurations and 1,344 observations. Independent calibration and test shapes remain unmeasured.
+The first batch has 32 training configurations and 1,344 observations.
+The [fixed operator shape model](../reports/2026-10-12-k1-operator-model-v1.md) adds independent calibration and tests.
+IME directions agree in 18/18 test configurations. Convolution directions agree in 16/18; one group exceeds the frozen bound.
 Performance results retain all candidates. Measurement spread does not establish prediction confidence.
 The [connection record](../reports/2026-10-12-k1-connection-interruption.md) lists the recovery steps.
-Board work remains paused until the user completes the site check.
+The user authorizes direct access again on October 12, 2026. The second training batch completes after the task and lock checks.
+The [second batch report](../reports/2026-10-12-k1-operator-data-r2.md) records 1,344 more observations and the verified direct transfer.
 
 See the [documentation guide](../DOCS.md) for current results and queued work.
 This page documents callable scripts. The [faster test method](../experiments/2026-09-30-fast-test-design.md)

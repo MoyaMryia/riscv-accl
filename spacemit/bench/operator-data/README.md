@@ -1,5 +1,10 @@
 # K1 真实算子数据采集
 
+后续主线见[优化代码片段评估范围](../../experiments/2026-10-12-k1-code-fragment-evaluator-scope.md)。
+首版面向单线程、固定运行条件下的新实现比较。
+本目录的固定版本形状模型继续保留。
+该模型不能直接接受任意新实现并给出已校准预测。
+
 ## 已实现
 
 本工具先固定形状分组，再采集训练部分。
@@ -109,7 +114,112 @@ SSH 退出码 `255` 记录为 `ssh-error`。
 
 本机的 6 项假客户端测试通过。
 测试覆盖成功、断线退出、远程失败、总等待超时、子进程清理与收据保护。
-这次修改尚未在恢复后的 K1 上验证。
-用户已要求等待现场检查。
-不得为验证连接工具而恢复板端采集。
+2026-10-12 新加坡时间 12:50，用户授权恢复直连工作。
+有等待上限的工具已完成实际直连、上传、启动与状态读取。
+第二轮采集在 tmux 与共用锁内完成。
+实际断线与总等待超时仍以本机故障测试为证据。
 恢复顺序见 [断线记录](../../reports/2026-10-12-k1-connection-interruption.md)。
+
+## 第二轮验证
+
+第二轮完成相同的 32 个训练配置。
+本机与 server 均核验 1,344 条观测与 64 份完整数值转储。
+最短正式样本为 10.151157 ms。
+没有正式样本低于 10 ms。
+本轮保留全部观测，不按时长删除数据。
+
+两轮共有 2,688 条训练观测，仍只有 32 个不同配置。
+校准与后测形状均未运行。
+当前冻结模型未重新拟合。
+完整范围与收据见 [第二轮报告](../../reports/2026-10-12-k1-operator-data-r2.md)。
+
+
+## 固定算子的形状模型
+
+`model.py` 使用 Python 标准库。
+模型的目标是执行长度斜率，单位为 ms/次。
+该目标描述热输入重复执行的边际耗时。
+该目标不包含启动进程的固定耗时。
+IME 目标包含工作线程中最慢分片的墙钟耗时。
+卷积目标包含整个计算图的墙钟耗时。
+
+模型分别拟合对照耗时与候选耗时比例。
+模型按算子与线程数分别保存参数。
+选型使用完整形状分组的留一验证。
+每个留出形状同时保留两个线程配置。
+误差目标同时包含对照、候选与耗时比例。
+选型不读取校准与后测的性能数据。
+
+第二轮二进制用于模型拟合、校准与后测。
+第一轮使用不同的测量二进制，只保留为训练诊断证据。
+校准与后测必须复用第二轮的二进制与依赖库。
+`collect-split.py` 核验并复制这些文件，不重新编译。
+每个阶段必须使用新目录。
+把 `run-board.sh` 中的采集入口改为 `collect-split.py` 后，按既有锁规则执行。
+
+以下命令依次拟合模型、冻结校准界限并核验后测。
+输出路径必须此前不存在。
+
+```sh
+python3 model.py fit --plan plan.json --batch /path/to/r2 --output model.json
+python3 model.py calibrate --plan plan.json --model model.json \
+  --batch /path/to/calibration --output calibration.json
+python3 model.py evaluate --plan plan.json --model model.json \
+  --calibration calibration.json --batch /path/to/test --output evaluation.json
+```
+
+校准按每类算子的 19 个独立形状分组计算。
+每组误差取两个线程配置、两个版本与耗时比例的最大对数误差。
+95% 界限取这 19 个组误差的最大值。
+这项声明依赖固定算子范围内配置组的可交换性。
+可交换性仍待验证。
+两类算子的界限分别计算，不构成跨两类算子的联合 95% 声明。
+该界限只针对预定目标，不覆盖每条原始观测。
+
+查询文件使用 JSON 数组。
+每项必须包含 `family`、`shape`、`thread_count` 与 `padding`。
+IME 的 `shape` 为 `[K, N_PER_THREAD]`。
+卷积的 `shape` 为 `[CHANNELS, TOKENS]`。
+IME 的 `padding` 必须为 `0`。
+卷积的 `padding` 可以为 `0` 或 `3`。
+线程数可以为 `1` 或 `4`。
+
+```sh
+python3 model.py predict --plan plan.json --model model.json \
+  --calibration calibration.json --cases cases.json --output predictions.json
+```
+
+查询结果保留全部候选，并按预测每次节省耗时排序。
+该顺序不包含真实调用次数与开发成本。
+不同形状或线程配置可能使用不同总工作量。
+训练形状与校准形状不附加独立预测界限。
+声明网格之外的形状只返回探索性点估计。
+声明网格见 `model.py` 的 `in_domain`。
+网格内查询仍受校准分布与固定执行条件限制。
+模型不接受新的算法版本作为已校准版本。
+冷缓存、完整矩阵乘法与完整模型推理仍不在此范围。
+
+
+## 归档与便携包
+
+`archive.py` 先核验完整批次与退出码。
+该工具先写入 `.partial` 文件。
+文件关闭后，工具才公开最终归档路径。
+已有最终归档与已有部分文件均不会被覆盖。
+传输只能使用已发布的最终归档。
+接收端必须再次核验归档散列。
+远程客户端返回成功不证明归档完整。
+
+```sh
+python3 -B archive.py /path/to/batch /path/to/board.tar.gz --receipt archive-receipt.json
+```
+
+`model-bundle.py` 把固定模型、校准界限、后测结果与查询范例组成便携包。
+接收端解压后，可以只用标准 Python 重放。
+重放先核验文件散列，再检查全部查询输出。
+
+```sh
+python3 model-bundle.py build --model model.json --calibration calibration.json \
+  --evaluation evaluation.json --output operator-model.tar.gz
+python3 model-bundle.py replay /path/to/unpacked-bundle
+```

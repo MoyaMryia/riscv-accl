@@ -30,19 +30,15 @@ def main(out):
     for repo,ref,paths in SOURCES:
         record = {'repository':repo,'requested_ref':ref,'files':[]}
         records.append(record)
-        try:
-            commit = json.loads(fetch(f'https://api.github.com/repos/{repo}/commits/{ref}'))['sha']
-            record['commit'] = commit
-            for path in paths:
-                url = f'https://raw.githubusercontent.com/{repo}/{commit}/{path}'
-                file_record = {'path':path,'url':url}; record['files'].append(file_record)
-                try:
-                    data = fetch(url)
-                    target = out/(repo.replace('/','--')+'--'+path.replace('/','--'))
-                    target.write_bytes(data)
-                    file_record.update(file=target.name,sha256=hashlib.sha256(data).hexdigest())
-                except Exception as error: file_record['error'] = str(error)
-        except Exception as error: record['error'] = str(error)
+        commit = json.loads(fetch(f'https://api.github.com/repos/{repo}/commits/{ref}'))['sha']
+        record['commit'] = commit
+        for path in paths:
+            url = f'https://raw.githubusercontent.com/{repo}/{commit}/{path}'
+            file_record = {'path':path,'url':url}; record['files'].append(file_record)
+            data = fetch(url)
+            target = out/(repo.replace('/','--')+'--'+path.replace('/','--'))
+            target.write_bytes(data)
+            file_record.update(file=target.name,sha256=hashlib.sha256(data).hexdigest())
         (out/'sources.json').write_text(json.dumps(records,indent=2)+'\n')
     (out/'SHA256SUMS').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+p.name+'\n'
         for p in sorted(out.iterdir()) if p.is_file() and p.name!='SHA256SUMS'))

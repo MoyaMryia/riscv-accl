@@ -1,0 +1,35 @@
+name: Writing and exception lint
+
+on:
+  push:
+    branches: [main, 'fix/**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: writing-lint-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          # HEAD^ 用于比较基线条目数量。
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          # 与本地验证使用的 Python 3.10.12 一致。
+          python-version: '3.10'
+      # 检查命令只在 tools/ci-local.sh 中定义。本地 pre-commit hook 调用同一脚本。
+      - name: Run lint tests
+        run: bash tools/ci-local.sh python
+      - name: Check limit sentences and broad except handlers
+        # HEAD^ 是推送前的提交，或 PR 合并提交的基准分支。基线条目不能增加。
+        run: bash tools/ci-local.sh lint --base-ref HEAD^

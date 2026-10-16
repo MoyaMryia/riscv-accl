@@ -1,5 +1,9 @@
 # Experiments index
 
+[Requirements.md](../../Requirements.md) is the sole current acceptance reference.
+Protocols define their own experiment conditions; they do not change project acceptance.
+Use the [result index](../reports/RESULTS.md) and [gap report](../reports/2026-10-13-requirements-gap.md) for current conclusions.
+
 Use the [documentation guide](../DOCS.md) for current work. Use the
 [integration guide](../README.md) to apply a packaged patch.
 For the consolidated results and the adoption decisions, use the
@@ -10,6 +14,11 @@ the base and the patch-order instructions of each experiment.
 
 | Experiment | Present interpretation |
 | --- | --- |
+| [IME scalar schedule](2026-10-13-ime-scalar-schedule-r1-protocol.md) | [Completed screen](../reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md): 288 exact native cases pass. All eight performance cells fail advancement. Model timing does not run. |
+| [Finite fragment timing protocol R4](2026-10-12-k1-fragment-timing-r4-protocol.md) | Complete-call point estimates use a shared call loop. Same-family checks do not establish accuracy for new algorithm families. |
+| [Fragment source protocol R2](2026-10-12-k1-fragment-source-r2-protocol.md) | Real Q8 payload pairs test the source workflow. Model gaps remain explicit, and all candidates remain available. |
+| [K1 code fragment evaluator scope](2026-10-12-k1-code-fragment-evaluator-scope.md) | Current focus: single-thread code fragment costs and gains under declared input and cache conditions. Independent checks of new implementations remain pending. |
+| [K1 CPU model plan](2026-10-12-k1-cpu-model-plan.md) | CPU model work covers instruction issue, vectors, IME, memory, multiple cores, and independent checks. The sixth state model has wide bounds and retained gain errors. |
 | [Local candidate designs](2026-10-08-local-candidate-designs.md) | Proposed only. Four designs define source changes, numerical requirements, and test gates. No new board result. |
 | [Fixed K32 M1 specialization](2026-10-07-ime-m1-k32.md) | [Completed negative screen](../reports/2026-10-07-ime-m1-k32-results.md): exact native and full-output checks pass. 144 operator samples fail advancement. The candidate is disabled and the model stages are skipped. |
 | [Decode and FFN packing audit](2026-10-07-decode-packing-audit.md) | [Completed](../reports/2026-10-07-decode-packing-results.md): eight matched cold requests are exact and 86 artifacts are verified. Duplicate packing is only 0.024–0.035% of GEMM worker elapsed. The candidate is declined and the monitor is paused. |

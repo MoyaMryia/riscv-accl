@@ -63,7 +63,7 @@ def main():
                 "--lua-filter=" + str(REPORTS / "report-format.lua"),
                 "--metadata=title:Qwen3.5 Inference on the SpaceMiT K1",
                 "--metadata=subtitle:Infrastructure Optimization and Performance Evaluation",
-                "--metadata=date:Evidence cutoff: October 12, 2026 (Asia/Singapore)",
+                "--metadata=date:Evidence cutoff: October 16, 2026 (Asia/Singapore)",
                 "--output=" + str(tex),
             ],
             check=True,
