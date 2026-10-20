@@ -1,0 +1,131 @@
+{
+  "case_id": "handoff_note",
+  "category": "chinese",
+  "arm": "routed",
+  "route": "direct",
+  "classify_ms": 11.854924,
+  "response": {
+    "answer": "**交接说明**\n\n**一、现状**\n批次 B-417 于 9 月 7 日 16:40 接收，共 240 条记录。自动校验已完成 236 条，剩余 4 条因地区代码不在当前映射表中进入隔离区。原始文件保存在项目目录 incoming/b417.csv，文件校验摘要已登记于批次台账。接手人为数据组值班员林澄。\n\n**二、已完成**\n1. 完成自动校验，236 条记录通过。\n2. 原始文件（incoming/b417.csv）已归档，校验摘要已登记。\n3. 隔离记录已标记，待进一步人工处理。\n\n**三、下一步**\n1. 逐条核对 4 条隔离记录的来源代码。\n2. 由映射表维护人确认是否增加代码。\n3. 确认之前不得将这 4 条写入正式表。\n4. 若映射表拒绝新增，应保留隔离状态并在台账注明决定人。\n\n**四、验收条件**\n1. 导入总数仍为 240 条。\n2. 每条隔离记录均有来源及处理原因。\n3. 映射表维护人确认无误后，方可视为完成。",
+    "ttft_s": 9.298,
+    "wall_s": 72.901,
+    "finish_reason": "stop",
+    "answer_sha256": "4de898946170747f159e6ca83b3c321b143fe9f5b2459b7d391550b6e85563f6",
+    "usage": {
+      "completion_tokens": 283,
+      "prompt_tokens": 232,
+      "total_tokens": 515,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 232,
+      "prompt_ms": 9120.76,
+      "prompt_per_token_ms": 39.313620689655174,
+      "prompt_per_second": 25.436476784829335,
+      "predicted_n": 283,
+      "predicted_ms": 63599.706,
+      "predicted_per_token_ms": 224.7339434628975,
+      "predicted_per_second": 4.449706103987336
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "server": "BaseHTTP/0.6 Python/3.12.3",
+      "date": "Sun, 18 Oct 2026 06:22:27 GMT",
+      "content-type": "text/event-stream",
+      "x-decode-route": "direct",
+      "x-route-reason": "class_map",
+      "x-classify-ms": "11.854924",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 232,
+    "completion_tokens": 283,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": null,
+    "facts": [
+      "导入批次 B-417 已接收 240 条记录",
+      "已完成 236 条校验，4 条进入隔离区",
+      "下一步由数据组核对 4 条隔离记录",
+      "验收要求总数仍为 240 且隔离原因均有记录"
+    ],
+    "citations": []
+  },
+  "resources_before": {
+    "direct": {
+      "pid": 75952,
+      "server_vm_hwm_kib": 2961208,
+      "memavailable_kib": 12359372,
+      "smaps_kib": {
+        "Rss": 2962216,
+        "Pss": 2419972,
+        "Private_Clean": 216,
+        "Private_Dirty": 1879704
+      }
+    },
+    "prefix": {
+      "pid": 75971,
+      "server_vm_hwm_kib": 2532360,
+      "memavailable_kib": 12359372,
+      "smaps_kib": {
+        "Rss": 2533272,
+        "Pss": 1990975,
+        "Private_Clean": 136,
+        "Private_Dirty": 1450784
+      }
+    },
+    "gateway": {
+      "pid": 75987,
+      "server_vm_hwm_kib": 22684,
+      "memavailable_kib": 12359372,
+      "smaps_kib": {
+        "Rss": 22904,
+        "Pss": 15084,
+        "Private_Clean": 4,
+        "Private_Dirty": 13060
+      }
+    }
+  },
+  "resources_after": {
+    "direct": {
+      "pid": 75952,
+      "server_vm_hwm_kib": 2961336,
+      "memavailable_kib": 12359156,
+      "smaps_kib": {
+        "Rss": 2962224,
+        "Pss": 2419980,
+        "Private_Clean": 216,
+        "Private_Dirty": 1879712
+      }
+    },
+    "prefix": {
+      "pid": 75971,
+      "server_vm_hwm_kib": 2532360,
+      "memavailable_kib": 12359156,
+      "smaps_kib": {
+        "Rss": 2533272,
+        "Pss": 1990975,
+        "Private_Clean": 136,
+        "Private_Dirty": 1450784
+      }
+    },
+    "gateway": {
+      "pid": 75987,
+      "server_vm_hwm_kib": 22812,
+      "memavailable_kib": 12359156,
+      "smaps_kib": {
+        "Rss": 22972,
+        "Pss": 15152,
+        "Private_Clean": 4,
+        "Private_Dirty": 13128
+      }
+    }
+  }
+}

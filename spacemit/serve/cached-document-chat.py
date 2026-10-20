@@ -7,6 +7,7 @@ changes. llama-server performs the actual prefix reuse with cache_prompt=true.
 """
 
 import argparse
+from contextlib import ExitStack
 import hashlib
 import json
 import sys
@@ -52,11 +53,11 @@ def count_prompt_tokens(url, payload, timeout):
     return count
 
 
-def complete(url, payload, timeout, display=True):
+def complete(url, payload, timeout, display=True, headers=None, stream_path=None):
     request = urllib.request.Request(
         url + '/v1/chat/completions',
         json.dumps(payload, ensure_ascii=False).encode('utf-8'),
-        {'Content-Type': 'application/json'}, method='POST')
+        {'Content-Type': 'application/json', **(headers or {})}, method='POST')
     start = time.monotonic()
     first = None
     parts = []
@@ -65,13 +66,23 @@ def complete(url, payload, timeout, display=True):
     timings = {}
     server_slot = None
     reasoning = []
-    with urllib.request.urlopen(request, timeout=timeout) as response:
+    done = False
+    with ExitStack() as stack:
+        evidence = stack.enter_context(Path(stream_path).open('xb')) if stream_path is not None else None
+        response = stack.enter_context(urllib.request.urlopen(request, timeout=timeout))
+        http_headers = {name.lower(): value for name, value in response.headers.items()}
         for raw in response:
+            if evidence is not None:
+                evidence.write(raw)
+                evidence.flush()
             if not raw.startswith(b'data: '):
                 continue
             data = raw[6:].strip()
+            if done:
+                raise RuntimeError('completion data follows the DONE event')
             if data == b'[DONE]':
-                break
+                done = True
+                continue
             event = json.loads(data)
             if event.get('error'):
                 raise RuntimeError('server returned a completion error')
@@ -94,6 +105,8 @@ def complete(url, payload, timeout, display=True):
                     finish_reason = choice['finish_reason']
     if display:
         print(flush=True)
+    if not done:
+        raise RuntimeError('completion stream ended without the DONE event')
     if first is None or not parts:
         raise RuntimeError('server returned no answer text')
     if finish_reason is None:
@@ -106,7 +119,7 @@ def complete(url, payload, timeout, display=True):
         'finish_reason': finish_reason,
         'answer_sha256': hashlib.sha256(answer.encode()).hexdigest(),
         'usage': usage, 'timings': timings, 'server_slot': server_slot,
-        'reasoning_text': ''.join(reasoning),
+        'reasoning_text': ''.join(reasoning), 'http_headers': http_headers,
     }
 
 

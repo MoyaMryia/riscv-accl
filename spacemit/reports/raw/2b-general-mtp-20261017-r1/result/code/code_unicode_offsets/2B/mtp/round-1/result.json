@@ -1,0 +1,59 @@
+{
+  "model": "2B",
+  "arm": "mtp",
+  "round": 1,
+  "startup_s": 8.283529935986735,
+  "resources_before_request": {
+    "server_vm_hwm_kib": 2532296,
+    "memavailable_kib": 14249688
+  },
+  "resources_after_request": {
+    "server_vm_hwm_kib": 2626376,
+    "memavailable_kib": 14149536
+  },
+  "response": {
+    "answer": "```python\ndef run_spans(text):\n    \"\"\"\n    Return a list of (character, start, end) tuples for maximal consecutive runs of Unicode code points.\n    Uses zero-based half-open offsets.\n    \"\"\"\n    if not isinstance(text, str):\n        raise ValueError(\"Input must be a string\")\n    \n    if not text:\n        return []\n    \n    result = []\n    current_char = None\n    current_start = 0\n    current_end = 0\n    \n    for i, c in enumerate(text):\n        if c == current_char:\n            current_end = i + 1\n        else:\n            if current_char is not None:\n                result.append((current_char, current_start, current_end))\n            current_char = c\n            current_start = i\n            current_end = i + 1\n    \n    if current_char is not None:\n        result.append((current_char, current_start, current_end))\n    \n    return result\n\n\ndef expand_spans(spans):\n    \"\"\"\n    Reconstructs the original text from a list of spans.\n    Raises ValueError if any span is malformed.\n    \"\"\"\n    if not spans:\n        return \"\"\n    \n    # Validate each span\n    for span in spans:\n        if not isinstance(span, (list, tuple)):\n            raise ValueError(\"Every span must be a three-element list or tuple\")\n        if len(span) != 3:\n            raise ValueError(\"Each span must have exactly 3 elements\")\n        char, start, end = span\n        \n        # Check character type\n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Each span must be a one-character string\")\n        \n        # Check integer types\n        if not isinstance(start, int) or not isinstance(end, int):\n            raise ValueError(\"Start and end must be integers\")\n        \n        # Check boolean exclusion\n        if isinstance(start, bool) or isinstance(end, bool):\n            raise ValueError(\"Start and end must be integers, not bool\")\n        \n        # Check range validity\n        if start < 0 or end < 0:\n            raise ValueError(\"Start and end must be non-negative\")\n        \n        if start >= end:\n            raise ValueError(\"Start must be less than end\")\n        \n        # Check no gaps or overlaps\n        if start != 0:\n            if spans[-1] != None:\n                if spans[-1][1] == start - 1:\n                    # Overlap at the boundary\n                    raise ValueError(\"Spans must not overlap\")\n                elif spans[-1][1] < start:\n                    # Gap\n                    raise ValueError(\"Spans must not have gaps\")\n        else:\n            # First span check\n            if spans[0][1] != 0:\n                raise ValueError(\"First span must start at 0\")\n            # Subsequent spans check\n            if spans[0][1] != 0:\n                if spans[1][1] == spans[0][1] - 1:\n                    raise ValueError(\"Spans must not overlap\")\n                elif spans[1][1] < spans[0][1]:\n                    raise ValueError(\"Spans must not have gaps\")\n    \n    # Reconstruct text\n    result = []\n    current_start = 0\n    current_end = 0\n    \n    for span in spans:\n        char, start, end = span\n        \n        # Validate range again after reconstruction\n        if start < 0 or end < 0:\n            raise ValueError(\"Start and end must be non-negative\")\n        \n        if start >= end:\n            raise ValueError(\"Start must be less than end\")\n        \n        # Check no gaps or overlaps\n        if start != 0:\n            if spans[-1] != None:\n                if spans[-1][1] == start - 1:\n                    raise ValueError(\"Spans must not overlap\")\n                elif spans[-1][1] < start:\n                    raise ValueError(\"Spans must not have gaps\")\n        else:\n            # First span check\n            if spans[0][1] != 0:\n                raise ValueError(\"First span must start at 0\")\n            # Subsequent spans check\n            if spans[0][1] != 0:\n                if spans[1][1] == spans[0][1] - 1:\n                    raise ValueError(\"Spans must not overlap\")\n                elif spans[1][1] < spans[0][1]:\n                    raise ValueError(\"Spans must not have gaps\")\n        \n        # Append character\n        result.append(char)\n        \n        # Update current span\n        current_start = start\n        current_end = end\n    \n    return \"\".join(result)\n```",
+    "ttft_s": 9.33,
+    "wall_s": 207.986,
+    "finish_reason": "stop",
+    "answer_sha256": "7b7ad530912aae2be2363ad89626f7cf18b5bb26b86b1eae429aa555fa7c8c2e",
+    "usage": {
+      "completion_tokens": 1024,
+      "prompt_tokens": 222,
+      "total_tokens": 1246,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 222,
+      "prompt_ms": 9162.716,
+      "prompt_per_token_ms": 41.273495495495496,
+      "prompt_per_second": 24.228623914568562,
+      "predicted_n": 1024,
+      "predicted_ms": 198653.648,
+      "predicted_per_token_ms": 193.997703125,
+      "predicted_per_second": 5.154700204649653,
+      "draft_n": 855,
+      "draft_n_accepted": 738
+    },
+    "server_slot": 0,
+    "reasoning_text": ""
+  },
+  "metrics": {
+    "prompt_tokens": 222,
+    "completion_tokens": 1024,
+    "draft_n": 855,
+    "draft_n_accepted": 738
+  },
+  "quality": {
+    "passed": false,
+    "result": {
+      "pass": false,
+      "reason": "AssertionError: functional output mismatch at check 4",
+      "exit": 1
+    }
+  },
+  "fallback_events": []
+}

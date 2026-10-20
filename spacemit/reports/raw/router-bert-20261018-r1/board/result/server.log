@@ -1,0 +1,1954 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+0.00.017.543 I cmn  common_param: common_params_print_info: build 0 (unknown) with GNU 14.2.0 for Linux riscv64
+0.00.017.572 I cmn  common_param: common_params_print_info: verbosity = 4 (adjust with the `-lv N` CLI arg)
+0.00.017.575 I cmn  common_param: device_info:
+0.00.017.640 I cmn  common_param:   - CPU     : Spacemit(R) X60 (15900 MiB, 15900 MiB free)
+0.00.018.016 I cmn  common_param: system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : RISCV_V = 1 | RVV_VLEN = 32 | LLAMAFILE = 1 | 
+0.00.018.694 I srv          init: using 7 threads for HTTP server
+0.00.019.535 W srv  llama_server: -----------------
+0.00.019.559 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.019.562 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.019.564 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.019.566 W srv  llama_server: -----------------
+0.00.019.697 I srv         start: binding port with default address family
+0.00.021.710 I srv    load_model: loading model '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/router-bert-bench-20261018-111641-r1/encoder-f32.gguf'
+0.00.021.734 I srv    load_model: local path '/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/router-bert-bench-20261018-111641-r1/encoder-f32.gguf'
+0.00.040.994 I llama_model_loader: loaded meta data with 28 key-value pairs and 69 tensors from /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/router-bert-bench-20261018-111641-r1/encoder-f32.gguf (version GGUF V3 (latest))
+0.00.041.071 I llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+0.00.041.112 I llama_model_loader: - kv   0:                       general.architecture str              = bert
+0.00.041.117 I llama_model_loader: - kv   1:                               general.type str              = model
+0.00.041.122 I llama_model_loader: - kv   2:                               general.name str              = Encoder
+0.00.041.126 I llama_model_loader: - kv   3:                         general.size_label str              = 8.7M
+0.00.041.136 I llama_model_loader: - kv   4:                           bert.block_count u32              = 4
+0.00.041.142 I llama_model_loader: - kv   5:                        bert.context_length u32              = 512
+0.00.041.146 I llama_model_loader: - kv   6:                      bert.embedding_length u32              = 256
+0.00.041.150 I llama_model_loader: - kv   7:                   bert.feed_forward_length u32              = 1024
+0.00.041.154 I llama_model_loader: - kv   8:                  bert.attention.head_count u32              = 4
+0.00.041.176 I llama_model_loader: - kv   9:          bert.attention.layer_norm_epsilon f32              = 0.000000
+0.00.041.179 I llama_model_loader: - kv  10:                          general.file_type u32              = 0
+0.00.041.184 I llama_model_loader: - kv  11:                      bert.attention.causal bool             = false
+0.00.041.187 I llama_model_loader: - kv  12:               general.quantization_version u32              = 2
+0.00.041.190 I llama_model_loader: - kv  13:            tokenizer.ggml.token_type_count u32              = 2
+0.00.041.194 I llama_model_loader: - kv  14:                       tokenizer.ggml.model str              = bert
+0.00.041.197 I llama_model_loader: - kv  15:                         tokenizer.ggml.pre str              = default
+0.00.061.256 I llama_model_loader: - kv  16:                      tokenizer.ggml.tokens arr[str,21128]   = ["[PAD]", "▁[unused1]", "▁[unused...
+0.00.067.126 I llama_model_loader: - kv  17:                  tokenizer.ggml.token_type arr[i32,21128]   = [3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+0.00.067.171 I llama_model_loader: - kv  18:                tokenizer.ggml.bos_token_id u32              = 101
+0.00.067.178 I llama_model_loader: - kv  19:                tokenizer.ggml.eos_token_id u32              = 102
+0.00.067.183 I llama_model_loader: - kv  20:            tokenizer.ggml.unknown_token_id u32              = 100
+0.00.067.187 I llama_model_loader: - kv  21:          tokenizer.ggml.seperator_token_id u32              = 102
+0.00.067.191 I llama_model_loader: - kv  22:            tokenizer.ggml.padding_token_id u32              = 0
+0.00.067.195 I llama_model_loader: - kv  23:               tokenizer.ggml.mask_token_id u32              = 103
+0.00.067.200 I llama_model_loader: - kv  24:               tokenizer.ggml.add_bos_token bool             = true
+0.00.067.204 I llama_model_loader: - kv  25:               tokenizer.ggml.add_eos_token bool             = true
+0.00.067.208 I llama_model_loader: - kv  26:               tokenizer.ggml.add_sep_token bool             = false
+0.00.067.211 I llama_model_loader: - kv  27:        tokenizer.ggml.normalizer.lowercase bool             = false
+0.00.067.228 I llama_model_loader: - type  f32:   69 tensors
+0.00.067.247 I print_info: file format = GGUF V3 (latest)
+0.00.067.254 I print_info: file type   = all F32
+0.00.067.274 I print_info: file size   = 33.19 MiB (32.00 BPW) 
+0.00.150.291 I load: 0 unused tokens
+0.00.175.479 W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+0.00.175.514 I load: printing all EOG tokens:
+0.00.175.519 I load:   - 0 ('[PAD]')
+0.00.175.525 I load:   - 102 ('[SEP]')
+0.00.175.735 I load: special tokens cache size = 5
+0.00.189.506 I load: token to piece cache size = 0.0770 MB
+0.00.189.630 I print_info: arch                  = bert
+0.00.189.635 I print_info: vocab_only            = 0
+0.00.189.637 I print_info: no_alloc              = 0
+0.00.189.640 I print_info: n_ctx_train           = 512
+0.00.189.648 I print_info: n_embd_inp            = 256
+0.00.189.650 I print_info: n_embd                = 256
+0.00.189.657 I print_info: n_embd_out            = 256
+0.00.189.660 I print_info: n_layer               = 4
+0.00.189.662 I print_info: n_layer_all           = 4
+0.00.189.695 I print_info: n_head                = 4
+0.00.189.708 I print_info: n_head_kv             = 4
+0.00.189.710 I print_info: n_rot                 = 64
+0.00.189.712 I print_info: n_swa                 = 0
+0.00.189.719 I print_info: is_swa_any            = 0
+0.00.189.721 I print_info: n_embd_head_k         = 64
+0.00.189.723 I print_info: n_embd_head_v         = 64
+0.00.189.734 I print_info: n_gqa                 = 1
+0.00.189.756 I print_info: n_embd_k_gqa          = 256
+0.00.189.769 I print_info: n_embd_v_gqa          = 256
+0.00.189.777 I print_info: f_norm_eps            = 1.0e-12
+0.00.189.780 I print_info: f_norm_rms_eps        = 0.0e+00
+0.00.189.783 I print_info: f_clamp_kqv           = 0.0e+00
+0.00.189.785 I print_info: f_max_alibi_bias      = 0.0e+00
+0.00.189.787 I print_info: f_logit_scale         = 0.0e+00
+0.00.189.789 I print_info: f_attn_scale          = 0.0e+00
+0.00.189.792 I print_info: f_attn_value_scale    = 0.0000
+0.00.189.803 I print_info: n_ff                  = 1024
+0.00.189.805 I print_info: n_expert              = 0
+0.00.189.807 I print_info: n_expert_used         = 0
+0.00.189.809 I print_info: n_expert_groups       = 0
+0.00.189.810 I print_info: n_group_used          = 0
+0.00.189.812 I print_info: causal attn           = 0
+0.00.189.814 I print_info: pooling type          = -1
+0.00.189.816 I print_info: rope type             = 2
+0.00.189.817 I print_info: rope scaling          = linear
+0.00.189.823 I print_info: freq_base_train       = 10000.0
+0.00.189.826 I print_info: freq_scale_train      = 1
+0.00.189.828 I print_info: n_ctx_orig_yarn       = 512
+0.00.189.831 I print_info: rope_yarn_log_mul     = 0.0000
+0.00.189.832 I print_info: rope_finetuned        = unknown
+0.00.189.837 I print_info: model type            = ?B
+0.00.189.840 I print_info: model params          = 8.70 M
+0.00.189.842 I print_info: general.name          = Encoder
+0.00.189.859 I print_info: vocab type            = WPM
+0.00.189.865 I print_info: n_vocab               = 21128
+0.00.189.867 I print_info: n_merges              = 0
+0.00.189.869 I print_info: BOS token             = 101 '[CLS]'
+0.00.189.871 I print_info: EOS token             = 102 '[SEP]'
+0.00.189.874 I print_info: UNK token             = 100 '[UNK]'
+0.00.189.876 I print_info: SEP token             = 102 '[SEP]'
+0.00.189.877 I print_info: PAD token             = 0 '[PAD]'
+0.00.189.879 I print_info: MASK token            = 103 '[MASK]'
+0.00.189.881 I print_info: LF token              = 0 '[PAD]'
+0.00.189.883 I print_info: FIM PAD token         = 0 '[PAD]'
+0.00.189.886 I print_info: EOG token             = 0 '[PAD]'
+0.00.189.888 I print_info: EOG token             = 102 '[SEP]'
+0.00.189.890 I print_info: max token length      = 48
+0.00.189.899 I load_tensors: loading model tensors, this can take a while... (mmap = true, direct_io = false)
+0.00.203.711 I load_tensors:   CPU_Mapped model buffer size =    33.19 MiB
+0.00.205.325 I cmn  common_init_: added [PAD] logit bias = -inf
+0.00.205.360 I cmn  common_init_: added [SEP] logit bias = -inf
+0.00.206.590 W llama_init_from_model: model default pooling_type is [-1], but [2] was specified
+0.00.206.716 I llama_context: constructing llama_context
+0.00.206.746 I llama_context: n_seq_max     = 1
+0.00.206.749 I llama_context: n_ctx         = 256
+0.00.206.751 I llama_context: n_ctx_seq     = 256
+0.00.206.753 I llama_context: n_batch       = 256
+0.00.206.754 I llama_context: n_ubatch      = 256
+0.00.206.756 I llama_context: causal_attn   = 0
+0.00.206.765 I llama_context: flash_attn    = disabled
+0.00.206.767 I llama_context: kv_unified    = false
+0.00.206.784 I llama_context: freq_base     = 10000.0
+0.00.206.787 I llama_context: freq_scale    = 1
+0.00.206.789 I llama_context: n_rs_seq      = 0
+0.00.206.790 I llama_context: n_outputs_max = 256
+0.00.206.793 I llama_context: n_ctx_seq (256) < n_ctx_train (512) -- the full capacity of the model will not be utilized
+0.00.206.927 I llama_context:        CPU  output buffer size =     0.08 MiB
+0.00.206.966 I sched_reserve: reserving ...
+0.00.208.891 I resolve_fused_ops: resolving fused Gated Delta Net support:
+0.00.210.060 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+0.00.210.752 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+0.00.210.769 I resolve_fused_ops: resolving fused Lightning Indexer support:
+0.00.211.370 I resolve_fused_ops: Lightning Indexer enabled
+0.00.214.368 I sched_reserve:        CPU compute buffer size =     2.75 MiB
+0.00.214.402 I sched_reserve: graph nodes  = 151
+0.00.214.406 I sched_reserve: graph splits = 1
+0.00.214.416 I sched_reserve: reserve took 7.43 ms, sched copies = 1
+0.00.214.650 I cmn  common_init_: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+K1_EFFECTIVE_DEFAULTS threads=4 batch_threads=4 batch=256 ubatch=256 context=256 slots=1 flash=0 gpu=0 key=f16 value=f16 mask=3
+0.00.228.293 W srv    load_model: speculative decoding not supported by this context
+0.00.228.322 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 256, kv_unified = 'false'
+0.00.228.336 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 256
+0.00.228.457 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.00.228.460 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.00.228.464 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.00.228.467 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.00.228.543 I srv          init: idle slots will be saved to prompt cache upon starting a new task
+0.00.249.218 I srv          init: init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+'
+0.00.258.876 I srv          init: init: chat template, thinking = 0
+0.00.259.137 I srv  llama_server: model loaded
+0.00.259.168 I srv  llama_server: listening on http://127.0.0.1:18120
+0.00.259.186 I srv  update_slots: all slots are idle
+0.00.729.683 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = -1
+0.00.729.775 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.00.729.831 I slot   operator(): id  0 | task 0 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.00.729.855 I slot   operator(): id  0 | task 0 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.01.016.722 I slot      release: id  0 | task 0 | stop processing: n_tokens = 256, truncated = 0
+0.01.016.796 I srv  update_slots: all slots are idle
+0.01.051.697 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899036192368
+0.01.051.740 I slot launch_slot_: id  0 | task 2 | processing task, is_child = 0
+0.01.051.777 I slot   operator(): id  0 | task 2 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.01.051.786 I slot   operator(): id  0 | task 2 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.01.320.024 I slot      release: id  0 | task 2 | stop processing: n_tokens = 256, truncated = 0
+0.01.320.094 I srv  update_slots: all slots are idle
+0.01.354.774 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899036495670
+0.01.354.810 I slot launch_slot_: id  0 | task 4 | processing task, is_child = 0
+0.01.354.846 I slot   operator(): id  0 | task 4 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.01.354.854 I slot   operator(): id  0 | task 4 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.01.613.005 I slot      release: id  0 | task 4 | stop processing: n_tokens = 256, truncated = 0
+0.01.613.073 I srv  update_slots: all slots are idle
+0.01.648.918 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899036788650
+0.01.648.957 I slot launch_slot_: id  0 | task 6 | processing task, is_child = 0
+0.01.648.993 I slot   operator(): id  0 | task 6 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.01.649.002 I slot   operator(): id  0 | task 6 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.01.906.628 I slot      release: id  0 | task 6 | stop processing: n_tokens = 256, truncated = 0
+0.01.906.696 I srv  update_slots: all slots are idle
+0.01.941.620 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899037082274
+0.01.941.653 I slot launch_slot_: id  0 | task 8 | processing task, is_child = 0
+0.01.941.686 I slot   operator(): id  0 | task 8 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.01.941.694 I slot   operator(): id  0 | task 8 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.199.419 I slot      release: id  0 | task 8 | stop processing: n_tokens = 256, truncated = 0
+0.02.199.486 I srv  update_slots: all slots are idle
+0.02.234.338 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899037375064
+0.02.234.372 I slot launch_slot_: id  0 | task 10 | processing task, is_child = 0
+0.02.234.406 I slot   operator(): id  0 | task 10 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.02.234.415 I slot   operator(): id  0 | task 10 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.493.174 I slot      release: id  0 | task 10 | stop processing: n_tokens = 256, truncated = 0
+0.02.493.250 I srv  update_slots: all slots are idle
+0.02.525.692 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899037668819
+0.02.525.732 I slot launch_slot_: id  0 | task 12 | processing task, is_child = 0
+0.02.525.768 I slot   operator(): id  0 | task 12 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 81
+0.02.525.777 I slot   operator(): id  0 | task 12 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.599.988 I slot      release: id  0 | task 12 | stop processing: n_tokens = 81, truncated = 0
+0.02.600.055 I srv  update_slots: all slots are idle
+0.02.620.583 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899037775633
+0.02.620.615 I slot launch_slot_: id  0 | task 14 | processing task, is_child = 0
+0.02.620.647 I slot   operator(): id  0 | task 14 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.02.620.656 I slot   operator(): id  0 | task 14 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.692.808 I slot      release: id  0 | task 14 | stop processing: n_tokens = 79, truncated = 0
+0.02.692.871 I srv  update_slots: all slots are idle
+0.02.711.265 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899037868452
+0.02.711.301 I slot launch_slot_: id  0 | task 16 | processing task, is_child = 0
+0.02.711.337 I slot   operator(): id  0 | task 16 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.02.711.345 I slot   operator(): id  0 | task 16 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.793.874 I slot      release: id  0 | task 16 | stop processing: n_tokens = 90, truncated = 0
+0.02.793.944 I srv  update_slots: all slots are idle
+0.02.812.862 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899037969520
+0.02.812.895 I slot launch_slot_: id  0 | task 18 | processing task, is_child = 0
+0.02.812.931 I slot   operator(): id  0 | task 18 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.02.812.940 I slot   operator(): id  0 | task 18 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.872.151 I slot      release: id  0 | task 18 | stop processing: n_tokens = 65, truncated = 0
+0.02.872.219 I srv  update_slots: all slots are idle
+0.02.892.589 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038047796
+0.02.892.626 I slot launch_slot_: id  0 | task 20 | processing task, is_child = 0
+0.02.892.666 I slot   operator(): id  0 | task 20 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 87
+0.02.892.674 I slot   operator(): id  0 | task 20 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.02.972.436 I slot      release: id  0 | task 20 | stop processing: n_tokens = 87, truncated = 0
+0.02.972.506 I srv  update_slots: all slots are idle
+0.02.992.228 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038148082
+0.02.992.262 I slot launch_slot_: id  0 | task 22 | processing task, is_child = 0
+0.02.992.296 I slot   operator(): id  0 | task 22 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.02.992.303 I slot   operator(): id  0 | task 22 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.061.803 I slot      release: id  0 | task 22 | stop processing: n_tokens = 76, truncated = 0
+0.03.061.874 I srv  update_slots: all slots are idle
+0.03.080.424 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038237449
+0.03.080.459 I slot launch_slot_: id  0 | task 24 | processing task, is_child = 0
+0.03.080.491 I slot   operator(): id  0 | task 24 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.03.080.499 I slot   operator(): id  0 | task 24 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.157.255 I slot      release: id  0 | task 24 | stop processing: n_tokens = 84, truncated = 0
+0.03.157.327 I srv  update_slots: all slots are idle
+0.03.175.858 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038332900
+0.03.175.896 I slot launch_slot_: id  0 | task 26 | processing task, is_child = 0
+0.03.175.933 I slot   operator(): id  0 | task 26 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.03.175.942 I slot   operator(): id  0 | task 26 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.252.676 I slot      release: id  0 | task 26 | stop processing: n_tokens = 84, truncated = 0
+0.03.252.745 I srv  update_slots: all slots are idle
+0.03.271.797 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038428322
+0.03.271.828 I slot launch_slot_: id  0 | task 28 | processing task, is_child = 0
+0.03.271.862 I slot   operator(): id  0 | task 28 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.03.271.869 I slot   operator(): id  0 | task 28 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.353.730 I slot      release: id  0 | task 28 | stop processing: n_tokens = 90, truncated = 0
+0.03.353.797 I srv  update_slots: all slots are idle
+0.03.373.308 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038529375
+0.03.373.341 I slot launch_slot_: id  0 | task 30 | processing task, is_child = 0
+0.03.373.378 I slot   operator(): id  0 | task 30 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.03.373.386 I slot   operator(): id  0 | task 30 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.445.202 I slot      release: id  0 | task 30 | stop processing: n_tokens = 79, truncated = 0
+0.03.445.269 I srv  update_slots: all slots are idle
+0.03.462.940 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038620847
+0.03.462.974 I slot launch_slot_: id  0 | task 32 | processing task, is_child = 0
+0.03.463.009 I slot   operator(): id  0 | task 32 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.03.463.017 I slot   operator(): id  0 | task 32 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.532.890 I slot      release: id  0 | task 32 | stop processing: n_tokens = 77, truncated = 0
+0.03.532.957 I srv  update_slots: all slots are idle
+0.03.550.660 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038708536
+0.03.550.698 I slot launch_slot_: id  0 | task 34 | processing task, is_child = 0
+0.03.550.734 I slot   operator(): id  0 | task 34 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.03.550.743 I slot   operator(): id  0 | task 34 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.619.387 I slot      release: id  0 | task 34 | stop processing: n_tokens = 76, truncated = 0
+0.03.619.456 I srv  update_slots: all slots are idle
+0.03.636.255 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038795032
+0.03.636.285 I slot launch_slot_: id  0 | task 36 | processing task, is_child = 0
+0.03.636.317 I slot   operator(): id  0 | task 36 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.03.636.325 I slot   operator(): id  0 | task 36 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.705.118 I slot      release: id  0 | task 36 | stop processing: n_tokens = 75, truncated = 0
+0.03.705.190 I srv  update_slots: all slots are idle
+0.03.721.989 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038880763
+0.03.722.022 I slot launch_slot_: id  0 | task 38 | processing task, is_child = 0
+0.03.722.057 I slot   operator(): id  0 | task 38 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.03.722.066 I slot   operator(): id  0 | task 38 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.790.286 I slot      release: id  0 | task 38 | stop processing: n_tokens = 75, truncated = 0
+0.03.790.354 I srv  update_slots: all slots are idle
+0.03.807.717 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899038965932
+0.03.807.753 I slot launch_slot_: id  0 | task 40 | processing task, is_child = 0
+0.03.807.787 I slot   operator(): id  0 | task 40 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 146
+0.03.807.796 I slot   operator(): id  0 | task 40 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.03.944.293 I slot      release: id  0 | task 40 | stop processing: n_tokens = 146, truncated = 0
+0.03.944.363 I srv  update_slots: all slots are idle
+0.03.966.462 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899039119938
+0.03.966.492 I slot launch_slot_: id  0 | task 42 | processing task, is_child = 0
+0.03.966.524 I slot   operator(): id  0 | task 42 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 95
+0.03.966.532 I slot   operator(): id  0 | task 42 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.04.053.905 I slot      release: id  0 | task 42 | stop processing: n_tokens = 95, truncated = 0
+0.04.053.975 I srv  update_slots: all slots are idle
+0.04.071.829 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899039229551
+0.04.071.865 I slot launch_slot_: id  0 | task 44 | processing task, is_child = 0
+0.04.071.901 I slot   operator(): id  0 | task 44 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.04.071.910 I slot   operator(): id  0 | task 44 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.04.149.107 I slot      release: id  0 | task 44 | stop processing: n_tokens = 84, truncated = 0
+0.04.149.176 I srv  update_slots: all slots are idle
+0.04.166.298 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899039324753
+0.04.166.334 I slot launch_slot_: id  0 | task 46 | processing task, is_child = 0
+0.04.166.370 I slot   operator(): id  0 | task 46 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.04.166.380 I slot   operator(): id  0 | task 46 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.04.233.705 I slot      release: id  0 | task 46 | stop processing: n_tokens = 74, truncated = 0
+0.04.233.778 I srv  update_slots: all slots are idle
+0.04.253.151 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899039409352
+0.04.253.187 I slot launch_slot_: id  0 | task 48 | processing task, is_child = 0
+0.04.253.224 I slot   operator(): id  0 | task 48 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.04.253.233 I slot   operator(): id  0 | task 48 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.04.522.853 I slot      release: id  0 | task 48 | stop processing: n_tokens = 256, truncated = 0
+0.04.522.931 I srv  update_slots: all slots are idle
+0.04.558.287 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899039698499
+0.04.558.322 I slot launch_slot_: id  0 | task 50 | processing task, is_child = 0
+0.04.558.356 I slot   operator(): id  0 | task 50 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.04.558.365 I slot   operator(): id  0 | task 50 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.04.816.845 I slot      release: id  0 | task 50 | stop processing: n_tokens = 256, truncated = 0
+0.04.816.915 I srv  update_slots: all slots are idle
+0.04.850.437 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899039992491
+0.04.850.473 I slot launch_slot_: id  0 | task 52 | processing task, is_child = 0
+0.04.850.506 I slot   operator(): id  0 | task 52 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.04.850.515 I slot   operator(): id  0 | task 52 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.05.108.523 I slot      release: id  0 | task 52 | stop processing: n_tokens = 256, truncated = 0
+0.05.108.599 I srv  update_slots: all slots are idle
+0.05.141.251 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899040284169
+0.05.141.283 I slot launch_slot_: id  0 | task 54 | processing task, is_child = 0
+0.05.141.315 I slot   operator(): id  0 | task 54 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.05.141.323 I slot   operator(): id  0 | task 54 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.05.401.389 I slot      release: id  0 | task 54 | stop processing: n_tokens = 256, truncated = 0
+0.05.401.460 I srv  update_slots: all slots are idle
+0.05.434.739 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899040577033
+0.05.434.772 I slot launch_slot_: id  0 | task 56 | processing task, is_child = 0
+0.05.434.806 I slot   operator(): id  0 | task 56 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.05.434.814 I slot   operator(): id  0 | task 56 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.05.693.696 I slot      release: id  0 | task 56 | stop processing: n_tokens = 256, truncated = 0
+0.05.693.773 I srv  update_slots: all slots are idle
+0.05.727.724 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899040869343
+0.05.727.764 I slot launch_slot_: id  0 | task 58 | processing task, is_child = 0
+0.05.727.797 I slot   operator(): id  0 | task 58 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.05.727.805 I slot   operator(): id  0 | task 58 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.05.995.467 I slot      release: id  0 | task 58 | stop processing: n_tokens = 256, truncated = 0
+0.05.995.556 I srv  update_slots: all slots are idle
+0.06.028.083 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041171123
+0.06.028.120 I slot launch_slot_: id  0 | task 60 | processing task, is_child = 0
+0.06.028.156 I slot   operator(): id  0 | task 60 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 86
+0.06.028.165 I slot   operator(): id  0 | task 60 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.106.971 I slot      release: id  0 | task 60 | stop processing: n_tokens = 86, truncated = 0
+0.06.107.043 I srv  update_slots: all slots are idle
+0.06.125.487 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041282618
+0.06.125.525 I slot launch_slot_: id  0 | task 62 | processing task, is_child = 0
+0.06.125.561 I slot   operator(): id  0 | task 62 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 71
+0.06.125.569 I slot   operator(): id  0 | task 62 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.189.344 I slot      release: id  0 | task 62 | stop processing: n_tokens = 71, truncated = 0
+0.06.189.413 I srv  update_slots: all slots are idle
+0.06.205.846 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041364990
+0.06.205.882 I slot launch_slot_: id  0 | task 64 | processing task, is_child = 0
+0.06.205.913 I slot   operator(): id  0 | task 64 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 61
+0.06.205.921 I slot   operator(): id  0 | task 64 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.260.677 I slot      release: id  0 | task 64 | stop processing: n_tokens = 61, truncated = 0
+0.06.260.748 I srv  update_slots: all slots are idle
+0.06.277.064 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041436323
+0.06.277.102 I slot launch_slot_: id  0 | task 66 | processing task, is_child = 0
+0.06.277.135 I slot   operator(): id  0 | task 66 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.06.277.143 I slot   operator(): id  0 | task 66 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.330.855 I slot      release: id  0 | task 66 | stop processing: n_tokens = 60, truncated = 0
+0.06.330.925 I srv  update_slots: all slots are idle
+0.06.347.585 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041506502
+0.06.347.621 I slot launch_slot_: id  0 | task 68 | processing task, is_child = 0
+0.06.347.655 I slot   operator(): id  0 | task 68 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.06.347.663 I slot   operator(): id  0 | task 68 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.403.369 I slot      release: id  0 | task 68 | stop processing: n_tokens = 62, truncated = 0
+0.06.403.465 I srv  update_slots: all slots are idle
+0.06.420.025 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041579016
+0.06.420.059 I slot launch_slot_: id  0 | task 70 | processing task, is_child = 0
+0.06.420.089 I slot   operator(): id  0 | task 70 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 64
+0.06.420.097 I slot   operator(): id  0 | task 70 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.477.388 I slot      release: id  0 | task 70 | stop processing: n_tokens = 64, truncated = 0
+0.06.477.462 I srv  update_slots: all slots are idle
+0.06.493.412 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041653035
+0.06.493.450 I slot launch_slot_: id  0 | task 72 | processing task, is_child = 0
+0.06.493.482 I slot   operator(): id  0 | task 72 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.06.493.490 I slot   operator(): id  0 | task 72 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.553.313 I slot      release: id  0 | task 72 | stop processing: n_tokens = 66, truncated = 0
+0.06.553.394 I srv  update_slots: all slots are idle
+0.06.570.149 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041728968
+0.06.570.187 I slot launch_slot_: id  0 | task 74 | processing task, is_child = 0
+0.06.570.223 I slot   operator(): id  0 | task 74 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.06.570.231 I slot   operator(): id  0 | task 74 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.623.726 I slot      release: id  0 | task 74 | stop processing: n_tokens = 60, truncated = 0
+0.06.623.796 I srv  update_slots: all slots are idle
+0.06.640.440 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041799372
+0.06.640.477 I slot launch_slot_: id  0 | task 76 | processing task, is_child = 0
+0.06.640.512 I slot   operator(): id  0 | task 76 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 55
+0.06.640.521 I slot   operator(): id  0 | task 76 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.689.588 I slot      release: id  0 | task 76 | stop processing: n_tokens = 55, truncated = 0
+0.06.689.658 I srv  update_slots: all slots are idle
+0.06.705.809 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041865235
+0.06.705.842 I slot launch_slot_: id  0 | task 78 | processing task, is_child = 0
+0.06.705.874 I slot   operator(): id  0 | task 78 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 58
+0.06.705.883 I slot   operator(): id  0 | task 78 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.758.053 I slot      release: id  0 | task 78 | stop processing: n_tokens = 58, truncated = 0
+0.06.758.119 I srv  update_slots: all slots are idle
+0.06.773.896 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899041933701
+0.06.773.928 I slot launch_slot_: id  0 | task 80 | processing task, is_child = 0
+0.06.773.960 I slot   operator(): id  0 | task 80 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 67
+0.06.773.969 I slot   operator(): id  0 | task 80 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.834.875 I slot      release: id  0 | task 80 | stop processing: n_tokens = 67, truncated = 0
+0.06.834.949 I srv  update_slots: all slots are idle
+0.06.852.429 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042010523
+0.06.852.461 I slot launch_slot_: id  0 | task 82 | processing task, is_child = 0
+0.06.852.492 I slot   operator(): id  0 | task 82 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.06.852.500 I slot   operator(): id  0 | task 82 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.06.911.960 I slot      release: id  0 | task 82 | stop processing: n_tokens = 66, truncated = 0
+0.06.912.028 I srv  update_slots: all slots are idle
+0.06.929.251 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042087606
+0.06.929.283 I slot launch_slot_: id  0 | task 84 | processing task, is_child = 0
+0.06.929.315 I slot   operator(): id  0 | task 84 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.06.929.322 I slot   operator(): id  0 | task 84 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.012.190 I slot      release: id  0 | task 84 | stop processing: n_tokens = 90, truncated = 0
+0.07.012.261 I srv  update_slots: all slots are idle
+0.07.029.157 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042187837
+0.07.029.193 I slot launch_slot_: id  0 | task 86 | processing task, is_child = 0
+0.07.029.229 I slot   operator(): id  0 | task 86 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.07.029.237 I slot   operator(): id  0 | task 86 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.084.977 I slot      release: id  0 | task 86 | stop processing: n_tokens = 62, truncated = 0
+0.07.085.046 I srv  update_slots: all slots are idle
+0.07.103.537 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042260622
+0.07.103.578 I slot launch_slot_: id  0 | task 88 | processing task, is_child = 0
+0.07.103.614 I slot   operator(): id  0 | task 88 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.07.103.623 I slot   operator(): id  0 | task 88 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.157.696 I slot      release: id  0 | task 88 | stop processing: n_tokens = 60, truncated = 0
+0.07.157.764 I srv  update_slots: all slots are idle
+0.07.174.002 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042333341
+0.07.174.038 I slot launch_slot_: id  0 | task 90 | processing task, is_child = 0
+0.07.174.072 I slot   operator(): id  0 | task 90 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 54
+0.07.174.081 I slot   operator(): id  0 | task 90 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.224.526 I slot      release: id  0 | task 90 | stop processing: n_tokens = 54, truncated = 0
+0.07.224.595 I srv  update_slots: all slots are idle
+0.07.241.013 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042400173
+0.07.241.044 I slot launch_slot_: id  0 | task 92 | processing task, is_child = 0
+0.07.241.076 I slot   operator(): id  0 | task 92 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 55
+0.07.241.085 I slot   operator(): id  0 | task 92 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.290.258 I slot      release: id  0 | task 92 | stop processing: n_tokens = 55, truncated = 0
+0.07.290.328 I srv  update_slots: all slots are idle
+0.07.306.127 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042465905
+0.07.306.160 I slot launch_slot_: id  0 | task 94 | processing task, is_child = 0
+0.07.306.191 I slot   operator(): id  0 | task 94 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 58
+0.07.306.200 I slot   operator(): id  0 | task 94 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.358.621 I slot      release: id  0 | task 94 | stop processing: n_tokens = 58, truncated = 0
+0.07.358.691 I srv  update_slots: all slots are idle
+0.07.377.329 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042534269
+0.07.377.363 I slot launch_slot_: id  0 | task 96 | processing task, is_child = 0
+0.07.377.396 I slot   operator(): id  0 | task 96 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.07.377.404 I slot   operator(): id  0 | task 96 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.635.148 I slot      release: id  0 | task 96 | stop processing: n_tokens = 256, truncated = 0
+0.07.635.228 I srv  update_slots: all slots are idle
+0.07.669.780 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899042810796
+0.07.669.815 I slot launch_slot_: id  0 | task 98 | processing task, is_child = 0
+0.07.669.848 I slot   operator(): id  0 | task 98 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.07.669.855 I slot   operator(): id  0 | task 98 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.07.927.974 I slot      release: id  0 | task 98 | stop processing: n_tokens = 256, truncated = 0
+0.07.928.050 I srv  update_slots: all slots are idle
+0.07.961.599 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899043103623
+0.07.961.638 I slot launch_slot_: id  0 | task 100 | processing task, is_child = 0
+0.07.961.673 I slot   operator(): id  0 | task 100 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.07.961.682 I slot   operator(): id  0 | task 100 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.08.220.500 I slot      release: id  0 | task 100 | stop processing: n_tokens = 256, truncated = 0
+0.08.220.572 I srv  update_slots: all slots are idle
+0.08.254.175 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899043396146
+0.08.254.212 I slot launch_slot_: id  0 | task 102 | processing task, is_child = 0
+0.08.254.247 I slot   operator(): id  0 | task 102 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.08.254.256 I slot   operator(): id  0 | task 102 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.08.511.958 I slot      release: id  0 | task 102 | stop processing: n_tokens = 256, truncated = 0
+0.08.512.032 I srv  update_slots: all slots are idle
+0.08.546.228 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899043687603
+0.08.546.265 I slot launch_slot_: id  0 | task 104 | processing task, is_child = 0
+0.08.546.301 I slot   operator(): id  0 | task 104 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.08.546.310 I slot   operator(): id  0 | task 104 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.08.803.995 I slot      release: id  0 | task 104 | stop processing: n_tokens = 256, truncated = 0
+0.08.804.067 I srv  update_slots: all slots are idle
+0.08.837.426 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899043979642
+0.08.837.463 I slot launch_slot_: id  0 | task 106 | processing task, is_child = 0
+0.08.837.494 I slot   operator(): id  0 | task 106 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.08.837.502 I slot   operator(): id  0 | task 106 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.096.159 I slot      release: id  0 | task 106 | stop processing: n_tokens = 256, truncated = 0
+0.09.096.235 I srv  update_slots: all slots are idle
+0.09.127.217 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044271806
+0.09.127.251 I slot launch_slot_: id  0 | task 108 | processing task, is_child = 0
+0.09.127.282 I slot   operator(): id  0 | task 108 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 70
+0.09.127.291 I slot   operator(): id  0 | task 108 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.190.806 I slot      release: id  0 | task 108 | stop processing: n_tokens = 70, truncated = 0
+0.09.190.880 I srv  update_slots: all slots are idle
+0.09.207.676 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044366453
+0.09.207.714 I slot launch_slot_: id  0 | task 110 | processing task, is_child = 0
+0.09.207.746 I slot   operator(): id  0 | task 110 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 86
+0.09.207.755 I slot   operator(): id  0 | task 110 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.288.225 I slot      release: id  0 | task 110 | stop processing: n_tokens = 86, truncated = 0
+0.09.288.313 I srv  update_slots: all slots are idle
+0.09.305.968 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044463873
+0.09.306.004 I slot launch_slot_: id  0 | task 112 | processing task, is_child = 0
+0.09.306.041 I slot   operator(): id  0 | task 112 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.09.306.050 I slot   operator(): id  0 | task 112 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.365.745 I slot      release: id  0 | task 112 | stop processing: n_tokens = 66, truncated = 0
+0.09.365.821 I srv  update_slots: all slots are idle
+0.09.382.160 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044541390
+0.09.382.199 I slot launch_slot_: id  0 | task 114 | processing task, is_child = 0
+0.09.382.235 I slot   operator(): id  0 | task 114 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.09.382.244 I slot   operator(): id  0 | task 114 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.437.655 I slot      release: id  0 | task 114 | stop processing: n_tokens = 62, truncated = 0
+0.09.437.722 I srv  update_slots: all slots are idle
+0.09.453.879 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044613301
+0.09.453.914 I slot launch_slot_: id  0 | task 116 | processing task, is_child = 0
+0.09.453.951 I slot   operator(): id  0 | task 116 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.09.453.958 I slot   operator(): id  0 | task 116 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.513.826 I slot      release: id  0 | task 116 | stop processing: n_tokens = 66, truncated = 0
+0.09.513.897 I srv  update_slots: all slots are idle
+0.09.530.351 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044689471
+0.09.530.388 I slot launch_slot_: id  0 | task 118 | processing task, is_child = 0
+0.09.530.424 I slot   operator(): id  0 | task 118 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.09.530.432 I slot   operator(): id  0 | task 118 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.588.737 I slot      release: id  0 | task 118 | stop processing: n_tokens = 65, truncated = 0
+0.09.588.807 I srv  update_slots: all slots are idle
+0.09.605.021 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044764383
+0.09.605.053 I slot launch_slot_: id  0 | task 120 | processing task, is_child = 0
+0.09.605.086 I slot   operator(): id  0 | task 120 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.09.605.094 I slot   operator(): id  0 | task 120 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.683.160 I slot      release: id  0 | task 120 | stop processing: n_tokens = 84, truncated = 0
+0.09.683.232 I srv  update_slots: all slots are idle
+0.09.700.154 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044858807
+0.09.700.187 I slot launch_slot_: id  0 | task 122 | processing task, is_child = 0
+0.09.700.220 I slot   operator(): id  0 | task 122 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.09.700.228 I slot   operator(): id  0 | task 122 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.768.551 I slot      release: id  0 | task 122 | stop processing: n_tokens = 75, truncated = 0
+0.09.768.625 I srv  update_slots: all slots are idle
+0.09.785.427 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899044944197
+0.09.785.459 I slot launch_slot_: id  0 | task 124 | processing task, is_child = 0
+0.09.785.493 I slot   operator(): id  0 | task 124 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.09.785.501 I slot   operator(): id  0 | task 124 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.857.435 I slot      release: id  0 | task 124 | stop processing: n_tokens = 79, truncated = 0
+0.09.857.509 I srv  update_slots: all slots are idle
+0.09.874.303 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045033082
+0.09.874.335 I slot launch_slot_: id  0 | task 126 | processing task, is_child = 0
+0.09.874.367 I slot   operator(): id  0 | task 126 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 68
+0.09.874.374 I slot   operator(): id  0 | task 126 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.09.935.837 I slot      release: id  0 | task 126 | stop processing: n_tokens = 68, truncated = 0
+0.09.935.906 I srv  update_slots: all slots are idle
+0.09.954.119 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045111483
+0.09.954.152 I slot launch_slot_: id  0 | task 128 | processing task, is_child = 0
+0.09.954.188 I slot   operator(): id  0 | task 128 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.09.954.198 I slot   operator(): id  0 | task 128 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.024.250 I slot      release: id  0 | task 128 | stop processing: n_tokens = 77, truncated = 0
+0.10.024.318 I srv  update_slots: all slots are idle
+0.10.041.328 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045199897
+0.10.041.364 I slot launch_slot_: id  0 | task 130 | processing task, is_child = 0
+0.10.041.398 I slot   operator(): id  0 | task 130 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.10.041.407 I slot   operator(): id  0 | task 130 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.108.500 I slot      release: id  0 | task 130 | stop processing: n_tokens = 74, truncated = 0
+0.10.108.572 I srv  update_slots: all slots are idle
+0.10.125.297 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045284145
+0.10.125.332 I slot launch_slot_: id  0 | task 132 | processing task, is_child = 0
+0.10.125.370 I slot   operator(): id  0 | task 132 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 67
+0.10.125.378 I slot   operator(): id  0 | task 132 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.186.285 I slot      release: id  0 | task 132 | stop processing: n_tokens = 67, truncated = 0
+0.10.186.357 I srv  update_slots: all slots are idle
+0.10.202.634 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045361930
+0.10.202.668 I slot launch_slot_: id  0 | task 134 | processing task, is_child = 0
+0.10.202.698 I slot   operator(): id  0 | task 134 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 48
+0.10.202.706 I slot   operator(): id  0 | task 134 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.245.553 I slot      release: id  0 | task 134 | stop processing: n_tokens = 48, truncated = 0
+0.10.245.628 I srv  update_slots: all slots are idle
+0.10.263.176 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045421199
+0.10.263.207 I slot launch_slot_: id  0 | task 136 | processing task, is_child = 0
+0.10.263.241 I slot   operator(): id  0 | task 136 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.10.263.249 I slot   operator(): id  0 | task 136 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.330.546 I slot      release: id  0 | task 136 | stop processing: n_tokens = 74, truncated = 0
+0.10.330.615 I srv  update_slots: all slots are idle
+0.10.347.007 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045506192
+0.10.347.041 I slot launch_slot_: id  0 | task 138 | processing task, is_child = 0
+0.10.347.073 I slot   operator(): id  0 | task 138 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 71
+0.10.347.081 I slot   operator(): id  0 | task 138 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.410.885 I slot      release: id  0 | task 138 | stop processing: n_tokens = 71, truncated = 0
+0.10.410.959 I srv  update_slots: all slots are idle
+0.10.427.464 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045586532
+0.10.427.495 I slot launch_slot_: id  0 | task 140 | processing task, is_child = 0
+0.10.427.529 I slot   operator(): id  0 | task 140 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.10.427.537 I slot   operator(): id  0 | task 140 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.487.775 I slot      release: id  0 | task 140 | stop processing: n_tokens = 66, truncated = 0
+0.10.487.845 I srv  update_slots: all slots are idle
+0.10.504.019 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045663421
+0.10.504.051 I slot launch_slot_: id  0 | task 142 | processing task, is_child = 0
+0.10.504.087 I slot   operator(): id  0 | task 142 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.10.504.095 I slot   operator(): id  0 | task 142 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.564.083 I slot      release: id  0 | task 142 | stop processing: n_tokens = 66, truncated = 0
+0.10.564.155 I srv  update_slots: all slots are idle
+0.10.582.500 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899045739729
+0.10.582.536 I slot launch_slot_: id  0 | task 144 | processing task, is_child = 0
+0.10.582.574 I slot   operator(): id  0 | task 144 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.10.582.583 I slot   operator(): id  0 | task 144 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.10.841.192 I slot      release: id  0 | task 144 | stop processing: n_tokens = 256, truncated = 0
+0.10.841.262 I srv  update_slots: all slots are idle
+0.10.873.921 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899046016838
+0.10.873.959 I slot launch_slot_: id  0 | task 146 | processing task, is_child = 0
+0.10.873.996 I slot   operator(): id  0 | task 146 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.10.874.005 I slot   operator(): id  0 | task 146 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.11.132.250 I slot      release: id  0 | task 146 | stop processing: n_tokens = 256, truncated = 0
+0.11.132.318 I srv  update_slots: all slots are idle
+0.11.164.044 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899046307895
+0.11.164.078 I slot launch_slot_: id  0 | task 148 | processing task, is_child = 0
+0.11.164.110 I slot   operator(): id  0 | task 148 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.11.164.119 I slot   operator(): id  0 | task 148 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.11.421.309 I slot      release: id  0 | task 148 | stop processing: n_tokens = 256, truncated = 0
+0.11.421.379 I srv  update_slots: all slots are idle
+0.11.453.590 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899046596955
+0.11.453.624 I slot launch_slot_: id  0 | task 150 | processing task, is_child = 0
+0.11.453.656 I slot   operator(): id  0 | task 150 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.11.453.664 I slot   operator(): id  0 | task 150 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.11.711.764 I slot      release: id  0 | task 150 | stop processing: n_tokens = 256, truncated = 0
+0.11.711.837 I srv  update_slots: all slots are idle
+0.11.743.046 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899046887411
+0.11.743.083 I slot launch_slot_: id  0 | task 152 | processing task, is_child = 0
+0.11.743.117 I slot   operator(): id  0 | task 152 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.11.743.126 I slot   operator(): id  0 | task 152 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.001.284 I slot      release: id  0 | task 152 | stop processing: n_tokens = 256, truncated = 0
+0.12.001.356 I srv  update_slots: all slots are idle
+0.12.032.952 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047176930
+0.12.032.985 I slot launch_slot_: id  0 | task 154 | processing task, is_child = 0
+0.12.033.020 I slot   operator(): id  0 | task 154 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.12.033.027 I slot   operator(): id  0 | task 154 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.290.708 I slot      release: id  0 | task 154 | stop processing: n_tokens = 256, truncated = 0
+0.12.290.781 I srv  update_slots: all slots are idle
+0.12.320.310 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047466356
+0.12.320.346 I slot launch_slot_: id  0 | task 156 | processing task, is_child = 0
+0.12.320.405 I slot   operator(): id  0 | task 156 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 96
+0.12.320.414 I slot   operator(): id  0 | task 156 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.409.348 I slot      release: id  0 | task 156 | stop processing: n_tokens = 96, truncated = 0
+0.12.409.413 I srv  update_slots: all slots are idle
+0.12.427.325 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047584991
+0.12.427.360 I slot launch_slot_: id  0 | task 158 | processing task, is_child = 0
+0.12.427.397 I slot   operator(): id  0 | task 158 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.12.427.405 I slot   operator(): id  0 | task 158 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.504.613 I slot      release: id  0 | task 158 | stop processing: n_tokens = 84, truncated = 0
+0.12.504.683 I srv  update_slots: all slots are idle
+0.12.522.054 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047680259
+0.12.522.086 I slot launch_slot_: id  0 | task 160 | processing task, is_child = 0
+0.12.522.121 I slot   operator(): id  0 | task 160 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.12.522.130 I slot   operator(): id  0 | task 160 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.590.350 I slot      release: id  0 | task 160 | stop processing: n_tokens = 75, truncated = 0
+0.12.590.429 I srv  update_slots: all slots are idle
+0.12.607.036 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047765997
+0.12.607.066 I slot launch_slot_: id  0 | task 162 | processing task, is_child = 0
+0.12.607.098 I slot   operator(): id  0 | task 162 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 70
+0.12.607.106 I slot   operator(): id  0 | task 162 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.669.952 I slot      release: id  0 | task 162 | stop processing: n_tokens = 70, truncated = 0
+0.12.670.083 I srv  update_slots: all slots are idle
+0.12.687.671 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047845596
+0.12.687.705 I slot launch_slot_: id  0 | task 164 | processing task, is_child = 0
+0.12.687.740 I slot   operator(): id  0 | task 164 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.12.687.748 I slot   operator(): id  0 | task 164 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.753.702 I slot      release: id  0 | task 164 | stop processing: n_tokens = 73, truncated = 0
+0.12.753.772 I srv  update_slots: all slots are idle
+0.12.770.647 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899047929348
+0.12.770.678 I slot launch_slot_: id  0 | task 166 | processing task, is_child = 0
+0.12.770.711 I slot   operator(): id  0 | task 166 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.12.770.720 I slot   operator(): id  0 | task 166 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.824.714 I slot      release: id  0 | task 166 | stop processing: n_tokens = 60, truncated = 0
+0.12.824.793 I srv  update_slots: all slots are idle
+0.12.842.780 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048000360
+0.12.842.813 I slot launch_slot_: id  0 | task 168 | processing task, is_child = 0
+0.12.842.845 I slot   operator(): id  0 | task 168 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 69
+0.12.842.853 I slot   operator(): id  0 | task 168 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.906.131 I slot      release: id  0 | task 168 | stop processing: n_tokens = 69, truncated = 0
+0.12.906.201 I srv  update_slots: all slots are idle
+0.12.921.920 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048081778
+0.12.921.955 I slot launch_slot_: id  0 | task 170 | processing task, is_child = 0
+0.12.921.992 I slot   operator(): id  0 | task 170 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.12.922.000 I slot   operator(): id  0 | task 170 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.12.977.190 I slot      release: id  0 | task 170 | stop processing: n_tokens = 62, truncated = 0
+0.12.977.257 I srv  update_slots: all slots are idle
+0.12.993.982 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048152834
+0.12.994.015 I slot launch_slot_: id  0 | task 172 | processing task, is_child = 0
+0.12.994.054 I slot   operator(): id  0 | task 172 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.12.994.062 I slot   operator(): id  0 | task 172 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.062.680 I slot      release: id  0 | task 172 | stop processing: n_tokens = 76, truncated = 0
+0.13.062.751 I srv  update_slots: all slots are idle
+0.13.079.172 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048238325
+0.13.079.205 I slot launch_slot_: id  0 | task 174 | processing task, is_child = 0
+0.13.079.238 I slot   operator(): id  0 | task 174 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 68
+0.13.079.246 I slot   operator(): id  0 | task 174 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.140.953 I slot      release: id  0 | task 174 | stop processing: n_tokens = 68, truncated = 0
+0.13.141.024 I srv  update_slots: all slots are idle
+0.13.157.243 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048316601
+0.13.157.276 I slot launch_slot_: id  0 | task 176 | processing task, is_child = 0
+0.13.157.309 I slot   operator(): id  0 | task 176 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.13.157.317 I slot   operator(): id  0 | task 176 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.222.585 I slot      release: id  0 | task 176 | stop processing: n_tokens = 73, truncated = 0
+0.13.222.654 I srv  update_slots: all slots are idle
+0.13.240.837 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048398233
+0.13.240.870 I slot launch_slot_: id  0 | task 178 | processing task, is_child = 0
+0.13.240.904 I slot   operator(): id  0 | task 178 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.13.240.913 I slot   operator(): id  0 | task 178 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.310.432 I slot      release: id  0 | task 178 | stop processing: n_tokens = 75, truncated = 0
+0.13.310.505 I srv  update_slots: all slots are idle
+0.13.327.275 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048486079
+0.13.327.308 I slot launch_slot_: id  0 | task 180 | processing task, is_child = 0
+0.13.327.342 I slot   operator(): id  0 | task 180 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.13.327.350 I slot   operator(): id  0 | task 180 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.397.692 I slot      release: id  0 | task 180 | stop processing: n_tokens = 77, truncated = 0
+0.13.397.764 I srv  update_slots: all slots are idle
+0.13.414.406 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048573338
+0.13.414.437 I slot launch_slot_: id  0 | task 182 | processing task, is_child = 0
+0.13.414.470 I slot   operator(): id  0 | task 182 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.13.414.478 I slot   operator(): id  0 | task 182 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.480.046 I slot      release: id  0 | task 182 | stop processing: n_tokens = 73, truncated = 0
+0.13.480.119 I srv  update_slots: all slots are idle
+0.13.497.214 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048655693
+0.13.497.250 I slot launch_slot_: id  0 | task 184 | processing task, is_child = 0
+0.13.497.289 I slot   operator(): id  0 | task 184 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.13.497.299 I slot   operator(): id  0 | task 184 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.555.451 I slot      release: id  0 | task 184 | stop processing: n_tokens = 65, truncated = 0
+0.13.555.519 I srv  update_slots: all slots are idle
+0.13.571.761 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048731096
+0.13.571.794 I slot launch_slot_: id  0 | task 186 | processing task, is_child = 0
+0.13.571.830 I slot   operator(): id  0 | task 186 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.13.571.839 I slot   operator(): id  0 | task 186 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.643.596 I slot      release: id  0 | task 186 | stop processing: n_tokens = 79, truncated = 0
+0.13.643.666 I srv  update_slots: all slots are idle
+0.13.660.641 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048819241
+0.13.660.674 I slot launch_slot_: id  0 | task 188 | processing task, is_child = 0
+0.13.660.708 I slot   operator(): id  0 | task 188 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.13.660.718 I slot   operator(): id  0 | task 188 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.729.924 I slot      release: id  0 | task 188 | stop processing: n_tokens = 76, truncated = 0
+0.13.729.994 I srv  update_slots: all slots are idle
+0.13.746.234 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048905569
+0.13.746.266 I slot launch_slot_: id  0 | task 190 | processing task, is_child = 0
+0.13.746.298 I slot   operator(): id  0 | task 190 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 64
+0.13.746.306 I slot   operator(): id  0 | task 190 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.802.983 I slot      release: id  0 | task 190 | stop processing: n_tokens = 64, truncated = 0
+0.13.803.072 I srv  update_slots: all slots are idle
+0.13.820.279 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899048978630
+0.13.820.313 I slot launch_slot_: id  0 | task 192 | processing task, is_child = 0
+0.13.820.348 I slot   operator(): id  0 | task 192 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 87
+0.13.820.356 I slot   operator(): id  0 | task 192 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.899.559 I slot      release: id  0 | task 192 | stop processing: n_tokens = 87, truncated = 0
+0.13.899.628 I srv  update_slots: all slots are idle
+0.13.918.529 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.301 (> 0.100 thold), f_keep = 0.253
+0.13.918.564 I slot launch_slot_: id  0 | task 194 | processing task, is_child = 0
+0.13.918.599 I slot   operator(): id  0 | task 194 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.13.918.607 I slot   operator(): id  0 | task 194 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.13.984.325 I slot      release: id  0 | task 194 | stop processing: n_tokens = 73, truncated = 0
+0.13.984.446 I srv  update_slots: all slots are idle
+0.14.001.787 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.272 (> 0.100 thold), f_keep = 0.301
+0.14.001.819 I slot launch_slot_: id  0 | task 196 | processing task, is_child = 0
+0.14.001.855 I slot   operator(): id  0 | task 196 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 81
+0.14.001.863 I slot   operator(): id  0 | task 196 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.075.287 I slot      release: id  0 | task 196 | stop processing: n_tokens = 81, truncated = 0
+0.14.075.355 I srv  update_slots: all slots are idle
+0.14.094.329 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049250933
+0.14.094.363 I slot launch_slot_: id  0 | task 198 | processing task, is_child = 0
+0.14.094.397 I slot   operator(): id  0 | task 198 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.14.094.406 I slot   operator(): id  0 | task 198 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.148.367 I slot      release: id  0 | task 198 | stop processing: n_tokens = 60, truncated = 0
+0.14.148.478 I srv  update_slots: all slots are idle
+0.14.164.861 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049324051
+0.14.164.893 I slot launch_slot_: id  0 | task 200 | processing task, is_child = 0
+0.14.164.929 I slot   operator(): id  0 | task 200 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.14.164.938 I slot   operator(): id  0 | task 200 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.220.463 I slot      release: id  0 | task 200 | stop processing: n_tokens = 62, truncated = 0
+0.14.220.535 I srv  update_slots: all slots are idle
+0.14.236.448 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049396109
+0.14.236.479 I slot launch_slot_: id  0 | task 202 | processing task, is_child = 0
+0.14.236.512 I slot   operator(): id  0 | task 202 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 64
+0.14.236.519 I slot   operator(): id  0 | task 202 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.292.694 I slot      release: id  0 | task 202 | stop processing: n_tokens = 64, truncated = 0
+0.14.292.767 I srv  update_slots: all slots are idle
+0.14.308.880 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049468341
+0.14.308.912 I slot launch_slot_: id  0 | task 204 | processing task, is_child = 0
+0.14.308.947 I slot   operator(): id  0 | task 204 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.14.308.956 I slot   operator(): id  0 | task 204 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.368.415 I slot      release: id  0 | task 204 | stop processing: n_tokens = 66, truncated = 0
+0.14.368.488 I srv  update_slots: all slots are idle
+0.14.400.771 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049544064
+0.14.400.806 I slot launch_slot_: id  0 | task 206 | processing task, is_child = 0
+0.14.400.841 I slot   operator(): id  0 | task 206 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.14.400.850 I slot   operator(): id  0 | task 206 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.454.730 I slot      release: id  0 | task 206 | stop processing: n_tokens = 60, truncated = 0
+0.14.454.802 I srv  update_slots: all slots are idle
+0.14.471.184 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049630375
+0.14.471.217 I slot launch_slot_: id  0 | task 208 | processing task, is_child = 0
+0.14.471.254 I slot   operator(): id  0 | task 208 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 55
+0.14.471.263 I slot   operator(): id  0 | task 208 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.520.355 I slot      release: id  0 | task 208 | stop processing: n_tokens = 55, truncated = 0
+0.14.520.468 I srv  update_slots: all slots are idle
+0.14.537.243 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049696036
+0.14.537.275 I slot launch_slot_: id  0 | task 210 | processing task, is_child = 0
+0.14.537.310 I slot   operator(): id  0 | task 210 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 58
+0.14.537.318 I slot   operator(): id  0 | task 210 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.588.822 I slot      release: id  0 | task 210 | stop processing: n_tokens = 58, truncated = 0
+0.14.588.891 I srv  update_slots: all slots are idle
+0.14.605.173 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049764468
+0.14.605.204 I slot launch_slot_: id  0 | task 212 | processing task, is_child = 0
+0.14.605.238 I slot   operator(): id  0 | task 212 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 67
+0.14.605.246 I slot   operator(): id  0 | task 212 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.665.800 I slot      release: id  0 | task 212 | stop processing: n_tokens = 67, truncated = 0
+0.14.665.875 I srv  update_slots: all slots are idle
+0.14.682.780 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049841448
+0.14.682.818 I slot launch_slot_: id  0 | task 214 | processing task, is_child = 0
+0.14.682.854 I slot   operator(): id  0 | task 214 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.14.682.863 I slot   operator(): id  0 | task 214 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.742.433 I slot      release: id  0 | task 214 | stop processing: n_tokens = 66, truncated = 0
+0.14.742.503 I srv  update_slots: all slots are idle
+0.14.759.247 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899049918078
+0.14.759.280 I slot launch_slot_: id  0 | task 216 | processing task, is_child = 0
+0.14.759.316 I slot   operator(): id  0 | task 216 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.14.759.326 I slot   operator(): id  0 | task 216 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.842.472 I slot      release: id  0 | task 216 | stop processing: n_tokens = 90, truncated = 0
+0.14.842.545 I srv  update_slots: all slots are idle
+0.14.859.556 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050018117
+0.14.859.590 I slot launch_slot_: id  0 | task 218 | processing task, is_child = 0
+0.14.859.623 I slot   operator(): id  0 | task 218 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.14.859.632 I slot   operator(): id  0 | task 218 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.915.026 I slot      release: id  0 | task 218 | stop processing: n_tokens = 62, truncated = 0
+0.14.915.100 I srv  update_slots: all slots are idle
+0.14.932.174 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050090674
+0.14.932.206 I slot launch_slot_: id  0 | task 220 | processing task, is_child = 0
+0.14.932.240 I slot   operator(): id  0 | task 220 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.14.932.247 I slot   operator(): id  0 | task 220 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.14.985.939 I slot      release: id  0 | task 220 | stop processing: n_tokens = 60, truncated = 0
+0.14.986.011 I srv  update_slots: all slots are idle
+0.15.001.932 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050161586
+0.15.001.967 I slot launch_slot_: id  0 | task 222 | processing task, is_child = 0
+0.15.001.998 I slot   operator(): id  0 | task 222 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 54
+0.15.002.007 I slot   operator(): id  0 | task 222 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.15.050.801 I slot      release: id  0 | task 222 | stop processing: n_tokens = 54, truncated = 0
+0.15.050.874 I srv  update_slots: all slots are idle
+0.15.067.241 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050226448
+0.15.067.272 I slot launch_slot_: id  0 | task 224 | processing task, is_child = 0
+0.15.067.308 I slot   operator(): id  0 | task 224 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 55
+0.15.067.316 I slot   operator(): id  0 | task 224 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.15.116.274 I slot      release: id  0 | task 224 | stop processing: n_tokens = 55, truncated = 0
+0.15.116.347 I srv  update_slots: all slots are idle
+0.15.131.946 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050291922
+0.15.131.978 I slot launch_slot_: id  0 | task 226 | processing task, is_child = 0
+0.15.132.011 I slot   operator(): id  0 | task 226 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 58
+0.15.132.019 I slot   operator(): id  0 | task 226 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.15.183.807 I slot      release: id  0 | task 226 | stop processing: n_tokens = 58, truncated = 0
+0.15.183.877 I srv  update_slots: all slots are idle
+0.15.202.513 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050359454
+0.15.202.550 I slot launch_slot_: id  0 | task 228 | processing task, is_child = 0
+0.15.202.584 I slot   operator(): id  0 | task 228 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.15.202.592 I slot   operator(): id  0 | task 228 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.15.459.915 I slot      release: id  0 | task 228 | stop processing: n_tokens = 256, truncated = 0
+0.15.460.005 I srv  update_slots: all slots are idle
+0.15.493.706 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050635573
+0.15.493.743 I slot launch_slot_: id  0 | task 230 | processing task, is_child = 0
+0.15.493.778 I slot   operator(): id  0 | task 230 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.15.493.787 I slot   operator(): id  0 | task 230 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.15.751.894 I slot      release: id  0 | task 230 | stop processing: n_tokens = 256, truncated = 0
+0.15.751.967 I srv  update_slots: all slots are idle
+0.15.785.554 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899050927540
+0.15.785.589 I slot launch_slot_: id  0 | task 232 | processing task, is_child = 0
+0.15.785.623 I slot   operator(): id  0 | task 232 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.15.785.632 I slot   operator(): id  0 | task 232 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.16.043.404 I slot      release: id  0 | task 232 | stop processing: n_tokens = 256, truncated = 0
+0.16.043.477 I srv  update_slots: all slots are idle
+0.16.077.031 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899051219052
+0.16.077.069 I slot launch_slot_: id  0 | task 234 | processing task, is_child = 0
+0.16.077.103 I slot   operator(): id  0 | task 234 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.16.077.112 I slot   operator(): id  0 | task 234 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.16.334.535 I slot      release: id  0 | task 234 | stop processing: n_tokens = 256, truncated = 0
+0.16.334.611 I srv  update_slots: all slots are idle
+0.16.368.343 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899051510182
+0.16.368.403 I slot launch_slot_: id  0 | task 236 | processing task, is_child = 0
+0.16.368.437 I slot   operator(): id  0 | task 236 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.16.368.447 I slot   operator(): id  0 | task 236 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.16.626.272 I slot      release: id  0 | task 236 | stop processing: n_tokens = 256, truncated = 0
+0.16.626.344 I srv  update_slots: all slots are idle
+0.16.659.172 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899051801918
+0.16.659.206 I slot launch_slot_: id  0 | task 238 | processing task, is_child = 0
+0.16.659.241 I slot   operator(): id  0 | task 238 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.16.659.249 I slot   operator(): id  0 | task 238 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.16.918.008 I slot      release: id  0 | task 238 | stop processing: n_tokens = 256, truncated = 0
+0.16.918.075 I srv  update_slots: all slots are idle
+0.16.948.913 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052093655
+0.16.948.945 I slot launch_slot_: id  0 | task 240 | processing task, is_child = 0
+0.16.948.979 I slot   operator(): id  0 | task 240 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 70
+0.16.948.987 I slot   operator(): id  0 | task 240 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.012.139 I slot      release: id  0 | task 240 | stop processing: n_tokens = 70, truncated = 0
+0.17.012.211 I srv  update_slots: all slots are idle
+0.17.029.390 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052187787
+0.17.029.431 I slot launch_slot_: id  0 | task 242 | processing task, is_child = 0
+0.17.029.463 I slot   operator(): id  0 | task 242 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 86
+0.17.029.471 I slot   operator(): id  0 | task 242 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.107.607 I slot      release: id  0 | task 242 | stop processing: n_tokens = 86, truncated = 0
+0.17.107.688 I srv  update_slots: all slots are idle
+0.17.125.311 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052283262
+0.17.125.342 I slot launch_slot_: id  0 | task 244 | processing task, is_child = 0
+0.17.125.376 I slot   operator(): id  0 | task 244 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.17.125.384 I slot   operator(): id  0 | task 244 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.184.682 I slot      release: id  0 | task 244 | stop processing: n_tokens = 66, truncated = 0
+0.17.184.754 I srv  update_slots: all slots are idle
+0.17.200.529 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052360329
+0.17.200.566 I slot launch_slot_: id  0 | task 246 | processing task, is_child = 0
+0.17.200.600 I slot   operator(): id  0 | task 246 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.17.200.608 I slot   operator(): id  0 | task 246 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.255.916 I slot      release: id  0 | task 246 | stop processing: n_tokens = 62, truncated = 0
+0.17.255.986 I srv  update_slots: all slots are idle
+0.17.271.824 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052431563
+0.17.271.860 I slot launch_slot_: id  0 | task 248 | processing task, is_child = 0
+0.17.271.895 I slot   operator(): id  0 | task 248 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.17.271.904 I slot   operator(): id  0 | task 248 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.333.598 I slot      release: id  0 | task 248 | stop processing: n_tokens = 66, truncated = 0
+0.17.333.672 I srv  update_slots: all slots are idle
+0.17.349.863 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052509244
+0.17.349.897 I slot launch_slot_: id  0 | task 250 | processing task, is_child = 0
+0.17.349.929 I slot   operator(): id  0 | task 250 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.17.349.937 I slot   operator(): id  0 | task 250 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.408.209 I slot      release: id  0 | task 250 | stop processing: n_tokens = 65, truncated = 0
+0.17.408.283 I srv  update_slots: all slots are idle
+0.17.425.266 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052583857
+0.17.425.301 I slot launch_slot_: id  0 | task 252 | processing task, is_child = 0
+0.17.425.336 I slot   operator(): id  0 | task 252 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.17.425.344 I slot   operator(): id  0 | task 252 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.502.264 I slot      release: id  0 | task 252 | stop processing: n_tokens = 84, truncated = 0
+0.17.502.333 I srv  update_slots: all slots are idle
+0.17.519.185 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052677910
+0.17.519.221 I slot launch_slot_: id  0 | task 254 | processing task, is_child = 0
+0.17.519.253 I slot   operator(): id  0 | task 254 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.17.519.261 I slot   operator(): id  0 | task 254 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.587.325 I slot      release: id  0 | task 254 | stop processing: n_tokens = 75, truncated = 0
+0.17.587.397 I srv  update_slots: all slots are idle
+0.17.604.160 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052762972
+0.17.604.197 I slot launch_slot_: id  0 | task 256 | processing task, is_child = 0
+0.17.604.235 I slot   operator(): id  0 | task 256 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.17.604.244 I slot   operator(): id  0 | task 256 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.675.796 I slot      release: id  0 | task 256 | stop processing: n_tokens = 79, truncated = 0
+0.17.675.865 I srv  update_slots: all slots are idle
+0.17.692.813 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052851440
+0.17.692.846 I slot launch_slot_: id  0 | task 258 | processing task, is_child = 0
+0.17.692.879 I slot   operator(): id  0 | task 258 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 68
+0.17.692.887 I slot   operator(): id  0 | task 258 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.754.240 I slot      release: id  0 | task 258 | stop processing: n_tokens = 68, truncated = 0
+0.17.754.312 I srv  update_slots: all slots are idle
+0.17.770.533 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899052929887
+0.17.770.566 I slot launch_slot_: id  0 | task 260 | processing task, is_child = 0
+0.17.770.599 I slot   operator(): id  0 | task 260 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.17.770.608 I slot   operator(): id  0 | task 260 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.840.764 I slot      release: id  0 | task 260 | stop processing: n_tokens = 77, truncated = 0
+0.17.840.840 I srv  update_slots: all slots are idle
+0.17.857.391 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053016412
+0.17.857.425 I slot launch_slot_: id  0 | task 262 | processing task, is_child = 0
+0.17.857.458 I slot   operator(): id  0 | task 262 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.17.857.466 I slot   operator(): id  0 | task 262 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.17.924.643 I slot      release: id  0 | task 262 | stop processing: n_tokens = 74, truncated = 0
+0.17.924.716 I srv  update_slots: all slots are idle
+0.17.941.254 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053100290
+0.17.941.287 I slot launch_slot_: id  0 | task 264 | processing task, is_child = 0
+0.17.941.321 I slot   operator(): id  0 | task 264 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 67
+0.17.941.329 I slot   operator(): id  0 | task 264 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.002.012 I slot      release: id  0 | task 264 | stop processing: n_tokens = 67, truncated = 0
+0.18.002.081 I srv  update_slots: all slots are idle
+0.18.018.230 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053177656
+0.18.018.269 I slot launch_slot_: id  0 | task 266 | processing task, is_child = 0
+0.18.018.302 I slot   operator(): id  0 | task 266 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 48
+0.18.018.311 I slot   operator(): id  0 | task 266 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.061.180 I slot      release: id  0 | task 266 | stop processing: n_tokens = 48, truncated = 0
+0.18.061.247 I srv  update_slots: all slots are idle
+0.18.078.701 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053236824
+0.18.078.732 I slot launch_slot_: id  0 | task 268 | processing task, is_child = 0
+0.18.078.766 I slot   operator(): id  0 | task 268 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.18.078.774 I slot   operator(): id  0 | task 268 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.146.229 I slot      release: id  0 | task 268 | stop processing: n_tokens = 74, truncated = 0
+0.18.146.298 I srv  update_slots: all slots are idle
+0.18.162.727 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053321874
+0.18.162.762 I slot launch_slot_: id  0 | task 270 | processing task, is_child = 0
+0.18.162.798 I slot   operator(): id  0 | task 270 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 71
+0.18.162.808 I slot   operator(): id  0 | task 270 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.226.562 I slot      release: id  0 | task 270 | stop processing: n_tokens = 71, truncated = 0
+0.18.226.632 I srv  update_slots: all slots are idle
+0.18.243.241 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053402208
+0.18.243.273 I slot launch_slot_: id  0 | task 272 | processing task, is_child = 0
+0.18.243.308 I slot   operator(): id  0 | task 272 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.18.243.316 I slot   operator(): id  0 | task 272 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.302.794 I slot      release: id  0 | task 272 | stop processing: n_tokens = 66, truncated = 0
+0.18.302.864 I srv  update_slots: all slots are idle
+0.18.319.445 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053478440
+0.18.319.477 I slot launch_slot_: id  0 | task 274 | processing task, is_child = 0
+0.18.319.513 I slot   operator(): id  0 | task 274 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.18.319.520 I slot   operator(): id  0 | task 274 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.378.636 I slot      release: id  0 | task 274 | stop processing: n_tokens = 66, truncated = 0
+0.18.378.702 I srv  update_slots: all slots are idle
+0.18.396.822 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053554281
+0.18.396.859 I slot launch_slot_: id  0 | task 276 | processing task, is_child = 0
+0.18.396.893 I slot   operator(): id  0 | task 276 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.18.396.902 I slot   operator(): id  0 | task 276 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.655.161 I slot      release: id  0 | task 276 | stop processing: n_tokens = 256, truncated = 0
+0.18.655.240 I srv  update_slots: all slots are idle
+0.18.688.229 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899053830808
+0.18.688.264 I slot launch_slot_: id  0 | task 278 | processing task, is_child = 0
+0.18.688.296 I slot   operator(): id  0 | task 278 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.18.688.304 I slot   operator(): id  0 | task 278 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.18.947.236 I slot      release: id  0 | task 278 | stop processing: n_tokens = 256, truncated = 0
+0.18.947.308 I srv  update_slots: all slots are idle
+0.18.979.143 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899054122883
+0.18.979.177 I slot launch_slot_: id  0 | task 280 | processing task, is_child = 0
+0.18.979.211 I slot   operator(): id  0 | task 280 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.18.979.220 I slot   operator(): id  0 | task 280 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.19.237.318 I slot      release: id  0 | task 280 | stop processing: n_tokens = 256, truncated = 0
+0.19.237.391 I srv  update_slots: all slots are idle
+0.19.269.216 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899054412965
+0.19.269.251 I slot launch_slot_: id  0 | task 282 | processing task, is_child = 0
+0.19.269.283 I slot   operator(): id  0 | task 282 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.19.269.292 I slot   operator(): id  0 | task 282 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.19.529.004 I slot      release: id  0 | task 282 | stop processing: n_tokens = 256, truncated = 0
+0.19.529.082 I srv  update_slots: all slots are idle
+0.19.560.652 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899054704650
+0.19.560.688 I slot launch_slot_: id  0 | task 284 | processing task, is_child = 0
+0.19.560.725 I slot   operator(): id  0 | task 284 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.19.560.734 I slot   operator(): id  0 | task 284 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.19.819.520 I slot      release: id  0 | task 284 | stop processing: n_tokens = 256, truncated = 0
+0.19.819.595 I srv  update_slots: all slots are idle
+0.19.852.587 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899054995168
+0.19.852.621 I slot launch_slot_: id  0 | task 286 | processing task, is_child = 0
+0.19.852.655 I slot   operator(): id  0 | task 286 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.19.852.663 I slot   operator(): id  0 | task 286 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.110.538 I slot      release: id  0 | task 286 | stop processing: n_tokens = 256, truncated = 0
+0.20.110.608 I srv  update_slots: all slots are idle
+0.20.140.654 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055286185
+0.20.140.685 I slot launch_slot_: id  0 | task 288 | processing task, is_child = 0
+0.20.140.717 I slot   operator(): id  0 | task 288 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 96
+0.20.140.725 I slot   operator(): id  0 | task 288 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.228.978 I slot      release: id  0 | task 288 | stop processing: n_tokens = 96, truncated = 0
+0.20.229.052 I srv  update_slots: all slots are idle
+0.20.247.197 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055404624
+0.20.247.232 I slot launch_slot_: id  0 | task 290 | processing task, is_child = 0
+0.20.247.263 I slot   operator(): id  0 | task 290 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.20.247.272 I slot   operator(): id  0 | task 290 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.324.045 I slot      release: id  0 | task 290 | stop processing: n_tokens = 84, truncated = 0
+0.20.324.123 I srv  update_slots: all slots are idle
+0.20.341.563 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055499691
+0.20.341.595 I slot launch_slot_: id  0 | task 292 | processing task, is_child = 0
+0.20.341.631 I slot   operator(): id  0 | task 292 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.20.341.640 I slot   operator(): id  0 | task 292 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.409.361 I slot      release: id  0 | task 292 | stop processing: n_tokens = 75, truncated = 0
+0.20.409.433 I srv  update_slots: all slots are idle
+0.20.425.936 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055585008
+0.20.425.970 I slot launch_slot_: id  0 | task 294 | processing task, is_child = 0
+0.20.426.002 I slot   operator(): id  0 | task 294 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 70
+0.20.426.011 I slot   operator(): id  0 | task 294 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.489.718 I slot      release: id  0 | task 294 | stop processing: n_tokens = 70, truncated = 0
+0.20.489.787 I srv  update_slots: all slots are idle
+0.20.507.274 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055665365
+0.20.507.306 I slot launch_slot_: id  0 | task 296 | processing task, is_child = 0
+0.20.507.339 I slot   operator(): id  0 | task 296 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.20.507.348 I slot   operator(): id  0 | task 296 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.573.525 I slot      release: id  0 | task 296 | stop processing: n_tokens = 73, truncated = 0
+0.20.573.598 I srv  update_slots: all slots are idle
+0.20.590.940 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055749171
+0.20.590.978 I slot launch_slot_: id  0 | task 298 | processing task, is_child = 0
+0.20.591.016 I slot   operator(): id  0 | task 298 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.20.591.025 I slot   operator(): id  0 | task 298 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.644.808 I slot      release: id  0 | task 298 | stop processing: n_tokens = 60, truncated = 0
+0.20.644.878 I srv  update_slots: all slots are idle
+0.20.661.887 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055820452
+0.20.661.920 I slot launch_slot_: id  0 | task 300 | processing task, is_child = 0
+0.20.661.955 I slot   operator(): id  0 | task 300 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 69
+0.20.661.962 I slot   operator(): id  0 | task 300 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.724.223 I slot      release: id  0 | task 300 | stop processing: n_tokens = 69, truncated = 0
+0.20.724.297 I srv  update_slots: all slots are idle
+0.20.740.099 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055899871
+0.20.740.135 I slot launch_slot_: id  0 | task 302 | processing task, is_child = 0
+0.20.740.167 I slot   operator(): id  0 | task 302 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.20.740.178 I slot   operator(): id  0 | task 302 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.795.671 I slot      release: id  0 | task 302 | stop processing: n_tokens = 62, truncated = 0
+0.20.795.740 I srv  update_slots: all slots are idle
+0.20.811.735 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899055971317
+0.20.811.768 I slot launch_slot_: id  0 | task 304 | processing task, is_child = 0
+0.20.811.804 I slot   operator(): id  0 | task 304 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.20.811.812 I slot   operator(): id  0 | task 304 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.880.984 I slot      release: id  0 | task 304 | stop processing: n_tokens = 76, truncated = 0
+0.20.881.055 I srv  update_slots: all slots are idle
+0.20.897.726 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056056631
+0.20.897.760 I slot launch_slot_: id  0 | task 306 | processing task, is_child = 0
+0.20.897.792 I slot   operator(): id  0 | task 306 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 68
+0.20.897.800 I slot   operator(): id  0 | task 306 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.20.959.431 I slot      release: id  0 | task 306 | stop processing: n_tokens = 68, truncated = 0
+0.20.959.501 I srv  update_slots: all slots are idle
+0.20.976.270 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056135078
+0.20.976.304 I slot launch_slot_: id  0 | task 308 | processing task, is_child = 0
+0.20.976.338 I slot   operator(): id  0 | task 308 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.20.976.346 I slot   operator(): id  0 | task 308 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.041.798 I slot      release: id  0 | task 308 | stop processing: n_tokens = 73, truncated = 0
+0.21.041.871 I srv  update_slots: all slots are idle
+0.21.059.577 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056217444
+0.21.059.614 I slot launch_slot_: id  0 | task 310 | processing task, is_child = 0
+0.21.059.647 I slot   operator(): id  0 | task 310 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.21.059.655 I slot   operator(): id  0 | task 310 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.127.102 I slot      release: id  0 | task 310 | stop processing: n_tokens = 75, truncated = 0
+0.21.127.174 I srv  update_slots: all slots are idle
+0.21.144.039 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056302750
+0.21.144.072 I slot launch_slot_: id  0 | task 312 | processing task, is_child = 0
+0.21.144.110 I slot   operator(): id  0 | task 312 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.21.144.119 I slot   operator(): id  0 | task 312 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.213.979 I slot      release: id  0 | task 312 | stop processing: n_tokens = 77, truncated = 0
+0.21.214.049 I srv  update_slots: all slots are idle
+0.21.231.059 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056389624
+0.21.231.091 I slot launch_slot_: id  0 | task 314 | processing task, is_child = 0
+0.21.231.125 I slot   operator(): id  0 | task 314 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.21.231.133 I slot   operator(): id  0 | task 314 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.297.329 I slot      release: id  0 | task 314 | stop processing: n_tokens = 73, truncated = 0
+0.21.297.400 I srv  update_slots: all slots are idle
+0.21.314.604 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056472977
+0.21.314.635 I slot launch_slot_: id  0 | task 316 | processing task, is_child = 0
+0.21.314.669 I slot   operator(): id  0 | task 316 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.21.314.678 I slot   operator(): id  0 | task 316 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.372.980 I slot      release: id  0 | task 316 | stop processing: n_tokens = 65, truncated = 0
+0.21.373.051 I srv  update_slots: all slots are idle
+0.21.389.693 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056548625
+0.21.389.729 I slot launch_slot_: id  0 | task 318 | processing task, is_child = 0
+0.21.389.761 I slot   operator(): id  0 | task 318 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.21.389.769 I slot   operator(): id  0 | task 318 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.461.174 I slot      release: id  0 | task 318 | stop processing: n_tokens = 79, truncated = 0
+0.21.461.243 I srv  update_slots: all slots are idle
+0.21.478.703 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056636820
+0.21.478.736 I slot launch_slot_: id  0 | task 320 | processing task, is_child = 0
+0.21.478.772 I slot   operator(): id  0 | task 320 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.21.478.780 I slot   operator(): id  0 | task 320 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.547.810 I slot      release: id  0 | task 320 | stop processing: n_tokens = 76, truncated = 0
+0.21.547.885 I srv  update_slots: all slots are idle
+0.21.564.224 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056723455
+0.21.564.256 I slot launch_slot_: id  0 | task 322 | processing task, is_child = 0
+0.21.564.288 I slot   operator(): id  0 | task 322 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 64
+0.21.564.296 I slot   operator(): id  0 | task 322 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.620.952 I slot      release: id  0 | task 322 | stop processing: n_tokens = 64, truncated = 0
+0.21.621.021 I srv  update_slots: all slots are idle
+0.21.637.923 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899056796599
+0.21.637.954 I slot launch_slot_: id  0 | task 324 | processing task, is_child = 0
+0.21.637.991 I slot   operator(): id  0 | task 324 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 87
+0.21.638.000 I slot   operator(): id  0 | task 324 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.717.213 I slot      release: id  0 | task 324 | stop processing: n_tokens = 87, truncated = 0
+0.21.717.283 I srv  update_slots: all slots are idle
+0.21.735.877 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.301 (> 0.100 thold), f_keep = 0.253
+0.21.735.915 I slot launch_slot_: id  0 | task 326 | processing task, is_child = 0
+0.21.735.949 I slot   operator(): id  0 | task 326 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.21.735.958 I slot   operator(): id  0 | task 326 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.802.234 I slot      release: id  0 | task 326 | stop processing: n_tokens = 73, truncated = 0
+0.21.802.307 I srv  update_slots: all slots are idle
+0.21.819.714 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.272 (> 0.100 thold), f_keep = 0.301
+0.21.819.747 I slot launch_slot_: id  0 | task 328 | processing task, is_child = 0
+0.21.819.780 I slot   operator(): id  0 | task 328 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 81
+0.21.819.788 I slot   operator(): id  0 | task 328 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.21.893.990 I slot      release: id  0 | task 328 | stop processing: n_tokens = 81, truncated = 0
+0.21.894.064 I srv  update_slots: all slots are idle
+0.21.913.918 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899057069634
+0.21.913.954 I slot launch_slot_: id  0 | task 330 | processing task, is_child = 0
+0.21.913.985 I slot   operator(): id  0 | task 330 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.21.913.994 I slot   operator(): id  0 | task 330 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.22.171.926 I slot      release: id  0 | task 330 | stop processing: n_tokens = 256, truncated = 0
+0.22.171.996 I srv  update_slots: all slots are idle
+0.22.206.268 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899057347574
+0.22.206.301 I slot launch_slot_: id  0 | task 332 | processing task, is_child = 0
+0.22.206.333 I slot   operator(): id  0 | task 332 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.22.206.341 I slot   operator(): id  0 | task 332 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.22.464.408 I slot      release: id  0 | task 332 | stop processing: n_tokens = 256, truncated = 0
+0.22.464.483 I srv  update_slots: all slots are idle
+0.22.498.733 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899057640057
+0.22.498.770 I slot launch_slot_: id  0 | task 334 | processing task, is_child = 0
+0.22.498.805 I slot   operator(): id  0 | task 334 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.22.498.813 I slot   operator(): id  0 | task 334 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.22.757.260 I slot      release: id  0 | task 334 | stop processing: n_tokens = 256, truncated = 0
+0.22.757.333 I srv  update_slots: all slots are idle
+0.22.790.743 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899057932907
+0.22.790.776 I slot launch_slot_: id  0 | task 336 | processing task, is_child = 0
+0.22.790.809 I slot   operator(): id  0 | task 336 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.22.790.817 I slot   operator(): id  0 | task 336 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.23.049.013 I slot      release: id  0 | task 336 | stop processing: n_tokens = 256, truncated = 0
+0.23.049.087 I srv  update_slots: all slots are idle
+0.23.083.063 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899058224661
+0.23.083.099 I slot launch_slot_: id  0 | task 338 | processing task, is_child = 0
+0.23.083.132 I slot   operator(): id  0 | task 338 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.23.083.140 I slot   operator(): id  0 | task 338 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.23.340.059 I slot      release: id  0 | task 338 | stop processing: n_tokens = 256, truncated = 0
+0.23.340.135 I srv  update_slots: all slots are idle
+0.23.374.284 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899058515706
+0.23.374.321 I slot launch_slot_: id  0 | task 340 | processing task, is_child = 0
+0.23.374.357 I slot   operator(): id  0 | task 340 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.23.374.366 I slot   operator(): id  0 | task 340 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.23.632.065 I slot      release: id  0 | task 340 | stop processing: n_tokens = 256, truncated = 0
+0.23.632.135 I srv  update_slots: all slots are idle
+0.23.665.556 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899058807709
+0.23.665.587 I slot launch_slot_: id  0 | task 342 | processing task, is_child = 0
+0.23.665.620 I slot   operator(): id  0 | task 342 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 81
+0.23.665.627 I slot   operator(): id  0 | task 342 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.23.739.664 I slot      release: id  0 | task 342 | stop processing: n_tokens = 81, truncated = 0
+0.23.739.733 I srv  update_slots: all slots are idle
+0.23.759.655 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899058915310
+0.23.759.686 I slot launch_slot_: id  0 | task 344 | processing task, is_child = 0
+0.23.759.720 I slot   operator(): id  0 | task 344 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.23.759.729 I slot   operator(): id  0 | task 344 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.23.831.416 I slot      release: id  0 | task 344 | stop processing: n_tokens = 79, truncated = 0
+0.23.831.488 I srv  update_slots: all slots are idle
+0.23.850.453 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059007062
+0.23.850.488 I slot launch_slot_: id  0 | task 346 | processing task, is_child = 0
+0.23.850.524 I slot   operator(): id  0 | task 346 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.23.850.532 I slot   operator(): id  0 | task 346 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.23.933.016 I slot      release: id  0 | task 346 | stop processing: n_tokens = 90, truncated = 0
+0.23.933.086 I srv  update_slots: all slots are idle
+0.23.952.285 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059108663
+0.23.952.321 I slot launch_slot_: id  0 | task 348 | processing task, is_child = 0
+0.23.952.353 I slot   operator(): id  0 | task 348 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.23.952.361 I slot   operator(): id  0 | task 348 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.011.198 I slot      release: id  0 | task 348 | stop processing: n_tokens = 65, truncated = 0
+0.24.011.275 I srv  update_slots: all slots are idle
+0.24.030.683 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059186845
+0.24.030.718 I slot launch_slot_: id  0 | task 350 | processing task, is_child = 0
+0.24.030.750 I slot   operator(): id  0 | task 350 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 87
+0.24.030.759 I slot   operator(): id  0 | task 350 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.110.338 I slot      release: id  0 | task 350 | stop processing: n_tokens = 87, truncated = 0
+0.24.110.412 I srv  update_slots: all slots are idle
+0.24.129.915 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059285984
+0.24.129.947 I slot launch_slot_: id  0 | task 352 | processing task, is_child = 0
+0.24.129.980 I slot   operator(): id  0 | task 352 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.24.129.988 I slot   operator(): id  0 | task 352 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.199.153 I slot      release: id  0 | task 352 | stop processing: n_tokens = 76, truncated = 0
+0.24.199.226 I srv  update_slots: all slots are idle
+0.24.217.764 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059374801
+0.24.217.799 I slot launch_slot_: id  0 | task 354 | processing task, is_child = 0
+0.24.217.833 I slot   operator(): id  0 | task 354 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.24.217.841 I slot   operator(): id  0 | task 354 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.294.458 I slot      release: id  0 | task 354 | stop processing: n_tokens = 84, truncated = 0
+0.24.294.530 I srv  update_slots: all slots are idle
+0.24.312.880 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059470103
+0.24.312.913 I slot launch_slot_: id  0 | task 356 | processing task, is_child = 0
+0.24.312.949 I slot   operator(): id  0 | task 356 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.24.312.958 I slot   operator(): id  0 | task 356 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.389.717 I slot      release: id  0 | task 356 | stop processing: n_tokens = 84, truncated = 0
+0.24.389.789 I srv  update_slots: all slots are idle
+0.24.408.032 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059565363
+0.24.408.065 I slot launch_slot_: id  0 | task 358 | processing task, is_child = 0
+0.24.408.097 I slot   operator(): id  0 | task 358 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.24.408.105 I slot   operator(): id  0 | task 358 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.490.331 I slot      release: id  0 | task 358 | stop processing: n_tokens = 90, truncated = 0
+0.24.490.407 I srv  update_slots: all slots are idle
+0.24.509.920 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059665977
+0.24.509.950 I slot launch_slot_: id  0 | task 360 | processing task, is_child = 0
+0.24.509.983 I slot   operator(): id  0 | task 360 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.24.509.991 I slot   operator(): id  0 | task 360 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.581.802 I slot      release: id  0 | task 360 | stop processing: n_tokens = 79, truncated = 0
+0.24.581.875 I srv  update_slots: all slots are idle
+0.24.599.229 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059757448
+0.24.599.264 I slot launch_slot_: id  0 | task 362 | processing task, is_child = 0
+0.24.599.296 I slot   operator(): id  0 | task 362 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.24.599.305 I slot   operator(): id  0 | task 362 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.668.900 I slot      release: id  0 | task 362 | stop processing: n_tokens = 77, truncated = 0
+0.24.668.966 I srv  update_slots: all slots are idle
+0.24.685.933 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059844546
+0.24.685.964 I slot launch_slot_: id  0 | task 364 | processing task, is_child = 0
+0.24.685.997 I slot   operator(): id  0 | task 364 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.24.686.006 I slot   operator(): id  0 | task 364 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.754.731 I slot      release: id  0 | task 364 | stop processing: n_tokens = 76, truncated = 0
+0.24.754.804 I srv  update_slots: all slots are idle
+0.24.772.166 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899059930377
+0.24.772.202 I slot launch_slot_: id  0 | task 366 | processing task, is_child = 0
+0.24.772.235 I slot   operator(): id  0 | task 366 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.24.772.243 I slot   operator(): id  0 | task 366 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.840.248 I slot      release: id  0 | task 366 | stop processing: n_tokens = 75, truncated = 0
+0.24.840.319 I srv  update_slots: all slots are idle
+0.24.857.315 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060015894
+0.24.857.350 I slot launch_slot_: id  0 | task 368 | processing task, is_child = 0
+0.24.857.388 I slot   operator(): id  0 | task 368 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.24.857.397 I slot   operator(): id  0 | task 368 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.24.925.147 I slot      release: id  0 | task 368 | stop processing: n_tokens = 75, truncated = 0
+0.24.925.217 I srv  update_slots: all slots are idle
+0.24.942.744 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060100794
+0.24.942.779 I slot launch_slot_: id  0 | task 370 | processing task, is_child = 0
+0.24.942.812 I slot   operator(): id  0 | task 370 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 146
+0.24.942.820 I slot   operator(): id  0 | task 370 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.25.078.646 I slot      release: id  0 | task 370 | stop processing: n_tokens = 146, truncated = 0
+0.25.078.721 I srv  update_slots: all slots are idle
+0.25.100.777 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060254292
+0.25.100.810 I slot launch_slot_: id  0 | task 372 | processing task, is_child = 0
+0.25.100.843 I slot   operator(): id  0 | task 372 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 95
+0.25.100.851 I slot   operator(): id  0 | task 372 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.25.188.684 I slot      release: id  0 | task 372 | stop processing: n_tokens = 95, truncated = 0
+0.25.188.758 I srv  update_slots: all slots are idle
+0.25.207.284 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060364331
+0.25.207.316 I slot launch_slot_: id  0 | task 374 | processing task, is_child = 0
+0.25.207.351 I slot   operator(): id  0 | task 374 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.25.207.359 I slot   operator(): id  0 | task 374 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.25.284.278 I slot      release: id  0 | task 374 | stop processing: n_tokens = 84, truncated = 0
+0.25.284.350 I srv  update_slots: all slots are idle
+0.25.301.752 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060459924
+0.25.301.785 I slot launch_slot_: id  0 | task 376 | processing task, is_child = 0
+0.25.301.819 I slot   operator(): id  0 | task 376 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.25.301.828 I slot   operator(): id  0 | task 376 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.25.368.761 I slot      release: id  0 | task 376 | stop processing: n_tokens = 74, truncated = 0
+0.25.368.827 I srv  update_slots: all slots are idle
+0.25.388.351 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060544405
+0.25.388.414 I slot launch_slot_: id  0 | task 378 | processing task, is_child = 0
+0.25.388.450 I slot   operator(): id  0 | task 378 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.25.388.458 I slot   operator(): id  0 | task 378 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.25.647.801 I slot      release: id  0 | task 378 | stop processing: n_tokens = 256, truncated = 0
+0.25.647.949 I srv  update_slots: all slots are idle
+0.25.681.681 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899060823448
+0.25.681.714 I slot launch_slot_: id  0 | task 380 | processing task, is_child = 0
+0.25.681.747 I slot   operator(): id  0 | task 380 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.25.681.755 I slot   operator(): id  0 | task 380 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.25.940.365 I slot      release: id  0 | task 380 | stop processing: n_tokens = 256, truncated = 0
+0.25.940.479 I srv  update_slots: all slots are idle
+0.25.974.032 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899061116048
+0.25.974.072 I slot launch_slot_: id  0 | task 382 | processing task, is_child = 0
+0.25.974.107 I slot   operator(): id  0 | task 382 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.25.974.115 I slot   operator(): id  0 | task 382 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.26.233.017 I slot      release: id  0 | task 382 | stop processing: n_tokens = 256, truncated = 0
+0.26.233.088 I srv  update_slots: all slots are idle
+0.26.265.732 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899061408662
+0.26.265.766 I slot launch_slot_: id  0 | task 384 | processing task, is_child = 0
+0.26.265.799 I slot   operator(): id  0 | task 384 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.26.265.807 I slot   operator(): id  0 | task 384 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.26.524.153 I slot      release: id  0 | task 384 | stop processing: n_tokens = 256, truncated = 0
+0.26.524.227 I srv  update_slots: all slots are idle
+0.26.557.011 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899061699799
+0.26.557.046 I slot launch_slot_: id  0 | task 386 | processing task, is_child = 0
+0.26.557.078 I slot   operator(): id  0 | task 386 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.26.557.085 I slot   operator(): id  0 | task 386 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.26.814.793 I slot      release: id  0 | task 386 | stop processing: n_tokens = 256, truncated = 0
+0.26.814.873 I srv  update_slots: all slots are idle
+0.26.847.952 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899061990441
+0.26.847.987 I slot launch_slot_: id  0 | task 388 | processing task, is_child = 0
+0.26.848.021 I slot   operator(): id  0 | task 388 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.26.848.030 I slot   operator(): id  0 | task 388 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.105.372 I slot      release: id  0 | task 388 | stop processing: n_tokens = 256, truncated = 0
+0.27.105.524 I srv  update_slots: all slots are idle
+0.27.138.557 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062281019
+0.27.138.590 I slot launch_slot_: id  0 | task 390 | processing task, is_child = 0
+0.27.138.624 I slot   operator(): id  0 | task 390 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 86
+0.27.138.632 I slot   operator(): id  0 | task 390 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.217.282 I slot      release: id  0 | task 390 | stop processing: n_tokens = 86, truncated = 0
+0.27.217.352 I srv  update_slots: all slots are idle
+0.27.235.113 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062392927
+0.27.235.147 I slot launch_slot_: id  0 | task 392 | processing task, is_child = 0
+0.27.235.181 I slot   operator(): id  0 | task 392 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 71
+0.27.235.188 I slot   operator(): id  0 | task 392 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.299.144 I slot      release: id  0 | task 392 | stop processing: n_tokens = 71, truncated = 0
+0.27.299.291 I srv  update_slots: all slots are idle
+0.27.315.589 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062474792
+0.27.315.623 I slot launch_slot_: id  0 | task 394 | processing task, is_child = 0
+0.27.315.657 I slot   operator(): id  0 | task 394 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 61
+0.27.315.665 I slot   operator(): id  0 | task 394 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.370.382 I slot      release: id  0 | task 394 | stop processing: n_tokens = 61, truncated = 0
+0.27.370.454 I srv  update_slots: all slots are idle
+0.27.389.537 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062546029
+0.27.389.573 I slot launch_slot_: id  0 | task 396 | processing task, is_child = 0
+0.27.389.612 I slot   operator(): id  0 | task 396 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 67
+0.27.389.620 I slot   operator(): id  0 | task 396 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.450.796 I slot      release: id  0 | task 396 | stop processing: n_tokens = 67, truncated = 0
+0.27.450.869 I srv  update_slots: all slots are idle
+0.27.467.228 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062626443
+0.27.467.262 I slot launch_slot_: id  0 | task 398 | processing task, is_child = 0
+0.27.467.297 I slot   operator(): id  0 | task 398 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 48
+0.27.467.305 I slot   operator(): id  0 | task 398 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.509.842 I slot      release: id  0 | task 398 | stop processing: n_tokens = 48, truncated = 0
+0.27.509.914 I srv  update_slots: all slots are idle
+0.27.527.705 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062685490
+0.27.527.740 I slot launch_slot_: id  0 | task 400 | processing task, is_child = 0
+0.27.527.775 I slot   operator(): id  0 | task 400 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.27.527.783 I slot   operator(): id  0 | task 400 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.594.477 I slot      release: id  0 | task 400 | stop processing: n_tokens = 74, truncated = 0
+0.27.594.548 I srv  update_slots: all slots are idle
+0.27.611.344 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062770124
+0.27.611.381 I slot launch_slot_: id  0 | task 402 | processing task, is_child = 0
+0.27.611.416 I slot   operator(): id  0 | task 402 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 71
+0.27.611.424 I slot   operator(): id  0 | task 402 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.675.822 I slot      release: id  0 | task 402 | stop processing: n_tokens = 71, truncated = 0
+0.27.675.895 I srv  update_slots: all slots are idle
+0.27.692.572 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062851468
+0.27.692.605 I slot launch_slot_: id  0 | task 404 | processing task, is_child = 0
+0.27.692.637 I slot   operator(): id  0 | task 404 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.27.692.645 I slot   operator(): id  0 | task 404 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.752.244 I slot      release: id  0 | task 404 | stop processing: n_tokens = 66, truncated = 0
+0.27.752.315 I srv  update_slots: all slots are idle
+0.27.768.615 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899062927891
+0.27.768.646 I slot launch_slot_: id  0 | task 406 | processing task, is_child = 0
+0.27.768.682 I slot   operator(): id  0 | task 406 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.27.768.691 I slot   operator(): id  0 | task 406 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.27.828.236 I slot      release: id  0 | task 406 | stop processing: n_tokens = 66, truncated = 0
+0.27.828.310 I srv  update_slots: all slots are idle
+0.27.846.999 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899063003885
+0.27.847.032 I slot launch_slot_: id  0 | task 408 | processing task, is_child = 0
+0.27.847.066 I slot   operator(): id  0 | task 408 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.27.847.075 I slot   operator(): id  0 | task 408 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.28.104.935 I slot      release: id  0 | task 408 | stop processing: n_tokens = 256, truncated = 0
+0.28.105.008 I srv  update_slots: all slots are idle
+0.28.137.892 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899063280582
+0.28.137.928 I slot launch_slot_: id  0 | task 410 | processing task, is_child = 0
+0.28.137.964 I slot   operator(): id  0 | task 410 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.28.137.972 I slot   operator(): id  0 | task 410 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.28.395.279 I slot      release: id  0 | task 410 | stop processing: n_tokens = 256, truncated = 0
+0.28.395.351 I srv  update_slots: all slots are idle
+0.28.427.731 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899063570925
+0.28.427.766 I slot launch_slot_: id  0 | task 412 | processing task, is_child = 0
+0.28.427.798 I slot   operator(): id  0 | task 412 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.28.427.806 I slot   operator(): id  0 | task 412 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.28.686.747 I slot      release: id  0 | task 412 | stop processing: n_tokens = 256, truncated = 0
+0.28.686.815 I srv  update_slots: all slots are idle
+0.28.719.074 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899063862394
+0.28.719.107 I slot launch_slot_: id  0 | task 414 | processing task, is_child = 0
+0.28.719.140 I slot   operator(): id  0 | task 414 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.28.719.147 I slot   operator(): id  0 | task 414 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.28.977.333 I slot      release: id  0 | task 414 | stop processing: n_tokens = 256, truncated = 0
+0.28.977.405 I srv  update_slots: all slots are idle
+0.29.009.784 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899064152981
+0.29.009.818 I slot launch_slot_: id  0 | task 416 | processing task, is_child = 0
+0.29.009.851 I slot   operator(): id  0 | task 416 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.29.009.859 I slot   operator(): id  0 | task 416 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.29.268.307 I slot      release: id  0 | task 416 | stop processing: n_tokens = 256, truncated = 0
+0.29.268.416 I srv  update_slots: all slots are idle
+0.29.300.718 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899064443952
+0.29.300.752 I slot launch_slot_: id  0 | task 418 | processing task, is_child = 0
+0.29.300.785 I slot   operator(): id  0 | task 418 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.29.300.794 I slot   operator(): id  0 | task 418 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.29.559.418 I slot      release: id  0 | task 418 | stop processing: n_tokens = 256, truncated = 0
+0.29.559.487 I srv  update_slots: all slots are idle
+0.29.590.276 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899064735063
+0.29.590.307 I slot launch_slot_: id  0 | task 420 | processing task, is_child = 0
+0.29.590.342 I slot   operator(): id  0 | task 420 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 96
+0.29.590.351 I slot   operator(): id  0 | task 420 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.29.679.348 I slot      release: id  0 | task 420 | stop processing: n_tokens = 96, truncated = 0
+0.29.679.413 I srv  update_slots: all slots are idle
+0.29.697.573 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899064854992
+0.29.697.607 I slot launch_slot_: id  0 | task 422 | processing task, is_child = 0
+0.29.697.641 I slot   operator(): id  0 | task 422 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.29.697.650 I slot   operator(): id  0 | task 422 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.29.774.027 I slot      release: id  0 | task 422 | stop processing: n_tokens = 84, truncated = 0
+0.29.774.102 I srv  update_slots: all slots are idle
+0.29.791.876 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899064949675
+0.29.791.910 I slot launch_slot_: id  0 | task 424 | processing task, is_child = 0
+0.29.791.947 I slot   operator(): id  0 | task 424 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.29.791.956 I slot   operator(): id  0 | task 424 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.29.859.518 I slot      release: id  0 | task 424 | stop processing: n_tokens = 75, truncated = 0
+0.29.859.592 I srv  update_slots: all slots are idle
+0.29.876.441 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065035163
+0.29.876.475 I slot launch_slot_: id  0 | task 426 | processing task, is_child = 0
+0.29.876.512 I slot   operator(): id  0 | task 426 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 70
+0.29.876.520 I slot   operator(): id  0 | task 426 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.29.940.034 I slot      release: id  0 | task 426 | stop processing: n_tokens = 70, truncated = 0
+0.29.940.105 I srv  update_slots: all slots are idle
+0.29.957.464 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065115680
+0.29.957.499 I slot launch_slot_: id  0 | task 428 | processing task, is_child = 0
+0.29.957.532 I slot   operator(): id  0 | task 428 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.29.957.540 I slot   operator(): id  0 | task 428 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.023.899 I slot      release: id  0 | task 428 | stop processing: n_tokens = 73, truncated = 0
+0.30.023.969 I srv  update_slots: all slots are idle
+0.30.040.934 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065199546
+0.30.040.971 I slot launch_slot_: id  0 | task 430 | processing task, is_child = 0
+0.30.041.003 I slot   operator(): id  0 | task 430 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.30.041.011 I slot   operator(): id  0 | task 430 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.095.056 I slot      release: id  0 | task 430 | stop processing: n_tokens = 60, truncated = 0
+0.30.095.131 I srv  update_slots: all slots are idle
+0.30.111.666 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065270703
+0.30.111.702 I slot launch_slot_: id  0 | task 432 | processing task, is_child = 0
+0.30.111.736 I slot   operator(): id  0 | task 432 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 69
+0.30.111.744 I slot   operator(): id  0 | task 432 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.173.925 I slot      release: id  0 | task 432 | stop processing: n_tokens = 69, truncated = 0
+0.30.173.998 I srv  update_slots: all slots are idle
+0.30.190.958 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065349573
+0.30.190.990 I slot launch_slot_: id  0 | task 434 | processing task, is_child = 0
+0.30.191.021 I slot   operator(): id  0 | task 434 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.30.191.029 I slot   operator(): id  0 | task 434 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.246.360 I slot      release: id  0 | task 434 | stop processing: n_tokens = 62, truncated = 0
+0.30.246.430 I srv  update_slots: all slots are idle
+0.30.262.758 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065422007
+0.30.262.787 I slot launch_slot_: id  0 | task 436 | processing task, is_child = 0
+0.30.262.821 I slot   operator(): id  0 | task 436 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.30.262.830 I slot   operator(): id  0 | task 436 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.331.854 I slot      release: id  0 | task 436 | stop processing: n_tokens = 76, truncated = 0
+0.30.331.925 I srv  update_slots: all slots are idle
+0.30.348.457 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065507501
+0.30.348.493 I slot launch_slot_: id  0 | task 438 | processing task, is_child = 0
+0.30.348.530 I slot   operator(): id  0 | task 438 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 68
+0.30.348.538 I slot   operator(): id  0 | task 438 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.410.098 I slot      release: id  0 | task 438 | stop processing: n_tokens = 68, truncated = 0
+0.30.410.170 I srv  update_slots: all slots are idle
+0.30.426.769 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065585744
+0.30.426.802 I slot launch_slot_: id  0 | task 440 | processing task, is_child = 0
+0.30.426.839 I slot   operator(): id  0 | task 440 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.30.426.848 I slot   operator(): id  0 | task 440 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.493.121 I slot      release: id  0 | task 440 | stop processing: n_tokens = 73, truncated = 0
+0.30.493.195 I srv  update_slots: all slots are idle
+0.30.511.480 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065668766
+0.30.511.515 I slot launch_slot_: id  0 | task 442 | processing task, is_child = 0
+0.30.511.548 I slot   operator(): id  0 | task 442 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.30.511.555 I slot   operator(): id  0 | task 442 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.579.175 I slot      release: id  0 | task 442 | stop processing: n_tokens = 75, truncated = 0
+0.30.579.249 I srv  update_slots: all slots are idle
+0.30.596.045 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065754824
+0.30.596.073 I slot launch_slot_: id  0 | task 444 | processing task, is_child = 0
+0.30.596.106 I slot   operator(): id  0 | task 444 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.30.596.114 I slot   operator(): id  0 | task 444 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.666.272 I slot      release: id  0 | task 444 | stop processing: n_tokens = 77, truncated = 0
+0.30.666.342 I srv  update_slots: all slots are idle
+0.30.683.381 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065841919
+0.30.683.415 I slot launch_slot_: id  0 | task 446 | processing task, is_child = 0
+0.30.683.447 I slot   operator(): id  0 | task 446 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.30.683.455 I slot   operator(): id  0 | task 446 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.749.378 I slot      release: id  0 | task 446 | stop processing: n_tokens = 73, truncated = 0
+0.30.749.456 I srv  update_slots: all slots are idle
+0.30.766.438 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899065925025
+0.30.766.472 I slot launch_slot_: id  0 | task 448 | processing task, is_child = 0
+0.30.766.505 I slot   operator(): id  0 | task 448 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.30.766.513 I slot   operator(): id  0 | task 448 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.825.245 I slot      release: id  0 | task 448 | stop processing: n_tokens = 65, truncated = 0
+0.30.825.322 I srv  update_slots: all slots are idle
+0.30.842.065 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899066000891
+0.30.842.099 I slot launch_slot_: id  0 | task 450 | processing task, is_child = 0
+0.30.842.132 I slot   operator(): id  0 | task 450 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.30.842.139 I slot   operator(): id  0 | task 450 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.914.144 I slot      release: id  0 | task 450 | stop processing: n_tokens = 79, truncated = 0
+0.30.914.219 I srv  update_slots: all slots are idle
+0.30.931.098 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899066089792
+0.30.931.132 I slot launch_slot_: id  0 | task 452 | processing task, is_child = 0
+0.30.931.169 I slot   operator(): id  0 | task 452 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.30.931.178 I slot   operator(): id  0 | task 452 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.30.999.911 I slot      release: id  0 | task 452 | stop processing: n_tokens = 76, truncated = 0
+0.30.999.983 I srv  update_slots: all slots are idle
+0.31.017.032 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899066175556
+0.31.017.062 I slot launch_slot_: id  0 | task 454 | processing task, is_child = 0
+0.31.017.098 I slot   operator(): id  0 | task 454 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 64
+0.31.017.107 I slot   operator(): id  0 | task 454 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.31.073.466 I slot      release: id  0 | task 454 | stop processing: n_tokens = 64, truncated = 0
+0.31.073.537 I srv  update_slots: all slots are idle
+0.31.090.483 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899066249113
+0.31.090.514 I slot launch_slot_: id  0 | task 456 | processing task, is_child = 0
+0.31.090.548 I slot   operator(): id  0 | task 456 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 87
+0.31.090.556 I slot   operator(): id  0 | task 456 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.31.170.088 I slot      release: id  0 | task 456 | stop processing: n_tokens = 87, truncated = 0
+0.31.170.164 I srv  update_slots: all slots are idle
+0.31.188.772 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.301 (> 0.100 thold), f_keep = 0.253
+0.31.188.807 I slot launch_slot_: id  0 | task 458 | processing task, is_child = 0
+0.31.188.841 I slot   operator(): id  0 | task 458 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 73
+0.31.188.849 I slot   operator(): id  0 | task 458 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.31.255.059 I slot      release: id  0 | task 458 | stop processing: n_tokens = 73, truncated = 0
+0.31.255.136 I srv  update_slots: all slots are idle
+0.31.273.220 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, sim_best = 0.272 (> 0.100 thold), f_keep = 0.301
+0.31.273.256 I slot launch_slot_: id  0 | task 460 | processing task, is_child = 0
+0.31.273.288 I slot   operator(): id  0 | task 460 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 81
+0.31.273.296 I slot   operator(): id  0 | task 460 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.31.346.987 I slot      release: id  0 | task 460 | stop processing: n_tokens = 81, truncated = 0
+0.31.347.068 I srv  update_slots: all slots are idle
+0.31.367.108 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899066522634
+0.31.367.143 I slot launch_slot_: id  0 | task 462 | processing task, is_child = 0
+0.31.367.175 I slot   operator(): id  0 | task 462 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.31.367.183 I slot   operator(): id  0 | task 462 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.31.626.845 I slot      release: id  0 | task 462 | stop processing: n_tokens = 256, truncated = 0
+0.31.626.921 I srv  update_slots: all slots are idle
+0.31.661.057 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899066802492
+0.31.661.091 I slot launch_slot_: id  0 | task 464 | processing task, is_child = 0
+0.31.661.124 I slot   operator(): id  0 | task 464 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.31.661.132 I slot   operator(): id  0 | task 464 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.31.919.702 I slot      release: id  0 | task 464 | stop processing: n_tokens = 256, truncated = 0
+0.31.919.771 I srv  update_slots: all slots are idle
+0.31.954.302 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899067095347
+0.31.954.339 I slot launch_slot_: id  0 | task 466 | processing task, is_child = 0
+0.31.954.374 I slot   operator(): id  0 | task 466 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.31.954.383 I slot   operator(): id  0 | task 466 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.32.212.547 I slot      release: id  0 | task 466 | stop processing: n_tokens = 256, truncated = 0
+0.32.212.617 I srv  update_slots: all slots are idle
+0.32.246.799 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899067388193
+0.32.246.832 I slot launch_slot_: id  0 | task 468 | processing task, is_child = 0
+0.32.246.864 I slot   operator(): id  0 | task 468 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.32.246.872 I slot   operator(): id  0 | task 468 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.32.504.936 I slot      release: id  0 | task 468 | stop processing: n_tokens = 256, truncated = 0
+0.32.505.016 I srv  update_slots: all slots are idle
+0.32.538.739 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899067680583
+0.32.538.774 I slot launch_slot_: id  0 | task 470 | processing task, is_child = 0
+0.32.538.807 I slot   operator(): id  0 | task 470 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.32.538.814 I slot   operator(): id  0 | task 470 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.32.796.791 I slot      release: id  0 | task 470 | stop processing: n_tokens = 256, truncated = 0
+0.32.796.865 I srv  update_slots: all slots are idle
+0.32.831.039 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899067972437
+0.32.831.072 I slot launch_slot_: id  0 | task 472 | processing task, is_child = 0
+0.32.831.104 I slot   operator(): id  0 | task 472 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.32.831.113 I slot   operator(): id  0 | task 472 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.088.568 I slot      release: id  0 | task 472 | stop processing: n_tokens = 256, truncated = 0
+0.33.088.642 I srv  update_slots: all slots are idle
+0.33.121.884 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068264216
+0.33.121.917 I slot launch_slot_: id  0 | task 474 | processing task, is_child = 0
+0.33.121.948 I slot   operator(): id  0 | task 474 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 81
+0.33.121.956 I slot   operator(): id  0 | task 474 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.195.452 I slot      release: id  0 | task 474 | stop processing: n_tokens = 81, truncated = 0
+0.33.195.522 I srv  update_slots: all slots are idle
+0.33.214.722 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068371098
+0.33.214.756 I slot launch_slot_: id  0 | task 476 | processing task, is_child = 0
+0.33.214.788 I slot   operator(): id  0 | task 476 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.33.214.795 I slot   operator(): id  0 | task 476 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.286.558 I slot      release: id  0 | task 476 | stop processing: n_tokens = 79, truncated = 0
+0.33.286.636 I srv  update_slots: all slots are idle
+0.33.304.964 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068462205
+0.33.304.997 I slot launch_slot_: id  0 | task 478 | processing task, is_child = 0
+0.33.305.028 I slot   operator(): id  0 | task 478 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.33.305.037 I slot   operator(): id  0 | task 478 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.388.035 I slot      release: id  0 | task 478 | stop processing: n_tokens = 90, truncated = 0
+0.33.388.108 I srv  update_slots: all slots are idle
+0.33.407.608 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068563682
+0.33.407.645 I slot launch_slot_: id  0 | task 480 | processing task, is_child = 0
+0.33.407.685 I slot   operator(): id  0 | task 480 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.33.407.694 I slot   operator(): id  0 | task 480 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.468.682 I slot      release: id  0 | task 480 | stop processing: n_tokens = 65, truncated = 0
+0.33.468.753 I srv  update_slots: all slots are idle
+0.33.488.651 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068644327
+0.33.488.686 I slot launch_slot_: id  0 | task 482 | processing task, is_child = 0
+0.33.488.719 I slot   operator(): id  0 | task 482 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 87
+0.33.488.727 I slot   operator(): id  0 | task 482 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.568.211 I slot      release: id  0 | task 482 | stop processing: n_tokens = 87, truncated = 0
+0.33.568.281 I srv  update_slots: all slots are idle
+0.33.587.779 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068743856
+0.33.587.818 I slot launch_slot_: id  0 | task 484 | processing task, is_child = 0
+0.33.587.849 I slot   operator(): id  0 | task 484 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.33.587.858 I slot   operator(): id  0 | task 484 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.656.566 I slot      release: id  0 | task 484 | stop processing: n_tokens = 76, truncated = 0
+0.33.656.635 I srv  update_slots: all slots are idle
+0.33.675.382 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068832211
+0.33.675.415 I slot launch_slot_: id  0 | task 486 | processing task, is_child = 0
+0.33.675.447 I slot   operator(): id  0 | task 486 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.33.675.456 I slot   operator(): id  0 | task 486 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.752.742 I slot      release: id  0 | task 486 | stop processing: n_tokens = 84, truncated = 0
+0.33.752.812 I srv  update_slots: all slots are idle
+0.33.771.579 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899068928388
+0.33.771.613 I slot launch_slot_: id  0 | task 488 | processing task, is_child = 0
+0.33.771.648 I slot   operator(): id  0 | task 488 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.33.771.656 I slot   operator(): id  0 | task 488 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.848.216 I slot      release: id  0 | task 488 | stop processing: n_tokens = 84, truncated = 0
+0.33.848.286 I srv  update_slots: all slots are idle
+0.33.866.663 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069023862
+0.33.866.696 I slot launch_slot_: id  0 | task 490 | processing task, is_child = 0
+0.33.866.737 I slot   operator(): id  0 | task 490 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.33.866.744 I slot   operator(): id  0 | task 490 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.33.948.691 I slot      release: id  0 | task 490 | stop processing: n_tokens = 90, truncated = 0
+0.33.948.766 I srv  update_slots: all slots are idle
+0.33.967.720 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069124339
+0.33.967.752 I slot launch_slot_: id  0 | task 492 | processing task, is_child = 0
+0.33.967.787 I slot   operator(): id  0 | task 492 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.33.967.795 I slot   operator(): id  0 | task 492 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.039.527 I slot      release: id  0 | task 492 | stop processing: n_tokens = 79, truncated = 0
+0.34.039.627 I srv  update_slots: all slots are idle
+0.34.056.972 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069215200
+0.34.057.008 I slot launch_slot_: id  0 | task 494 | processing task, is_child = 0
+0.34.057.046 I slot   operator(): id  0 | task 494 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.34.057.055 I slot   operator(): id  0 | task 494 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.127.547 I slot      release: id  0 | task 494 | stop processing: n_tokens = 77, truncated = 0
+0.34.127.651 I srv  update_slots: all slots are idle
+0.34.144.867 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069303224
+0.34.144.897 I slot launch_slot_: id  0 | task 496 | processing task, is_child = 0
+0.34.144.934 I slot   operator(): id  0 | task 496 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 76
+0.34.144.942 I slot   operator(): id  0 | task 496 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.213.945 I slot      release: id  0 | task 496 | stop processing: n_tokens = 76, truncated = 0
+0.34.214.052 I srv  update_slots: all slots are idle
+0.34.231.116 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069389622
+0.34.231.148 I slot launch_slot_: id  0 | task 498 | processing task, is_child = 0
+0.34.231.182 I slot   operator(): id  0 | task 498 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.34.231.190 I slot   operator(): id  0 | task 498 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.299.247 I slot      release: id  0 | task 498 | stop processing: n_tokens = 75, truncated = 0
+0.34.299.347 I srv  update_slots: all slots are idle
+0.34.316.418 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069474921
+0.34.316.454 I slot launch_slot_: id  0 | task 500 | processing task, is_child = 0
+0.34.316.489 I slot   operator(): id  0 | task 500 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.34.316.499 I slot   operator(): id  0 | task 500 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.384.139 I slot      release: id  0 | task 500 | stop processing: n_tokens = 75, truncated = 0
+0.34.384.210 I srv  update_slots: all slots are idle
+0.34.402.285 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069559787
+0.34.402.318 I slot launch_slot_: id  0 | task 502 | processing task, is_child = 0
+0.34.402.351 I slot   operator(): id  0 | task 502 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 146
+0.34.402.358 I slot   operator(): id  0 | task 502 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.538.534 I slot      release: id  0 | task 502 | stop processing: n_tokens = 146, truncated = 0
+0.34.538.635 I srv  update_slots: all slots are idle
+0.34.560.457 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069714207
+0.34.560.496 I slot launch_slot_: id  0 | task 504 | processing task, is_child = 0
+0.34.560.532 I slot   operator(): id  0 | task 504 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 95
+0.34.560.540 I slot   operator(): id  0 | task 504 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.648.893 I slot      release: id  0 | task 504 | stop processing: n_tokens = 95, truncated = 0
+0.34.649.026 I srv  update_slots: all slots are idle
+0.34.667.195 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069824542
+0.34.667.237 I slot launch_slot_: id  0 | task 506 | processing task, is_child = 0
+0.34.667.271 I slot   operator(): id  0 | task 506 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.34.667.279 I slot   operator(): id  0 | task 506 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.744.708 I slot      release: id  0 | task 506 | stop processing: n_tokens = 84, truncated = 0
+0.34.744.802 I srv  update_slots: all slots are idle
+0.34.762.014 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899069920376
+0.34.762.051 I slot launch_slot_: id  0 | task 508 | processing task, is_child = 0
+0.34.762.093 I slot   operator(): id  0 | task 508 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.34.762.103 I slot   operator(): id  0 | task 508 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.34.829.403 I slot      release: id  0 | task 508 | stop processing: n_tokens = 74, truncated = 0
+0.34.829.475 I srv  update_slots: all slots are idle
+0.34.848.439 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899070005048
+0.34.848.472 I slot launch_slot_: id  0 | task 510 | processing task, is_child = 0
+0.34.848.505 I slot   operator(): id  0 | task 510 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.34.848.513 I slot   operator(): id  0 | task 510 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.35.106.460 I slot      release: id  0 | task 510 | stop processing: n_tokens = 256, truncated = 0
+0.35.106.541 I srv  update_slots: all slots are idle
+0.35.140.408 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899070282109
+0.35.140.444 I slot launch_slot_: id  0 | task 512 | processing task, is_child = 0
+0.35.140.478 I slot   operator(): id  0 | task 512 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.35.140.486 I slot   operator(): id  0 | task 512 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.35.399.304 I slot      release: id  0 | task 512 | stop processing: n_tokens = 256, truncated = 0
+0.35.399.403 I srv  update_slots: all slots are idle
+0.35.433.754 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899070574976
+0.35.433.792 I slot launch_slot_: id  0 | task 514 | processing task, is_child = 0
+0.35.433.825 I slot   operator(): id  0 | task 514 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.35.433.833 I slot   operator(): id  0 | task 514 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.35.693.435 I slot      release: id  0 | task 514 | stop processing: n_tokens = 256, truncated = 0
+0.35.693.510 I srv  update_slots: all slots are idle
+0.35.727.434 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899070869082
+0.35.727.467 I slot launch_slot_: id  0 | task 516 | processing task, is_child = 0
+0.35.727.501 I slot   operator(): id  0 | task 516 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.35.727.509 I slot   operator(): id  0 | task 516 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.35.985.757 I slot      release: id  0 | task 516 | stop processing: n_tokens = 256, truncated = 0
+0.35.985.827 I srv  update_slots: all slots are idle
+0.36.018.630 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899071161403
+0.36.018.663 I slot launch_slot_: id  0 | task 518 | processing task, is_child = 0
+0.36.018.698 I slot   operator(): id  0 | task 518 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.36.018.707 I slot   operator(): id  0 | task 518 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.276.262 I slot      release: id  0 | task 518 | stop processing: n_tokens = 256, truncated = 0
+0.36.276.332 I srv  update_slots: all slots are idle
+0.36.309.497 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899071451908
+0.36.309.531 I slot launch_slot_: id  0 | task 520 | processing task, is_child = 0
+0.36.309.566 I slot   operator(): id  0 | task 520 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.36.309.574 I slot   operator(): id  0 | task 520 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.568.193 I slot      release: id  0 | task 520 | stop processing: n_tokens = 256, truncated = 0
+0.36.568.268 I srv  update_slots: all slots are idle
+0.36.600.659 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899071743840
+0.36.600.694 I slot launch_slot_: id  0 | task 522 | processing task, is_child = 0
+0.36.600.732 I slot   operator(): id  0 | task 522 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 86
+0.36.600.739 I slot   operator(): id  0 | task 522 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.679.425 I slot      release: id  0 | task 522 | stop processing: n_tokens = 86, truncated = 0
+0.36.679.494 I srv  update_slots: all slots are idle
+0.36.697.010 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899071855071
+0.36.697.041 I slot launch_slot_: id  0 | task 524 | processing task, is_child = 0
+0.36.697.074 I slot   operator(): id  0 | task 524 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 71
+0.36.697.082 I slot   operator(): id  0 | task 524 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.761.302 I slot      release: id  0 | task 524 | stop processing: n_tokens = 71, truncated = 0
+0.36.761.374 I srv  update_slots: all slots are idle
+0.36.778.436 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899071936947
+0.36.778.469 I slot launch_slot_: id  0 | task 526 | processing task, is_child = 0
+0.36.778.502 I slot   operator(): id  0 | task 526 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 61
+0.36.778.509 I slot   operator(): id  0 | task 526 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.832.911 I slot      release: id  0 | task 526 | stop processing: n_tokens = 61, truncated = 0
+0.36.832.977 I srv  update_slots: all slots are idle
+0.36.849.674 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072008556
+0.36.849.707 I slot launch_slot_: id  0 | task 528 | processing task, is_child = 0
+0.36.849.745 I slot   operator(): id  0 | task 528 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.36.849.754 I slot   operator(): id  0 | task 528 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.903.535 I slot      release: id  0 | task 528 | stop processing: n_tokens = 60, truncated = 0
+0.36.903.611 I srv  update_slots: all slots are idle
+0.36.920.755 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072079180
+0.36.920.790 I slot launch_slot_: id  0 | task 530 | processing task, is_child = 0
+0.36.920.823 I slot   operator(): id  0 | task 530 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.36.920.831 I slot   operator(): id  0 | task 530 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.36.976.774 I slot      release: id  0 | task 530 | stop processing: n_tokens = 62, truncated = 0
+0.36.976.848 I srv  update_slots: all slots are idle
+0.36.992.867 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072152419
+0.36.992.897 I slot launch_slot_: id  0 | task 532 | processing task, is_child = 0
+0.36.992.932 I slot   operator(): id  0 | task 532 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 64
+0.36.992.939 I slot   operator(): id  0 | task 532 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.049.736 I slot      release: id  0 | task 532 | stop processing: n_tokens = 64, truncated = 0
+0.37.049.808 I srv  update_slots: all slots are idle
+0.37.065.892 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072225381
+0.37.065.925 I slot launch_slot_: id  0 | task 534 | processing task, is_child = 0
+0.37.065.956 I slot   operator(): id  0 | task 534 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.37.065.964 I slot   operator(): id  0 | task 534 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.125.096 I slot      release: id  0 | task 534 | stop processing: n_tokens = 66, truncated = 0
+0.37.125.167 I srv  update_slots: all slots are idle
+0.37.141.768 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072300743
+0.37.141.803 I slot launch_slot_: id  0 | task 536 | processing task, is_child = 0
+0.37.141.841 I slot   operator(): id  0 | task 536 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.37.141.849 I slot   operator(): id  0 | task 536 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.195.599 I slot      release: id  0 | task 536 | stop processing: n_tokens = 60, truncated = 0
+0.37.195.671 I srv  update_slots: all slots are idle
+0.37.211.800 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072371245
+0.37.211.833 I slot launch_slot_: id  0 | task 538 | processing task, is_child = 0
+0.37.211.867 I slot   operator(): id  0 | task 538 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 55
+0.37.211.875 I slot   operator(): id  0 | task 538 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.260.959 I slot      release: id  0 | task 538 | stop processing: n_tokens = 55, truncated = 0
+0.37.261.036 I srv  update_slots: all slots are idle
+0.37.277.249 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072436603
+0.37.277.280 I slot launch_slot_: id  0 | task 540 | processing task, is_child = 0
+0.37.277.318 I slot   operator(): id  0 | task 540 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 58
+0.37.277.325 I slot   operator(): id  0 | task 540 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.329.222 I slot      release: id  0 | task 540 | stop processing: n_tokens = 58, truncated = 0
+0.37.329.293 I srv  update_slots: all slots are idle
+0.37.345.290 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072504868
+0.37.345.322 I slot launch_slot_: id  0 | task 542 | processing task, is_child = 0
+0.37.345.354 I slot   operator(): id  0 | task 542 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 67
+0.37.345.362 I slot   operator(): id  0 | task 542 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.405.702 I slot      release: id  0 | task 542 | stop processing: n_tokens = 67, truncated = 0
+0.37.405.776 I srv  update_slots: all slots are idle
+0.37.422.734 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072581348
+0.37.422.766 I slot launch_slot_: id  0 | task 544 | processing task, is_child = 0
+0.37.422.799 I slot   operator(): id  0 | task 544 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.37.422.807 I slot   operator(): id  0 | task 544 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.484.911 I slot      release: id  0 | task 544 | stop processing: n_tokens = 66, truncated = 0
+0.37.484.978 I srv  update_slots: all slots are idle
+0.37.501.546 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072660556
+0.37.501.578 I slot launch_slot_: id  0 | task 546 | processing task, is_child = 0
+0.37.501.612 I slot   operator(): id  0 | task 546 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 90
+0.37.501.620 I slot   operator(): id  0 | task 546 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.584.118 I slot      release: id  0 | task 546 | stop processing: n_tokens = 90, truncated = 0
+0.37.584.191 I srv  update_slots: all slots are idle
+0.37.601.283 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072759765
+0.37.601.313 I slot launch_slot_: id  0 | task 548 | processing task, is_child = 0
+0.37.601.349 I slot   operator(): id  0 | task 548 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.37.601.357 I slot   operator(): id  0 | task 548 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.657.025 I slot      release: id  0 | task 548 | stop processing: n_tokens = 62, truncated = 0
+0.37.657.091 I srv  update_slots: all slots are idle
+0.37.673.844 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072832670
+0.37.673.879 I slot launch_slot_: id  0 | task 550 | processing task, is_child = 0
+0.37.673.915 I slot   operator(): id  0 | task 550 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 60
+0.37.673.923 I slot   operator(): id  0 | task 550 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.727.780 I slot      release: id  0 | task 550 | stop processing: n_tokens = 60, truncated = 0
+0.37.727.849 I srv  update_slots: all slots are idle
+0.37.744.198 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072903426
+0.37.744.229 I slot launch_slot_: id  0 | task 552 | processing task, is_child = 0
+0.37.744.264 I slot   operator(): id  0 | task 552 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 54
+0.37.744.273 I slot   operator(): id  0 | task 552 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.792.562 I slot      release: id  0 | task 552 | stop processing: n_tokens = 54, truncated = 0
+0.37.792.630 I srv  update_slots: all slots are idle
+0.37.809.163 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899072968206
+0.37.809.196 I slot launch_slot_: id  0 | task 554 | processing task, is_child = 0
+0.37.809.231 I slot   operator(): id  0 | task 554 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 55
+0.37.809.238 I slot   operator(): id  0 | task 554 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.858.474 I slot      release: id  0 | task 554 | stop processing: n_tokens = 55, truncated = 0
+0.37.858.544 I srv  update_slots: all slots are idle
+0.37.874.680 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899073034121
+0.37.874.712 I slot launch_slot_: id  0 | task 556 | processing task, is_child = 0
+0.37.874.746 I slot   operator(): id  0 | task 556 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 58
+0.37.874.754 I slot   operator(): id  0 | task 556 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.37.926.446 I slot      release: id  0 | task 556 | stop processing: n_tokens = 58, truncated = 0
+0.37.926.516 I srv  update_slots: all slots are idle
+0.37.945.581 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899073102091
+0.37.945.617 I slot launch_slot_: id  0 | task 558 | processing task, is_child = 0
+0.37.945.650 I slot   operator(): id  0 | task 558 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.37.945.658 I slot   operator(): id  0 | task 558 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.38.203.538 I slot      release: id  0 | task 558 | stop processing: n_tokens = 256, truncated = 0
+0.38.203.612 I srv  update_slots: all slots are idle
+0.38.237.742 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899073379184
+0.38.237.776 I slot launch_slot_: id  0 | task 560 | processing task, is_child = 0
+0.38.237.815 I slot   operator(): id  0 | task 560 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.38.237.822 I slot   operator(): id  0 | task 560 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.38.495.449 I slot      release: id  0 | task 560 | stop processing: n_tokens = 256, truncated = 0
+0.38.495.524 I srv  update_slots: all slots are idle
+0.38.529.744 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899073671096
+0.38.529.775 I slot launch_slot_: id  0 | task 562 | processing task, is_child = 0
+0.38.529.810 I slot   operator(): id  0 | task 562 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.38.529.818 I slot   operator(): id  0 | task 562 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.38.787.788 I slot      release: id  0 | task 562 | stop processing: n_tokens = 256, truncated = 0
+0.38.787.857 I srv  update_slots: all slots are idle
+0.38.821.617 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899073963433
+0.38.821.653 I slot launch_slot_: id  0 | task 564 | processing task, is_child = 0
+0.38.821.690 I slot   operator(): id  0 | task 564 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.38.821.698 I slot   operator(): id  0 | task 564 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.39.079.738 I slot      release: id  0 | task 564 | stop processing: n_tokens = 256, truncated = 0
+0.39.079.812 I srv  update_slots: all slots are idle
+0.39.114.636 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899074255384
+0.39.114.670 I slot launch_slot_: id  0 | task 566 | processing task, is_child = 0
+0.39.114.705 I slot   operator(): id  0 | task 566 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.39.114.713 I slot   operator(): id  0 | task 566 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.39.371.751 I slot      release: id  0 | task 566 | stop processing: n_tokens = 256, truncated = 0
+0.39.371.823 I srv  update_slots: all slots are idle
+0.39.405.455 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899074547399
+0.39.405.493 I slot launch_slot_: id  0 | task 568 | processing task, is_child = 0
+0.39.405.526 I slot   operator(): id  0 | task 568 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 256
+0.39.405.535 I slot   operator(): id  0 | task 568 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.39.665.420 I slot      release: id  0 | task 568 | stop processing: n_tokens = 256, truncated = 0
+0.39.665.495 I srv  update_slots: all slots are idle
+0.39.696.592 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899074841067
+0.39.696.626 I slot launch_slot_: id  0 | task 570 | processing task, is_child = 0
+0.39.696.657 I slot   operator(): id  0 | task 570 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 70
+0.39.696.665 I slot   operator(): id  0 | task 570 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.39.760.582 I slot      release: id  0 | task 570 | stop processing: n_tokens = 70, truncated = 0
+0.39.760.654 I srv  update_slots: all slots are idle
+0.39.778.177 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899074936229
+0.39.778.212 I slot launch_slot_: id  0 | task 572 | processing task, is_child = 0
+0.39.778.253 I slot   operator(): id  0 | task 572 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 86
+0.39.778.262 I slot   operator(): id  0 | task 572 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.39.857.125 I slot      release: id  0 | task 572 | stop processing: n_tokens = 86, truncated = 0
+0.39.857.202 I srv  update_slots: all slots are idle
+0.39.874.405 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075032773
+0.39.874.439 I slot launch_slot_: id  0 | task 574 | processing task, is_child = 0
+0.39.874.474 I slot   operator(): id  0 | task 574 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.39.874.482 I slot   operator(): id  0 | task 574 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.39.934.037 I slot      release: id  0 | task 574 | stop processing: n_tokens = 66, truncated = 0
+0.39.934.108 I srv  update_slots: all slots are idle
+0.39.950.486 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075109684
+0.39.950.521 I slot launch_slot_: id  0 | task 576 | processing task, is_child = 0
+0.39.950.557 I slot   operator(): id  0 | task 576 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 62
+0.39.950.567 I slot   operator(): id  0 | task 576 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.005.748 I slot      release: id  0 | task 576 | stop processing: n_tokens = 62, truncated = 0
+0.40.005.820 I srv  update_slots: all slots are idle
+0.40.022.159 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075181395
+0.40.022.194 I slot launch_slot_: id  0 | task 578 | processing task, is_child = 0
+0.40.022.229 I slot   operator(): id  0 | task 578 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 66
+0.40.022.237 I slot   operator(): id  0 | task 578 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.082.291 I slot      release: id  0 | task 578 | stop processing: n_tokens = 66, truncated = 0
+0.40.082.366 I srv  update_slots: all slots are idle
+0.40.098.708 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075257939
+0.40.098.742 I slot launch_slot_: id  0 | task 580 | processing task, is_child = 0
+0.40.098.778 I slot   operator(): id  0 | task 580 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 65
+0.40.098.785 I slot   operator(): id  0 | task 580 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.157.909 I slot      release: id  0 | task 580 | stop processing: n_tokens = 65, truncated = 0
+0.40.157.983 I srv  update_slots: all slots are idle
+0.40.174.032 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075333556
+0.40.174.066 I slot launch_slot_: id  0 | task 582 | processing task, is_child = 0
+0.40.174.100 I slot   operator(): id  0 | task 582 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 84
+0.40.174.109 I slot   operator(): id  0 | task 582 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.250.916 I slot      release: id  0 | task 582 | stop processing: n_tokens = 84, truncated = 0
+0.40.250.983 I srv  update_slots: all slots are idle
+0.40.267.781 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075426561
+0.40.267.811 I slot launch_slot_: id  0 | task 584 | processing task, is_child = 0
+0.40.267.844 I slot   operator(): id  0 | task 584 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 75
+0.40.267.851 I slot   operator(): id  0 | task 584 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.335.738 I slot      release: id  0 | task 584 | stop processing: n_tokens = 75, truncated = 0
+0.40.335.813 I srv  update_slots: all slots are idle
+0.40.352.771 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075511386
+0.40.352.804 I slot launch_slot_: id  0 | task 586 | processing task, is_child = 0
+0.40.352.846 I slot   operator(): id  0 | task 586 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 79
+0.40.352.854 I slot   operator(): id  0 | task 586 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.424.169 I slot      release: id  0 | task 586 | stop processing: n_tokens = 79, truncated = 0
+0.40.424.243 I srv  update_slots: all slots are idle
+0.40.441.756 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075599817
+0.40.441.787 I slot launch_slot_: id  0 | task 588 | processing task, is_child = 0
+0.40.441.821 I slot   operator(): id  0 | task 588 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 68
+0.40.441.830 I slot   operator(): id  0 | task 588 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.503.523 I slot      release: id  0 | task 588 | stop processing: n_tokens = 68, truncated = 0
+0.40.503.599 I srv  update_slots: all slots are idle
+0.40.520.227 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075679171
+0.40.520.262 I slot launch_slot_: id  0 | task 590 | processing task, is_child = 0
+0.40.520.299 I slot   operator(): id  0 | task 590 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 77
+0.40.520.308 I slot   operator(): id  0 | task 590 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.590.512 I slot      release: id  0 | task 590 | stop processing: n_tokens = 77, truncated = 0
+0.40.590.587 I srv  update_slots: all slots are idle
+0.40.607.637 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 899075766160
+0.40.607.670 I slot launch_slot_: id  0 | task 592 | processing task, is_child = 0
+0.40.607.706 I slot   operator(): id  0 | task 592 | new prompt, n_ctx_slot = 256, n_keep = 0, task.n_tokens = 74
+0.40.607.715 I slot   operator(): id  0 | task 592 | cached n_tokens = 0, memory_seq_rm [0, end)
+0.40.675.179 I slot      release: id  0 | task 592 | stop processing: n_tokens = 74, truncated = 0
+0.40.675.253 I srv  update_slots: all slots are idle
+0.40.690.332 I srv    operator(): operator(): cleaning up before exit...
+0.40.692.191 I common_memory_breakdown_print: | memory breakdown [MiB] | total   free    self   model   context   compute    unaccounted |
+0.40.692.210 I common_memory_breakdown_print: |   - Host               |                   35 =    33 +       0 +       2                |

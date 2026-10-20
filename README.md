@@ -11,8 +11,8 @@
 > 已验证：从固定官方修订提取 15 个多词元预测（MTP）张量后，重建的 4B MTP GGUF 与历史产物哈希一致。
 >
 > 模型输入记录：`musepipro-wg:~/Projects/riscv-accl-bench-2026-09-27/source-trace-20261016-034448/file-identities.json`。
-> 编译器与 MTP 补证记录：`musepipro-wg:~/Projects/riscv-accl-bench-2026-09-27/source-proof-20261016-135448-r2/result/proof.json`。
-> 交付待办：收回板端补证记录，再更新 `final-release` 的清单与归档。现有归档保持原字节。
+> 编译器与 MTP 补证记录：[源材料补证收据](spacemit/reports/raw/source-proof-20261016-135448-r2/README.md)。
+> 任务：更新 `final-release` 的清单与归档；现有归档保持原字节。
 
 最终版完成一次请求的速度，2B 为厂商起点的 1.24～3.59 倍，4B 为 1.41～4.72 倍。
 输入越长，倍数越大；服务器内存两臂之差小于 3 MiB。

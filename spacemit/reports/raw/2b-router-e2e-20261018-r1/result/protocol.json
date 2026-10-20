@@ -1,0 +1,40 @@
+{
+  "categories": [
+    "code",
+    "chinese",
+    "qa",
+    "long_document"
+  ],
+  "cases_per_category": 3,
+  "arms": [
+    "baseline",
+    "routed"
+  ],
+  "acceptance": {
+    "max_category_slowdown_pct": 3.0,
+    "max_mean_quality_loss": 0.25,
+    "new_fact_citation_code_errors": 0
+  },
+  "native_config": {
+    "threads": 4,
+    "ubatch": 32,
+    "mask": 3
+  },
+  "context": 12288,
+  "max_tokens": 2048,
+  "draft_max": 3,
+  "score_guard": false,
+  "rs_snapshots": 0,
+  "lowacc": false,
+  "cache_prompt": false,
+  "request_deadline_s": 1800,
+  "backend_ports": [
+    18110,
+    18111
+  ],
+  "proxy_port": 18112,
+  "order": "alternate baseline-first and routed-first by case index",
+  "baseline_residency": "both native backends remain resident",
+  "client": "board loopback",
+  "timing": "HTTP open through framed SSE EOF; classification and relay included; server load excluded"
+}

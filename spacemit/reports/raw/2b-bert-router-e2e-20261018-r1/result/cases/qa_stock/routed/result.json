@@ -1,0 +1,152 @@
+{
+  "case_id": "qa_stock",
+  "category": "qa",
+  "arm": "routed",
+  "route": "direct",
+  "classify_ms": 73.632243,
+  "response": {
+    "answer": "根据提供的盘点单资料，计算过程如下：\n\n1.  **确定可用箱数**：\n    根据资料描述，“可用量不包含预留和破损箱”。\n    *   账面库存：168 箱\n    *   预留订单：29 箱（不可用）\n    *   破损待报废：18 箱（不可用）\n    *   可用箱数 = 账面库存 - 预留订单 - 破损待报废\n    *   可用箱数 = 168 - 29 - 18 = **121 箱**\n\n2.  **列出减项**：\n    导致库存减少的项为预留订单和破损待报废。\n\n**最终结果：**\n*   **盘点后的可用箱数**：**121 箱**\n*   **减项**：预留订单 29 箱、破损待报废 18 箱",
+    "ttft_s": 3.995,
+    "wall_s": 49.867,
+    "finish_reason": "stop",
+    "answer_sha256": "ed5308dae7e294e89cb26eb6b3c9ccbcd1a52595213e58f20a819f21fe0cbcc2",
+    "usage": {
+      "completion_tokens": 205,
+      "prompt_tokens": 87,
+      "total_tokens": 292,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 87,
+      "prompt_ms": 3755.096,
+      "prompt_per_token_ms": 43.16202298850575,
+      "prompt_per_second": 23.168515531959766,
+      "predicted_n": 205,
+      "predicted_ms": 45869.966,
+      "predicted_per_token_ms": 223.75593170731707,
+      "predicted_per_second": 4.469155263816851
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "server": "BaseHTTP/0.6 Python/3.12.3",
+      "date": "Sun, 18 Oct 2026 12:03:11 GMT",
+      "content-type": "text/event-stream",
+      "x-decode-route": "direct",
+      "x-classifier": "bert",
+      "x-route-reason": "class_map",
+      "x-classify-ms": "73.632243",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 87,
+    "completion_tokens": 205,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": null,
+    "facts": [
+      "可用量为 121 箱",
+      "计算式为 168 - 29 - 18"
+    ],
+    "citations": []
+  },
+  "resources_before": {
+    "direct": {
+      "pid": 76636,
+      "server_vm_hwm_kib": 3129012,
+      "memavailable_kib": 11895184,
+      "smaps_kib": {
+        "Rss": 3129792,
+        "Pss": 2585829,
+        "Private_Clean": 188,
+        "Private_Dirty": 2047156
+      }
+    },
+    "prefix": {
+      "pid": 76655,
+      "server_vm_hwm_kib": 2786224,
+      "memavailable_kib": 11895184,
+      "smaps_kib": {
+        "Rss": 2787236,
+        "Pss": 2243311,
+        "Private_Clean": 24,
+        "Private_Dirty": 1704824
+      }
+    },
+    "encoder": {
+      "pid": 76671,
+      "server_vm_hwm_kib": 82264,
+      "memavailable_kib": 11895184,
+      "smaps_kib": {
+        "Rss": 83076,
+        "Pss": 74203,
+        "Private_Clean": 34048,
+        "Private_Dirty": 36732
+      }
+    },
+    "gateway": {
+      "pid": 76687,
+      "server_vm_hwm_kib": 22656,
+      "memavailable_kib": 11895184,
+      "smaps_kib": {
+        "Rss": 22776,
+        "Pss": 14873,
+        "Private_Clean": 8,
+        "Private_Dirty": 12824
+      }
+    }
+  },
+  "resources_after": {
+    "direct": {
+      "pid": 76636,
+      "server_vm_hwm_kib": 3129012,
+      "memavailable_kib": 11895204,
+      "smaps_kib": {
+        "Rss": 3129800,
+        "Pss": 2585837,
+        "Private_Clean": 188,
+        "Private_Dirty": 2047164
+      }
+    },
+    "prefix": {
+      "pid": 76655,
+      "server_vm_hwm_kib": 2786224,
+      "memavailable_kib": 11895204,
+      "smaps_kib": {
+        "Rss": 2787236,
+        "Pss": 2243311,
+        "Private_Clean": 24,
+        "Private_Dirty": 1704824
+      }
+    },
+    "encoder": {
+      "pid": 76671,
+      "server_vm_hwm_kib": 82264,
+      "memavailable_kib": 11895204,
+      "smaps_kib": {
+        "Rss": 83088,
+        "Pss": 74215,
+        "Private_Clean": 34048,
+        "Private_Dirty": 36744
+      }
+    },
+    "gateway": {
+      "pid": 76687,
+      "server_vm_hwm_kib": 22656,
+      "memavailable_kib": 11895204,
+      "smaps_kib": {
+        "Rss": 22776,
+        "Pss": 14873,
+        "Private_Clean": 8,
+        "Private_Dirty": 12824
+      }
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "case_id": "clamp_values",
+  "category": "code",
+  "arm": "baseline",
+  "route": "direct",
+  "classify_ms": 0.0,
+  "response": {
+    "answer": "```python\ndef clamp_values(values, lower, upper):\n    if lower > upper:\n        raise ValueError(\"lower must be less than or equal to upper\")\n    return [v if lower <= v <= upper for v in values]\n```",
+    "ttft_s": 3.854,
+    "wall_s": 15.823,
+    "finish_reason": "stop",
+    "answer_sha256": "5fe68757cedd3a9d3e8b3b1e5c2180bed9c6756290c8e96f21d3bc768142ab8c",
+    "usage": {
+      "completion_tokens": 53,
+      "prompt_tokens": 83,
+      "total_tokens": 136,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 83,
+      "prompt_ms": 3696.29,
+      "prompt_per_token_ms": 44.53361445783133,
+      "prompt_per_second": 22.454948069550824,
+      "predicted_n": 53,
+      "predicted_ms": 11967.414,
+      "predicted_per_token_ms": 225.8002641509434,
+      "predicted_per_second": 4.428692781915959
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "transfer-encoding": "chunked",
+      "access-control-allow-origin": "",
+      "x-accel-buffering": "no",
+      "server": "llama.cpp",
+      "connection": "close",
+      "content-type": "text/event-stream"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 83,
+    "completion_tokens": 53,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": false,
+    "result": {
+      "passed": false,
+      "checks": 0,
+      "detail": "SyntaxError"
+    }
+  },
+  "resources_before": {
+    "direct": {
+      "pid": 75720,
+      "server_vm_hwm_kib": 2483684,
+      "memavailable_kib": 12846912,
+      "smaps_kib": {
+        "Rss": 2484508,
+        "Pss": 1942101,
+        "Private_Clean": 36,
+        "Private_Dirty": 1401892
+      }
+    },
+    "prefix": {
+      "pid": 75736,
+      "server_vm_hwm_kib": 2532800,
+      "memavailable_kib": 12846912,
+      "smaps_kib": {
+        "Rss": 2533360,
+        "Pss": 1991040,
+        "Private_Clean": 100,
+        "Private_Dirty": 1450784
+      }
+    },
+    "gateway": {
+      "pid": 75752,
+      "server_vm_hwm_kib": 22684,
+      "memavailable_kib": 12846912,
+      "smaps_kib": {
+        "Rss": 22848,
+        "Pss": 14989,
+        "Private_Clean": 12,
+        "Private_Dirty": 12940
+      }
+    }
+  },
+  "resources_after": {
+    "direct": {
+      "pid": 75720,
+      "server_vm_hwm_kib": 2548068,
+      "memavailable_kib": 12776692,
+      "smaps_kib": {
+        "Rss": 2549320,
+        "Pss": 2006913,
+        "Private_Clean": 36,
+        "Private_Dirty": 1466704
+      }
+    },
+    "prefix": {
+      "pid": 75736,
+      "server_vm_hwm_kib": 2532800,
+      "memavailable_kib": 12776692,
+      "smaps_kib": {
+        "Rss": 2533360,
+        "Pss": 1991040,
+        "Private_Clean": 100,
+        "Private_Dirty": 1450784
+      }
+    },
+    "gateway": {
+      "pid": 75752,
+      "server_vm_hwm_kib": 22684,
+      "memavailable_kib": 12776692,
+      "smaps_kib": {
+        "Rss": 22848,
+        "Pss": 14990,
+        "Private_Clean": 12,
+        "Private_Dirty": 12940
+      }
+    }
+  }
+}

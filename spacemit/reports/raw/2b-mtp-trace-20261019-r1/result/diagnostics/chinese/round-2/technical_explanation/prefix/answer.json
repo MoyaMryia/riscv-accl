@@ -1,0 +1,38 @@
+{
+  "answer": "各位同事，关于缓存过期规则，核心是“写入成功即生效，读取失败才重试”。\n\n**生效条件**：记录写入成功时立即启动计时，不依赖客户端请求时间。\n\n**时间计算**：有效期为 15 分钟。例如 14:10 写入，14:25 到期；14:24 读取仍在有效期内，14:25 读取则触发重新从主存储获取。\n\n**失败行为**：若读取时主存储不可用，服务直接返回错误，**不会**延长旧记录有效期，也不会将旧记录标记为新记录。\n\n**具体例子**：假设 14:10 写入 A 记录，14:25 到期。14:24 读取正常，14:25 读取失败。此时旧记录仍有效，但 14:25 的读取请求会失败，系统会提示主存储不可用，不会自动更新数据。\n\n排查时请务必同时查看写入确认时间和读取错误码，切勿仅凭客户端请求时间判断。",
+  "ttft_s": 8.513,
+  "wall_s": 78.675,
+  "finish_reason": "stop",
+  "answer_sha256": "46f66d5e114fa3055bc3b903f22053961d4e3d2e0fcd8c5a9f9337099e31cae7",
+  "usage": {
+    "completion_tokens": 233,
+    "prompt_tokens": 200,
+    "total_tokens": 433,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "timings": {
+    "cache_n": 0,
+    "prompt_n": 200,
+    "prompt_ms": 8241.651,
+    "prompt_per_token_ms": 41.208255,
+    "prompt_per_second": 24.266982428642027,
+    "predicted_n": 233,
+    "predicted_ms": 70159.787,
+    "predicted_per_token_ms": 301.114965665236,
+    "predicted_per_second": 3.3209906979905743,
+    "draft_n": 261,
+    "draft_n_accepted": 146
+  },
+  "server_slot": 0,
+  "reasoning_text": "",
+  "http_headers": {
+    "transfer-encoding": "chunked",
+    "access-control-allow-origin": "",
+    "x-accel-buffering": "no",
+    "server": "llama.cpp",
+    "connection": "close",
+    "content-type": "text/event-stream"
+  }
+}

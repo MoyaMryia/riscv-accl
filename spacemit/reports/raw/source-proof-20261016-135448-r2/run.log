@@ -1,0 +1,36 @@
+START 2026-10-16T13:56:46Z
+WAIT_LOCK
+LOCK_ACQUIRED
+SOURCE_TOOLS_READY
+Start compiler source proof
+Download and check gcc-14-riscv64-linux-gnu_14.2.0-4ubuntu2~24.04bb2_riscv64.deb
+Read gcc from package archive
+Passed compiler check: gcc
+Download and check g++-14-riscv64-linux-gnu_14.2.0-4ubuntu2~24.04bb2_riscv64.deb
+Read g++ from package archive
+Passed compiler check: g++
+Start official tensor source proof
+Read official safetensors headers
+Read MTP tensor range from model.safetensors-00001-of-00002.safetensors
+Read MTP tensor range from model.safetensors-00002-of-00002.safetensors
+Run the assembler
+blk.32.nextn.eh_proj.weight                dims=(5120, 2560)     type=2 bytes=7372800
+blk.32.nextn.shared_head_norm.weight       dims=(2560,)          type=0 bytes=10240
+blk.32.nextn.enorm.weight                  dims=(2560,)          type=0 bytes=10240
+blk.32.nextn.hnorm.weight                  dims=(2560,)          type=0 bytes=10240
+blk.32.attn_norm.weight                    dims=(2560,)          type=0 bytes=10240
+blk.32.post_attention_norm.weight          dims=(2560,)          type=0 bytes=10240
+blk.32.attn_q.weight                       dims=(2560, 8192)     type=2 bytes=11796480
+blk.32.attn_k.weight                       dims=(2560, 1024)     type=2 bytes=1474560
+blk.32.attn_v.weight                       dims=(2560, 1024)     type=2 bytes=1474560
+blk.32.attn_q_norm.weight                  dims=(256,)           type=0 bytes=1024
+blk.32.attn_k_norm.weight                  dims=(256,)           type=0 bytes=1024
+blk.32.attn_output.weight                  dims=(4096, 2560)     type=2 bytes=5898240
+blk.32.ffn_gate.weight                     dims=(2560, 9216)     type=2 bytes=13271040
+blk.32.ffn_up.weight                       dims=(2560, 9216)     type=2 bytes=13271040
+blk.32.ffn_down.weight                     dims=(9216, 2560)     type=2 bytes=13271040
+src: n_tensors=426 n_kv=46 align=32 data_start=10968224
+wrote /home/moyamryia/Projects/riscv-accl-bench-2026-09-27/source-proof-20261016-135448-r2/result/reproduced-4B-MTP.gguf 2447892576 bytes
+Passed reproduced model hash comparison
+Source proof completed
+END 2026-10-16T14:11:57Z

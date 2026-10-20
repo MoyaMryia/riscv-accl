@@ -1,0 +1,1726 @@
+{
+  "case_id": "legacy_unicode_runs",
+  "category": "code",
+  "round": 3,
+  "arm": "prefix",
+  "response": {
+    "answer": "def encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    \n    Parameters:\n    text (str): Input string to encode.\n    \n    Returns:\n    list of tuples: Each tuple contains a single character and its consecutive count.\n    Empty string returns an empty list.\n    \n    Raises:\n    ValueError: If the input is not a string or contains invalid characters.\n    \"\"\"\n    if not isinstance(text, str):\n        raise ValueError(\"Input must be a string.\")\n    \n    if not text:\n        return []\n    \n    result = []\n    current_char = None\n    current_count = 0\n    \n    for char in text:\n        if char == current_char:\n            current_count += 1\n        else:\n            if current_char is not None:\n                result.append((current_char, current_count))\n            current_char = char\n            current_count = 1\n    \n    if current_char is not None:\n        result.append((current_char, current_count))\n    \n    return result\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into a string.\n    \n    Parameters:\n    runs (list): List of (character, count) tuples.\n    \n    Returns:\n    str: The decoded string.\n    \n    Raises:\n    ValueError: If any item in the list is malformed.\n    \"\"\"\n    if not isinstance(runs, list):\n        raise ValueError(\"Input must be a list.\")\n    \n    if len(runs) == 0:\n        return \"\"\n    \n    result = []\n    for item in runs:\n        if not isinstance(item, (list, tuple)):\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        if len(item) != 2:\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        char, count = item\n        \n        if not isinstance(char, str) or len(char) != 1:\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        if not isinstance(count, int) or isinstance(count, bool) or count <= 0:\n            raise ValueError(\"Count must be a positive int.\")\n        \n        result.append(char * count)\n    \n    return \"\".join(result)",
+    "ttft_s": 7.016,
+    "wall_s": 94.598,
+    "finish_reason": "stop",
+    "answer_sha256": "78452b26413a09aa0627ec509f4a999de25036b6eac78eff986b969e7bf276df",
+    "usage": {
+      "completion_tokens": 508,
+      "prompt_tokens": 162,
+      "total_tokens": 670,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 162,
+      "prompt_ms": 6771.208,
+      "prompt_per_token_ms": 41.797580246913576,
+      "prompt_per_second": 23.924829956486345,
+      "predicted_n": 508,
+      "predicted_ms": 87578.386,
+      "predicted_per_token_ms": 172.39839763779528,
+      "predicted_per_second": 5.800517949714214,
+      "draft_n": 402,
+      "draft_n_accepted": 374
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "transfer-encoding": "chunked",
+      "access-control-allow-origin": "",
+      "x-accel-buffering": "no",
+      "server": "llama.cpp",
+      "connection": "close",
+      "content-type": "text/event-stream"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 162,
+    "completion_tokens": 508,
+    "draft_n": 402,
+    "draft_n_accepted": 374
+  },
+  "quality": {
+    "passed": true,
+    "result": {
+      "pass": true,
+      "checks": 106,
+      "restriction": "builtin-only functions, AST checks and resource limits"
+    }
+  },
+  "verification": {
+    "original_steps": 134,
+    "original_proposed": 402,
+    "original_first_accepted": 329,
+    "original_first_acceptance": 0.818407960199005,
+    "original_restores": 45,
+    "replay_steps": 45,
+    "replay_accepted": 107,
+    "replay_restores": 0,
+    "original_restore_fraction": 0.3358208955223881,
+    "accept_histogram": {
+      "3": 89,
+      "2": 22,
+      "1": 18,
+      "0": 5
+    },
+    "replay_gap_ms": [
+      410.08900000015274,
+      395.99500000011176,
+      417.45900000003166,
+      418.9990000000689,
+      420.9739999999292,
+      420.3410000000149,
+      330.0189999998547,
+      405.7200000002049,
+      424.5370000000112,
+      409.73099999991246,
+      421.0649999999441,
+      421.8540000000503,
+      417.5570000000298,
+      434.4540000001434,
+      422.997999999905,
+      333.1950000000652,
+      420.6620000000112,
+      333.0930000001099,
+      423.8839999998454,
+      418.1689999999944,
+      338.6370000001043,
+      424.8560000001453,
+      424.4879999998957,
+      426.04000000003725,
+      427.4989999998361,
+      428.22299999999814,
+      433.87100000004284,
+      428.54000000003725,
+      432.278999999864,
+      430.4320000000298,
+      436.95200000004843,
+      416.3149999999441,
+      431.83199999993667,
+      433.99199999985285,
+      426.6380000000354,
+      443.06500000017695,
+      433.60000000009313,
+      437.65200000000186,
+      439.0879999999888,
+      441.6620000000112,
+      444.40700000012293,
+      339.4940000001807,
+      438.5579999999609,
+      441.6920000000391,
+      436.95999999996275
+    ],
+    "events": [
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.53.799.680 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.54.300.572 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.54.805.055 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.55.300.503 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "18.55.807.227 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.56.217.316 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "18.56.711.308 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.57.107.303 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.57.596.525 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "18.58.086.305 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "18.58.503.764 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "18.59.003.817 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.59.422.816 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "18.59.923.220 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.00.427.588 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.00.923.895 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.01.434.846 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.01.950.666 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.02.371.640 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.02.864.270 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.03.284.611 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.03.801.567 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 0,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.04.277.958 I slot   operator(): id  0 | task 549 | accepted  0/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 1,
+        "drafted": 1,
+        "restore_checkpoint": false,
+        "log_line": "19.04.607.977 I slot   operator(): id  0 | task 549 | accepted  1/ 1 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.05.122.079 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.05.527.799 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.06.037.322 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.06.461.859 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.06.983.893 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.07.485.938 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.07.988.160 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.08.479.340 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.08.889.071 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.09.381.361 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.09.802.426 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.10.305.493 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.10.727.347 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.11.235.125 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.11.652.682 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.12.149.153 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.12.652.550 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.13.145.472 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.13.648.728 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.14.083.182 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.14.581.371 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.15.085.196 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.15.508.194 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 0,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.16.011.061 I slot   operator(): id  0 | task 549 | accepted  0/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 1,
+        "drafted": 1,
+        "restore_checkpoint": false,
+        "log_line": "19.16.344.256 I slot   operator(): id  0 | task 549 | accepted  1/ 1 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.16.845.096 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.17.356.291 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.17.856.566 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.18.358.743 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.18.779.405 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.19.287.392 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.19.791.292 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.20.291.531 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.20.791.565 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.21.281.377 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 0,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.21.782.893 I slot   operator(): id  0 | task 549 | accepted  0/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 1,
+        "drafted": 1,
+        "restore_checkpoint": false,
+        "log_line": "19.22.115.986 I slot   operator(): id  0 | task 549 | accepted  1/ 1 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.22.644.503 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.23.158.806 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.23.582.690 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.24.099.144 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.24.602.992 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.25.114.354 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.25.532.523 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.26.033.310 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 0,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.26.526.386 I slot   operator(): id  0 | task 549 | accepted  0/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 1,
+        "drafted": 1,
+        "restore_checkpoint": false,
+        "log_line": "19.26.865.023 I slot   operator(): id  0 | task 549 | accepted  1/ 1 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.27.375.629 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.27.800.485 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.28.311.219 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.28.827.338 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.29.251.826 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.29.767.596 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.30.282.998 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.30.791.567 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.31.288.116 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.31.809.464 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.32.317.316 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.32.828.025 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.33.335.760 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.33.847.394 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.34.359.832 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.34.874.461 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.35.386.949 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.35.887.395 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.36.313.435 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.36.837.169 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.37.330.127 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.37.757.626 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.38.248.013 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.38.753.862 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.39.267.700 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.39.771.335 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.40.298.465 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.40.811.215 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.41.340.809 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.41.877.019 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.42.385.641 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.42.898.887 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.43.411.575 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.43.927.810 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.44.356.033 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.44.865.604 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.45.299.475 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.45.818.808 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.46.247.348 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.46.763.356 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.47.282.963 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.47.801.259 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.48.318.941 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.48.828.611 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.49.352.572 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.49.879.010 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.50.392.738 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.50.919.228 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.51.439.208 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.51.980.520 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.52.511.292 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.53.029.080 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.53.461.359 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.53.978.638 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "19.54.409.070 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.54.936.399 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.55.458.579 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.55.895.531 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.56.427.307 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.56.956.074 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.57.471.208 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.57.887.523 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.58.411.346 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.58.941.341 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "19.59.463.378 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "19.59.983.601 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.00.415.433 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.00.941.368 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.01.463.292 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.01.986.673 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.02.507.685 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.03.017.158 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.03.543.986 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "20.03.977.978 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.04.509.368 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.04.936.006 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.05.477.182 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.06.017.047 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.06.531.602 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.07.055.446 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.07.587.615 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.08.108.677 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.08.635.704 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.09.078.769 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.09.602.038 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.10.035.638 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.10.563.784 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.11.083.608 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "20.11.521.260 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.12.051.732 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.12.578.840 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "20.13.017.928 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.13.545.240 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "20.13.986.902 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.14.535.211 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.15.059.450 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.15.598.211 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.16.042.618 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 0,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.16.558.437 I slot   operator(): id  0 | task 549 | accepted  0/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 1,
+        "drafted": 1,
+        "restore_checkpoint": false,
+        "log_line": "20.16.897.931 I slot   operator(): id  0 | task 549 | accepted  1/ 1 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.17.431.084 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.17.969.236 I slot   operator(): id  0 | task 549 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "20.18.407.794 I slot   operator(): id  0 | task 549 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.18.937.919 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.19.467.382 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.19.909.074 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "20.20.432.082 I slot   operator(): id  0 | task 549 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "20.20.869.042 I slot   operator(): id  0 | task 549 | accepted  3/ 3 draft tokens"
+      }
+    ]
+  },
+  "draft_duration_delta_ms": [
+    0.008000000000000007,
+    11826.786,
+    1.0580000000000003
+  ],
+  "fallback_events": [],
+  "coverage": {
+    "retokenized_tokens": 507,
+    "prefix_tokens": 505,
+    "prefix_fraction": 0.9960552268244576,
+    "token_ids": [
+      727,
+      15688,
+      65079,
+      7008,
+      1590,
+      198,
+      262,
+      4071,
+      198,
+      262,
+      54668,
+      264,
+      886,
+      1083,
+      264,
+      1103,
+      314,
+      318,
+      18610,
+      11,
+      1698,
+      8,
+      43716,
+      13661,
+      23173,
+      8213,
+      13,
+      198,
+      1031,
+      262,
+      13131,
+      25,
+      198,
+      262,
+      1414,
+      318,
+      485,
+      1590,
+      5396,
+      886,
+      310,
+      15688,
+      13,
+      198,
+      1031,
+      262,
+      5019,
+      25,
+      198,
+      262,
+      1103,
+      314,
+      43716,
+      25,
+      8618,
+      13992,
+      5435,
+      264,
+      3074,
+      3542,
+      321,
+      1141,
+      23173,
+      1698,
+      13,
+      198,
+      262,
+      21539,
+      886,
+      4523,
+      449,
+      4147,
+      1103,
+      13,
+      198,
+      1031,
+      262,
+      58276,
+      25,
+      198,
+      262,
+      14953,
+      25,
+      1368,
+      279,
+      1879,
+      369,
+      524,
+      264,
+      886,
+      466,
+      5435,
+      8060,
+      5587,
+      13,
+      198,
+      262,
+      4071,
+      198,
+      262,
+      413,
+      524,
+      11074,
+      7008,
+      11,
+      592,
+      1590,
+      198,
+      285,
+      4673,
+      14953,
+      437,
+      2425,
+      1902,
+      381,
+      264,
+      886,
+      37457,
+      198,
+      1031,
+      262,
+      413,
+      524,
+      1414,
+      25,
+      198,
+      285,
+      460,
+      2958,
+      198,
+      1031,
+      262,
+      1067,
+      283,
+      2958,
+      198,
+      262,
+      1428,
+      8959,
+      283,
+      2168,
+      198,
+      262,
+      1428,
+      3079,
+      283,
+      220,
+      15,
+      6987,
+      262,
+      364,
+      1122,
+      303,
+      1414,
+      25,
+      198,
+      285,
+      413,
+      1122,
+      606,
+      1428,
+      8959,
+      25,
+      198,
+      309,
+      1428,
+      3079,
+      1373,
+      220,
+      16,
+      198,
+      285,
+      745,
+      25,
+      198,
+      309,
+      413,
+      1428,
+      8959,
+      369,
+      524,
+      2168,
+      25,
+      198,
+      388,
+      1067,
+      1989,
+      1148,
+      3127,
+      8959,
+      11,
+      1428,
+      3079,
+      578,
+      198,
+      309,
+      1428,
+      8959,
+      283,
+      1122,
+      198,
+      309,
+      1428,
+      3079,
+      283,
+      220,
+      16,
+      6987,
+      262,
+      413,
+      1428,
+      8959,
+      369,
+      524,
+      2168,
+      25,
+      198,
+      285,
+      1067,
+      1989,
+      1148,
+      3127,
+      8959,
+      11,
+      1428,
+      3079,
+      578,
+      198,
+      1031,
+      262,
+      460,
+      1067,
+      271,
+      727,
+      16401,
+      65079,
+      2515,
+      10545,
+      1590,
+      198,
+      262,
+      4071,
+      198,
+      262,
+      48507,
+      264,
+      1103,
+      314,
+      318,
+      18610,
+      11,
+      1698,
+      8,
+      43716,
+      1142,
+      1083,
+      264,
+      886,
+      13,
+      198,
+      1031,
+      262,
+      13131,
+      25,
+      198,
+      262,
+      8213,
+      318,
+      1551,
+      1590,
+      1697,
+      314,
+      318,
+      18610,
+      11,
+      1698,
+      8,
+      43716,
+      13,
+      198,
+      1031,
+      262,
+      5019,
+      25,
+      198,
+      262,
+      592,
+      25,
+      561,
+      28258,
+      886,
+      13,
+      198,
+      1031,
+      262,
+      58276,
+      25,
+      198,
+      262,
+      14953,
+      25,
+      1368,
+      866,
+      1455,
+      303,
+      279,
+      1103,
+      369,
+      76531,
+      13,
+      198,
+      262,
+      4071,
+      198,
+      262,
+      413,
+      524,
+      11074,
+      2515,
+      10545,
+      11,
+      1103,
+      1590,
+      198,
+      285,
+      4673,
+      14953,
+      437,
+      2425,
+      1902,
+      381,
+      264,
+      1103,
+      37457,
+      198,
+      1031,
+      262,
+      413,
+      2343,
+      2515,
+      10545,
+      8,
+      606,
+      220,
+      15,
+      25,
+      198,
+      285,
+      460,
+      1535,
+      198,
+      1031,
+      262,
+      1067,
+      283,
+      2958,
+      198,
+      262,
+      364,
+      1455,
+      303,
+      8213,
+      25,
+      198,
+      285,
+      413,
+      524,
+      11074,
+      5225,
+      11,
+      318,
+      1551,
+      11,
+      13992,
+      35497,
+      198,
+      309,
+      4673,
+      14953,
+      437,
+      11179,
+      1455,
+      1902,
+      381,
+      264,
+      1330,
+      27522,
+      1103,
+      466,
+      13992,
+      37457,
+      198,
+      1726,
+      285,
+      413,
+      2343,
+      5225,
+      8,
+      931,
+      220,
+      17,
+      25,
+      198,
+      309,
+      4673,
+      14953,
+      437,
+      11179,
+      1455,
+      1902,
+      381,
+      264,
+      1330,
+      27522,
+      1103,
+      466,
+      13992,
+      37457,
+      198,
+      1726,
+      285,
+      1122,
+      11,
+      1698,
+      283,
+      1455,
+      8675,
+      285,
+      413,
+      524,
+      11074,
+      6717,
+      11,
+      592,
+      8,
+      466,
+      2343,
+      6717,
+      8,
+      931,
+      220,
+      16,
+      25,
+      198,
+      309,
+      4673,
+      14953,
+      437,
+      12048,
+      1902,
+      381,
+      264,
+      799,
+      76506,
+      886,
+      37457,
+      198,
+      1726,
+      285,
+      413,
+      524,
+      11074,
+      11181,
+      11,
+      514,
+      8,
+      466,
+      11074,
+      11181,
+      11,
+      1744,
+      8,
+      466,
+      1698,
+      2564,
+      220,
+      15,
+      25,
+      198,
+      309,
+      4673,
+      14953,
+      437,
+      2427,
+      1902,
+      381,
+      264,
+      6572,
+      514,
+      37457,
+      198,
+      1726,
+      285,
+      1067,
+      1989,
+      6717,
+      348,
+      1698,
+      8,
+      198,
+      1031,
+      262,
+      460,
+      43413,
+      5799,
+      4309,
+      8
+    ]
+  },
+  "resources_before": {
+    "server_vm_hwm_kib": 2975960,
+    "memavailable_kib": 10044760
+  },
+  "resources_after": {
+    "server_vm_hwm_kib": 2992860,
+    "memavailable_kib": 10001580
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "case_id": "technical_explanation",
+  "category": "chinese",
+  "arm": "baseline",
+  "route": "direct",
+  "classify_ms": 0.0,
+  "response": {
+    "answer": "各位同事，关于缓存过期规则，核心是“写入成功即生效，读取失败才重试”。\n\n**生效条件**：记录写入成功时立即启动计时，不依赖客户端请求时间。\n\n**时间计算**：有效期为 15 分钟。例如 14:10 写入，14:25 到期；14:24 读取仍在有效期内，14:25 读取则触发主存储重新获取。\n\n**失败行为**：若读取时主存储不可用，直接返回错误，**不会**延长有效期，也不会将旧记录标记为新记录。\n\n**具体例子**：假设 14:10 写入 A 记录，14:25 到期。14:24 读取正常，14:25 读取失败。此时系统会返回错误，但 A 记录仍保留在缓存中，不会因本次失败而失效。\n\n**排查提示**：遇到此类问题，请同时查看写入确认时间和读取错误码，切勿仅凭客户端请求时间判断。",
+    "ttft_s": 8.274,
+    "wall_s": 60.443,
+    "finish_reason": "stop",
+    "answer_sha256": "a461bedd1046bcdbcd804913596651acd9560d71259bc200b02d353229d6c09b",
+    "usage": {
+      "completion_tokens": 226,
+      "prompt_tokens": 200,
+      "total_tokens": 426,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 200,
+      "prompt_ms": 7971.892,
+      "prompt_per_token_ms": 39.85946,
+      "prompt_per_second": 25.08814720520549,
+      "predicted_n": 226,
+      "predicted_ms": 52167.436,
+      "predicted_per_token_ms": 230.82936283185842,
+      "predicted_per_second": 4.332204480971616
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "transfer-encoding": "chunked",
+      "access-control-allow-origin": "",
+      "x-accel-buffering": "no",
+      "server": "llama.cpp",
+      "connection": "close",
+      "content-type": "text/event-stream"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 200,
+    "completion_tokens": 226,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": null,
+    "facts": [
+      "缓存有效期为 15 分钟",
+      "从写入成功时间开始计算",
+      "读取失败不会刷新有效期",
+      "14:10 写入的数据在 14:25 到期"
+    ],
+    "citations": []
+  },
+  "resources_before": {
+    "direct": {
+      "pid": 75720,
+      "server_vm_hwm_kib": 2794096,
+      "memavailable_kib": 12529700,
+      "smaps_kib": {
+        "Rss": 2795120,
+        "Pss": 2252713,
+        "Private_Clean": 36,
+        "Private_Dirty": 1712504
+      }
+    },
+    "prefix": {
+      "pid": 75736,
+      "server_vm_hwm_kib": 2532800,
+      "memavailable_kib": 12529700,
+      "smaps_kib": {
+        "Rss": 2533360,
+        "Pss": 1991040,
+        "Private_Clean": 100,
+        "Private_Dirty": 1450784
+      }
+    },
+    "gateway": {
+      "pid": 75752,
+      "server_vm_hwm_kib": 22812,
+      "memavailable_kib": 12529700,
+      "smaps_kib": {
+        "Rss": 22968,
+        "Pss": 15110,
+        "Private_Clean": 12,
+        "Private_Dirty": 13060
+      }
+    }
+  },
+  "resources_after": {
+    "direct": {
+      "pid": 75720,
+      "server_vm_hwm_kib": 2877424,
+      "memavailable_kib": 12452012,
+      "smaps_kib": {
+        "Rss": 2878268,
+        "Pss": 2335861,
+        "Private_Clean": 36,
+        "Private_Dirty": 1795652
+      }
+    },
+    "prefix": {
+      "pid": 75736,
+      "server_vm_hwm_kib": 2532800,
+      "memavailable_kib": 12452012,
+      "smaps_kib": {
+        "Rss": 2533360,
+        "Pss": 1991040,
+        "Private_Clean": 100,
+        "Private_Dirty": 1450784
+      }
+    },
+    "gateway": {
+      "pid": 75752,
+      "server_vm_hwm_kib": 22812,
+      "memavailable_kib": 12452012,
+      "smaps_kib": {
+        "Rss": 22968,
+        "Pss": 15110,
+        "Private_Clean": 12,
+        "Private_Dirty": 13060
+      }
+    }
+  }
+}

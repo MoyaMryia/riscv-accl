@@ -1,8 +1,14 @@
 # Reports index
 
-Document check: October 16, 2026, Asia/Singapore.
+Document check: October 18, 2026, Asia/Singapore.
 [Requirements.md](../../Requirements.md) is the sole current acceptance reference.
 
+- [BERT router regression](2026-10-18-2b-bert-router-results.md): 24 complete answers; three code requests select MTP, but total wall time increases 0.105342%.
+- [BERT intent classifier](2026-10-18-2b-bert-classifier.md): CPU fine-tune reaches 83/96 correct labels; K1 classification takes 78.879218 ms median and 270.697719 ms P95.
+- [2B router end-to-end test](2026-10-18-2b-router-e2e.md): 30 complete answers; automatic selection uses direct for all 12 tasks and adds 0.044487% wall time.
+- [2B decoder router](2026-10-18-2b-decoder-router.md): a 161262-byte classifier; 23/24 task labels match, and K1 decision latency has a 3.210042 ms median.
+- [2B MTP investigation](2026-10-17-2b-mtp-head-investigation.md): a 64k prefix covers 32.16–34.24% of tokens in three Chinese answers; replay adds target corrections to acceptance counts.
+- [r3 MTP first pair](2026-10-17-r3-mtp-first-pair.md): 2B complete-answer time falls 23.32%; both identical 508-token answers pass 106 checks.
 - [Final-build capacity extension](2026-10-16-ultralong-final-comparison.md): 12 matched requests at 16k and 32k inputs; ordinary context remains 12288.
 - [Final-build TCM trace](2026-10-16-final-release-tcm.md): device access during two short requests, heap fallback, and the user API.
 - [Final default comparison](2026-10-14-final-default-comparison.md): one compiled default for both models, original compatibility baseline, 28 matched requests, quality checks, and retained limits.

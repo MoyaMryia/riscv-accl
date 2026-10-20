@@ -1,0 +1,57 @@
+{
+  "model": "2B",
+  "arm": "direct",
+  "round": 1,
+  "startup_s": 8.172058137017302,
+  "resources_before_request": {
+    "server_vm_hwm_kib": 2483380,
+    "memavailable_kib": 14303104
+  },
+  "resources_after_request": {
+    "server_vm_hwm_kib": 2548916,
+    "memavailable_kib": 14235688
+  },
+  "response": {
+    "answer": "```python\ndef merge_intervals(busy):\n    \"\"\"\n    Merge overlapping or touching intervals from a list of half-open intervals.\n    \n    Parameters:\n    - busy: list of tuples (a, b) representing half-open intervals [a, b)\n    \n    Returns:\n    - list of sorted tuples representing merged intervals\n    \n    Raises:\n    - ValueError if any interval is reversed (start > end)\n    \"\"\"\n    if not busy:\n        return []\n    \n    # Validate all intervals and sort by start time\n    valid = []\n    for a, b in busy:\n        if a > b:\n            raise ValueError(\"Intervals must be non-reversed: (start, end)\")\n        valid.append((a, b))\n    \n    # Sort by start time\n    valid.sort(key=lambda x: x[0])\n    \n    merged = []\n    current = valid[0]\n    \n    for i in range(1, len(valid)):\n        next_interval = valid[i]\n        start, end = next_interval\n        \n        if start < current[1]:\n            # Overlapping or touching, merge\n            current = (current[0], max(current[1], end))\n        else:\n            # No overlap, add current and start new\n            merged.append(current)\n            current = (start, end)\n    \n    merged.append(current)\n    return merged\n\ndef free_windows(busy, start, end):\n    \"\"\"\n    Find maximal free intervals within [start, end) given busy intervals.\n    \n    Parameters:\n    - busy: list of tuples (a, b) representing half-open intervals [a, b)\n    - start: float, start of query window\n    - end: float, end of query window\n    \n    Returns:\n    - list of tuples representing maximal free intervals within [start, end)\n    \n    Raises:\n    - ValueError if end < start\n    \"\"\"\n    if end < start:\n        raise ValueError(\"Query window must have start <= end\")\n    \n    # Filter busy intervals to those within the query window\n    clipped = []\n    for a, b in busy:\n        if a < start or b > end:\n            continue\n        clipped.append((a, b))\n    \n    if not clipped:\n        return []\n    \n    # Sort by start time\n    clipped.sort(key=lambda x: x[0])\n    \n    free = []\n    current = clipped[0]\n    \n    for i in range(1, len(clipped)):\n        next_interval = clipped[i]\n        start, end = next_interval\n        \n        if start < current[1]:\n            # Overlapping, merge\n            current = (current[0], max(current[1], end))\n        else:\n            # No overlap, add current and start new\n            free.append(current)\n            current = (start, end)\n    \n    free.append(current)\n    return free\n```",
+    "ttft_s": 7.676,
+    "wall_s": 151.265,
+    "finish_reason": "stop",
+    "answer_sha256": "6cb576ea7886c9e1e2510853bd3a27963f2f8423d13a73bd76e279a7daf56289",
+    "usage": {
+      "completion_tokens": 634,
+      "prompt_tokens": 185,
+      "total_tokens": 819,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 185,
+      "prompt_ms": 7516.708,
+      "prompt_per_token_ms": 40.630854054054055,
+      "prompt_per_second": 24.61183805463775,
+      "predicted_n": 634,
+      "predicted_ms": 143586.306,
+      "predicted_per_token_ms": 226.4768233438486,
+      "predicted_per_second": 4.4154628506147375
+    },
+    "server_slot": 0,
+    "reasoning_text": ""
+  },
+  "metrics": {
+    "prompt_tokens": 185,
+    "completion_tokens": 634,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": false,
+    "result": {
+      "pass": false,
+      "reason": "AssertionError: functional output mismatch at check 2",
+      "exit": 1
+    }
+  },
+  "fallback_events": []
+}

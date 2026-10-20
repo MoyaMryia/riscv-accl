@@ -1,0 +1,71 @@
+13.55.548.969 I srv  server_strea: conv_id= (empty=1)
+13.55.550.889 I srv    operator(): chat format: peg-native
+13.55.551.988 I slot get_availabl: id  0 | task -1 | selected slot by id (0)
+13.55.552.011 I srv  get_availabl: updating prompt cache
+13.55.552.289 I srv   prompt_save:  - saving prompt with length 135, total state size = 21.117 MiB (draft: 0.266 MiB)
+13.55.636.588 I srv          load:  - looking for better prompt, base f_keep = 0.237, sim = 0.444
+13.55.636.639 I srv          load:  - found better prompt with f_keep = 0.585, sim = 1.000
+13.55.652.773 I srv        update:  - cache state: 3 prompts, 245.096 MiB (limits: 8192.000 MiB, 12288 tokens, 31050 est)
+13.55.652.820 I srv        update:    - prompt 0x2ab73261a0:     670 tokens, checkpoints:  3,    86.875 MiB
+13.55.652.827 I srv        update:    - prompt 0x2ab73269b0:     124 tokens, checkpoints:  3,    79.021 MiB
+13.55.652.833 I srv        update:    - prompt 0x2abcadc610:     135 tokens, checkpoints:  3,    79.199 MiB
+13.55.652.840 I srv  get_availabl: prompt cache update took 100.82 ms
+13.55.653.246 I slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+13.55.653.297 I slot launch_slot_: id  0 | task -1 | sampler params: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = 12288
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+13.55.653.315 I slot launch_slot_: id  0 | task 489 | processing task, is_child = 0
+13.55.653.354 I slot   operator(): id  0 | task 489 | new prompt, n_ctx_slot = 12288, n_keep = 0, task.n_tokens = 72
+13.55.653.377 I slot   operator(): id  0 | task 489 | erased invalidated context checkpoint (pos_min = 13, pos_max = 13, n_tokens = 14, n_swa = 0, pos_next = 0, size = 19.294 MiB)
+13.55.653.387 I slot   operator(): id  0 | task 489 | erased invalidated context checkpoint (pos_min = 39, pos_max = 39, n_tokens = 40, n_swa = 0, pos_next = 0, size = 19.345 MiB)
+13.55.653.397 I slot   operator(): id  0 | task 489 | erased invalidated context checkpoint (pos_min = 67, pos_max = 67, n_tokens = 68, n_swa = 0, pos_next = 0, size = 19.400 MiB)
+13.55.653.425 I slot   operator(): id  0 | task 489 | cached n_tokens = 0, memory_seq_rm [0, end)
+13.56.308.729 I slot   operator(): id  0 | task 489 | cached n_tokens = 14, memory_seq_rm [14, end)
+13.56.320.568 I slot create_check: id  0 | task 489 | created context checkpoint 1 of 32 (pos_min = 13, pos_max = 13, n_tokens = 14, size = 19.294 MiB)
+13.57.459.114 I slot   operator(): id  0 | task 489 | cached n_tokens = 40, memory_seq_rm [40, end)
+13.57.470.215 I slot create_check: id  0 | task 489 | created context checkpoint 2 of 32 (pos_min = 39, pos_max = 39, n_tokens = 40, size = 19.345 MiB)
+13.58.629.644 I slot   operator(): id  0 | task 489 | cached n_tokens = 68, memory_seq_rm [68, end)
+13.58.629.984 I slot init_sampler: id  0 | task 489 | init sampler, took 0.07 ms, tokens: text = 72, total = 72
+13.58.640.923 I slot create_check: id  0 | task 489 | created context checkpoint 3 of 32 (pos_min = 67, pos_max = 67, n_tokens = 68, size = 19.400 MiB)
+13.59.525.972 I slot   operator(): id  0 | task 489 | accepted  2/ 3 draft tokens (restore checkpoint)
+13.59.942.910 I slot   operator(): id  0 | task 489 | accepted  3/ 3 draft tokens
+14.00.428.529 I slot   operator(): id  0 | task 489 | accepted  3/ 3 draft tokens
+14.00.926.914 I slot   operator(): id  0 | task 489 | accepted  3/ 3 draft tokens
+14.01.400.046 I slot   operator(): id  0 | task 489 | accepted  1/ 3 draft tokens (restore checkpoint)
+14.01.809.020 I slot   operator(): id  0 | task 489 | accepted  2/ 2 draft tokens
+14.02.297.364 I slot   operator(): id  0 | task 489 | accepted  1/ 3 draft tokens (restore checkpoint)
+14.02.712.379 I slot   operator(): id  0 | task 489 | accepted  2/ 2 draft tokens
+14.03.202.853 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.03.529.444 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.04.027.148 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.04.351.735 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.04.842.238 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.05.168.428 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.05.691.207 I slot   operator(): id  0 | task 489 | accepted  3/ 3 draft tokens
+14.06.169.330 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.06.496.204 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.06.998.364 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.07.327.220 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.07.820.465 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.08.146.929 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.08.632.906 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.08.959.075 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.09.471.337 I slot   operator(): id  0 | task 489 | accepted  3/ 3 draft tokens
+14.09.959.123 I slot   operator(): id  0 | task 489 | accepted  1/ 3 draft tokens (restore checkpoint)
+14.10.377.034 I slot   operator(): id  0 | task 489 | accepted  2/ 2 draft tokens
+14.10.883.712 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.11.211.696 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.11.707.235 I slot   operator(): id  0 | task 489 | accepted  3/ 3 draft tokens
+14.12.186.420 I slot   operator(): id  0 | task 489 | accepted  0/ 3 draft tokens (restore checkpoint)
+14.12.514.578 I slot   operator(): id  0 | task 489 | accepted  1/ 1 draft tokens
+14.12.514.899 I slot print_timing: id  0 | task 489 | prompt eval time =    3368.30 ms /    72 tokens (   46.78 ms per token,    21.38 tokens per second)
+14.12.514.916 I slot print_timing: id  0 | task 489 |        eval time =   13493.02 ms /    51 tokens (  264.57 ms per token,     3.78 tokens per second)
+14.12.514.922 I slot print_timing: id  0 | task 489 |       total time =   16861.32 ms /   123 tokens
+14.12.514.927 I slot print_timing: id  0 | task 489 |    graphs reused =        321
+14.12.514.953 I slot print_timing: id  0 | task 489 | draft acceptance = 0.61111 (   33 accepted /    54 generated), mean len =  2.83
+14.12.514.957 I slot print_timing: id  0 | task 489 |      acc per pos = (1.000, 0.500, 0.333)
+14.12.515.032 I spec common_specu: statistics        draft-mtp: #calls(b,g,a) =    7    345    345, #gen drafts =    345, #acc drafts =   345, #gen tokens =   1035, #acc tokens =   925, #mean acc len = 3.68, #acc rate/pos = (1.000, 0.916, 0.765), dur(b,g,a) = 0.063, 30291.981, 2.795 ms
+14.12.515.196 I slot      release: id  0 | task 489 | stop processing: n_tokens = 123, truncated = 0
+14.12.515.273 I srv  update_slots: all slots are idle

@@ -1,0 +1,851 @@
+CPU_RISCV64_SPACEMIT: num_cores: 8, num_perfer_cores: 4, perfer_core_arch_id: a03c, exclude_main_thread: 0, use_ime1: 1, use_ime2: 0, mem_backend: HPAGE, cpu_mask: f, aicpu_id_offset: 0
+CPU_RISCV64_SPACEMIT: alloc_chunk: open(/dev/tcm_sync_mem) failed, errno=2
+CPU_RISCV64_SPACEMIT: failed to allocate init_barrier from shared mem, falling back to heap
+0.00.016.814 I cmn  common_param: common_params_print_info: build 0 (unknown) with GNU 14.2.0 for Linux riscv64
+0.00.016.844 I cmn  common_param: common_params_print_info: verbosity = 4 (adjust with the `-lv N` CLI arg)
+0.00.016.847 I cmn  common_param: device_info:
+0.00.016.905 I cmn  common_param:   - CPU     : Spacemit(R) X60 (15900 MiB, 15900 MiB free)
+0.00.017.278 I cmn  common_param: system_info: n_threads = 4 (n_threads_batch = 4) / 8 | CPU : RISCV_V = 1 | RVV_VLEN = 32 | LLAMAFILE = 1 | 
+0.00.017.812 I srv          init: using 7 threads for HTTP server
+0.00.018.613 W srv  llama_server: -----------------
+0.00.018.632 W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+0.00.018.635 W srv  llama_server: this can be a security risk (cross-origin attacks)
+0.00.018.637 W srv  llama_server: more info: https://github.com/ggml-org/llama.cpp/pull/25655
+0.00.018.638 W srv  llama_server: -----------------
+0.00.018.756 I srv         start: binding port with default address family
+0.00.020.705 I srv    load_model: loading model '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+0.00.020.731 I srv    load_model: local path '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+0.00.442.428 I llama_model_loader: loaded meta data with 48 key-value pairs and 336 tensors from /home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf (version GGUF V3 (latest))
+0.00.442.502 I llama_model_loader: - tensor split  0:               output_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.525 I llama_model_loader: - tensor split  0:                token_embd.weight q4_0     [   2048, 248320,      1,      1 ]   272.81 MiB
+0.00.442.536 I llama_model_loader: - tensor split  0:           blk.0.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.545 I llama_model_loader: - tensor split  0:           blk.0.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.553 I llama_model_loader: - tensor split  0:            blk.0.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.560 I llama_model_loader: - tensor split  0:            blk.0.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.442.567 I llama_model_loader: - tensor split  0:            blk.0.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.575 I llama_model_loader: - tensor split  0:              blk.0.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.583 I llama_model_loader: - tensor split  0: blk.0.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.591 I llama_model_loader: - tensor split  0:                      blk.0.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.442.600 I llama_model_loader: - tensor split  0:           blk.0.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.442.608 I llama_model_loader: - tensor split  0:            blk.0.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.442.616 I llama_model_loader: - tensor split  0:          blk.0.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.442.625 I llama_model_loader: - tensor split  0:                blk.0.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.442.632 I llama_model_loader: - tensor split  0:            blk.0.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.442.639 I llama_model_loader: - tensor split  0:             blk.0.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.647 I llama_model_loader: - tensor split  0:           blk.1.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.655 I llama_model_loader: - tensor split  0:           blk.1.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.663 I llama_model_loader: - tensor split  0:            blk.1.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.670 I llama_model_loader: - tensor split  0:            blk.1.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.442.677 I llama_model_loader: - tensor split  0:            blk.1.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.684 I llama_model_loader: - tensor split  0:              blk.1.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.692 I llama_model_loader: - tensor split  0: blk.1.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.699 I llama_model_loader: - tensor split  0:                      blk.1.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.442.707 I llama_model_loader: - tensor split  0:           blk.1.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.442.715 I llama_model_loader: - tensor split  0:            blk.1.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.442.722 I llama_model_loader: - tensor split  0:          blk.1.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.442.730 I llama_model_loader: - tensor split  0:                blk.1.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.442.738 I llama_model_loader: - tensor split  0:            blk.1.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.442.746 I llama_model_loader: - tensor split  0:             blk.1.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.753 I llama_model_loader: - tensor split  0:           blk.2.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.760 I llama_model_loader: - tensor split  0:           blk.2.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.768 I llama_model_loader: - tensor split  0:            blk.2.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.776 I llama_model_loader: - tensor split  0:            blk.2.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.442.783 I llama_model_loader: - tensor split  0:            blk.2.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.790 I llama_model_loader: - tensor split  0:              blk.2.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.798 I llama_model_loader: - tensor split  0: blk.2.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.806 I llama_model_loader: - tensor split  0:                      blk.2.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.442.813 I llama_model_loader: - tensor split  0:           blk.2.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.442.821 I llama_model_loader: - tensor split  0:            blk.2.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.442.829 I llama_model_loader: - tensor split  0:          blk.2.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.442.836 I llama_model_loader: - tensor split  0:                blk.2.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.442.843 I llama_model_loader: - tensor split  0:            blk.2.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.442.850 I llama_model_loader: - tensor split  0:             blk.2.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.858 I llama_model_loader: - tensor split  0:              blk.3.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.442.866 I llama_model_loader: - tensor split  0:         blk.3.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.442.874 I llama_model_loader: - tensor split  0:           blk.3.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.881 I llama_model_loader: - tensor split  0:         blk.3.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.889 I llama_model_loader: - tensor split  0:              blk.3.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.442.897 I llama_model_loader: - tensor split  0:         blk.3.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.442.905 I llama_model_loader: - tensor split  0:              blk.3.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.442.912 I llama_model_loader: - tensor split  0:            blk.3.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.442.920 I llama_model_loader: - tensor split  0:            blk.3.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.927 I llama_model_loader: - tensor split  0:              blk.3.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.934 I llama_model_loader: - tensor split  0: blk.3.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.942 I llama_model_loader: - tensor split  0:           blk.4.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.442.950 I llama_model_loader: - tensor split  0:           blk.4.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.958 I llama_model_loader: - tensor split  0:            blk.4.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.968 I llama_model_loader: - tensor split  0:            blk.4.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.442.975 I llama_model_loader: - tensor split  0:            blk.4.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.983 I llama_model_loader: - tensor split  0:              blk.4.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.442.991 I llama_model_loader: - tensor split  0: blk.4.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.442.999 I llama_model_loader: - tensor split  0:                      blk.4.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.007 I llama_model_loader: - tensor split  0:           blk.4.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.016 I llama_model_loader: - tensor split  0:            blk.4.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.024 I llama_model_loader: - tensor split  0:          blk.4.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.031 I llama_model_loader: - tensor split  0:                blk.4.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.039 I llama_model_loader: - tensor split  0:            blk.4.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.046 I llama_model_loader: - tensor split  0:             blk.4.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.053 I llama_model_loader: - tensor split  0:           blk.5.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.061 I llama_model_loader: - tensor split  0:           blk.5.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.069 I llama_model_loader: - tensor split  0:            blk.5.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.077 I llama_model_loader: - tensor split  0:            blk.5.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.084 I llama_model_loader: - tensor split  0:            blk.5.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.091 I llama_model_loader: - tensor split  0:              blk.5.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.099 I llama_model_loader: - tensor split  0: blk.5.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.107 I llama_model_loader: - tensor split  0:                      blk.5.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.115 I llama_model_loader: - tensor split  0:           blk.5.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.124 I llama_model_loader: - tensor split  0:            blk.5.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.131 I llama_model_loader: - tensor split  0:          blk.5.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.140 I llama_model_loader: - tensor split  0:                blk.5.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.147 I llama_model_loader: - tensor split  0:            blk.5.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.155 I llama_model_loader: - tensor split  0:             blk.5.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.163 I llama_model_loader: - tensor split  0:           blk.6.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.171 I llama_model_loader: - tensor split  0:           blk.6.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.179 I llama_model_loader: - tensor split  0:            blk.6.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.186 I llama_model_loader: - tensor split  0:            blk.6.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.193 I llama_model_loader: - tensor split  0:            blk.6.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.201 I llama_model_loader: - tensor split  0:              blk.6.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.209 I llama_model_loader: - tensor split  0: blk.6.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.217 I llama_model_loader: - tensor split  0:                      blk.6.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.224 I llama_model_loader: - tensor split  0:           blk.6.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.232 I llama_model_loader: - tensor split  0:            blk.6.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.240 I llama_model_loader: - tensor split  0:          blk.6.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.248 I llama_model_loader: - tensor split  0:                blk.6.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.255 I llama_model_loader: - tensor split  0:            blk.6.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.262 I llama_model_loader: - tensor split  0:             blk.6.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.270 I llama_model_loader: - tensor split  0:              blk.7.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.443.277 I llama_model_loader: - tensor split  0:         blk.7.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.443.287 I llama_model_loader: - tensor split  0:           blk.7.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.295 I llama_model_loader: - tensor split  0:         blk.7.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.302 I llama_model_loader: - tensor split  0:              blk.7.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.443.310 I llama_model_loader: - tensor split  0:         blk.7.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.443.318 I llama_model_loader: - tensor split  0:              blk.7.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.443.325 I llama_model_loader: - tensor split  0:            blk.7.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.333 I llama_model_loader: - tensor split  0:            blk.7.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.340 I llama_model_loader: - tensor split  0:              blk.7.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.348 I llama_model_loader: - tensor split  0: blk.7.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.356 I llama_model_loader: - tensor split  0:           blk.8.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.363 I llama_model_loader: - tensor split  0:           blk.8.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.371 I llama_model_loader: - tensor split  0:            blk.8.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.378 I llama_model_loader: - tensor split  0:            blk.8.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.385 I llama_model_loader: - tensor split  0:            blk.8.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.393 I llama_model_loader: - tensor split  0:              blk.8.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.400 I llama_model_loader: - tensor split  0: blk.8.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.408 I llama_model_loader: - tensor split  0:                      blk.8.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.416 I llama_model_loader: - tensor split  0:           blk.8.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.423 I llama_model_loader: - tensor split  0:            blk.8.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.431 I llama_model_loader: - tensor split  0:          blk.8.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.438 I llama_model_loader: - tensor split  0:                blk.8.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.446 I llama_model_loader: - tensor split  0:            blk.8.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.454 I llama_model_loader: - tensor split  0:             blk.8.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.461 I llama_model_loader: - tensor split  0:           blk.9.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.469 I llama_model_loader: - tensor split  0:           blk.9.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.476 I llama_model_loader: - tensor split  0:            blk.9.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.483 I llama_model_loader: - tensor split  0:            blk.9.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.491 I llama_model_loader: - tensor split  0:            blk.9.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.498 I llama_model_loader: - tensor split  0:              blk.9.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.506 I llama_model_loader: - tensor split  0: blk.9.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.513 I llama_model_loader: - tensor split  0:                      blk.9.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.521 I llama_model_loader: - tensor split  0:           blk.9.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.528 I llama_model_loader: - tensor split  0:            blk.9.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.535 I llama_model_loader: - tensor split  0:          blk.9.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.543 I llama_model_loader: - tensor split  0:                blk.9.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.550 I llama_model_loader: - tensor split  0:            blk.9.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.557 I llama_model_loader: - tensor split  0:             blk.9.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.564 I llama_model_loader: - tensor split  0:          blk.10.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.571 I llama_model_loader: - tensor split  0:          blk.10.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.578 I llama_model_loader: - tensor split  0:           blk.10.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.586 I llama_model_loader: - tensor split  0:           blk.10.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.593 I llama_model_loader: - tensor split  0:           blk.10.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.600 I llama_model_loader: - tensor split  0:             blk.10.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.607 I llama_model_loader: - tensor split  0: blk.10.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.615 I llama_model_loader: - tensor split  0:                     blk.10.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.623 I llama_model_loader: - tensor split  0:          blk.10.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.631 I llama_model_loader: - tensor split  0:           blk.10.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.638 I llama_model_loader: - tensor split  0:         blk.10.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.645 I llama_model_loader: - tensor split  0:               blk.10.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.653 I llama_model_loader: - tensor split  0:           blk.10.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.660 I llama_model_loader: - tensor split  0:            blk.10.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.667 I llama_model_loader: - tensor split  0:             blk.11.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.443.674 I llama_model_loader: - tensor split  0:        blk.11.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.443.682 I llama_model_loader: - tensor split  0:          blk.11.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.689 I llama_model_loader: - tensor split  0:        blk.11.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.696 I llama_model_loader: - tensor split  0:             blk.11.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.443.704 I llama_model_loader: - tensor split  0:        blk.11.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.443.711 I llama_model_loader: - tensor split  0:             blk.11.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.443.721 I llama_model_loader: - tensor split  0:           blk.11.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.728 I llama_model_loader: - tensor split  0:           blk.11.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.735 I llama_model_loader: - tensor split  0:             blk.11.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.743 I llama_model_loader: - tensor split  0: blk.11.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.751 I llama_model_loader: - tensor split  0:          blk.12.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.759 I llama_model_loader: - tensor split  0:          blk.12.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.766 I llama_model_loader: - tensor split  0:           blk.12.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.773 I llama_model_loader: - tensor split  0:           blk.12.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.780 I llama_model_loader: - tensor split  0:           blk.12.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.787 I llama_model_loader: - tensor split  0:             blk.12.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.794 I llama_model_loader: - tensor split  0: blk.12.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.802 I llama_model_loader: - tensor split  0:                     blk.12.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.810 I llama_model_loader: - tensor split  0:          blk.12.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.817 I llama_model_loader: - tensor split  0:           blk.12.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.824 I llama_model_loader: - tensor split  0:         blk.12.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.832 I llama_model_loader: - tensor split  0:               blk.12.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.839 I llama_model_loader: - tensor split  0:           blk.12.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.846 I llama_model_loader: - tensor split  0:            blk.12.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.854 I llama_model_loader: - tensor split  0:          blk.13.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.862 I llama_model_loader: - tensor split  0:          blk.13.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.869 I llama_model_loader: - tensor split  0:           blk.13.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.876 I llama_model_loader: - tensor split  0:           blk.13.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.883 I llama_model_loader: - tensor split  0:           blk.13.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.890 I llama_model_loader: - tensor split  0:             blk.13.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.898 I llama_model_loader: - tensor split  0: blk.13.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.905 I llama_model_loader: - tensor split  0:                     blk.13.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.912 I llama_model_loader: - tensor split  0:          blk.13.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.920 I llama_model_loader: - tensor split  0:           blk.13.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.443.928 I llama_model_loader: - tensor split  0:         blk.13.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.443.935 I llama_model_loader: - tensor split  0:               blk.13.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.443.942 I llama_model_loader: - tensor split  0:           blk.13.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.443.949 I llama_model_loader: - tensor split  0:            blk.13.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.956 I llama_model_loader: - tensor split  0:          blk.14.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.443.964 I llama_model_loader: - tensor split  0:          blk.14.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.443.971 I llama_model_loader: - tensor split  0:           blk.14.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.978 I llama_model_loader: - tensor split  0:           blk.14.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.443.985 I llama_model_loader: - tensor split  0:           blk.14.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.443.993 I llama_model_loader: - tensor split  0:             blk.14.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.000 I llama_model_loader: - tensor split  0: blk.14.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.007 I llama_model_loader: - tensor split  0:                     blk.14.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.014 I llama_model_loader: - tensor split  0:          blk.14.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.021 I llama_model_loader: - tensor split  0:           blk.14.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.028 I llama_model_loader: - tensor split  0:         blk.14.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.036 I llama_model_loader: - tensor split  0:               blk.14.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.043 I llama_model_loader: - tensor split  0:           blk.14.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.050 I llama_model_loader: - tensor split  0:            blk.14.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.058 I llama_model_loader: - tensor split  0:             blk.15.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.065 I llama_model_loader: - tensor split  0:        blk.15.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.073 I llama_model_loader: - tensor split  0:          blk.15.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.080 I llama_model_loader: - tensor split  0:        blk.15.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.087 I llama_model_loader: - tensor split  0:             blk.15.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.444.095 I llama_model_loader: - tensor split  0:        blk.15.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.102 I llama_model_loader: - tensor split  0:             blk.15.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.109 I llama_model_loader: - tensor split  0:           blk.15.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.116 I llama_model_loader: - tensor split  0:           blk.15.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.123 I llama_model_loader: - tensor split  0:             blk.15.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.131 I llama_model_loader: - tensor split  0: blk.15.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.137 I llama_model_loader: - tensor split  0:          blk.16.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.145 I llama_model_loader: - tensor split  0:          blk.16.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.152 I llama_model_loader: - tensor split  0:           blk.16.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.159 I llama_model_loader: - tensor split  0:           blk.16.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.166 I llama_model_loader: - tensor split  0:           blk.16.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.173 I llama_model_loader: - tensor split  0:             blk.16.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.181 I llama_model_loader: - tensor split  0: blk.16.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.189 I llama_model_loader: - tensor split  0:                     blk.16.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.197 I llama_model_loader: - tensor split  0:          blk.16.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.205 I llama_model_loader: - tensor split  0:           blk.16.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.213 I llama_model_loader: - tensor split  0:         blk.16.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.220 I llama_model_loader: - tensor split  0:               blk.16.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.228 I llama_model_loader: - tensor split  0:           blk.16.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.235 I llama_model_loader: - tensor split  0:            blk.16.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.243 I llama_model_loader: - tensor split  0:          blk.17.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.251 I llama_model_loader: - tensor split  0:          blk.17.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.259 I llama_model_loader: - tensor split  0:           blk.17.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.266 I llama_model_loader: - tensor split  0:           blk.17.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.273 I llama_model_loader: - tensor split  0:           blk.17.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.281 I llama_model_loader: - tensor split  0:             blk.17.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.288 I llama_model_loader: - tensor split  0: blk.17.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.295 I llama_model_loader: - tensor split  0:                     blk.17.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.303 I llama_model_loader: - tensor split  0:          blk.17.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.311 I llama_model_loader: - tensor split  0:           blk.17.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.318 I llama_model_loader: - tensor split  0:         blk.17.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.326 I llama_model_loader: - tensor split  0:               blk.17.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.334 I llama_model_loader: - tensor split  0:           blk.17.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.341 I llama_model_loader: - tensor split  0:            blk.17.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.349 I llama_model_loader: - tensor split  0:          blk.18.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.357 I llama_model_loader: - tensor split  0:          blk.18.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.364 I llama_model_loader: - tensor split  0:           blk.18.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.371 I llama_model_loader: - tensor split  0:           blk.18.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.379 I llama_model_loader: - tensor split  0:           blk.18.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.386 I llama_model_loader: - tensor split  0:             blk.18.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.394 I llama_model_loader: - tensor split  0: blk.18.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.401 I llama_model_loader: - tensor split  0:                     blk.18.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.408 I llama_model_loader: - tensor split  0:          blk.18.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.415 I llama_model_loader: - tensor split  0:           blk.18.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.423 I llama_model_loader: - tensor split  0:         blk.18.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.431 I llama_model_loader: - tensor split  0:               blk.18.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.438 I llama_model_loader: - tensor split  0:           blk.18.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.445 I llama_model_loader: - tensor split  0:            blk.18.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.453 I llama_model_loader: - tensor split  0:             blk.19.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.460 I llama_model_loader: - tensor split  0:        blk.19.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.468 I llama_model_loader: - tensor split  0:          blk.19.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.475 I llama_model_loader: - tensor split  0:        blk.19.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.482 I llama_model_loader: - tensor split  0:             blk.19.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.444.490 I llama_model_loader: - tensor split  0:        blk.19.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.498 I llama_model_loader: - tensor split  0:             blk.19.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.505 I llama_model_loader: - tensor split  0:           blk.19.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.513 I llama_model_loader: - tensor split  0:           blk.19.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.521 I llama_model_loader: - tensor split  0:             blk.19.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.528 I llama_model_loader: - tensor split  0: blk.19.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.536 I llama_model_loader: - tensor split  0:          blk.20.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.543 I llama_model_loader: - tensor split  0:          blk.20.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.550 I llama_model_loader: - tensor split  0:           blk.20.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.558 I llama_model_loader: - tensor split  0:           blk.20.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.565 I llama_model_loader: - tensor split  0:           blk.20.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.572 I llama_model_loader: - tensor split  0:             blk.20.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.580 I llama_model_loader: - tensor split  0: blk.20.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.587 I llama_model_loader: - tensor split  0:                     blk.20.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.595 I llama_model_loader: - tensor split  0:          blk.20.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.602 I llama_model_loader: - tensor split  0:           blk.20.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.610 I llama_model_loader: - tensor split  0:         blk.20.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.617 I llama_model_loader: - tensor split  0:               blk.20.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.624 I llama_model_loader: - tensor split  0:           blk.20.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.632 I llama_model_loader: - tensor split  0:            blk.20.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.639 I llama_model_loader: - tensor split  0:          blk.21.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.646 I llama_model_loader: - tensor split  0:          blk.21.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.653 I llama_model_loader: - tensor split  0:           blk.21.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.661 I llama_model_loader: - tensor split  0:           blk.21.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.668 I llama_model_loader: - tensor split  0:           blk.21.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.676 I llama_model_loader: - tensor split  0:             blk.21.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.683 I llama_model_loader: - tensor split  0: blk.21.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.691 I llama_model_loader: - tensor split  0:                     blk.21.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.698 I llama_model_loader: - tensor split  0:          blk.21.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.706 I llama_model_loader: - tensor split  0:           blk.21.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.713 I llama_model_loader: - tensor split  0:         blk.21.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.721 I llama_model_loader: - tensor split  0:               blk.21.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.728 I llama_model_loader: - tensor split  0:           blk.21.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.735 I llama_model_loader: - tensor split  0:            blk.21.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.742 I llama_model_loader: - tensor split  0:          blk.22.attn_gate.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.750 I llama_model_loader: - tensor split  0:          blk.22.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.757 I llama_model_loader: - tensor split  0:           blk.22.attn_qkv.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.764 I llama_model_loader: - tensor split  0:           blk.22.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.771 I llama_model_loader: - tensor split  0:           blk.22.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.779 I llama_model_loader: - tensor split  0:             blk.22.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.787 I llama_model_loader: - tensor split  0: blk.22.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.795 I llama_model_loader: - tensor split  0:                     blk.22.ssm_a f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.802 I llama_model_loader: - tensor split  0:          blk.22.ssm_alpha.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.810 I llama_model_loader: - tensor split  0:           blk.22.ssm_beta.weight q4_0     [   2048,     16,      1,      1 ]     0.02 MiB
+0.00.444.818 I llama_model_loader: - tensor split  0:         blk.22.ssm_conv1d.weight f32      [      4,   6144,      1,      1 ]     0.09 MiB
+0.00.444.825 I llama_model_loader: - tensor split  0:               blk.22.ssm_dt.bias f32      [     16,      1,      1,      1 ]     0.00 MiB
+0.00.444.832 I llama_model_loader: - tensor split  0:           blk.22.ssm_norm.weight f32      [    128,      1,      1,      1 ]     0.00 MiB
+0.00.444.840 I llama_model_loader: - tensor split  0:            blk.22.ssm_out.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.847 I llama_model_loader: - tensor split  0:             blk.23.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.855 I llama_model_loader: - tensor split  0:        blk.23.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.862 I llama_model_loader: - tensor split  0:          blk.23.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.870 I llama_model_loader: - tensor split  0:        blk.23.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.877 I llama_model_loader: - tensor split  0:             blk.23.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.444.884 I llama_model_loader: - tensor split  0:        blk.23.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.891 I llama_model_loader: - tensor split  0:             blk.23.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.898 I llama_model_loader: - tensor split  0:           blk.23.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.905 I llama_model_loader: - tensor split  0:           blk.23.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.912 I llama_model_loader: - tensor split  0:             blk.23.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.920 I llama_model_loader: - tensor split  0: blk.23.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.928 I llama_model_loader: - tensor split  0:             blk.24.attn_k.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.935 I llama_model_loader: - tensor split  0:        blk.24.attn_k_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.943 I llama_model_loader: - tensor split  0:          blk.24.attn_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.444.950 I llama_model_loader: - tensor split  0:        blk.24.attn_output.weight q4_0     [   2048,   2048,      1,      1 ]     2.25 MiB
+0.00.444.957 I llama_model_loader: - tensor split  0:             blk.24.attn_q.weight q4_0     [   2048,   4096,      1,      1 ]     4.50 MiB
+0.00.444.964 I llama_model_loader: - tensor split  0:        blk.24.attn_q_norm.weight f32      [    256,      1,      1,      1 ]     0.00 MiB
+0.00.444.972 I llama_model_loader: - tensor split  0:             blk.24.attn_v.weight q4_0     [   2048,    512,      1,      1 ]     0.56 MiB
+0.00.444.979 I llama_model_loader: - tensor split  0:           blk.24.ffn_down.weight q4_0     [   6144,   2048,      1,      1 ]     6.75 MiB
+0.00.444.986 I llama_model_loader: - tensor split  0:           blk.24.ffn_gate.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.444.993 I llama_model_loader: - tensor split  0:             blk.24.ffn_up.weight q4_0     [   2048,   6144,      1,      1 ]     6.75 MiB
+0.00.445.000 I llama_model_loader: - tensor split  0:      blk.24.nextn.eh_proj.weight q4_0     [   4096,   2048,      1,      1 ]     4.50 MiB
+0.00.445.008 I llama_model_loader: - tensor split  0:        blk.24.nextn.enorm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.445.015 I llama_model_loader: - tensor split  0:        blk.24.nextn.hnorm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.445.024 I llama_model_loader: - tensor split  0: blk.24.nextn.shared_head_head.weight q4_0     [   2048,  65536,      1,      1 ]    72.00 MiB
+0.00.445.032 I llama_model_loader: - tensor split  0: blk.24.nextn.shared_head_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.445.039 I llama_model_loader: - tensor split  0: blk.24.post_attention_norm.weight f32      [   2048,      1,      1,      1 ]     0.01 MiB
+0.00.445.071 I llama_model_loader: Dumping metadata keys/values. Note: KV overrides do not apply in this output.
+0.00.445.110 I llama_model_loader: - kv   0:                       general.architecture str              = qwen35
+0.00.445.116 I llama_model_loader: - kv   1:                               general.type str              = model
+0.00.445.120 I llama_model_loader: - kv   2:                               general.name str              = Qwen3.5-2B
+0.00.445.123 I llama_model_loader: - kv   3:                           general.basename str              = Qwen3.5-2B
+0.00.445.127 I llama_model_loader: - kv   4:                       general.quantized_by str              = Unsloth
+0.00.445.130 I llama_model_loader: - kv   5:                         general.size_label str              = 2B
+0.00.445.133 I llama_model_loader: - kv   6:                            general.license str              = apache-2.0
+0.00.445.144 I llama_model_loader: - kv   7:                       general.license.link str              = https://huggingface.co/Qwen/Qwen3.5-2...
+0.00.445.149 I llama_model_loader: - kv   8:                           general.repo_url str              = https://huggingface.co/unsloth
+0.00.445.160 I llama_model_loader: - kv   9:                   general.base_model.count u32              = 1
+0.00.445.164 I llama_model_loader: - kv  10:                  general.base_model.0.name str              = Qwen3.5 2B
+0.00.445.168 I llama_model_loader: - kv  11:          general.base_model.0.organization str              = Qwen
+0.00.445.173 I llama_model_loader: - kv  12:              general.base_model.0.repo_url str              = https://huggingface.co/Qwen/Qwen3.5-2B
+0.00.445.245 I llama_model_loader: - kv  13:                               general.tags arr[str,2]       = ["unsloth", "image-text-to-text"]
+0.00.445.252 I llama_model_loader: - kv  14:                         qwen35.block_count u32              = 25
+0.00.445.256 I llama_model_loader: - kv  15:                      qwen35.context_length u32              = 262144
+0.00.445.260 I llama_model_loader: - kv  16:                    qwen35.embedding_length u32              = 2048
+0.00.445.264 I llama_model_loader: - kv  17:                 qwen35.feed_forward_length u32              = 6144
+0.00.445.267 I llama_model_loader: - kv  18:                qwen35.attention.head_count u32              = 8
+0.00.445.270 I llama_model_loader: - kv  19:             qwen35.attention.head_count_kv u32              = 2
+0.00.445.287 I llama_model_loader: - kv  20:             qwen35.rope.dimension_sections arr[i32,4]       = [11, 11, 10, 0]
+0.00.445.299 I llama_model_loader: - kv  21:                      qwen35.rope.freq_base f32              = 10000000.000000
+0.00.445.305 I llama_model_loader: - kv  22:    qwen35.attention.layer_norm_rms_epsilon f32              = 0.000001
+0.00.445.309 I llama_model_loader: - kv  23:                qwen35.attention.key_length u32              = 256
+0.00.445.313 I llama_model_loader: - kv  24:              qwen35.attention.value_length u32              = 256
+0.00.445.316 I llama_model_loader: - kv  25:                     qwen35.ssm.conv_kernel u32              = 4
+0.00.445.319 I llama_model_loader: - kv  26:                      qwen35.ssm.state_size u32              = 128
+0.00.445.322 I llama_model_loader: - kv  27:                     qwen35.ssm.group_count u32              = 16
+0.00.445.325 I llama_model_loader: - kv  28:                  qwen35.ssm.time_step_rank u32              = 16
+0.00.445.329 I llama_model_loader: - kv  29:                      qwen35.ssm.inner_size u32              = 2048
+0.00.445.332 I llama_model_loader: - kv  30:             qwen35.full_attention_interval u32              = 4
+0.00.445.334 I llama_model_loader: - kv  31:                qwen35.rope.dimension_count u32              = 64
+0.00.445.337 I llama_model_loader: - kv  32:                qwen35.nextn_predict_layers u32              = 1
+0.00.445.340 I llama_model_loader: - kv  33:                       tokenizer.ggml.model str              = gpt2
+0.00.445.343 I llama_model_loader: - kv  34:                         tokenizer.ggml.pre str              = qwen35
+0.00.687.665 I llama_model_loader: - kv  35:                      tokenizer.ggml.tokens arr[str,248320]  = ["!", "\"", "#", "$", "%", "&", "'", ...
+0.00.752.506 I llama_model_loader: - kv  36:                  tokenizer.ggml.token_type arr[i32,248320]  = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, ...
+0.00.990.071 I llama_model_loader: - kv  37:                      tokenizer.ggml.merges arr[str,247587]  = ["Ġ Ġ", "ĠĠ ĠĠ", "i n", "Ġ t",...
+0.00.990.125 I llama_model_loader: - kv  38:                tokenizer.ggml.eos_token_id u32              = 248046
+0.00.990.131 I llama_model_loader: - kv  39:            tokenizer.ggml.padding_token_id u32              = 248055
+0.00.990.137 I llama_model_loader: - kv  40:               tokenizer.ggml.add_bos_token bool             = false
+0.00.990.161 I llama_model_loader: - kv  41:                    tokenizer.chat_template str              = {%- set image_count = namespace(value...
+0.00.990.169 I llama_model_loader: - kv  42:                      quantize.imatrix.file str              = Qwen3.5-2B-GGUF/imatrix_unsloth.gguf
+0.00.990.174 I llama_model_loader: - kv  43:                   quantize.imatrix.dataset str              = unsloth_calibration_Qwen3.5-2B.txt
+0.00.990.185 I llama_model_loader: - kv  44:             quantize.imatrix.entries_count u32              = 186
+0.00.990.191 I llama_model_loader: - kv  45:              quantize.imatrix.chunks_count u32              = 77
+0.00.990.195 I llama_model_loader: - kv  46:               general.quantization_version u32              = 2
+0.00.990.198 I llama_model_loader: - kv  47:                          general.file_type u32              = 2
+0.00.990.202 I llama_model_loader: - type  f32:  140 tensors
+0.00.990.206 I llama_model_loader: - type q4_0:  196 tensors
+0.00.990.234 I print_info: file format = GGUF V3 (latest)
+0.00.990.243 I print_info: file type   = Q4_0
+0.00.990.256 I print_info: file size   = 1.09 GiB (4.51 BPW) 
+0.02.437.182 I load: 0 unused tokens
+0.02.747.591 I load: printing all EOG tokens:
+0.02.747.636 I load:   - 248044 ('<|endoftext|>')
+0.02.747.644 I load:   - 248046 ('<|im_end|>')
+0.02.747.647 I load:   - 248063 ('<|fim_pad|>')
+0.02.747.649 I load:   - 248064 ('<|repo_name|>')
+0.02.747.652 I load:   - 248065 ('<|file_sep|>')
+0.02.749.402 I load: special tokens cache size = 33
+0.03.332.658 I load: token to piece cache size = 1.7581 MB
+0.03.332.802 I print_info: arch                  = qwen35
+0.03.332.808 I print_info: vocab_only            = 0
+0.03.332.811 I print_info: no_alloc              = 0
+0.03.332.813 I print_info: n_ctx_train           = 262144
+0.03.332.820 I print_info: n_embd_inp            = 2048
+0.03.332.823 I print_info: n_embd                = 2048
+0.03.332.829 I print_info: n_embd_out            = 2048
+0.03.332.832 I print_info: n_layer               = 24
+0.03.332.834 I print_info: n_layer_all           = 25
+0.03.332.866 I print_info: n_head                = 8
+0.03.332.885 I print_info: n_head_kv             = 2
+0.03.332.888 I print_info: n_rot                 = 64
+0.03.332.890 I print_info: n_swa                 = 0
+0.03.332.897 I print_info: is_swa_any            = 0
+0.03.332.899 I print_info: n_embd_head_k         = 256
+0.03.332.901 I print_info: n_embd_head_v         = 256
+0.03.332.916 I print_info: n_gqa                 = 4
+0.03.332.941 I print_info: n_embd_k_gqa          = 512
+0.03.332.956 I print_info: n_embd_v_gqa          = 512
+0.03.332.962 I print_info: f_norm_eps            = 0.0e+00
+0.03.332.970 I print_info: f_norm_rms_eps        = 1.0e-06
+0.03.332.973 I print_info: f_clamp_kqv           = 0.0e+00
+0.03.332.975 I print_info: f_max_alibi_bias      = 0.0e+00
+0.03.332.977 I print_info: f_logit_scale         = 0.0e+00
+0.03.332.979 I print_info: f_attn_scale          = 0.0e+00
+0.03.332.982 I print_info: f_attn_value_scale    = 0.0000
+0.03.332.994 I print_info: n_ff                  = 6144
+0.03.332.997 I print_info: n_expert              = 0
+0.03.332.998 I print_info: n_expert_used         = 0
+0.03.333.001 I print_info: n_expert_groups       = 0
+0.03.333.002 I print_info: n_group_used          = 0
+0.03.333.004 I print_info: causal attn           = 1
+0.03.333.005 I print_info: pooling type          = -1
+0.03.333.007 I print_info: rope type             = 40
+0.03.333.008 I print_info: rope scaling          = linear
+0.03.333.015 I print_info: freq_base_train       = 10000000.0
+0.03.333.018 I print_info: freq_scale_train      = 1
+0.03.333.020 I print_info: n_ctx_orig_yarn       = 262144
+0.03.333.023 I print_info: rope_yarn_log_mul     = 0.0000
+0.03.333.025 I print_info: rope_finetuned        = unknown
+0.03.333.028 I print_info: mrope sections        = [11, 11, 10, 0]
+0.03.333.030 I print_info: ssm_d_conv            = 4
+0.03.333.032 I print_info: ssm_d_inner           = 2048
+0.03.333.033 I print_info: ssm_d_state           = 128
+0.03.333.035 I print_info: ssm_dt_rank           = 16
+0.03.333.036 I print_info: ssm_n_group           = 16
+0.03.333.038 I print_info: ssm_dt_b_c_rms        = 0
+0.03.333.042 I print_info: model type            = 2B
+0.03.333.044 I print_info: model params          = 2.08 B
+0.03.333.046 I print_info: general.name          = Qwen3.5-2B
+0.03.333.064 I print_info: vocab type            = BPE
+0.03.333.070 I print_info: n_vocab               = 248320
+0.03.333.072 I print_info: n_merges              = 247587
+0.03.333.075 I print_info: BOS token             = 11 ','
+0.03.333.077 I print_info: EOS token             = 248046 '<|im_end|>'
+0.03.333.079 I print_info: EOT token             = 248046 '<|im_end|>'
+0.03.333.081 I print_info: PAD token             = 248055 '<|vision_pad|>'
+0.03.333.084 I print_info: LF token              = 198 'Ċ'
+0.03.333.086 I print_info: FIM PRE token         = 248060 '<|fim_prefix|>'
+0.03.333.088 I print_info: FIM SUF token         = 248062 '<|fim_suffix|>'
+0.03.333.089 I print_info: FIM MID token         = 248061 '<|fim_middle|>'
+0.03.333.092 I print_info: FIM PAD token         = 248063 '<|fim_pad|>'
+0.03.333.093 I print_info: FIM REP token         = 248064 '<|repo_name|>'
+0.03.333.095 I print_info: FIM SEP token         = 248065 '<|file_sep|>'
+0.03.333.098 I print_info: EOG token             = 248044 '<|endoftext|>'
+0.03.333.101 I print_info: EOG token             = 248046 '<|im_end|>'
+0.03.333.103 I print_info: EOG token             = 248063 '<|fim_pad|>'
+0.03.333.105 I print_info: EOG token             = 248064 '<|repo_name|>'
+0.03.333.107 I print_info: EOG token             = 248065 '<|file_sep|>'
+0.03.333.109 I print_info: max token length      = 256
+0.03.333.118 I load_tensors: loading model tensors, this can take a while... (mmap = true, direct_io = false)
+0.03.659.600 I load_tensors:   CPU_Mapped model buffer size =  1043.95 MiB
+0.03.659.637 I load_tensors: CPU_RISCV64_SPACEMIT model buffer size =  1113.82 MiB
+0.06.645.639 I cmn  common_init_: added <|endoftext|> logit bias = -inf
+0.06.645.674 I cmn  common_init_: added <|im_end|> logit bias = -inf
+0.06.645.682 I cmn  common_init_: added <|fim_pad|> logit bias = -inf
+0.06.645.685 I cmn  common_init_: added <|repo_name|> logit bias = -inf
+0.06.645.689 I cmn  common_init_: added <|file_sep|> logit bias = -inf
+0.06.646.178 I llama_context: constructing llama_context
+0.06.646.220 I llama_context: n_seq_max     = 1
+0.06.646.224 I llama_context: n_ctx         = 12288
+0.06.646.225 I llama_context: n_ctx_seq     = 12288
+0.06.646.227 I llama_context: n_batch       = 32
+0.06.646.229 I llama_context: n_ubatch      = 32
+0.06.646.231 I llama_context: causal_attn   = 1
+0.06.646.237 I llama_context: flash_attn    = enabled
+0.06.646.239 I llama_context: kv_unified    = false
+0.06.646.255 I llama_context: freq_base     = 10000000.0
+0.06.646.259 I llama_context: freq_scale    = 1
+0.06.646.261 I llama_context: n_rs_seq      = 0
+0.06.646.263 I llama_context: n_outputs_max = 4
+0.06.646.266 I llama_context: n_ctx_seq (12288) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+0.06.646.525 I llama_context:        CPU  output buffer size =     0.95 MiB
+0.06.647.365 I llama_kv_cache:        CPU KV buffer size =   144.00 MiB
+0.06.805.185 I llama_kv_cache: size =  144.00 MiB ( 12288 cells,   6 layers,  1/1 seqs), K (f16):   72.00 MiB, V (f16):   72.00 MiB
+0.06.805.223 I llama_kv_cache: attn_rot_k = 0, n_embd_head_k_all = 256
+0.06.805.226 I llama_kv_cache: attn_rot_v = 0, n_embd_head_k_all = 256
+0.06.826.822 I llama_memory_recurrent:        CPU RS buffer size =    19.27 MiB
+0.06.826.917 I llama_memory_recurrent: size =   19.27 MiB (     1 cells,  24 layers,  1 seqs  0 rs_seq), R (f32):    1.27 MiB, S (f32):   18.00 MiB
+0.06.826.966 I sched_reserve: reserving ...
+0.06.833.611 I resolve_fused_ops: resolving fused Gated Delta Net support:
+0.06.840.626 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+0.06.847.231 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+0.06.847.265 I resolve_fused_ops: resolving fused Lightning Indexer support:
+0.06.853.520 I resolve_fused_ops: Lightning Indexer enabled
+0.06.885.668 I sched_reserve:        CPU compute buffer size =     5.46 MiB
+0.06.885.709 I sched_reserve: graph nodes  = 1429 (with bs=32), 1357 (with bs=1)
+0.06.885.713 I sched_reserve: graph splits = 1
+0.06.885.731 I sched_reserve: reserve took 58.73 ms, sched copies = 1
+0.06.886.354 I cmn  common_init_: warming up the model with an empty run - please wait ... (--no-warmup to disable)
+K1_GEMM_ROUTE mode=3 phase=prefill eligible=1 bypass=1 buffer_size=131072
+K1_GEMM_ROUTE mode=3 phase=single eligible=1 bypass=1 buffer_size=131072
+K1_EFFECTIVE_DEFAULTS threads=4 batch_threads=4 batch=32 ubatch=32 context=12288 slots=1 flash=1 gpu=0 key=f16 value=f16 mask=3
+0.07.212.365 I common_speculative_init_result: creating MTP draft context against the target model '/home/moyamryia/Projects/spacemit-llama/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf'
+0.07.212.497 I llama_context: constructing llama_context
+0.07.212.524 I llama_context: n_seq_max     = 1
+0.07.212.531 I llama_context: n_ctx         = 12288
+0.07.212.533 I llama_context: n_ctx_seq     = 12288
+0.07.212.535 I llama_context: n_batch       = 32
+0.07.212.536 I llama_context: n_ubatch      = 32
+0.07.212.538 I llama_context: causal_attn   = 1
+0.07.212.541 I llama_context: flash_attn    = enabled
+0.07.212.543 I llama_context: kv_unified    = false
+0.07.212.561 I llama_context: freq_base     = 10000000.0
+0.07.212.564 I llama_context: freq_scale    = 1
+0.07.212.565 I llama_context: n_rs_seq      = 0
+0.07.212.567 I llama_context: n_outputs_max = 1
+0.07.212.570 I llama_context: n_ctx_seq (12288) < n_ctx_train (262144) -- the full capacity of the model will not be utilized
+0.07.213.769 I llama_context:        CPU  output buffer size =     0.95 MiB
+0.07.214.907 I llama_kv_cache:        CPU KV buffer size =    24.00 MiB
+0.07.241.662 I llama_kv_cache: size =   24.00 MiB ( 12288 cells,   1 layers,  1/1 seqs), K (f16):   12.00 MiB, V (f16):   12.00 MiB
+0.07.241.698 I llama_kv_cache: attn_rot_k = 0, n_embd_head_k_all = 256
+0.07.241.701 I llama_kv_cache: attn_rot_v = 0, n_embd_head_k_all = 256
+0.07.241.732 I sched_reserve: reserving ...
+0.07.252.552 I resolve_fused_ops: resolving fused Gated Delta Net support:
+0.07.253.371 I resolve_fused_ops: fused Gated Delta Net (autoregressive) enabled
+0.07.253.801 I resolve_fused_ops: fused Gated Delta Net (chunked) enabled
+0.07.253.820 I resolve_fused_ops: resolving fused Lightning Indexer support:
+0.07.254.335 I resolve_fused_ops: Lightning Indexer enabled
+0.07.255.932 I sched_reserve:        CPU compute buffer size =     3.20 MiB
+0.07.255.958 I sched_reserve: graph nodes  = 52
+0.07.255.962 I sched_reserve: graph splits = 1
+0.07.255.974 I sched_reserve: reserve took 14.23 ms, sched copies = 1
+0.07.565.554 I cmn  common_conte: the context does not support partial sequence removal
+0.07.588.948 I srv    load_model: speculative decoding will use checkpoints
+0.07.588.976 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 12288, kv_unified = 'false'
+0.07.589.082 I spec common_specu: adding speculative implementation 'draft-mtp'
+0.07.589.096 I spec common_specu: - n_max=3, n_min=0, p_min=0.00, n_embd=2048, backend_sampling=1
+0.07.589.113 I spec common_specu: - gpu_layers=-1, cache_k=f16, cache_v=f16, ctx_tgt=yes, ctx_dft=yes, devices=[default]
+0.07.593.143 I sched_reserve: reserving ...
+0.07.602.047 I sched_reserve:        CPU compute buffer size =     4.79 MiB
+0.07.602.068 I sched_reserve: graph nodes  = 58
+0.07.602.072 I sched_reserve: graph splits = 1
+0.07.602.083 I sched_reserve: reserve took 8.90 ms, sched copies = 1
+0.07.642.421 I srv    load_model: speculative decoding context initialized
+0.07.642.450 I slot   load_model: id  0 | task -1 | new slot, n_ctx = 12288
+0.07.642.498 W srv    load_model: LLAMA_TRACE = 1
+0.07.642.534 I srv    load_model: prompt cache is enabled, size limit: 8192 MiB
+0.07.642.537 I srv    load_model: use `--cache-ram 0` to disable the prompt cache
+0.07.642.541 I srv    load_model: for more info see https://github.com/ggml-org/llama.cpp/pull/16391
+0.07.642.544 I srv    load_model: context checkpoints enabled, max = 32, min spacing = 8192
+0.07.642.637 I srv          init: idle slots will be saved to prompt cache upon starting a new task
+0.07.834.459 I srv          init: init: chat template, example_format: '<|im_start|>system
+You are a helpful assistant<|im_end|>
+<|im_start|>user
+Hello<|im_end|>
+<|im_start|>assistant
+Hi there<|im_end|>
+<|im_start|>user
+How are you?<|im_end|>
+<|im_start|>assistant
+<think>
+'
+0.07.984.648 I srv          init: init: chat template, thinking = 1
+0.07.984.897 I srv  llama_server: model loaded
+0.07.984.933 I srv  llama_server: listening on http://127.0.0.1:18089
+0.07.984.953 I srv  update_slots: all slots are idle
+0.08.561.051 I srv  server_strea: conv_id= (empty=1)
+0.08.567.041 I srv    operator(): chat format: peg-native
+0.08.568.219 I slot get_availabl: id  0 | task -1 | selected slot by id (0)
+0.08.568.650 I slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+0.08.568.721 I slot launch_slot_: id  0 | task -1 | sampler params: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = 12288
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+0.08.568.732 I slot launch_slot_: id  0 | task 0 | processing task, is_child = 0
+0.08.568.788 I slot   operator(): id  0 | task 0 | new prompt, n_ctx_slot = 12288, n_keep = 0, task.n_tokens = 363
+0.08.568.842 I slot   operator(): id  0 | task 0 | cached n_tokens = 0, memory_seq_rm [0, end)
+SPINE_FA_WIDE_TILE: RVV tiled attention enabled for 256-dim heads
+0.09.605.062 I slot   operator(): id  0 | task 0 | cached n_tokens = 23, memory_seq_rm [23, end)
+0.09.635.608 I slot create_check: id  0 | task 0 | created context checkpoint 1 of 32 (pos_min = 22, pos_max = 22, n_tokens = 23, size = 19.311 MiB)
+0.10.863.125 I slot   operator(): id  0 | task 0 | cached n_tokens = 55, memory_seq_rm [55, end)
+0.12.078.143 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =     87, progress = 0.24, t =   3.51 s / 24.79 tokens per second
+0.12.078.173 I slot   operator(): id  0 | task 0 | cached n_tokens = 87, memory_seq_rm [87, end)
+0.13.299.513 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    119, progress = 0.33, t =   4.73 s / 25.15 tokens per second
+0.13.299.543 I slot   operator(): id  0 | task 0 | cached n_tokens = 119, memory_seq_rm [119, end)
+0.14.526.399 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    151, progress = 0.42, t =   5.96 s / 25.35 tokens per second
+0.14.526.430 I slot   operator(): id  0 | task 0 | cached n_tokens = 151, memory_seq_rm [151, end)
+0.15.747.420 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    183, progress = 0.50, t =   7.18 s / 25.49 tokens per second
+0.15.747.452 I slot   operator(): id  0 | task 0 | cached n_tokens = 183, memory_seq_rm [183, end)
+0.16.989.917 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    215, progress = 0.59, t =   8.42 s / 25.53 tokens per second
+0.16.989.948 I slot   operator(): id  0 | task 0 | cached n_tokens = 215, memory_seq_rm [215, end)
+0.18.214.203 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    247, progress = 0.68, t =   9.65 s / 25.61 tokens per second
+0.18.214.232 I slot   operator(): id  0 | task 0 | cached n_tokens = 247, memory_seq_rm [247, end)
+0.19.465.351 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    279, progress = 0.77, t =  10.90 s / 25.60 tokens per second
+0.19.465.382 I slot   operator(): id  0 | task 0 | cached n_tokens = 279, memory_seq_rm [279, end)
+0.20.703.006 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    311, progress = 0.86, t =  12.13 s / 25.63 tokens per second
+0.20.703.039 I slot   operator(): id  0 | task 0 | cached n_tokens = 311, memory_seq_rm [311, end)
+0.21.554.650 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    331, progress = 0.91, t =  12.99 s / 25.49 tokens per second
+0.21.554.681 I slot   operator(): id  0 | task 0 | cached n_tokens = 331, memory_seq_rm [331, end)
+0.21.586.269 I slot create_check: id  0 | task 0 | created context checkpoint 2 of 32 (pos_min = 330, pos_max = 330, n_tokens = 331, size = 19.919 MiB)
+0.22.781.459 I slot print_timing: id  0 | task 0 | prompt processing, n_tokens =    359, progress = 0.99, t =  14.21 s / 25.26 tokens per second
+0.22.781.492 I slot   operator(): id  0 | task 0 | cached n_tokens = 359, memory_seq_rm [359, end)
+0.22.782.063 I slot init_sampler: id  0 | task 0 | init sampler, took 0.38 ms, tokens: text = 363, total = 363
+0.22.813.428 I slot create_check: id  0 | task 0 | created context checkpoint 3 of 32 (pos_min = 358, pos_max = 358, n_tokens = 359, size = 19.974 MiB)
+0.23.758.233 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.24.089.895 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.24.601.355 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+0.25.025.964 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+0.25.535.868 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.25.872.156 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.26.383.023 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.26.720.963 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.27.223.719 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.27.560.276 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.28.070.492 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.28.404.309 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.28.908.093 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.29.242.229 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.29.747.980 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.30.088.226 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.30.598.149 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.30.937.485 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.31.448.577 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.31.785.378 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.32.294.207 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.32.626.470 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.33.134.692 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.33.472.841 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.33.986.503 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.34.323.617 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.34.833.609 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.35.171.601 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.35.686.354 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.36.021.876 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.36.532.835 I slot   operator(): id  0 | task 0 | accepted  2/ 3 draft tokens (restore checkpoint)
+0.36.964.519 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+0.37.470.658 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.37.805.585 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.38.325.323 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+0.38.833.392 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.39.174.582 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.39.686.892 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.40.024.767 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.40.519.002 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.40.853.006 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.41.353.308 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.41.689.796 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.42.210.571 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.42.547.575 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.43.071.448 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+0.43.503.522 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+0.44.003.889 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.44.338.564 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.44.845.478 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+0.45.277.364 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+0.45.780.994 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.46.115.634 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.46.635.406 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+0.47.137.023 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.47.473.501 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.47.985.955 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+0.48.412.423 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+0.48.932.946 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+0.49.436.689 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.49.776.530 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.50.287.180 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.50.622.641 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.51.136.003 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.51.477.086 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.51.985.914 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.52.323.777 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.52.837.007 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.53.173.253 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.53.706.686 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.54.042.804 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.54.556.035 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.54.895.923 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.55.403.014 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.55.741.307 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.56.242.895 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.56.578.226 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.57.098.836 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.57.441.114 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.57.962.639 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.58.302.410 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.58.812.679 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+0.59.154.551 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+0.59.674.935 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.00.011.241 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.00.011.566 I slot print_timing: id  0 | task 0 | n_decoded =    101, tg =   2.74 t/s, tg_3s =   2.74 t/s
+1.00.525.876 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.00.862.924 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.01.371.565 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.01.804.953 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.02.307.351 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.02.643.018 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.03.171.354 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.03.171.680 I slot print_timing: id  0 | task 0 | n_decoded =    112, tg =   2.80 t/s, tg_3s =   3.48 t/s
+1.03.679.960 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.04.019.225 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.04.537.874 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.04.874.662 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.05.408.134 I slot   operator(): id  0 | task 0 | accepted  2/ 3 draft tokens (restore checkpoint)
+1.05.835.592 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.06.348.791 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.06.349.133 I slot print_timing: id  0 | task 0 | n_decoded =    124, tg =   2.87 t/s, tg_3s =   3.78 t/s
+1.06.868.750 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.07.385.945 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.07.892.153 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.08.326.179 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.08.867.263 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.09.373.722 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.09.815.742 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.09.816.072 I slot print_timing: id  0 | task 0 | n_decoded =    142, tg =   3.05 t/s, tg_3s =   5.19 t/s
+1.10.337.457 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.10.675.137 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.11.194.665 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.11.536.507 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.12.061.644 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.12.400.476 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.12.939.833 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.12.940.162 I slot print_timing: id  0 | task 0 | n_decoded =    152, tg =   3.06 t/s, tg_3s =   3.20 t/s
+1.13.439.646 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.13.782.209 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.14.296.038 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.14.634.471 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.15.160.735 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.15.597.060 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.16.129.076 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.16.466.655 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.16.466.975 I slot print_timing: id  0 | task 0 | n_decoded =    161, tg =   3.02 t/s, tg_3s =   2.55 t/s
+1.16.985.842 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.17.327.348 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.17.859.526 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.18.372.378 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.18.708.920 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.19.230.179 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.19.569.498 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.19.569.820 I slot print_timing: id  0 | task 0 | n_decoded =    171, tg =   3.03 t/s, tg_3s =   3.22 t/s
+1.20.108.900 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.20.451.671 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.20.979.828 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.21.322.222 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.21.838.668 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.22.182.817 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.22.708.592 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.23.046.864 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.23.047.186 I slot print_timing: id  0 | task 0 | n_decoded =    179, tg =   2.99 t/s, tg_3s =   2.30 t/s
+1.23.583.727 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.24.096.746 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.24.439.444 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.24.953.503 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.25.293.128 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.25.811.013 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.26.154.634 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.26.154.966 I slot print_timing: id  0 | task 0 | n_decoded =    189, tg =   3.00 t/s, tg_3s =   3.22 t/s
+1.26.681.657 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.27.024.703 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.27.538.290 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.27.878.646 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.28.402.727 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.28.745.022 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.29.274.625 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.29.619.102 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.29.619.423 I slot print_timing: id  0 | task 0 | n_decoded =    197, tg =   2.97 t/s, tg_3s =   2.31 t/s
+1.30.136.846 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.30.478.676 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.30.996.639 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.31.337.677 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.31.869.532 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.32.214.151 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.32.730.694 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.33.067.834 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.33.068.159 I slot print_timing: id  0 | task 0 | n_decoded =    205, tg =   2.93 t/s, tg_3s =   2.32 t/s
+1.33.590.780 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.33.930.964 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.34.465.652 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.34.897.910 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.35.426.919 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.35.769.557 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.36.302.735 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.36.645.542 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.36.645.868 I slot print_timing: id  0 | task 0 | n_decoded =    214, tg =   2.91 t/s, tg_3s =   2.52 t/s
+1.37.164.932 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.37.601.282 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.38.126.069 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.38.470.760 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.39.006.824 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.39.349.124 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.39.866.997 I slot   operator(): id  0 | task 0 | accepted  2/ 3 draft tokens (restore checkpoint)
+1.40.303.904 I slot   operator(): id  0 | task 0 | accepted  3/ 3 draft tokens
+1.40.304.246 I slot print_timing: id  0 | task 0 | n_decoded =    225, tg =   2.92 t/s, tg_3s =   3.01 t/s
+1.40.823.808 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.41.167.102 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.41.693.626 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.42.038.099 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.42.553.667 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.42.896.059 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.43.418.060 I slot   operator(): id  0 | task 0 | accepted  1/ 3 draft tokens (restore checkpoint)
+1.43.857.458 I slot   operator(): id  0 | task 0 | accepted  2/ 2 draft tokens
+1.43.857.789 I slot print_timing: id  0 | task 0 | n_decoded =    234, tg =   2.90 t/s, tg_3s =   2.53 t/s
+1.44.376.149 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.44.723.247 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.45.244.739 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.45.586.184 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.46.106.218 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.46.446.576 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.46.986.563 I slot   operator(): id  0 | task 0 | accepted  0/ 3 draft tokens (restore checkpoint)
+1.47.332.038 I slot   operator(): id  0 | task 0 | accepted  1/ 1 draft tokens
+1.47.332.354 I slot print_timing: id  0 | task 0 | prompt eval time =   14647.80 ms /   363 tokens (   40.35 ms per token,    24.78 tokens per second)
+1.47.332.372 I slot print_timing: id  0 | task 0 |        eval time =   84115.54 ms /   241 tokens (  349.03 ms per token,     2.87 tokens per second)
+1.47.332.377 I slot print_timing: id  0 | task 0 |       total time =   98763.35 ms /   604 tokens
+1.47.332.418 I slot print_timing: id  0 | task 0 |    graphs reused =         25
+1.47.332.443 I slot print_timing: id  0 | task 0 | draft acceptance = 0.46205 (  140 accepted /   303 generated), mean len =  2.39
+1.47.332.446 I slot print_timing: id  0 | task 0 |      acc per pos = (1.000, 0.248, 0.139)
+1.47.332.544 I spec common_specu: statistics        draft-mtp: #calls(b,g,a) =    1    101    101, #gen drafts =    101, #acc drafts =   101, #gen tokens =    303, #acc tokens =   140, #mean acc len = 2.39, #acc rate/pos = (1.000, 0.248, 0.139), dur(b,g,a) = 0.018, 8853.821, 0.913 ms
+1.47.332.821 I slot      release: id  0 | task 0 | stop processing: n_tokens = 604, truncated = 0
+1.47.332.880 I srv  update_slots: all slots are idle
+1.47.340.711 I srv    operator(): operator(): cleaning up before exit...
+1.47.342.549 I common_memory_breakdown_print: | memory breakdown [MiB]   | total   free    self   model   context   compute    unaccounted |
+1.47.342.566 I common_memory_breakdown_print: |   - Host                 |                 1212 =  1043 +     163 +       5                |
+1.47.342.569 I common_memory_breakdown_print: |   - CPU_RISCV64_SPACEMIT |                 1113 =  1113 +       0 +       0                |

@@ -6,8 +6,10 @@ Use `--port 18085` with that launcher, and use `--ctx-size 6144` with this clien
 The older 8,192-token server scripts below retain the historical integration path.
 Hold the shared lock for those scripts too.
 See the [documentation guide](../DOCS.md) for current benchmark status.
+Use the [2B decoder router](decode-router/README.md) for an independent two-route or three-route experiment.
+The release launcher stays unchanged.
 
-`llama-server` can keep a prompt prefix in a live slot. The client here sends the same system instruction and document for each question. It adds the changing question at the end and requests `cache_prompt: true` on `/v1/chat/completions`. It pins requests to slot 0 of a single-slot server. The first question still prefills the document. Later questions can reuse the common prefix. This repository stores no model weights or document contents.
+`llama-server` can keep a prompt prefix in a live slot. The client here sends the same system instruction and document for each question. It adds the changing question at the end and requests `cache_prompt: true` on `/v1/chat/completions`. It pins requests to slot 0 of a single-slot server. The first question still prefills the document. Later questions can reuse the common prefix. This directory stores no Qwen weights or user documents.
 
 ## Historical board server
 

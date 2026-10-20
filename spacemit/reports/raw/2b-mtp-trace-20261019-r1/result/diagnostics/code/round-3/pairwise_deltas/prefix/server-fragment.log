@@ -1,0 +1,60 @@
+22.24.271.259 I srv  server_strea: conv_id= (empty=1)
+22.24.273.217 I srv    operator(): chat format: peg-native
+22.24.274.357 I slot get_availabl: id  0 | task -1 | selected slot by id (0)
+22.24.274.376 I srv  get_availabl: updating prompt cache
+22.24.274.645 I srv   prompt_save:  - saving prompt with length 123, total state size = 20.953 MiB (draft: 0.243 MiB)
+22.24.312.207 I srv          load:  - looking for better prompt, base f_keep = 0.260, sim = 0.421
+22.24.312.260 I srv          load:  - found better prompt with f_keep = 0.613, sim = 1.000
+22.24.322.569 I srv        update:  - cache state: 3 prompts, 245.066 MiB (limits: 8192.000 MiB, 12288 tokens, 31020 est)
+22.24.322.611 I srv        update:    - prompt 0x2ab73261a0:     670 tokens, checkpoints:  3,    86.875 MiB
+22.24.322.619 I srv        update:    - prompt 0x2abcadc610:     135 tokens, checkpoints:  3,    79.199 MiB
+22.24.322.625 I srv        update:    - prompt 0x2ab732a9f0:     123 tokens, checkpoints:  3,    78.992 MiB
+22.24.322.630 I srv  get_availabl: prompt cache update took 48.25 ms
+22.24.323.042 I slot launch_slot_: id  0 | task -1 | sampler chain: logits -> ?penalties -> ?dry -> ?top-n-sigma -> top-k -> ?typical -> top-p -> min-p -> ?xtc -> temp-ext -> dist 
+22.24.323.088 I slot launch_slot_: id  0 | task -1 | sampler params: 
+	repeat_last_n = 64, repeat_penalty = 1.000, frequency_penalty = 0.000, presence_penalty = 0.000
+	dry_multiplier = 0.000, dry_base = 1.750, dry_allowed_length = 2, dry_penalty_last_n = 12288
+	top_k = 40, top_p = 0.950, min_p = 0.050, xtc_probability = 0.000, xtc_threshold = 0.100, typical_p = 1.000, top_n_sigma = -1.000, temp = 0.000
+	mirostat = 0, mirostat_lr = 0.100, mirostat_ent = 5.000, adaptive_target = -1.000, adaptive_decay = 0.900
+22.24.323.106 I slot launch_slot_: id  0 | task 800 | processing task, is_child = 0
+22.24.323.144 I slot   operator(): id  0 | task 800 | new prompt, n_ctx_slot = 12288, n_keep = 0, task.n_tokens = 76
+22.24.323.165 I slot   operator(): id  0 | task 800 | erased invalidated context checkpoint (pos_min = 13, pos_max = 13, n_tokens = 14, n_swa = 0, pos_next = 0, size = 19.294 MiB)
+22.24.323.177 I slot   operator(): id  0 | task 800 | erased invalidated context checkpoint (pos_min = 43, pos_max = 43, n_tokens = 44, n_swa = 0, pos_next = 0, size = 19.353 MiB)
+22.24.323.187 I slot   operator(): id  0 | task 800 | erased invalidated context checkpoint (pos_min = 71, pos_max = 71, n_tokens = 72, n_swa = 0, pos_next = 0, size = 19.408 MiB)
+22.24.340.467 I slot   operator(): id  0 | task 800 | cached n_tokens = 0, memory_seq_rm [0, end)
+22.25.000.332 I slot   operator(): id  0 | task 800 | cached n_tokens = 14, memory_seq_rm [14, end)
+22.25.012.125 I slot create_check: id  0 | task 800 | created context checkpoint 1 of 32 (pos_min = 13, pos_max = 13, n_tokens = 14, size = 19.294 MiB)
+22.26.308.077 I slot   operator(): id  0 | task 800 | cached n_tokens = 44, memory_seq_rm [44, end)
+22.26.319.245 I slot create_check: id  0 | task 800 | created context checkpoint 2 of 32 (pos_min = 43, pos_max = 43, n_tokens = 44, size = 19.353 MiB)
+22.27.463.377 I slot print_timing: id  0 | task 800 | prompt processing, n_tokens =     72, progress = 0.95, t =   3.14 s / 22.93 tokens per second
+22.27.463.410 I slot   operator(): id  0 | task 800 | cached n_tokens = 72, memory_seq_rm [72, end)
+22.27.463.652 I slot init_sampler: id  0 | task 800 | init sampler, took 0.07 ms, tokens: text = 76, total = 76
+22.27.474.662 I slot create_check: id  0 | task 800 | created context checkpoint 3 of 32 (pos_min = 71, pos_max = 71, n_tokens = 72, size = 19.408 MiB)
+22.28.364.340 I slot   operator(): id  0 | task 800 | accepted  2/ 3 draft tokens (restore checkpoint)
+22.28.781.597 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.29.273.581 I slot   operator(): id  0 | task 800 | accepted  1/ 3 draft tokens (restore checkpoint)
+22.29.683.394 I slot   operator(): id  0 | task 800 | accepted  2/ 2 draft tokens
+22.30.183.573 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.30.683.171 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.31.181.047 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.31.680.037 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.32.165.964 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.32.655.415 I slot   operator(): id  0 | task 800 | accepted  1/ 3 draft tokens (restore checkpoint)
+22.33.069.231 I slot   operator(): id  0 | task 800 | accepted  2/ 2 draft tokens
+22.33.563.496 I slot   operator(): id  0 | task 800 | accepted  2/ 3 draft tokens (restore checkpoint)
+22.33.967.533 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.34.467.567 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.34.962.854 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.35.453.022 I slot   operator(): id  0 | task 800 | accepted  2/ 3 draft tokens (restore checkpoint)
+22.35.844.381 I slot   operator(): id  0 | task 800 | accepted  3/ 3 draft tokens
+22.36.308.556 I slot   operator(): id  0 | task 800 | accepted  0/ 3 draft tokens (restore checkpoint)
+22.36.636.740 I slot   operator(): id  0 | task 800 | accepted  1/ 1 draft tokens
+22.36.637.071 I slot print_timing: id  0 | task 800 | prompt eval time =    3530.43 ms /    76 tokens (   46.45 ms per token,    21.53 tokens per second)
+22.36.637.088 I slot print_timing: id  0 | task 800 |        eval time =    8783.26 ms /    49 tokens (  179.25 ms per token,     5.58 tokens per second)
+22.36.637.093 I slot print_timing: id  0 | task 800 |       total time =   12313.69 ms /   125 tokens
+22.36.637.097 I slot print_timing: id  0 | task 800 |    graphs reused =        501
+22.36.637.130 I slot print_timing: id  0 | task 800 | draft acceptance = 0.89744 (   35 accepted /    39 generated), mean len =  3.69
+22.36.637.133 I slot print_timing: id  0 | task 800 |      acc per pos = (1.000, 0.923, 0.769)
+22.36.637.206 I spec common_specu: statistics        draft-mtp: #calls(b,g,a) =   12    537    537, #gen drafts =    537, #acc drafts =   537, #gen tokens =   1611, #acc tokens =  1440, #mean acc len = 3.68, #acc rate/pos = (1.000, 0.916, 0.765), dur(b,g,a) = 0.101, 47166.667, 4.325 ms
+22.36.637.357 I slot      release: id  0 | task 800 | stop processing: n_tokens = 124, truncated = 0
+22.36.637.430 I srv  update_slots: all slots are idle

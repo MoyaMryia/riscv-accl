@@ -51,8 +51,12 @@ def extract_code(answer):
 
 SAFE_BUILTINS = ('range', 'len', 'sorted', 'enumerate', 'zip', 'reversed', 'min', 'max', 'sum',
                  'all', 'any', 'abs', 'int', 'float', 'bool', 'str', 'list', 'tuple', 'dict', 'set',
-                 'isinstance', 'type', 'ValueError', 'TypeError')
-SAFE_ATTRIBUTES = {'append', 'extend', 'sort', 'copy', 'items', 'keys', 'values', 'get', 'join', 'pop', 'count'}
+                 'isinstance', 'type', 'ValueError', 'TypeError', 'hash')
+SAFE_ATTRIBUTES = {'append', 'extend', 'sort', 'copy', 'items', 'keys', 'values', 'get', 'join', 'pop', 'count',
+                   'add', 'fromkeys'}
+# 这些名字可以绕过属性检查或读取运行时状态。它们不在允许的内建集合中，仍显式拒绝。
+FORBIDDEN_NAMES = {'getattr', 'setattr', 'delattr', 'eval', 'exec', 'compile', 'open', 'input',
+                   'vars', 'locals', 'globals', 'dir', 'breakpoint'}
 
 
 def checked_tree(source):
@@ -61,6 +65,8 @@ def checked_tree(source):
         if isinstance(node, (ast.Import, ast.ImportFrom, ast.ClassDef, ast.Global, ast.Nonlocal,
                              ast.With, ast.AsyncWith, ast.AsyncFunctionDef, ast.Await)):
             raise ValueError('unsupported generated construct: ' + type(node).__name__)
+        if isinstance(node, ast.Name) and node.id in FORBIDDEN_NAMES:
+            raise ValueError('prohibited runtime name: ' + node.id)
         if isinstance(node, ast.Name) and node.id.startswith('_') and node.id != '_':
             raise ValueError('private/runtime names prohibited')
         if isinstance(node, (ast.FunctionDef, ast.arg)):

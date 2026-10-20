@@ -1,0 +1,35 @@
+START 2026-10-18T05:48:55Z
+WAIT_LOCK
+LOCK_ACQUIRED
+{"completed": 1, "case": "clamp_values", "arm": "baseline", "route": "direct", "wall_s": 15.823, "quality": false}
+{"completed": 2, "case": "clamp_values", "arm": "routed", "route": "direct", "wall_s": 15.86, "quality": false}
+{"completed": 3, "case": "count_items", "arm": "routed", "route": "direct", "wall_s": 15.036, "quality": false}
+{"completed": 4, "case": "count_items", "arm": "baseline", "route": "direct", "wall_s": 14.889, "quality": false}
+{"completed": 5, "case": "pairwise_deltas", "arm": "baseline", "route": "direct", "wall_s": 14.773, "quality": true}
+{"completed": 6, "case": "pairwise_deltas", "arm": "routed", "route": "direct", "wall_s": 14.545, "quality": true}
+{"completed": 7, "case": "customer_notice", "arm": "routed", "route": "direct", "wall_s": 45.534, "quality": null}
+{"completed": 8, "case": "customer_notice", "arm": "baseline", "route": "direct", "wall_s": 45.419, "quality": null}
+{"completed": 9, "case": "technical_explanation", "arm": "baseline", "route": "direct", "wall_s": 60.443, "quality": null}
+{"completed": 10, "case": "technical_explanation", "arm": "routed", "route": "direct", "wall_s": 60.347, "quality": null}
+{"completed": 11, "case": "handoff_note", "arm": "routed", "route": "direct", "wall_s": 74.768, "quality": null}
+{"completed": 12, "case": "handoff_note", "arm": "baseline", "route": "direct", "wall_s": 74.806, "quality": null}
+{"completed": 13, "case": "qa_route_cost", "arm": "baseline", "route": "direct", "wall_s": 56.22, "quality": null}
+{"completed": 14, "case": "qa_route_cost", "arm": "routed", "route": "direct", "wall_s": 56.449, "quality": null}
+{"completed": 15, "case": "qa_stock", "arm": "routed", "route": "direct", "wall_s": 50.983, "quality": null}
+{"completed": 16, "case": "qa_stock", "arm": "baseline", "route": "direct", "wall_s": 51.122, "quality": null}
+{"completed": 17, "case": "qa_schedule", "arm": "baseline", "route": "direct", "wall_s": 37.614, "quality": null}
+{"completed": 18, "case": "qa_schedule", "arm": "routed", "route": "direct", "wall_s": 37.813, "quality": null}
+Traceback (most recent call last):
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/2b-router-e2e-20261018-054840-r1/tools/router_e2e.py", line 250, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/2b-router-e2e-20261018-054840-r1/tools/router_e2e.py", line 243, in main
+    records = run_matrix(args, cases, chat, assessor, direct_url, gateway_url, processes)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/2b-router-e2e-20261018-054840-r1/tools/router_e2e.py", line 140, in run_matrix
+    metrics = base.validate_response(response, prompt_count, 'mtp' if route == 'prefix' else 'direct')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moyamryia/Projects/riscv-accl-bench-2026-09-27/2b-router-e2e-20261018-054840-r1/tools/diagnostic.py", line 130, in validate_response
+    raise ValueError('completion did not stop naturally')
+ValueError: completion did not stop naturally
+END 2026-10-18T06:12:18Z

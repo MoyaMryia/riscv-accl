@@ -1,0 +1,131 @@
+{
+  "case_id": "pairwise_deltas",
+  "category": "code",
+  "arm": "manual_prefix",
+  "route": "prefix",
+  "classify_ms": 0.0,
+  "response": {
+    "answer": "```python\ndef pairwise_deltas(values):\n    if len(values) < 2:\n        return []\n    return [values[i] - values[i-1] for i in range(1, len(values))]\n```",
+    "ttft_s": 3.8,
+    "wall_s": 12.574,
+    "finish_reason": "stop",
+    "answer_sha256": "38a62dd7a54e14c7db7eb22243cb03f8fdb37a69e1d4b22ff3f0758a9b50da66",
+    "usage": {
+      "completion_tokens": 49,
+      "prompt_tokens": 76,
+      "total_tokens": 125,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 76,
+      "prompt_ms": 3501.303,
+      "prompt_per_token_ms": 46.069776315789476,
+      "prompt_per_second": 21.706204804325704,
+      "predicted_n": 49,
+      "predicted_ms": 8772.139,
+      "predicted_per_token_ms": 179.02324489795916,
+      "predicted_per_second": 5.585866799420302,
+      "draft_n": 39,
+      "draft_n_accepted": 35
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "server": "BaseHTTP/0.6 Python/3.12.3",
+      "date": "Sun, 18 Oct 2026 07:17:34 GMT",
+      "content-type": "text/event-stream",
+      "x-decode-route": "prefix",
+      "x-route-reason": "manual",
+      "x-classify-ms": "0.000000",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 76,
+    "completion_tokens": 49,
+    "draft_n": 39,
+    "draft_n_accepted": 35
+  },
+  "quality": {
+    "passed": true,
+    "result": {
+      "passed": true,
+      "checks": 14,
+      "detail": "固定 gold 检查"
+    }
+  },
+  "resources_before": {
+    "direct": {
+      "pid": 76056,
+      "server_vm_hwm_kib": 2710528,
+      "memavailable_kib": 12425112,
+      "smaps_kib": {
+        "Rss": 2710924,
+        "Pss": 2168643,
+        "Private_Clean": 144,
+        "Private_Dirty": 1628448
+      }
+    },
+    "prefix": {
+      "pid": 76072,
+      "server_vm_hwm_kib": 2705804,
+      "memavailable_kib": 12425372,
+      "smaps_kib": {
+        "Rss": 2706536,
+        "Pss": 2164279,
+        "Private_Clean": 276,
+        "Private_Dirty": 1623948
+      }
+    },
+    "gateway": {
+      "pid": 76088,
+      "server_vm_hwm_kib": 22600,
+      "memavailable_kib": 12425372,
+      "smaps_kib": {
+        "Rss": 22796,
+        "Pss": 14991,
+        "Private_Clean": 4,
+        "Private_Dirty": 12964
+      }
+    }
+  },
+  "resources_after": {
+    "direct": {
+      "pid": 76056,
+      "server_vm_hwm_kib": 2710528,
+      "memavailable_kib": 12345000,
+      "smaps_kib": {
+        "Rss": 2710924,
+        "Pss": 2168643,
+        "Private_Clean": 144,
+        "Private_Dirty": 1628448
+      }
+    },
+    "prefix": {
+      "pid": 76072,
+      "server_vm_hwm_kib": 2786828,
+      "memavailable_kib": 12345000,
+      "smaps_kib": {
+        "Rss": 2787412,
+        "Pss": 2245155,
+        "Private_Clean": 276,
+        "Private_Dirty": 1704824
+      }
+    },
+    "gateway": {
+      "pid": 76088,
+      "server_vm_hwm_kib": 22600,
+      "memavailable_kib": 12345000,
+      "smaps_kib": {
+        "Rss": 22796,
+        "Pss": 14991,
+        "Private_Clean": 4,
+        "Private_Dirty": 12964
+      }
+    }
+  }
+}

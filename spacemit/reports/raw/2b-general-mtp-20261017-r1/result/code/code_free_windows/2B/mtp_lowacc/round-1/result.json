@@ -1,0 +1,59 @@
+{
+  "model": "2B",
+  "arm": "mtp_lowacc",
+  "round": 1,
+  "startup_s": 8.238402660936117,
+  "resources_before_request": {
+    "server_vm_hwm_kib": 2532472,
+    "memavailable_kib": 14252532
+  },
+  "resources_after_request": {
+    "server_vm_hwm_kib": 2624888,
+    "memavailable_kib": 14154876
+  },
+  "response": {
+    "answer": "```python\ndef merge_intervals(busy):\n    \"\"\"\n    Merge overlapping or touching intervals from a list of half-open intervals.\n    \n    Parameters:\n    - busy: list of tuples (a, b) representing half-open intervals [a, b)\n    \n    Returns:\n    - list of sorted tuples representing merged intervals\n    \n    Raises:\n    - ValueError: if any interval is reversed (start > end)\n    \"\"\"\n    if not busy:\n        return []\n    \n    # Validate all intervals and sort by start time\n    valid = []\n    for a, b in busy:\n        if a > b:\n            raise ValueError(\"Intervals must be non-reversed\")\n        valid.append((a, b))\n    \n    # Sort by start time\n    valid.sort(key=lambda x: x[0])\n    \n    merged = []\n    i = 0\n    n = len(valid)\n    \n    while i < n:\n        current = valid[i]\n        merged.append(current)\n        \n        i += 1\n        j = i + 1\n        \n        while j < n:\n            next_interval = valid[j]\n            \n            # Check if intervals overlap or touch\n            if next_interval[0] <= current[1]:\n                # Merge intervals\n                current = (current[0], max(current[1], next_interval[1]))\n                j += 1\n            else:\n                break\n        \n        i = j\n    \n    return merged\n\ndef free_windows(busy, start, end):\n    \"\"\"\n    Find maximal free intervals within a query window [start, end).\n    \n    Parameters:\n    - busy: list of tuples (a, b) representing busy intervals\n    - start: float, start of the query window\n    - end: float, end of the query window\n    \n    Returns:\n    - list of tuples representing maximal free intervals\n    \n    Raises:\n    - ValueError: if end < start\n    \"\"\"\n    if end < start:\n        raise ValueError(\"Query window must have start <= end\")\n    \n    # Filter busy intervals to those within the query window\n    # We only care about intervals that overlap with [start, end)\n    # An interval [a, b) overlaps if a < end and b > start\n    clipped = []\n    for a, b in busy:\n        if a < end and b > start:\n            clipped.append((a, b))\n    \n    # Sort by start time\n    clipped.sort(key=lambda x: x[0])\n    \n    # Merge overlapping intervals\n    merged = []\n    i = 0\n    n = len(clipped)\n    \n    while i < n:\n        current = clipped[i]\n        merged.append(current)\n        \n        i += 1\n        j = i + 1\n        \n        while j < n:\n            next_interval = clipped[j]\n            \n            # Check if intervals overlap\n            if next_interval[0] <= current[1]:\n                # Merge intervals\n                current = (current[0], max(current[1], next_interval[1]))\n                j += 1\n            else:\n                break\n        \n        i = j\n    \n    # Convert to half-open intervals for output\n    result = []\n    for a, b in merged:\n        result.append((a, b))\n    \n    return result\n```",
+    "ttft_s": 7.969,
+    "wall_s": 151.382,
+    "finish_reason": "stop",
+    "answer_sha256": "5cb1ca5d49d3fe06c784508c3de60f7f6e6ffccd3b7d441e2a0257a05abca677",
+    "usage": {
+      "completion_tokens": 722,
+      "prompt_tokens": 185,
+      "total_tokens": 907,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 185,
+      "prompt_ms": 7807.596,
+      "prompt_per_token_ms": 42.20322162162162,
+      "prompt_per_second": 23.69487355646988,
+      "predicted_n": 722,
+      "predicted_ms": 143410.528,
+      "predicted_per_token_ms": 198.62954016620498,
+      "predicted_per_second": 5.03449788567824,
+      "draft_n": 612,
+      "draft_n_accepted": 517
+    },
+    "server_slot": 0,
+    "reasoning_text": ""
+  },
+  "metrics": {
+    "prompt_tokens": 185,
+    "completion_tokens": 722,
+    "draft_n": 612,
+    "draft_n_accepted": 517
+  },
+  "quality": {
+    "passed": false,
+    "result": {
+      "pass": false,
+      "reason": "AssertionError: functional output mismatch at check 2",
+      "exit": 1
+    }
+  },
+  "fallback_events": []
+}

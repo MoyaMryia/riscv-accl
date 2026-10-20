@@ -1,0 +1,67 @@
+{
+  "model": "2B",
+  "arm": "direct",
+  "round": 1,
+  "startup_s": 8.182715351926163,
+  "resources_before_request": {
+    "server_vm_hwm_kib": 2483152,
+    "memavailable_kib": 14300580
+  },
+  "resources_after_request": {
+    "server_vm_hwm_kib": 2548560,
+    "memavailable_kib": 14235180
+  },
+  "response": {
+    "answer": "**交班与接班说明**\n\n**一、核心核对事项**\n本次交接需重点核对三类核心数据：未确认告警、已开启工单及离线设备状态。\n\n**二、差异记录方式**\n1. **资产编号与批次号**：所有差异项必须明确列出资产编号或批次号，确保溯源准确。\n2. **当前状态**：需记录设备当前运行状态，如离线、故障或待处理。\n3. **责任人与动作**：明确差异产生的责任归属及后续处理步骤。\n4. **口头说明限制**：口头交代仅作为辅助，所有差异必须写入台账，严禁以口代账。\n\n**三、未结工单口径**\n1. **定义范围**：仅统计“现场修复”和“远程恢复”类工单。\n2. **待备件处理**：待备件工单虽保持开启状态，但**不计入**已结数量及费用计算。\n3. **跨周规则**：跨周未结工单保留在开启清单中，不重复计入本周已结费用。\n4. **费用归属**：费用报表按工单**结案日期**归属，不按创建日期归属。\n\n**四、完整性检查**\n每次数据导入后，需核对导入条数、拒收条数和重复条数。\n- **计算公式**：导入总条数 = 三类条数之和。\n- **异常处理**：若拒收记录存在，须写入隔离清单，修正后重新提交。\n- **统计规则**：未经确认的隔离记录不计入设备状态汇总。\n\n请接班人复核上述数据，确认无误后签名。如有遗留问题，请及时反馈，避免影响后续工作。",
+    "ttft_s": 16.561,
+    "wall_s": 100.444,
+    "finish_reason": "stop",
+    "answer_sha256": "219cdbb663e93a5a47ef7dd9188ca3f984e2dcff7200358b2a51c0949def8188",
+    "usage": {
+      "completion_tokens": 369,
+      "prompt_tokens": 427,
+      "total_tokens": 796,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 427,
+      "prompt_ms": 16396.683,
+      "prompt_per_token_ms": 38.39972599531616,
+      "prompt_per_second": 26.041852489311406,
+      "predicted_n": 369,
+      "predicted_ms": 83881.074,
+      "predicted_per_token_ms": 227.31998373983737,
+      "predicted_per_second": 4.399085304987869
+    },
+    "server_slot": 0,
+    "reasoning_text": ""
+  },
+  "metrics": {
+    "prompt_tokens": 427,
+    "completion_tokens": 369,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": null,
+    "result": {
+      "required_facts": [
+        "交班核对未确认告警、开启工单、离线设备和待同步记录。",
+        "接班人复核数量并签名；差异记录编号或批次号、状态、责任人和下一步动作。",
+        "本周 25 张工单中 16 张现场修复、5 张远程恢复、4 张待备件。",
+        "已结工单为 21 张；待备件工单保持开启，不计入已结费用。"
+      ],
+      "required_citations": [
+        "L08",
+        "L11",
+        "L19",
+        "L24"
+      ],
+      "observed_citations": []
+    }
+  },
+  "fallback_events": []
+}

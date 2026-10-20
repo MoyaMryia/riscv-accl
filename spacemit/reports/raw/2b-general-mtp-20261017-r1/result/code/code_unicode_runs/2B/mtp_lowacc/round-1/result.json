@@ -1,0 +1,59 @@
+{
+  "model": "2B",
+  "arm": "mtp_lowacc",
+  "round": 1,
+  "startup_s": 8.201108620967716,
+  "resources_before_request": {
+    "server_vm_hwm_kib": 2532560,
+    "memavailable_kib": 14252992
+  },
+  "resources_after_request": {
+    "server_vm_hwm_kib": 2624848,
+    "memavailable_kib": 14160348
+  },
+  "response": {
+    "answer": "```python\ndef encode_runs(text):\n    \"\"\"\n    Encode a string into a list of (character, count) tuples representing consecutive runs.\n    - Empty string returns [].\n    - Non-empty string returns a list of tuples.\n    - Each tuple contains a single character and its run count.\n    - Malformed items (e.g., non-list/tuple, non-string, non-positive int) raise ValueError.\n    - Does not mutate the input string.\n    \"\"\"\n    if not isinstance(text, str):\n        raise ValueError(\"Input must be a string.\")\n    \n    if len(text) == 0:\n        return []\n    \n    result = []\n    current_char = text[0]\n    count = 1\n    \n    for i in range(1, len(text)):\n        if text[i] == current_char:\n            count += 1\n        else:\n            result.append((current_char, count))\n            current_char = text[i]\n            count = 1\n    \n    # Append the final run\n    result.append((current_char, count))\n    \n    return result\n\n\ndef decode_runs(runs):\n    \"\"\"\n    Decode a list of (character, count) tuples back into a string.\n    - Empty list returns \"\".\n    - Raises ValueError if any item is malformed.\n    - Does not mutate the input list.\n    \"\"\"\n    if not isinstance(runs, list):\n        raise ValueError(\"Input must be a list.\")\n    \n    if len(runs) == 0:\n        return \"\"\n    \n    result = []\n    for item in runs:\n        # Check if item is a tuple\n        if not isinstance(item, tuple):\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        # Check if item has exactly two elements\n        if len(item) != 2:\n            raise ValueError(\"Every item must be a two-element list or tuple.\")\n        \n        # Check if first element is a character (string)\n        if not isinstance(item[0], str):\n            raise ValueError(\"Character must be a one-character string.\")\n        \n        # Check if second element is a positive integer\n        if not isinstance(item[1], int) or item[1] <= 0:\n            raise ValueError(\"Count must be a positive int.\")\n        \n        # Append character and count to result\n        result.append(item[0])\n        result.extend([item[1] * c for c in item[0]])\n    \n    return \"\".join(result)\n```",
+    "ttft_s": 7.661,
+    "wall_s": 115.56,
+    "finish_reason": "stop",
+    "answer_sha256": "a3092977ab6eca4af5f4b6d465dd229dfefa583396016dc9cda4550258810d40",
+    "usage": {
+      "completion_tokens": 543,
+      "prompt_tokens": 177,
+      "total_tokens": 720,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 177,
+      "prompt_ms": 7496.163,
+      "prompt_per_token_ms": 42.35120338983051,
+      "prompt_per_second": 23.612079940097352,
+      "predicted_n": 543,
+      "predicted_ms": 107895.888,
+      "predicted_per_token_ms": 198.70329281767957,
+      "predicted_per_second": 5.03262923235777,
+      "draft_n": 459,
+      "draft_n_accepted": 390
+    },
+    "server_slot": 0,
+    "reasoning_text": ""
+  },
+  "metrics": {
+    "prompt_tokens": 177,
+    "completion_tokens": 543,
+    "draft_n": 459,
+    "draft_n_accepted": 390
+  },
+  "quality": {
+    "passed": false,
+    "result": {
+      "pass": false,
+      "reason": "AssertionError: invalid input not rejected at check 6",
+      "exit": 1
+    }
+  },
+  "fallback_events": []
+}

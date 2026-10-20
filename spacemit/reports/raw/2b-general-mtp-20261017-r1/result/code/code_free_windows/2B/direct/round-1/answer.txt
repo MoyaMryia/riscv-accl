@@ -1,0 +1,94 @@
+```python
+def merge_intervals(busy):
+    """
+    Merge overlapping or touching intervals from a list of half-open intervals.
+    
+    Parameters:
+    - busy: list of tuples (a, b) representing half-open intervals [a, b)
+    
+    Returns:
+    - list of sorted tuples representing merged intervals
+    
+    Raises:
+    - ValueError if any interval is reversed (start > end)
+    """
+    if not busy:
+        return []
+    
+    # Validate all intervals and sort by start time
+    valid = []
+    for a, b in busy:
+        if a > b:
+            raise ValueError("Intervals must be non-reversed: (start, end)")
+        valid.append((a, b))
+    
+    # Sort by start time
+    valid.sort(key=lambda x: x[0])
+    
+    merged = []
+    current = valid[0]
+    
+    for i in range(1, len(valid)):
+        next_interval = valid[i]
+        start, end = next_interval
+        
+        if start < current[1]:
+            # Overlapping or touching, merge
+            current = (current[0], max(current[1], end))
+        else:
+            # No overlap, add current and start new
+            merged.append(current)
+            current = (start, end)
+    
+    merged.append(current)
+    return merged
+
+def free_windows(busy, start, end):
+    """
+    Find maximal free intervals within [start, end) given busy intervals.
+    
+    Parameters:
+    - busy: list of tuples (a, b) representing half-open intervals [a, b)
+    - start: float, start of query window
+    - end: float, end of query window
+    
+    Returns:
+    - list of tuples representing maximal free intervals within [start, end)
+    
+    Raises:
+    - ValueError if end < start
+    """
+    if end < start:
+        raise ValueError("Query window must have start <= end")
+    
+    # Filter busy intervals to those within the query window
+    clipped = []
+    for a, b in busy:
+        if a < start or b > end:
+            continue
+        clipped.append((a, b))
+    
+    if not clipped:
+        return []
+    
+    # Sort by start time
+    clipped.sort(key=lambda x: x[0])
+    
+    free = []
+    current = clipped[0]
+    
+    for i in range(1, len(clipped)):
+        next_interval = clipped[i]
+        start, end = next_interval
+        
+        if start < current[1]:
+            # Overlapping, merge
+            current = (current[0], max(current[1], end))
+        else:
+            # No overlap, add current and start new
+            free.append(current)
+            current = (start, end)
+    
+    free.append(current)
+    return free
+```

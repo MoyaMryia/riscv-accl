@@ -1,0 +1,26 @@
+{
+  "model": "local",
+  "messages": [
+    {
+      "role": "system",
+      "content": "请严格依据用户提供的任务和资料作答。"
+    },
+    {
+      "role": "user",
+      "content": "请用自然中文向新同事解释缓存过期规则，说明生效条件、时间计算、失败行为和一个具体例子。（约 200~350 汉字。）\n\n资料：\n缓存服务为每条记录保存写入成功时间。记录从写入成功时刻起有效 15 分钟，到期后读取请求会从主存储重新取得数据。读取主存储失败时，服务返回错误，不把旧记录标记为新记录，也不延长旧记录的有效期。比如一条记录在 14:10 写入成功，到 14:25 到期；14:24 的读取仍在有效期内，14:25 的读取触发重新取得。更新操作只有在主存储确认写入成功后才重置计时。排查时应同时查看写入确认时间和读取错误码，不能只看客户端发起请求的时间。"
+    }
+  ],
+  "cache_prompt": false,
+  "id_slot": 0,
+  "stream": true,
+  "temperature": 0,
+  "seed": 42,
+  "max_tokens": 2048,
+  "chat_template_kwargs": {
+    "enable_thinking": false
+  },
+  "stream_options": {
+    "include_usage": true
+  },
+  "verbose": true
+}

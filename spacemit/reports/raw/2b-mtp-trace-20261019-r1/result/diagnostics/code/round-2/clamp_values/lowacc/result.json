@@ -1,0 +1,291 @@
+{
+  "case_id": "clamp_values",
+  "category": "code",
+  "round": 2,
+  "arm": "lowacc",
+  "response": {
+    "answer": "```python\ndef clamp_values(values, lower, upper):\n    if lower > upper:\n        raise ValueError(\"lower must be less than or equal to upper\")\n    return [v if lower <= v <= upper for v in values]\n```",
+    "ttft_s": 3.948,
+    "wall_s": 14.103,
+    "finish_reason": "stop",
+    "answer_sha256": "5fe68757cedd3a9d3e8b3b1e5c2180bed9c6756290c8e96f21d3bc768142ab8c",
+    "usage": {
+      "completion_tokens": 53,
+      "prompt_tokens": 83,
+      "total_tokens": 136,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 83,
+      "prompt_ms": 3766.788,
+      "prompt_per_token_ms": 45.38298795180723,
+      "prompt_per_second": 22.034688440124587,
+      "predicted_n": 53,
+      "predicted_ms": 10153.232,
+      "predicted_per_token_ms": 191.5704150943396,
+      "predicted_per_second": 5.220012701374301,
+      "draft_n": 42,
+      "draft_n_accepted": 38
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "transfer-encoding": "chunked",
+      "access-control-allow-origin": "",
+      "x-accel-buffering": "no",
+      "server": "llama.cpp",
+      "connection": "close",
+      "content-type": "text/event-stream"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 83,
+    "completion_tokens": 53,
+    "draft_n": 42,
+    "draft_n_accepted": 38
+  },
+  "quality": {
+    "passed": false,
+    "result": {
+      "passed": false,
+      "checks": 0,
+      "detail": "SyntaxError"
+    }
+  },
+  "verification": {
+    "original_steps": 14,
+    "original_proposed": 42,
+    "original_first_accepted": 30,
+    "original_first_acceptance": 0.7142857142857143,
+    "original_restores": 8,
+    "replay_steps": 8,
+    "replay_accepted": 20,
+    "replay_restores": 0,
+    "original_restore_fraction": 0.5714285714285714,
+    "accept_histogram": {
+      "2": 4,
+      "3": 6,
+      "1": 4
+    },
+    "replay_gap_ms": [
+      410.3029999999562,
+      412.70899999991525,
+      414.50599999993574,
+      418.43800000008196,
+      404.81200000003446,
+      415.4420000000391,
+      421.1700000000419,
+      416.9639999999199
+    ],
+    "events": [
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.51.476.807 I slot   operator(): id  0 | task 461 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.51.887.110 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.52.366.212 I slot   operator(): id  0 | task 461 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.52.778.921 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.53.271.336 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.53.750.693 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.54.250.323 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.54.718.120 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.55.220.055 I slot   operator(): id  0 | task 461 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.55.634.561 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.56.126.900 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.56.618.814 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.57.101.950 I slot   operator(): id  0 | task 461 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "12.57.520.388 I slot   operator(): id  0 | task 461 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 2,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.58.009.571 I slot   operator(): id  0 | task 461 | accepted  2/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 3,
+        "drafted": 3,
+        "restore_checkpoint": false,
+        "log_line": "12.58.414.383 I slot   operator(): id  0 | task 461 | accepted  3/ 3 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.58.898.649 I slot   operator(): id  0 | task 461 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "12.59.314.091 I slot   operator(): id  0 | task 461 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "12.59.804.504 I slot   operator(): id  0 | task 461 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "13.00.225.674 I slot   operator(): id  0 | task 461 | accepted  2/ 2 draft tokens"
+      },
+      {
+        "accepted": 1,
+        "drafted": 3,
+        "restore_checkpoint": true,
+        "log_line": "13.00.714.807 I slot   operator(): id  0 | task 461 | accepted  1/ 3 draft tokens (restore checkpoint)"
+      },
+      {
+        "accepted": 2,
+        "drafted": 2,
+        "restore_checkpoint": false,
+        "log_line": "13.01.131.771 I slot   operator(): id  0 | task 461 | accepted  2/ 2 draft tokens"
+      }
+    ]
+  },
+  "draft_duration_delta_ms": [
+    0.006999999999999999,
+    1210.5570000000007,
+    0.11500000000000021
+  ],
+  "fallback_events": [],
+  "coverage": {
+    "retokenized_tokens": 52,
+    "prefix_tokens": 50,
+    "prefix_fraction": 0.9615384615384616,
+    "token_ids": [
+      71093,
+      12305,
+      198,
+      727,
+      40523,
+      8873,
+      19490,
+      11,
+      4570,
+      11,
+      8156,
+      1590,
+      198,
+      262,
+      413,
+      4570,
+      835,
+      8156,
+      25,
+      198,
+      285,
+      4673,
+      14953,
+      437,
+      14344,
+      1902,
+      381,
+      2599,
+      1056,
+      466,
+      5951,
+      310,
+      8156,
+      871,
+      198,
+      262,
+      460,
+      498,
+      85,
+      413,
+      4570,
+      2564,
+      343,
+      2564,
+      8156,
+      364,
+      343,
+      303,
+      2663,
+      60,
+      198,
+      71093
+    ]
+  },
+  "resources_before": {
+    "server_vm_hwm_kib": 2960220,
+    "memavailable_kib": 10109260
+  },
+  "resources_after": {
+    "server_vm_hwm_kib": 2960348,
+    "memavailable_kib": 10130164
+  }
+}

@@ -106,7 +106,7 @@ Inner functions trust the checked values. An inner function does not check the
 same value again.
 Define a limit in one place. Other code reads that definition.
 Do not keep a check that only a test can reach.
-Fail with a clear error. Do not continue after an internal error.
+Fail with a clear error. Stop the affected operation after an internal error.
 Hash an artifact only when a requirement or a recorded failure needs the hash.
 Do not seal and re-verify every intermediate result.
 Do not write a limitation into a machine-readable artifact. Put the scope in the
@@ -137,6 +137,74 @@ Do not use `--no-verify`. The lint step reads the staged content. If a checked
 path has unstaged or untracked changes, the hook stops. Stage, restore, or move
 those changes, and then commit. CI runs the stages of the same script. Define
 each check command only in `tools/ci-local.sh`.
+
+## Test batches and failure isolation
+
+Apply this policy to new runs.
+Keep frozen protocols and historical records unchanged.
+
+A single failed request must not stop other independent tests.
+This rule covers functional failures, failed assertions, timeouts, worker crashes,
+and output truncation.
+Stop the affected attempt.
+Preserve its evidence.
+Continue the remaining independent tests.
+
+Let slow requests finish within their deadlines.
+Low draft acceptance must not terminate a request.
+Check different answers against the independent quality reference.
+
+The internal-error rule applies to the affected worker.
+A separate controller must retain the failed worker status.
+It must continue independent tests.
+Do not catch an internal error inside a worker and continue that worker.
+
+Before a batch starts, freeze the test plan, configuration, deadlines, and retry
+counts.
+Treat every planned test as required.
+Keep each run and retry in a new directory.
+Never overwrite active or completed records.
+Do not retry a request unless the frozen protocol permits it.
+Report retry attempts separately from the original samples.
+
+Save the request, available output, exit status, failure reason, and logs after
+each attempt.
+Update progress after failed attempts as well as successful attempts.
+Keep failed and incomplete cases in the planned matrix.
+
+Do not remove failed cases from the plan.
+Do not replace them with easier cases.
+Do not mark them as passed.
+If a worker crashes, isolate it from the controller.
+Restart only the affected backend when the protocol permits safe recovery.
+
+Pause the whole batch only when evidence shows that every remaining test depends
+on the same failed resource.
+Examples include full storage, an incorrect shared model, or a controller fault
+that prevents safe execution.
+Record the evidence, affected tests, and the condition for the batch to resume.
+Continue tests that do not depend on that resource.
+
+Obey an explicit user stop or pause.
+An SSH disconnect must not stop remote tests.
+Run persistent remote tests in tmux.
+
+Assign each planned test one final status.
+At batch end, report passed, failed, incomplete, blocked, and unattempted counts.
+Check that these counts equal the planned total.
+A batch with failed or incomplete tests must return a nonzero status.
+Blocked or unattempted tests must also prevent batch success.
+
+Exclude incomplete pairs from speed averages.
+Report their counts next to those averages.
+Show quality failures beside timing results.
+Do not call incorrect answers useful speedups.
+
+Inject a failed request before a new long batch.
+Verify that the next independent test runs.
+Cover truncation, timeout, worker crash, and failed assertion in controller tests.
+Verify that each failure keeps the final batch gate false.
+Compare completed results with an independent reference.
 
 ## Review
 

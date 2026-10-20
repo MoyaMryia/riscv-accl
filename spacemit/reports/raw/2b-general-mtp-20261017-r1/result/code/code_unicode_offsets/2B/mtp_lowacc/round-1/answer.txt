@@ -1,0 +1,130 @@
+```python
+def run_spans(text):
+    """
+    Return a list of (character, start, end) tuples for maximal consecutive runs of Unicode code points.
+    Uses zero-based half-open offsets.
+    """
+    if not isinstance(text, str):
+        raise ValueError("Input must be a string")
+    
+    if not text:
+        return []
+    
+    result = []
+    current_char = None
+    current_start = 0
+    current_end = 0
+    
+    for i, c in enumerate(text):
+        if c == current_char:
+            current_end = i + 1
+        else:
+            if current_char is not None:
+                result.append((current_char, current_start, current_end))
+            current_char = c
+            current_start = i
+            current_end = i + 1
+    
+    if current_char is not None:
+        result.append((current_char, current_start, current_end))
+    
+    return result
+
+
+def expand_spans(spans):
+    """
+    Reconstructs the original text from a list of spans.
+    Raises ValueError if any span is malformed.
+    """
+    if not spans:
+        return ""
+    
+    # Validate each span
+    for span in spans:
+        if not isinstance(span, (list, tuple)):
+            raise ValueError("Every span must be a three-element list or tuple")
+        if len(span) != 3:
+            raise ValueError("Each span must have exactly 3 elements")
+        char, start, end = span
+        
+        # Check character type
+        if not isinstance(char, str) or len(char) != 1:
+            raise ValueError("Each span must be a one-character string")
+        
+        # Check integer types
+        if not isinstance(start, int) or not isinstance(end, int):
+            raise ValueError("Start and end must be integers")
+        
+        # Check boolean exclusion
+        if isinstance(start, bool) or isinstance(end, bool):
+            raise ValueError("Start and end must be integers, not bool")
+        
+        # Check range validity
+        if start < 0 or end < 0:
+            raise ValueError("Start and end must be non-negative")
+        
+        if start >= end:
+            raise ValueError("Start must be less than end")
+        
+        # Check no gaps or overlaps
+        if start != 0:
+            if spans[-1] != None:
+                if spans[-1][1] == start - 1:
+                    # Overlap at the boundary
+                    raise ValueError("Spans must not overlap")
+                elif spans[-1][1] < start:
+                    # Gap
+                    raise ValueError("Spans must not have gaps")
+        else:
+            # First span check
+            if spans[0][1] != 0:
+                raise ValueError("First span must start at 0")
+            # Subsequent spans check
+            if spans[0][1] != 0:
+                if spans[1][1] == spans[0][1] - 1:
+                    raise ValueError("Spans must not overlap")
+                elif spans[1][1] < spans[0][1]:
+                    raise ValueError("Spans must not have gaps")
+    
+    # Reconstruct text
+    result = []
+    current_start = 0
+    current_end = 0
+    
+    for span in spans:
+        char, start, end = span
+        
+        # Validate range again after reconstruction
+        if start < 0 or end < 0:
+            raise ValueError("Start and end must be non-negative")
+        
+        if start >= end:
+            raise ValueError("Start must be less than end")
+        
+        # Check no gaps or overlaps
+        if start != 0:
+            if spans[-1] != None:
+                if spans[-1][1] == start - 1:
+                    raise ValueError("Spans must not overlap")
+                elif spans[-1][1] < start:
+                    raise ValueError("Spans must not have gaps")
+        else:
+            # First span check
+            if spans[0][1] != 0:
+                raise ValueError("First span must start at 0")
+            # Subsequent spans check
+            if spans[0][1] != 0:
+                if spans[1][1] == spans[0][1] - 1:
+                    raise ValueError("Spans must not overlap")
+                elif spans[1][1] < spans[0][1]:
+                    raise ValueError("Spans must not have gaps")
+        
+        # Append character
+        result.append(char)
+        
+        # Update current span
+        current_start = start
+        current_end = end
+    
+    return "".join(result)
+```

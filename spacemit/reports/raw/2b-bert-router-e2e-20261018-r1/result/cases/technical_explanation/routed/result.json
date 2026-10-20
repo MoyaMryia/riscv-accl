@@ -1,0 +1,154 @@
+{
+  "case_id": "technical_explanation",
+  "category": "chinese",
+  "arm": "routed",
+  "route": "direct",
+  "classify_ms": 298.30108,
+  "response": {
+    "answer": "各位同事，关于缓存过期规则，核心是“写入成功即生效，读取失败才重试”。\n\n**生效条件**：记录写入成功时立即启动计时，不依赖客户端请求时间。\n\n**时间计算**：有效期为 15 分钟。例如 14:10 写入，14:25 到期；14:24 读取仍在有效期内，14:25 读取则触发主存储重新获取。\n\n**失败行为**：若读取时主存储不可用，直接返回错误，**不会**延长有效期，也不会将旧记录标记为新记录。\n\n**具体例子**：假设 14:10 写入 A 记录，14:25 到期。14:24 读取正常，14:25 读取失败。此时系统会返回错误，但 A 记录仍保留在缓存中，不会因本次失败而失效。\n\n**排查提示**：遇到此类问题，请同时查看写入确认时间和读取错误码，切勿仅凭客户端请求时间判断。",
+    "ttft_s": 8.54,
+    "wall_s": 59.343,
+    "finish_reason": "stop",
+    "answer_sha256": "a461bedd1046bcdbcd804913596651acd9560d71259bc200b02d353229d6c09b",
+    "usage": {
+      "completion_tokens": 226,
+      "prompt_tokens": 200,
+      "total_tokens": 426,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      }
+    },
+    "timings": {
+      "cache_n": 0,
+      "prompt_n": 200,
+      "prompt_ms": 7935.768,
+      "prompt_per_token_ms": 39.67884,
+      "prompt_per_second": 25.20234966546401,
+      "predicted_n": 226,
+      "predicted_ms": 50800.735,
+      "predicted_per_token_ms": 224.7820132743363,
+      "predicted_per_second": 4.448754530815352
+    },
+    "server_slot": 0,
+    "reasoning_text": "",
+    "http_headers": {
+      "server": "BaseHTTP/0.6 Python/3.12.3",
+      "date": "Sun, 18 Oct 2026 11:57:53 GMT",
+      "content-type": "text/event-stream",
+      "x-decode-route": "direct",
+      "x-classifier": "bert",
+      "x-route-reason": "class_map",
+      "x-classify-ms": "298.301080",
+      "connection": "close",
+      "transfer-encoding": "chunked"
+    }
+  },
+  "metrics": {
+    "prompt_tokens": 200,
+    "completion_tokens": 226,
+    "draft_n": 0,
+    "draft_n_accepted": 0
+  },
+  "quality": {
+    "passed": null,
+    "facts": [
+      "缓存有效期为 15 分钟",
+      "从写入成功时间开始计算",
+      "读取失败不会刷新有效期",
+      "14:10 写入的数据在 14:25 到期"
+    ],
+    "citations": []
+  },
+  "resources_before": {
+    "direct": {
+      "pid": 76636,
+      "server_vm_hwm_kib": 2877236,
+      "memavailable_kib": 12141800,
+      "smaps_kib": {
+        "Rss": 2877768,
+        "Pss": 2333805,
+        "Private_Clean": 188,
+        "Private_Dirty": 1795132
+      }
+    },
+    "prefix": {
+      "pid": 76655,
+      "server_vm_hwm_kib": 2786224,
+      "memavailable_kib": 12141800,
+      "smaps_kib": {
+        "Rss": 2787236,
+        "Pss": 2243311,
+        "Private_Clean": 24,
+        "Private_Dirty": 1704824
+      }
+    },
+    "encoder": {
+      "pid": 76671,
+      "server_vm_hwm_kib": 79336,
+      "memavailable_kib": 12141800,
+      "smaps_kib": {
+        "Rss": 80228,
+        "Pss": 71355,
+        "Private_Clean": 34048,
+        "Private_Dirty": 33884
+      }
+    },
+    "gateway": {
+      "pid": 76687,
+      "server_vm_hwm_kib": 22528,
+      "memavailable_kib": 12141800,
+      "smaps_kib": {
+        "Rss": 22772,
+        "Pss": 14869,
+        "Private_Clean": 8,
+        "Private_Dirty": 12820
+      }
+    }
+  },
+  "resources_after": {
+    "direct": {
+      "pid": 76636,
+      "server_vm_hwm_kib": 2961204,
+      "memavailable_kib": 12057852,
+      "smaps_kib": {
+        "Rss": 2961808,
+        "Pss": 2417845,
+        "Private_Clean": 188,
+        "Private_Dirty": 1879172
+      }
+    },
+    "prefix": {
+      "pid": 76655,
+      "server_vm_hwm_kib": 2786224,
+      "memavailable_kib": 12057852,
+      "smaps_kib": {
+        "Rss": 2787236,
+        "Pss": 2243311,
+        "Private_Clean": 24,
+        "Private_Dirty": 1704824
+      }
+    },
+    "encoder": {
+      "pid": 76671,
+      "server_vm_hwm_kib": 82136,
+      "memavailable_kib": 12057852,
+      "smaps_kib": {
+        "Rss": 82996,
+        "Pss": 74123,
+        "Private_Clean": 34048,
+        "Private_Dirty": 36652
+      }
+    },
+    "gateway": {
+      "pid": 76687,
+      "server_vm_hwm_kib": 22528,
+      "memavailable_kib": 12057852,
+      "smaps_kib": {
+        "Rss": 22772,
+        "Pss": 14869,
+        "Private_Clean": 8,
+        "Private_Dirty": 12820
+      }
+    }
+  }
+}

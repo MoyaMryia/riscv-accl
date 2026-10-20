@@ -12,6 +12,7 @@ GGUF 是当前推理引擎读取的模型文件格式。
 | [发布清单](../release/manifest.json) | 已验证：固定现用 2B／4B GGUF 的文件名与 SHA-256。 |
 | [来源与复现记录](REPRODUCIBILITY.md) | 区分历史 Unsloth 产物、官方输入与未完成的全链转换。 |
 | [官方输入锁定清单](official-source-lock.json) | 已实现：固定两个官方仓库、修订与输入身份。 |
+| [源材料补证收据](../reports/raw/source-proof-20261016-135448-r2/README.md) | 已验证：15 个官方 BF16 MTP 张量；重建 4B MTP GGUF 与参考模型逐字节相同。 |
 | [加工工具说明](tools/README.md) | 已实现：量化、MTP 张量加工与草稿头打包；部分历史产物已逐字节复现。 |
 | [官方复现脚本](tools/reproduce-official.sh) | 已实现：核验官方输入与源码，执行转换、量化及打包。完整实际流程待验证。 |
 | [身份记录工具](tools/record-reproduction.py) | 已实现：记录输入、源码、工具与输出文件身份。 |

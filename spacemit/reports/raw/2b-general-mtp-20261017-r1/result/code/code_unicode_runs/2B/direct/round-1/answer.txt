@@ -1,0 +1,63 @@
+```python
+def encode_runs(text):
+    """
+    Encode a string into a list of (character, count) tuples representing consecutive runs.
+    - Empty string returns [].
+    - Non-empty string returns a list of tuples.
+    - Each tuple contains a single character and its run count.
+    - Malformed items (e.g., non-list/tuple, non-string, non-positive int) raise ValueError.
+    - Does not mutate the input string.
+    """
+    if not isinstance(text, str):
+        raise ValueError("Input must be a string.")
+    
+    if len(text) == 0:
+        return []
+    
+    result = []
+    current_char = text[0]
+    count = 1
+    
+    for i in range(1, len(text)):
+        if text[i] == current_char:
+            count += 1
+        else:
+            result.append((current_char, count))
+            current_char = text[i]
+            count = 1
+    
+    result.append((current_char, count))
+    return result
+
+
+def decode_runs(runs):
+    """
+    Decode a list of (character, count) tuples back into a string.
+    - Empty list returns "".
+    - Raises ValueError if any item is malformed.
+    - Raises ValueError if count is not a positive integer.
+    - Does not mutate the input list.
+    """
+    if not isinstance(runs, list):
+        raise ValueError("Input must be a list.")
+    
+    if len(runs) == 0:
+        return ""
+    
+    result = []
+    for item in runs:
+        if not isinstance(item, (list, tuple)):
+            raise ValueError("Every item must be a two-element list or tuple.")
+        if len(item) != 2:
+            raise ValueError("Every item must be a two-element list or tuple.")
+        char, count = item
+        if not isinstance(char, str):
+            raise ValueError("Character must be a one-character string.")
+        if not isinstance(count, int):
+            raise ValueError("Count must be a positive int.")
+        if count <= 0:
+            raise ValueError("Count must be a positive int.")
+        result.append(char)
+    
+    return "".join(result)
+```
