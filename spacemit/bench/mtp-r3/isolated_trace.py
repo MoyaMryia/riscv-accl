@@ -126,7 +126,8 @@ def run(args, cases, processes, urls, *, backend_root):
             'legacy': case is legacy, 'pid': processes[arm].pid, 'url': urls[arm],
             'log_path': str(backend_root / arm / 'server.log'), 'folder': str(folder),
             'max_tokens': args.max_tokens, 'prefix_rows': args.trace_plan['prefix_rows'],
-            'chat': str(args.chat), 'assessment': str(args.cases_module), 'quality': str(args.quality)}
+            'chat': str(args.chat), 'assessment': str(args.cases_module), 'quality': str(args.quality),
+            'repeat_guard': args.trace_plan.get('repeat_guard')}
         path = inputs / (name + '.json')
         base.save(path, config)
         jobs.append({'id': name, 'argv': [sys.executable, '-u', str(Path(__file__).with_name('attempt_worker.py')),

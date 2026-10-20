@@ -9,6 +9,7 @@ import urllib.error
 
 import attempt_worker
 import isolated_trace
+import repetition_guard
 
 HERE = Path(__file__).resolve().parent
 
@@ -88,6 +89,15 @@ class IsolatedTraceTests(unittest.TestCase):
             outcome = json.loads((root / 'transport/outcome.json').read_text())
             self.assertEqual(outcome['status'], 'incomplete')
             self.assertEqual(outcome['reason'], 'request_transport')
+
+            config['folder'] = str(root / 'degenerate')
+            path.write_text(json.dumps(config))
+            (root / 'degenerate').mkdir()
+            with mock.patch('trace_cases.sample', side_effect=repetition_guard.DegenerateOutput('loop')):
+                status = attempt_worker.main(['--config', str(path)])
+            self.assertEqual(status, 3)
+            outcome = json.loads((root / 'degenerate/outcome.json').read_text())
+            self.assertEqual(outcome, {'status': 'incomplete', 'reason': 'degenerate_repetition'})
 
     def test_batch_status_keeps_failed_controller_nonzero(self):
         controller = {'batch_success': False, 'planned': 4,

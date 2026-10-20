@@ -30,6 +30,14 @@ def validate_plan(plan):
         raise ValueError('plan must contain four stages')
     if plan.get('case_order', 'fixed') not in ('fixed', 'reverse_alternate'):
         raise ValueError('case order is invalid')
+    guard = plan.get('repeat_guard')
+    if guard is not None:
+        if not isinstance(guard, dict) or set(guard) != {'window', 'min_chars'}:
+            raise ValueError('repeat guard must define window and min_chars')
+        if type(guard['window']) is not int or guard['window'] < 2:
+            raise ValueError('repeat guard window must be an integer of at least 2')
+        if type(guard['min_chars']) is not int or guard['min_chars'] < 4:
+            raise ValueError('repeat guard min_chars must be an integer of at least 4')
     seen = set()
     for stage in stages:
         if not isinstance(stage, dict) or stage.get('category') not in CATEGORIES or stage['category'] in seen:
@@ -156,7 +164,7 @@ class OutputTruncated(ValueError):
 
 
 def sample(args, case, arm, chat, assessor, quality, pid, url, prompt_url, folder, log_path,
-           *, round_no, legacy=False, stream_path=None):
+           *, round_no, legacy=False, stream_path=None, guard=None):
     """采集一次请求；调用者持有逐请求锁。"""
     payload = chat.request_body(case['messages'], 'local', 0, args.max_tokens)
     payload.update(cache_prompt=False, stream_options={'include_usage': True}, verbose=True)
@@ -172,6 +180,8 @@ def sample(args, case, arm, chat, assessor, quality, pid, url, prompt_url, folde
     signal.alarm(base.DEADLINE_S)
     try:
         options = {'stream_path': stream_path} if stream_path is not None else {}
+        if guard is not None:
+            options['guard'] = guard
         response = chat.complete(url, payload, base.DEADLINE_S, display=False, **options)
     finally:
         signal.alarm(0)

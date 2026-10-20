@@ -53,7 +53,7 @@ def count_prompt_tokens(url, payload, timeout):
     return count
 
 
-def complete(url, payload, timeout, display=True, headers=None, stream_path=None):
+def complete(url, payload, timeout, display=True, headers=None, stream_path=None, guard=None):
     request = urllib.request.Request(
         url + '/v1/chat/completions',
         json.dumps(payload, ensure_ascii=False).encode('utf-8'),
@@ -99,6 +99,8 @@ def complete(url, payload, timeout, display=True, headers=None, stream_path=None
                     if first is None:
                         first = time.monotonic()
                     parts.append(content)
+                    if guard is not None:
+                        guard.feed(content)
                     if display:
                         print(content, end='', flush=True)
                 if choice.get('finish_reason'):

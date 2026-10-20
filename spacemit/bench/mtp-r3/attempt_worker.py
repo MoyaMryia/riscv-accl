@@ -10,6 +10,7 @@ import urllib.error
 import urllib.request
 
 import diagnostic as base
+import repetition_guard
 import trace_cases
 
 
@@ -25,10 +26,17 @@ def main(argv=None):
     chat = base.load_module('attempt_chat', Path(job['chat']))
     assessor = base.load_module('attempt_assessor', Path(job['assessment']))
     quality = base.load_module('attempt_quality', Path(job['quality']))
+    options = job.get('repeat_guard')
+    guard = repetition_guard.RepeatGuard(**options) if options else None
     try:
         record = trace_cases.sample(parameters, job['case'], job['arm'], chat, assessor, quality,
             job['pid'], job['url'], job['url'], folder, Path(job['log_path']),
-            round_no=job['round'], legacy=job['legacy'], stream_path=folder / 'stream.sse')
+            round_no=job['round'], legacy=job['legacy'], stream_path=folder / 'stream.sse',
+            guard=guard)
+    except repetition_guard.DegenerateOutput as error:
+        base.save(folder / 'outcome.json', {'status': 'incomplete', 'reason': 'degenerate_repetition'})
+        print(str(error), file=sys.stderr)
+        return 3
     except trace_cases.OutputTruncated as error:
         base.save(folder / 'outcome.json', {'status': 'incomplete', 'reason': 'output_limit'})
         print(str(error), file=sys.stderr)
