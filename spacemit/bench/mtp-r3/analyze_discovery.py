@@ -9,6 +9,8 @@ import statistics
 
 ARMS = ('direct', 'prefix', 'lowacc')
 COMPLETED = {'complete', 'quality', 'quality_review_pending'}
+CONTROLLER_FAILURES = {'backend_busy', 'backend_unavailable', 'timeout', 'worker_crash',
+                       'worker_exit', 'worker_protocol', 'worker_spawn'}
 LEGACY = 'legacy_unicode_runs'
 
 
@@ -39,9 +41,10 @@ def load_attempts(batch):
         if reason not in COMPLETED:
             counts['incomplete'] += 1
             continue
-        # 控制器的后置检查失败时，结果文件仍可能存在；该尝试不得进入配对。
-        status, _ = controller_status(folder)
-        if status is not None and status != 'passed' and reason != 'quality_review_pending':
+        # 资源或后置检查失败时，结果文件仍可能存在；该尝试不得进入配对。
+        # 质量失败仍计入配对：答案已完整生成，计时有效。
+        _, controller_reason = controller_status(folder)
+        if controller_reason in CONTROLLER_FAILURES:
             counts['controller_rejected'] += 1
             continue
         row = json.loads(result_path.read_text())

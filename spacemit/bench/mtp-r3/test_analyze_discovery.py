@@ -39,6 +39,8 @@ class AnalyzeDiscoveryTests(unittest.TestCase):
             self.write(root, 'b-direct', {'status': 'passed', 'reason': 'complete'}, record('b', 'direct', 10.0))
             (root / 'batch/attempts/b-direct/status.json').write_text(
                 json.dumps({'status': 'failed', 'reason': 'backend_busy'}))
+            (root / 'batch/attempts/a-prefix/status.json').write_text(
+                json.dumps({'status': 'failed', 'reason': 'quality'}))
             self.write(root, 'b-prefix-real', {'status': 'passed', 'reason': 'complete'}, record('b', 'prefix', 9.0))
             self.write(root, 'b-prefix', {'status': 'incomplete', 'reason': 'output_limit'}, record('b', 'prefix', 7.0))
             self.write(root, 'b-lowacc', {'status': 'incomplete', 'reason': 'request_timeout'})

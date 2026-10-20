@@ -9,6 +9,8 @@ import sys
 import diagnostic
 
 COMPLETED = {'complete', 'quality'}
+CONTROLLER_FAILURES = {'backend_busy', 'backend_unavailable', 'timeout', 'worker_crash',
+                       'worker_exit', 'worker_protocol', 'worker_spawn'}
 LEGACY = 'legacy_unicode_runs'
 
 
@@ -28,7 +30,7 @@ def attempts(batch):
             continue
         outcome = json.loads(outcome_path.read_text())
         status = folder / 'status.json'
-        if status.exists() and json.loads(status.read_text()).get('status') not in ('passed', 'incomplete'):
+        if status.exists() and json.loads(status.read_text()).get('reason') in CONTROLLER_FAILURES:
             continue
         rows.append((folder, outcome, json.loads(result_path.read_text())))
     return rows
