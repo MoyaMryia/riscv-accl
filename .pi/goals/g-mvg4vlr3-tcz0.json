@@ -1,0 +1,65 @@
+{
+  "id": "g-mvg4vlr3-tcz0",
+  "sessionId": "01a142a5-6ceb-712f-818f-582cd9f27a83",
+  "objective": "整理一份可复算的“从项目开始到今天”成果与优化数字总账：用原始记录复算关键数字，写出唯一的中文报告（含时间线、每个优化的数字、已验证/待验证区分、适用范围），并让脚本在数字与原始记录不一致时失败。",
+  "constraints": [
+    "不启动新的板端测量，不改动生产默认值与归档",
+    "每个数字必须能指向原始记录或既有报告",
+    "无法复算的数字标为引用既有报告，并写明该报告的位置",
+    "中文文档遵循项目写作规则；限制与未完成项放文末“适用范围”，并写阻塞与解除条件",
+    "同一数字只保留一处主定义，其他文档链接到总账"
+  ],
+  "checks": [
+    {
+      "name": "ledger-recompute",
+      "cmd": "python3 tools/verify_results_ledger.py",
+      "expect": {
+        "exit": 0
+      },
+      "timeoutSec": 300
+    },
+    {
+      "name": "writing-lint",
+      "cmd": "python3 tools/writing_lint.py",
+      "expect": {
+        "exit": 0
+      },
+      "timeoutSec": 300
+    },
+    {
+      "name": "ledger-exists",
+      "cmd": "test -s spacemit/reports/RESULTS-LEDGER.md",
+      "expect": {
+        "exit": 0
+      }
+    }
+  ],
+  "budget": {
+    "turns": 20
+  },
+  "spent": {
+    "turns": 18,
+    "tokens": 0,
+    "minutes": 0
+  },
+  "status": "active",
+  "origin": "user",
+  "createdAt": 1792467514334,
+  "updatedAt": 1792467781311,
+  "progress": {
+    "turnsSinceChange": 0,
+    "lastTreeHash": "9005489cd2969458a2f1f0f8b9a5cbbc7aa0755d"
+  },
+  "log": [],
+  "plan": {
+    "mode": "direct",
+    "rationale": "The task has one correct shape: extract numbers from the fixed raw records, write one Chinese ledger, and write one checker that recomputes and fails on a mismatch. A parallel search gives no gain here because the risk is a wrong number or a broken checker, not a wrong approach. Work in sequence: inventory the raw records, recompute each number, then test the checker with a deliberate mismatch.",
+    "branches": 1,
+    "depth": 1,
+    "angles": [],
+    "evaluator": {
+      "kind": "checks"
+    },
+    "ts": 1792467530100
+  }
+}

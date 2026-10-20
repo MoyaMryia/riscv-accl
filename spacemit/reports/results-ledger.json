@@ -1,0 +1,151 @@
+{
+  "as_of": "2026-10-20",
+  "final_delivery": {
+    "kind": "report",
+    "report": "spacemit/reports/SUBMISSION-ZH.md",
+    "rows": [
+      {
+        "model": "2B",
+        "prompt_tokens": 512,
+        "pairs": 3,
+        "wall_baseline_s": 43.031,
+        "wall_final_s": 34.714,
+        "speedup": 1.24
+      },
+      {
+        "model": "2B",
+        "prompt_tokens": 2048,
+        "pairs": 3,
+        "wall_baseline_s": 136.554,
+        "wall_final_s": 97.169,
+        "speedup": 1.41
+      },
+      {
+        "model": "2B",
+        "prompt_tokens": 8192,
+        "pairs": 1,
+        "wall_baseline_s": 875.359,
+        "wall_final_s": 426.221,
+        "speedup": 2.05
+      },
+      {
+        "model": "2B",
+        "prompt_tokens": 32768,
+        "pairs": 1,
+        "wall_baseline_s": 10822.886,
+        "wall_final_s": 3014.282,
+        "speedup": 3.59
+      },
+      {
+        "model": "4B",
+        "prompt_tokens": 512,
+        "pairs": 3,
+        "wall_baseline_s": 113.128,
+        "wall_final_s": 80.346,
+        "speedup": 1.41
+      },
+      {
+        "model": "4B",
+        "prompt_tokens": 2048,
+        "pairs": 3,
+        "wall_baseline_s": 411.793,
+        "wall_final_s": 246.579,
+        "speedup": 1.67
+      },
+      {
+        "model": "4B",
+        "prompt_tokens": 8192,
+        "pairs": 1,
+        "wall_baseline_s": 3323.894,
+        "wall_final_s": 1170.324,
+        "speedup": 2.84
+      },
+      {
+        "model": "4B",
+        "prompt_tokens": 32768,
+        "pairs": 1,
+        "wall_baseline_s": 42294.22,
+        "wall_final_s": 8952.505,
+        "speedup": 4.72
+      }
+    ]
+  },
+  "recomputed": {
+    "mtp_r3": {
+      "raw": "spacemit/reports/raw/r3-mtp-20261017-r3/result/summary.json",
+      "model": "2B",
+      "claims": {
+        "direct_mean_s": 122.544667,
+        "pure_mean_s": 94.101,
+        "fallback_mean_s": 94.182333,
+        "paired_reduction_pct": 23.210764,
+        "quality_checks": 106,
+        "repeats": 3
+      }
+    },
+    "general_suite": {
+      "raw": "spacemit/reports/raw/2b-general-mtp-20261017-r1/result/summary.json",
+      "claims": {
+        "code": 2.780754,
+        "chinese": 69.862895,
+        "qa": 33.995517,
+        "long_document": 40.590786
+      }
+    },
+    "full_head": {
+      "raw": "spacemit/reports/raw/2b-full-head-ablation-20261017-r1/result/summary.json",
+      "case_id": "prior_code_unicode_runs",
+      "claims": {
+        "direct_s": 122.708,
+        "prefix_s": 93.961,
+        "full_s": 106.341,
+        "prefix_change_pct": -23.42716,
+        "full_vs_prefix_pct": 13.17568
+      }
+    },
+    "router_e2e": {
+      "raw": "spacemit/reports/raw/2b-bert-router-e2e-20261018-r1/result/summary.json",
+      "claims": {
+        "baseline_total_s": 1731.5,
+        "routed_total_s": 1733.324,
+        "wall_change_pct": 0.105342,
+        "prefix_routes": 3,
+        "direct_routes": 9
+      }
+    },
+    "bert_classifier": {
+      "raw": "spacemit/reports/raw/router-bert-20261018-r1/training/training.json",
+      "claims": {
+        "best_epoch": 8,
+        "dev_accuracy_pct": 95.833333,
+        "test_accuracy_pct": 86.458333,
+        "regression_accuracy_pct": 100.0,
+        "ngram_test_accuracy_pct": 38.541667
+      }
+    }
+  },
+  "tolerance": {
+    "seconds": 0.001,
+    "percent": 0.001,
+    "speedup": 0.005
+  },
+  "markdown_checks": [
+    "2B 为起点的 1.24～3.59 倍",
+    "4B 为起点的 1.41～4.72 倍",
+    "122.545 s → 94.101 s",
+    "23.21%",
+    "+2.78%",
+    "+69.86%",
+    "+34.00%",
+    "+40.59%",
+    "93.961 s",
+    "106.341 s",
+    "13.18%",
+    "1731.500 s → 1733.324 s",
+    "+0.11%",
+    "95.83%",
+    "86.46%",
+    "38.54%",
+    "100.00%"
+  ]
+}
