@@ -38,7 +38,7 @@ def input_paths(args):
     paths = {name: here / (name + '.py') for name in
         ('diagnostic', 'trace_cases', 'head_ablation', 'head_probe', 'general_suite',
          'model_head_check', 'router_e2e', 'router_cases', 'discovery_materials',
-         'batch_controller', 'isolated_trace', 'attempt_worker')}
+         'batch_controller', 'isolated_trace', 'attempt_worker', 'repetition_guard')}
     paths.update(attach=Path(__file__), cases=args.cases, diagnostic_plan=args.diagnostic_plan,
                  legacy_request=args.legacy_request, assessment=args.cases_module,
                  chat=args.chat, quality=args.quality, policy=args.service / 'router/policy.py',

@@ -384,7 +384,7 @@ def tool_extras(args, trace):
     if trace:
         extras.update({name: Path(__file__).with_name(name + '.py') for name in
                        ('trace_cases', 'head_probe', 'head_ablation', 'general_suite', 'model_head_check',
-                        'batch_controller', 'isolated_trace', 'attempt_worker',
+                        'batch_controller', 'isolated_trace', 'attempt_worker', 'repetition_guard',
                         'discovery_cases', 'discovery_materials')})
         extras.update(diagnostic_plan=args.diagnostic_plan, legacy_request=args.legacy_request)
     router_files = ['classifier.py', 'policy.py', 'proxy.py']
