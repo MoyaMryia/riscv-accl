@@ -26,8 +26,8 @@ def validate_plan(plan):
     if not isinstance(plan, dict) or type(plan.get('prefix_rows')) is not int or plan['prefix_rows'] <= 0:
         raise ValueError('prefix_rows must be a positive integer')
     stages = plan.get('stages')
-    if not isinstance(stages, list) or len(stages) != len(CATEGORIES):
-        raise ValueError('plan must contain four stages')
+    if not isinstance(stages, list) or not 0 < len(stages) <= len(CATEGORIES):
+        raise ValueError('plan must contain between one and four stages')
     if plan.get('case_order', 'fixed') not in ('fixed', 'reverse_alternate'):
         raise ValueError('case order is invalid')
     guard = plan.get('repeat_guard')

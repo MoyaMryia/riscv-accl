@@ -58,8 +58,11 @@ class TraceCasesTests(unittest.TestCase):
 
     def test_plan_and_native_cumulative_statistics(self):
         self.assertEqual(probe.validate_plan(self.plan())['prefix_rows'], 10)
+        subset = dict(self.plan(), stages=self.plan()['stages'][:1])
+        self.assertEqual(probe.validate_plan(subset)['stages'][0]['category'], 'code')
         for mutation in [dict(self.plan(), prefix_rows=True),
-                         dict(self.plan(), stages=self.plan()['stages'][:3])]:
+                         dict(self.plan(), stages=[]),
+                         dict(self.plan(), stages=[self.plan()['stages'][0]] * 2)]:
             with self.assertRaises(ValueError): probe.validate_plan(mutation)
         invalid = self.plan()
         invalid['stages'][0]['repeats'] = True

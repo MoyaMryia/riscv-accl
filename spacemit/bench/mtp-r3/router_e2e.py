@@ -25,14 +25,15 @@ ACCEPTANCE = {'max_category_slowdown_pct': 3.0}
 REVIEW_ACCEPTANCE = {'max_mean_quality_loss': 0.25, 'new_fact_citation_code_errors': 0}
 
 
-def read_cases(path, policy, per_category=CASES_PER_CATEGORY, code_tasks=None):
+def read_cases(path, policy, per_category=CASES_PER_CATEGORY, code_tasks=None, allowed=None):
     """读入固定套件或发现集；per_category 为 None 时只要求每个类别非空。"""
     cases = json.loads(path.read_text())
     counts = Counter(c.get('category') for c in cases if isinstance(c, dict))
     if not isinstance(cases, list) or not cases or set(counts) - set(CATEGORIES):
         raise ValueError('case categories or counts differ')
     if per_category is None:
-        if set(counts) != set(CATEGORIES):
+        expected = set(allowed) if allowed is not None else set(CATEGORIES)
+        if set(counts) != expected:
             raise ValueError('case categories or counts differ')
     elif counts != Counter({c: per_category for c in CATEGORIES}):
         raise ValueError('case categories or counts differ')
@@ -277,13 +278,16 @@ def main(argv=None):
     base.save(args.output / 'identity.json', identities)
     policy = base.load_module('bench_router_policy', args.router / 'policy.py')
     assessor = base.load_module('bench_router_cases', args.cases_module)
-    cases = read_cases(args.cases, policy, None if trace else CASES_PER_CATEGORY,
-                       assessor.FAMILIES if trace else None)
     trace_worker = None
+    allowed = None
     if trace:
         trace_worker = base.load_module('live_trace_cases', extras['trace_cases'])
         args.trace_plan = trace_worker.validate_plan(json.loads(args.diagnostic_plan.read_text()))
+        allowed = {stage['category'] for stage in args.trace_plan['stages']}
         trace_worker.verify_prefix_rows(models['2B'], args.trace_plan['prefix_rows'])
+    cases = read_cases(args.cases, policy, None if trace else CASES_PER_CATEGORY,
+                       assessor.FAMILIES if trace else None, allowed)
+    if trace:
         args.lease = base.load_module('live_request_lease', args.router / 'request_lease.py')
         args.request_lock = args.output / 'request.lock'
         args.legacy_data = json.loads(args.legacy_request.read_text())
