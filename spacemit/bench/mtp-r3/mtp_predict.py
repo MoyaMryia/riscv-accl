@@ -10,7 +10,13 @@ import re
 import statistics
 
 FEATURES = ('prompt_tokens', 'chars', 'cjk_ratio', 'lines', 'code_fence', 'code_words',
-            'question_marks', 'digits', 'ascii_words')
+            'question_marks', 'digits', 'ascii_words',
+            'doc_none', 'doc_zh', 'doc_en', 'fam_stable_unique', 'fam_window_sums',
+            'fam_transpose_rect', 'fam_interval_union', 'fam_unicode_runs')
+DOC_NONE = re.compile('不要写注释或文档字符串|Do not write comments or docstrings', re.IGNORECASE)
+DOC_ZH = re.compile('中文文档字符串|Chinese docstring', re.IGNORECASE)
+DOC_EN = re.compile('英文文档字符串|English docstring', re.IGNORECASE)
+FAMILIES = ('stable_unique', 'window_sums', 'transpose_rect', 'interval_union', 'unicode_runs')
 CJK = re.compile(r'[\u4e00-\u9fff]')
 CODE_WORDS = re.compile(r'\b(def|return|for|while|if|list|dict|int|str)\b')
 
@@ -30,7 +36,11 @@ def features(case, prompt_tokens):
             'code_words': len(CODE_WORDS.findall(text)),
             'question_marks': text.count('?') + text.count('？'),
             'digits': sum(ch.isdigit() for ch in text),
-            'ascii_words': len(re.findall(r'[A-Za-z]{2,}', text))}
+            'ascii_words': len(re.findall(r'[A-Za-z]{2,}', text)),
+            'doc_none': float(bool(DOC_NONE.search(text))),
+            'doc_zh': float(bool(DOC_ZH.search(text))),
+            'doc_en': float(bool(DOC_EN.search(text))),
+            **{'fam_' + name: float(name in text) for name in FAMILIES}}
 
 
 def rows_from_batch(batch, cases_path):

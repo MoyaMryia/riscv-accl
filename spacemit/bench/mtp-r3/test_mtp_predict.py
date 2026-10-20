@@ -8,6 +8,9 @@ def row(family, saving_pct, direct_ms=1000.0, code_words=0):
     return {'family': family, 'case_id': family, 'round': 1, 'prompt_tokens': 100,
             'chars': 100, 'cjk_ratio': 0.0, 'lines': 3, 'code_fence': 0.0,
             'code_words': code_words, 'question_marks': 0, 'digits': 0, 'ascii_words': 10,
+            'doc_none': 0.0, 'doc_zh': 0.0, 'doc_en': 0.0,
+            'fam_stable_unique': 0.0, 'fam_window_sums': 0.0, 'fam_transpose_rect': 0.0,
+            'fam_interval_union': 0.0, 'fam_unicode_runs': 0.0,
             'direct_ms': direct_ms, 'mtp_ms': direct_ms * (1 - saving_pct / 100),
             'saving_ms': direct_ms * saving_pct / 100, 'saving_pct': saving_pct}
 
@@ -21,6 +24,17 @@ class PredictTests(unittest.TestCase):
         self.assertEqual(values['code_fence'], 1.0)
         self.assertGreater(values['lines'], 1)
         self.assertEqual(set(values), set(mtp_predict.FEATURES))
+        self.assertEqual(values['doc_none'], 0.0)
+        self.assertEqual(values['fam_stable_unique'], 1.0)
+
+    def test_docstring_mode_flags(self):
+        zh = {'messages': [{'role': 'user', 'content': '实现 stable_unique。写中文文档字符串，说明必要边界条件。'}]}
+        en = {'messages': [{'role': 'user', 'content': 'Implement window_sums. Include an English docstring.'}]}
+        none = {'messages': [{'role': 'user', 'content': 'Implement transpose_rect. Do not write comments or docstrings.'}]}
+        self.assertEqual(mtp_predict.features(zh, 10)['doc_zh'], 1.0)
+        self.assertEqual(mtp_predict.features(en, 10)['doc_en'], 1.0)
+        self.assertEqual(mtp_predict.features(none, 10)['doc_none'], 1.0)
+        self.assertEqual(mtp_predict.features(zh, 10)['doc_none'], 0.0)
 
     def test_grouped_split_keeps_families_disjoint(self):
         rows = [row(name, 1.0) for name in ('a', 'b', 'c', 'd') for _ in range(2)]
