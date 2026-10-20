@@ -44,15 +44,26 @@ class GuardTests(unittest.TestCase):
                 yield ('data: ' + '{"choices":[{"delta":{"content":"' + LINE.replace('"', '') + '\\n"}}]}' + '\n').encode()
             yield b'data: {"choices":[{"delta":{},"finish_reason":"stop"}]}\n'
             yield b'data: [DONE]\n'
+        class Sock:
+            def __init__(self): self.shutdowns = []
+            def shutdown(self, how): self.shutdowns.append(how)
+        class Raw:
+            def __init__(self): self._sock = Sock()
         class Response:
             headers = {'X-Decode-Route': 'direct'}
+            closed = False
+            def __init__(self): self.fp = type('Fp', (), {'raw': Raw()})()
             def __enter__(self): return self
             def __exit__(self, *args): return False
             def __iter__(self): return iter(events())
+            def close(self): self.closed = True
+        response = Response()
         guard = repetition_guard.RepeatGuard(window=3, min_chars=20)
-        with mock.patch.object(chat.urllib.request, 'urlopen', return_value=Response()):
+        with mock.patch.object(chat.urllib.request, 'urlopen', return_value=response):
             with self.assertRaises(repetition_guard.DegenerateOutput):
                 chat.complete('http://unit', {'messages': []}, 1, display=False, guard=guard)
+        self.assertEqual(response.fp.raw._sock.shutdowns, [chat.socket.SHUT_RDWR])
+        self.assertTrue(response.closed)
 
     def test_plan_validation_accepts_and_rejects_guard(self):
         plan = {'prefix_rows': 65536, 'stages': [

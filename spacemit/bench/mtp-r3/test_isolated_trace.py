@@ -139,6 +139,35 @@ class IsolatedTraceTests(unittest.TestCase):
                 self.assertIsNone(after({'dependency': 'direct'}, folder, 'passed'))
             self.assertIsNone(before({'dependency': 'direct'}))
 
+    def test_degenerate_abort_gets_a_longer_drain_window(self):
+        import contextlib
+        class Lease:
+            def acquire(self, path):
+                return contextlib.nullcontext()
+        class Process:
+            pid = 4321
+            def poll(self): return None
+        with tempfile.TemporaryDirectory() as temp:
+            folder = Path(temp) / 'attempt'
+            folder.mkdir()
+            (folder / 'outcome.json').write_text(json.dumps(
+                {'status': 'incomplete', 'reason': 'degenerate_repetition'}))
+            args = mock.Mock(lease=Lease(), request_lock=Path(temp) / 'request.lock')
+            processes = {'prefix': Process()}
+            _guard, _before, after = isolated_trace.backend_hooks(args, processes, {'prefix': 'http://p'})
+            with mock.patch.object(isolated_trace, 'wait_idle',
+                                   return_value=[{'is_processing': False}]) as wait_idle, \
+                    mock.patch.object(isolated_trace.base, 'save'):
+                self.assertIsNone(after({'dependency': 'prefix'}, folder, 'incomplete'))
+            self.assertEqual(wait_idle.call_args.args[1], isolated_trace.DEGENERATE_DRAIN_S)
+
+            (folder / 'outcome.json').write_text(json.dumps({'status': 'passed', 'reason': 'complete'}))
+            with mock.patch.object(isolated_trace, 'wait_idle',
+                                   return_value=[{'is_processing': False}]) as wait_idle, \
+                    mock.patch.object(isolated_trace.base, 'save'):
+                self.assertIsNone(after({'dependency': 'prefix'}, folder, 'passed'))
+            self.assertEqual(wait_idle.call_args.args[1], isolated_trace.DRAIN_S)
+
     def test_backend_wait_rejects_invalid_slot_state(self):
         with mock.patch.object(isolated_trace, 'slots', side_effect=isolated_trace.BackendStateError('bad state')):
             with self.assertRaises(isolated_trace.BackendStateError):

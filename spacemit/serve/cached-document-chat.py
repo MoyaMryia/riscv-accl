@@ -10,6 +10,7 @@ import argparse
 from contextlib import ExitStack
 import hashlib
 import json
+import socket
 import sys
 import time
 import urllib.error
@@ -51,6 +52,17 @@ def count_prompt_tokens(url, payload, timeout):
     if not isinstance(count, int) or count < 1:
         raise RuntimeError('server did not return a positive input token count')
     return count
+
+
+def abort_response(response):
+    """强制关闭连接，使服务端立即看到断连并停止生成。"""
+    sock = getattr(getattr(getattr(response, 'fp', None), 'raw', None), '_sock', None)
+    if sock is not None:
+        try:
+            sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
+    response.close()
 
 
 def complete(url, payload, timeout, display=True, headers=None, stream_path=None, guard=None):
@@ -100,7 +112,11 @@ def complete(url, payload, timeout, display=True, headers=None, stream_path=None
                         first = time.monotonic()
                     parts.append(content)
                     if guard is not None:
-                        guard.feed(content)
+                        try:
+                            guard.feed(content)
+                        except Exception:
+                            abort_response(response)
+                            raise
                     if display:
                         print(content, end='', flush=True)
                 if choice.get('finish_reason'):

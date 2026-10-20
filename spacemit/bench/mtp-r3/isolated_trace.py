@@ -13,6 +13,7 @@ import router_cases
 import trace_cases
 
 DRAIN_S = 30
+DEGENERATE_DRAIN_S = 120
 HTTP_S = 5
 
 
@@ -90,8 +91,13 @@ def backend_hooks(args, processes, urls):
 
     def after(job, folder, status):
         arm = job['dependency']
+        deadline = DRAIN_S
+        outcome = folder / 'outcome.json'
+        if outcome.exists() and json.loads(outcome.read_text()).get('reason') == 'degenerate_repetition':
+            # 客户端已强制断连；给服务端更多时间确认连接关闭。
+            deadline = DEGENERATE_DRAIN_S
         try:
-            value = wait_idle(urls[arm])
+            value = wait_idle(urls[arm], deadline)
         except BackendBusy as error:
             base.save(folder / 'backend-busy.json', {'url': urls[arm], 'reason': str(error)})
             blocked[arm] = {'status': 'blocked', 'reason': 'backend_busy',
