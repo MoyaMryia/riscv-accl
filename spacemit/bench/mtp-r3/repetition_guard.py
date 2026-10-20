@@ -3,6 +3,7 @@
 
 DEFAULT_WINDOW = 3
 DEFAULT_MIN_CHARS = 20
+DEFAULT_MAX_PERIOD = 3
 
 
 class DegenerateOutput(RuntimeError):
@@ -10,22 +11,26 @@ class DegenerateOutput(RuntimeError):
 
 
 class RepeatGuard:
-    """按增量文本检测连续重复行。
+    """按增量文本检测重复行序列。
 
-    window 为连续相同行数。min_chars 为参与判断的最短行长。
-    短行和空行会重置连续计数，避免把正常代码判为退化。
+    window 为重复次数。min_chars 为参与判断的最短行长。
+    周期 1 到 max_period 的重复块都算退化：单行重复，以及 A/B 交替重复。
+    短行和空行会重置序列，避免把正常代码判为退化。
     """
 
-    def __init__(self, window=DEFAULT_WINDOW, min_chars=DEFAULT_MIN_CHARS):
+    def __init__(self, window=DEFAULT_WINDOW, min_chars=DEFAULT_MIN_CHARS,
+                 max_period=DEFAULT_MAX_PERIOD):
         if type(window) is not int or window < 2:
             raise ValueError('window must be an integer of at least 2')
         if type(min_chars) is not int or min_chars < 4:
             raise ValueError('min_chars must be an integer of at least 4')
+        if type(max_period) is not int or max_period < 1:
+            raise ValueError('max_period must be a positive integer')
         self.window = window
         self.min_chars = min_chars
+        self.max_period = max_period
         self.line = ''
-        self.repeats = 0
-        self.triggered_line = None
+        self.lines = []
 
     def feed(self, delta):
         """接收一段增量文本；检测到连续重复时抛出 DegenerateOutput。"""
@@ -38,12 +43,17 @@ class RepeatGuard:
             normalized = ' '.join(self.line.split())
             self.line = ''
             if len(normalized) < self.min_chars:
-                self.repeats = 0
+                self.lines.clear()
                 continue
-            if normalized == self.triggered_line:
-                self.repeats += 1
-            else:
-                self.triggered_line = normalized
-                self.repeats = 1
-            if self.repeats >= self.window:
-                raise DegenerateOutput('repeated line {} times: {}'.format(self.repeats, normalized[:80]))
+            self.lines.append(normalized)
+            keep = self.max_period * self.window
+            if len(self.lines) > keep:
+                del self.lines[:-keep]
+            for period in range(1, self.max_period + 1):
+                need = period * self.window
+                if len(self.lines) < need:
+                    continue
+                tail = self.lines[-need:]
+                if all(tail[index] == tail[index % period] for index in range(need)):
+                    raise DegenerateOutput('repeated block of {} lines {} times: {}'.format(
+                        period, self.window, tail[0][:80]))

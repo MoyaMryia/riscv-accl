@@ -19,7 +19,22 @@ class GuardTests(unittest.TestCase):
         guard.feed(LINE + '\n')
         with self.assertRaises(repetition_guard.DegenerateOutput):
             guard.feed(LINE + '\n')
-        self.assertGreater(guard.repeats, 0)
+
+    def test_alternating_lines_abort(self):
+        guard = repetition_guard.RepeatGuard(window=3, min_chars=20)
+        a = 'if not all(interval[0] <= interval[1] for interval in intervals):'
+        b = 'raise ValueError("Each interval must be non-empty")'
+        guard.feed((a + '\n' + b + '\n') * 2)
+        with self.assertRaises(repetition_guard.DegenerateOutput):
+            guard.feed(a + '\n' + b + '\n')
+
+    def test_three_line_block_aborts(self):
+        guard = repetition_guard.RepeatGuard(window=3, min_chars=20)
+        block = ['first long line of the block', 'second long line of the block',
+                 'third long line of the block']
+        guard.feed('\n'.join(block * 2) + '\n')
+        with self.assertRaises(repetition_guard.DegenerateOutput):
+            guard.feed('\n'.join(block) + '\n')
 
     def test_short_lines_and_changes_reset_the_count(self):
         guard = repetition_guard.RepeatGuard(window=3, min_chars=20)
