@@ -38,19 +38,30 @@
     "turns": 20
   },
   "spent": {
-    "turns": 18,
+    "turns": 20,
     "tokens": 0,
     "minutes": 0
   },
-  "status": "active",
+  "status": "exhausted",
   "origin": "user",
   "createdAt": 1792467514334,
-  "updatedAt": 1792467781311,
+  "updatedAt": 1792467846515,
   "progress": {
     "turnsSinceChange": 0,
-    "lastTreeHash": "9005489cd2969458a2f1f0f8b9a5cbbc7aa0755d"
+    "lastTreeHash": "d114bc65f3742ecdc39c0fd150dfc22bae6a8c6a"
   },
-  "log": [],
+  "log": [
+    {
+      "ts": 1792467846436,
+      "event": "run_checks",
+      "ok": true
+    },
+    {
+      "ts": 1792467846515,
+      "event": "exhausted",
+      "turns": 20
+    }
+  ],
   "plan": {
     "mode": "direct",
     "rationale": "The task has one correct shape: extract numbers from the fixed raw records, write one Chinese ledger, and write one checker that recomputes and fails on a mismatch. A parallel search gives no gain here because the risk is a wrong number or a broken checker, not a wrong approach. Work in sequence: inventory the raw records, recompute each number, then test the checker with a deliberate mismatch.",
