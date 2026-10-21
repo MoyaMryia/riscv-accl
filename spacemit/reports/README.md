@@ -3,7 +3,7 @@
 Document check: October 18, 2026, Asia/Singapore.
 [Requirements.md](../../Requirements.md) is the sole current acceptance reference.
 
-- [MTP docstring rule](2026-10-21-2b-mtp-docstring-rule-validation.md): a prompt-only rule yields 3.48% net time gain on a code grid. The family-cluster interval is 1.30% to 5.10%.
+- [MTP docstring rule](2026-10-21-2b-mtp-docstring-rule-validation.md): a prompt-only rule yields 3.48% net time gain on a code grid. The family-cluster interval is 1.30% to 5.10%. Code requests without a docstring requirement save 12.0% on average.
 - [BERT router regression](2026-10-18-2b-bert-router-results.md): 24 complete answers; three code requests select MTP, but total wall time increases 0.105342%.
 - [BERT intent classifier](2026-10-18-2b-bert-classifier.md): CPU fine-tune reaches 83/96 correct labels; K1 classification takes 78.879218 ms median and 270.697719 ms P95.
 - [2B router end-to-end test](2026-10-18-2b-router-e2e.md): 30 complete answers; automatic selection uses direct for all 12 tasks and adds 0.044487% wall time.
