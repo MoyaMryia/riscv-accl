@@ -84,6 +84,45 @@
 两个模型的新旧模板在单 system、纯用户、多轮与一次工具调用往返用例中渲染相同的提示文本。
 这些用例没有模板导致的输入文本差异，模板差异不单列为 token 速度优化项。
 
+### 4.1 模板复现
+
+服务器默认读取 GGUF 的 `tokenizer.chat_template` 字段。
+使用新转换产物可取得官方模板，使用已交付文件可取得交付模板。
+模板来源必须与模型规格对应，2B 与 4B 分别提取。
+
+在安装 `gguf` 的转换环境中运行以下命令。
+将输入路径替换为所选 GGUF，将输出路径替换为新文件路径。
+
+```bash
+python3 - /path/to/Qwen3.5-2B.gguf /tmp/qwen35-2b.jinja <<'PY'
+import sys
+from pathlib import Path
+from gguf import GGUFReader
+
+reader = GGUFReader(sys.argv[1])
+template = reader.fields['tokenizer.chat_template'].contents()
+with Path(sys.argv[2]).open('x', encoding='utf-8', newline='') as output:
+    output.write(template)
+print(len(template))
+PY
+sha256sum /tmp/qwen35-2b.jinja
+```
+
+输出字符数必须与上表对应。
+模板摘要见 [`identities.json`](raw/template-check-20261021-r1/identities.json)。
+提取操作只读 GGUF，输出文件已存在时会失败。
+
+在独立验证服务器的原启动参数中追加以下选项：
+
+```text
+--jinja --chat-template-file /tmp/qwen35-2b.jinja --reasoning off
+```
+
+客户端继续传入 `"chat_template_kwargs": {"enable_thinking": false}`。
+此方法用外置模板覆盖模型内置模板，GGUF 文件与其摘要保持不变。
+4B 使用对应的 GGUF 与独立模板路径。
+现有生产启动配置保持不变。
+
 ## 5 下一步
 
 新产物不能直接替换交付文件。
