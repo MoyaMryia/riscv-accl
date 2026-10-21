@@ -186,6 +186,42 @@ bash spacemit/models/tools/reproduce-official.sh \
 成功状态为 `conversion-complete-validation-pending`。
 该状态只表示加工完成。
 
+### 结构核验与打包
+
+加工完成后先做结构核验。
+以历史交付文件为参考，比较张量名称、形状、类型、词元器计数、词元表摘要与对话模板摘要。
+参考文件必须来自已交付且已测试的产物。
+命令：
+
+```bash
+python3 spacemit/models/tools/verify-artifact.py \
+  --reference models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf \
+  --candidate lab/official-models/2B-conversion-r1/official-Q4_0-embQ4_0-dv64k.gguf \
+  --gguf-py <转换环境>/gguf-py \
+  --output lab/official-models/2B-conversion-r1/structure-2b.json
+```
+
+该工具需要转换环境中的 `gguf` 包。
+结构一致不证明数值一致。
+数值检查使用 K1 本地推理与固定题集，结果单独记录。
+
+结构核验通过后再打包。
+打包命令：
+
+```bash
+python3 spacemit/models/tools/package-artifact.py \
+  --gguf lab/official-models/2B-conversion-r1/official-Q4_0-embQ4_0-dv64k.gguf \
+  --receipts lab/official-models/2B-conversion-r1 \
+  --name qwen35-2b-official-r1 \
+  --output lab/official-models/packages \
+  --expect-sha256 <转换收据中的摘要>
+```
+
+包装包含模型与全部加工收据。
+打包工具拒绝已有目标，并核对成员、大小与摘要。
+新产物与发布清单哈希不同，现有启动器会拒绝该文件。
+采用新产物前，必须先建立新清单、完成 K1 推理检查与匹配对照。
+
 ## 6. 必须保存的实际执行记录
 
 | 记录 | 用途 |
@@ -195,7 +231,9 @@ bash spacemit/models/tools/reproduce-official.sh \
 | `tool-receipt.json`、`python-packages.txt`、`python-version.txt` | 固定量化器、项目脚本与 Python 环境。依赖二进制另行保存。 |
 | `driver.log`、`convert.log`、`quantize.log`、`pack.log`、`exit-status` | 保留实际命令、过程输出和退出状态。 |
 | `output-receipt.json` | 固定三个加工阶段的完整文件身份。 |
+| `structure-<model>.json` | 与参考产物的张量、词元器、模板比较结果。 |
 | 后续模型验证记录 | 核验结构、张量、词元器、模板、推理与性能。加工脚本不自动生成这些结论。 |
+| `<name>.tar.gz`、`<name>.receipt.json`、`<name>.manifest.json` | 打包后的模型、收据与逐成员摘要。 |
 
 ## 7. 怎样关联历史性能
 

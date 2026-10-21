@@ -6,13 +6,14 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 # 触发路径（扩展正则，匹配暂存文件路径）。
-PYTHON_PATHS='^(tools/|spacemit/bench/qemu-screen/predictor/freeze-sources\.py$|spacemit/bench/mtp-r3/|spacemit/serve/cached-document-chat\.py$|spacemit/serve/decode-router/)'
+PYTHON_PATHS='^(tools/|spacemit/bench/qemu-screen/predictor/freeze-sources\.py$|spacemit/bench/mtp-r3/|spacemit/models/tools/|spacemit/serve/cached-document-chat\.py$|spacemit/serve/decode-router/)'
 
 stage_lint() { python3 tools/writing_lint.py "$@"; }
 stage_python() {
     bash -n spacemit/serve/decode-router/reproduce-bert.sh
     python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
     python3 -m unittest discover -s spacemit/bench/mtp-r3 -p 'test_*.py' -v
+    python3 -m unittest discover -s spacemit/models/tools -p 'test_*.py' -v
     python3 -m unittest discover -s spacemit/serve/decode-router -p 'test_*.py' -v
 }
 

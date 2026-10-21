@@ -9,6 +9,40 @@ The [source and reproduction record](../REPRODUCIBILITY.md) separates the histor
 `record-reproduction.py` verifies input identities and records artifact hashes.
 The complete official conversion remains untested.
 
+## Structure check
+
+`verify-artifact.py` compares two GGUFs. It checks the tensor names, shapes, and types.
+It checks the tokenizer count, the token table digest, and the chat template digest.
+It writes a JSON receipt. It exits with status 1 on a mismatch.
+
+Use it after a new conversion, and compare the new file with the tested reference:
+
+```bash
+python3 spacemit/models/tools/verify-artifact.py \
+  --reference models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf \
+  --candidate lab/official-models/2B-conversion-r1/official-Q4_0-embQ4_0-dv64k.gguf \
+  --gguf-py /path/to/llama.cpp/gguf-py \
+  --output /tmp/structure-2b.json
+```
+
+The tool requires the `gguf` Python package. Use the converter environment.
+The tool checks structure only. Add a K1 inference check for numeric behavior.
+
+## Package check
+
+`package-artifact.py` writes one archive with the model and its receipts.
+It records the SHA-256 of each member and of the archive.
+It refuses an existing target and an unexpected model digest.
+
+```bash
+python3 spacemit/models/tools/package-artifact.py \
+  --gguf lab/official-models/2B-conversion-r1/official-Q4_0-embQ4_0-dv64k.gguf \
+  --receipts lab/official-models/2B-conversion-r1 \
+  --name qwen35-2b-official-r1 \
+  --output lab/official-models/packages \
+  --expect-sha256 <recorded digest>
+```
+
 ## Fast Q4_0 weights
 
 IME1 accelerates Q4_0, Q4_1, and Q4_K. The tied token embedding/output weight must also be Q4_0. Then the model stays on the accelerated path. Use `quantize-fast.sh` with a BF16 or Q8_0 source GGUF. BF16 avoids a second quantization:
