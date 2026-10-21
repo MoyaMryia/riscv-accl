@@ -9,6 +9,15 @@
 完整请求时间和逐题质量见[BERT 路由回归结果](../../reports/2026-10-18-2b-bert-router-results.md)。
 生产入口与原 `model.json.gz` 保持不变。
 
+## 模型版本与收益规则
+
+已验证模型名为 `bert-router-v1`，选中训练轮次为 8。
+`data-v2/` 是数据目录名，模型包仍使用上述版本名。
+后续 MTP 收益研究使用文档字符串特征，BERT 权重保持原身份。
+下一阶段的部分请求选路优先使用提示词规则，BERT 只作意图对照。
+模型身份、提交时间与在线状态见[版本澄清](../../reports/2026-10-21-routing-version-clarification.md)。
+收益数字与采用条件见[文档字符串规则报告](../../reports/2026-10-21-2b-mtp-docstring-rule-validation.md)。
+
 ## 已训练模型
 
 本机模型包为 `lab/router-bert-20261018/bert-router-v1.tar.gz`。
@@ -146,7 +155,7 @@ bash spacemit/serve/decode-router/reproduce-bert.sh lab/bert-reproduce-new
 每轮训练后在 48 条开发请求上计算四类宏 F1。
 宏 F1 优先，准确率次优；相同指标保留更早轮次。
 全部 12 轮结束后恢复选中权重，再评估固定测试集和旧回归集。
-新旧冻结模型使用同一测试集作最终比较，测试结果不参与权重选择。
+BERT 与旧 ngram 分类器使用同一测试集作最终比较，测试结果不参与权重选择。
 
 实际选中第 8 轮，对应 120 次优化器更新。
 编码器包含 8699904 个参数，分类头包含 1028 个参数，共 8700932 个参数。

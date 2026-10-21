@@ -9,6 +9,9 @@
 
 已微调的小型 BERT 分类器、原生客户端和训练命令见[BERT 说明](BERT.md)。
 新测试集准确率、K1 原生一致性与分类耗时见[微调实测](../../reports/2026-10-18-2b-bert-classifier.md)。
+BERT 模型保持 `bert-router-v1`。
+后续优化研究转向[文档字符串收益规则](../../reports/2026-10-21-2b-mtp-docstring-rule-validation.md)，BERT 只作意图对照。
+模型身份、规则与现有代理的区别见[版本澄清](../../reports/2026-10-21-routing-version-clarification.md)。
 
 生产继续使用直接解码；两路代理保留为独立实验和手工对照入口。
 真实端到端结果见[两路实测](../../reports/2026-10-18-2b-router-e2e.md)。
@@ -19,7 +22,10 @@
 第三路相对两路仅再减少 1.59%。
 这些值使用既有配对数据，见[完整头实验](../../experiments/2026-10-17-2b-full-head-ablation.md)。
 
-## 分类与策略
+## 旧 ngram 分类器与现有类别策略
+
+下列特征与模型大小描述旧 ngram 分类器，BERT 实现见上方链接。
+当前 `policy.py` 按类别选择后端，在线收益规则的接入条件见版本澄清。
 
 分类器使用字符 2、3、4-gram、确定性哈希和四类线性 softmax。
 特征取最后一条用户消息的前后窗口，每端最多 256 个字符。
