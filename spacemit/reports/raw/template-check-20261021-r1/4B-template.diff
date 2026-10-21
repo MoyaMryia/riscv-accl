@@ -1,0 +1,27 @@
+--- delivered
++++ official
+@@ -116,9 +116,8 @@
+                 {%- else %}
+                     {{- '\n<tool_call>\n<function=' + tool_call.name + '>\n' }}
+                 {%- endif %}
+-                {%- if tool_call.arguments is mapping %}
+-                    {%- for args_name in tool_call.arguments %}
+-                        {%- set args_value = tool_call.arguments[args_name] %}
++                {%- if tool_call.arguments is defined %}
++                    {%- for args_name, args_value in tool_call.arguments|items %}
+                         {{- '<parameter=' + args_name + '>\n' }}
+                         {%- set args_value = args_value | tojson | safe if args_value is mapping or (args_value is sequence and args_value is not string) else args_value | string %}
+                         {{- args_value }}
+@@ -147,9 +146,9 @@
+ {%- endfor %}
+ {%- if add_generation_prompt %}
+     {{- '<|im_start|>assistant\n' }}
+-    {%- if enable_thinking is defined and enable_thinking is true %}
++    {%- if enable_thinking is defined and enable_thinking is false %}
++        {{- '<think>\n\n</think>\n\n' }}
++    {%- else %}
+         {{- '<think>\n' }}
+-    {%- else %}
+-        {{- '<think>\n\n</think>\n\n' }}
+     {%- endif %}
+ {%- endif %}
