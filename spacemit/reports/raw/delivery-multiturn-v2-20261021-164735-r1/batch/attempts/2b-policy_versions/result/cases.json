@@ -1,0 +1,50 @@
+[
+  {
+    "conversation_id": "policy_versions",
+    "category": "state",
+    "turns": [
+      {
+        "user": "资料：旧版 V1.2 规定告警确认时限 30 分钟，已于 3 月 15 日废止。现行 V2.0 规定 15 分钟。现行确认时限是多少分钟？只回答数字。",
+        "require": [
+          {
+            "type": "number",
+            "name": "现行时限",
+            "expected": 15,
+            "unit": "分钟"
+          }
+        ]
+      },
+      {
+        "user": "旧版 V1.2 的确认时限是多少分钟？只回答数字。",
+        "require": [
+          {
+            "type": "number",
+            "name": "旧版时限",
+            "expected": 30,
+            "unit": "分钟"
+          }
+        ]
+      },
+      {
+        "user": "如果值班员按 30 分钟确认告警，是否符合现行规定？只回答符合或不符合。",
+        "require": [
+          {
+            "type": "compliance",
+            "name": "符合现行规定",
+            "expected": false
+          }
+        ]
+      },
+      {
+        "user": "现行版本号是什么？",
+        "require": [
+          {
+            "type": "version",
+            "name": "现行版本",
+            "expected": "V2.0"
+          }
+        ]
+      }
+    ]
+  }
+]

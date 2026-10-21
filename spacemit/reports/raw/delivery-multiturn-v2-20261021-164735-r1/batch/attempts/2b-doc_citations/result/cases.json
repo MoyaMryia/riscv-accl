@@ -1,0 +1,113 @@
+[
+  {
+    "conversation_id": "doc_citations",
+    "category": "state",
+    "turns": [
+      {
+        "user": "资料片段：L01 北岭站有 48 台设备。L02 南湾站有 36 台设备。L03 东港站有 24 台设备。L02 写的是哪个站的多少台设备？",
+        "require": [
+          {
+            "type": "record",
+            "name": "资料内容",
+            "expected": "L02"
+          }
+        ],
+        "sources": {
+          "L01": {
+            "site": "北岭",
+            "count": 48
+          },
+          "L02": {
+            "site": "南湾",
+            "count": 36
+          },
+          "L03": {
+            "site": "东港",
+            "count": 24
+          }
+        }
+      },
+      {
+        "user": "三个站合计多少台设备？只回答数字。",
+        "require": [
+          {
+            "type": "number",
+            "name": "设备总数",
+            "expected": 108,
+            "unit": "台"
+          }
+        ],
+        "sources": {
+          "L01": {
+            "site": "北岭",
+            "count": 48
+          },
+          "L02": {
+            "site": "南湾",
+            "count": 36
+          },
+          "L03": {
+            "site": "东港",
+            "count": 24
+          }
+        }
+      },
+      {
+        "user": "哪一条资料写的是东港站？",
+        "require": [
+          {
+            "type": "citation",
+            "name": "资料编号",
+            "expected": "L03"
+          }
+        ],
+        "sources": {
+          "L01": {
+            "site": "北岭",
+            "count": 48
+          },
+          "L02": {
+            "site": "南湾",
+            "count": 36
+          },
+          "L03": {
+            "site": "东港",
+            "count": 24
+          }
+        }
+      },
+      {
+        "user": "用一句话写出合计台数，并标出你引用的资料编号。",
+        "require": [
+          {
+            "type": "number",
+            "name": "设备总数",
+            "expected": 108,
+            "unit": "台"
+          }
+        ],
+        "sources": {
+          "L01": {
+            "site": "北岭",
+            "count": 48
+          },
+          "L02": {
+            "site": "南湾",
+            "count": 36
+          },
+          "L03": {
+            "site": "东港",
+            "count": 24
+          }
+        },
+        "format": {
+          "citations": [
+            "L01",
+            "L02",
+            "L03"
+          ]
+        }
+      }
+    ]
+  }
+]

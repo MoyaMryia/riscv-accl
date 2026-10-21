@@ -1,0 +1,56 @@
+[
+  {
+    "conversation_id": "inventory",
+    "category": "state",
+    "turns": [
+      {
+        "user": "过滤芯期初库存 80 件，本周入库 24 件，领用 31 件，报损 3 件。盘点库存是多少件？只回答数字。",
+        "require": [
+          {
+            "type": "number",
+            "name": "库存",
+            "expected": 70,
+            "unit": "件"
+          }
+        ]
+      },
+      {
+        "user": "补货阈值是 60 件。按上面的库存，需要补货吗？只回答需要或不需要。",
+        "require": [
+          {
+            "type": "restock",
+            "name": "补货",
+            "expected": false
+          }
+        ]
+      },
+      {
+        "user": "如果报损是 20 件而不是 3 件，其他数字不变，库存是多少件？只回答数字。",
+        "require": [
+          {
+            "type": "number",
+            "name": "库存",
+            "expected": 53,
+            "unit": "件"
+          }
+        ]
+      },
+      {
+        "user": "按修正后的库存，需要补货吗？库存是多少件？",
+        "require": [
+          {
+            "type": "restock",
+            "name": "补货",
+            "expected": true
+          },
+          {
+            "type": "number",
+            "name": "库存",
+            "expected": 53,
+            "unit": "件"
+          }
+        ]
+      }
+    ]
+  }
+]

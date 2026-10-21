@@ -26,6 +26,8 @@ GGUF 是当前推理引擎读取的模型文件格式。
 已验证：[固定多轮验收](spacemit/reports/2026-10-21-fixed-multi-turn-results.md)已执行，质量门槛未通过。
 本次保留实际失败，继续提供现有运行材料与性能证据。
 
+已验证：[v2 完整多轮测量](spacemit/reports/2026-10-21-fixed-multi-turn-v2-results.md)完成 48 轮请求与独立人工复核。
+
 | 任务 | 可用入口 |
 | --- | --- |
 | 从依赖准备到两个模型的本地请求 | [部署入口](spacemit/DEPLOYMENT.md) |

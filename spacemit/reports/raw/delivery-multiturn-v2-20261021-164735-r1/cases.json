@@ -1,0 +1,365 @@
+[
+ {
+  "conversation_id": "site_totals",
+  "category": "state",
+  "turns": [
+   {
+    "user": "北岭站有 48 台设备，南湾站有 36 台，东港站有 24 台。项目负责人是林岚。三个站合计多少台设备？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "设备总数",
+      "expected": 108,
+      "unit": "台"
+     }
+    ]
+   },
+   {
+    "user": "南湾新增 3 台，北岭报废 2 台。现在三个站合计多少台？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "设备总数",
+      "expected": 109,
+      "unit": "台"
+     }
+    ]
+   },
+   {
+    "user": "项目负责人是谁？只回答姓名。",
+    "require": [
+     {
+      "type": "name",
+      "name": "负责人",
+      "expected": "林岚"
+     }
+    ]
+   },
+   {
+    "user": "用一句话同时写出当前设备总数和项目负责人。",
+    "require": [
+     {
+      "type": "number",
+      "name": "设备总数",
+      "expected": 109,
+      "unit": "台"
+     },
+     {
+      "type": "name",
+      "name": "负责人",
+      "expected": "林岚"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "conversation_id": "inventory",
+  "category": "state",
+  "turns": [
+   {
+    "user": "过滤芯期初库存 80 件，本周入库 24 件，领用 31 件，报损 3 件。盘点库存是多少件？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "库存",
+      "expected": 70,
+      "unit": "件"
+     }
+    ]
+   },
+   {
+    "user": "补货阈值是 60 件。按上面的库存，需要补货吗？只回答需要或不需要。",
+    "require": [
+     {
+      "type": "restock",
+      "name": "补货",
+      "expected": false
+     }
+    ]
+   },
+   {
+    "user": "如果报损是 20 件而不是 3 件，其他数字不变，库存是多少件？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "库存",
+      "expected": 53,
+      "unit": "件"
+     }
+    ]
+   },
+   {
+    "user": "按修正后的库存，需要补货吗？库存是多少件？",
+    "require": [
+     {
+      "type": "restock",
+      "name": "补货",
+      "expected": true
+     },
+     {
+      "type": "number",
+      "name": "库存",
+      "expected": 53,
+      "unit": "件"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "conversation_id": "policy_versions",
+  "category": "state",
+  "turns": [
+   {
+    "user": "资料：旧版 V1.2 规定告警确认时限 30 分钟，已于 3 月 15 日废止。现行 V2.0 规定 15 分钟。现行确认时限是多少分钟？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "现行时限",
+      "expected": 15,
+      "unit": "分钟"
+     }
+    ]
+   },
+   {
+    "user": "旧版 V1.2 的确认时限是多少分钟？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "旧版时限",
+      "expected": 30,
+      "unit": "分钟"
+     }
+    ]
+   },
+   {
+    "user": "如果值班员按 30 分钟确认告警，是否符合现行规定？只回答符合或不符合。",
+    "require": [
+     {
+      "type": "compliance",
+      "name": "符合现行规定",
+      "expected": false
+     }
+    ]
+   },
+   {
+    "user": "现行版本号是什么？",
+    "require": [
+     {
+      "type": "version",
+      "name": "现行版本",
+      "expected": "V2.0"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "conversation_id": "meeting_gap",
+  "category": "state",
+  "turns": [
+   {
+    "user": "会议 A 为 09:00 至 10:00，会议 B 为 10:30 至 11:15。两场会议之间有多少分钟空档？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "空档分钟数",
+      "expected": 30,
+      "unit": "分钟"
+     }
+    ]
+   },
+   {
+    "user": "若会议 A 延长 45 分钟，会议 B 不变，两场会冲突吗？只回答冲突或不冲突。",
+    "require": [
+     {
+      "type": "conflict",
+      "name": "会议冲突",
+      "expected": true
+     }
+    ]
+   },
+   {
+    "user": "若会议 A 保持原时长，会议 B 提前到 09:45，会冲突吗？只回答冲突或不冲突。",
+    "require": [
+     {
+      "type": "conflict",
+      "name": "会议冲突",
+      "expected": true
+     }
+    ]
+   },
+   {
+    "user": "会议 A 保持 09:00 至 10:00。会议 B 最早可以在几点开始？只回答时间。",
+    "require": [
+     {
+      "type": "time",
+      "name": "最早开始时间",
+      "expected": 600
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "conversation_id": "duration_math",
+  "category": "state",
+  "turns": [
+   {
+    "user": "2.5 小时等于多少分钟？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "分钟数",
+      "expected": 150,
+      "unit": "分钟"
+     }
+    ]
+   },
+   {
+    "user": "150 分钟再加 45 分钟，合计多少小时多少分钟？",
+    "require": [
+     {
+      "type": "duration",
+      "name": "合计分钟数",
+      "expected": 195
+     }
+    ]
+   },
+   {
+    "user": "3 小时 15 分钟合计多少分钟？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "分钟数",
+      "expected": 195,
+      "unit": "分钟"
+     }
+    ]
+   },
+   {
+    "user": "每节课 45 分钟，195 分钟最多能排几节完整的课？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "完整课时数",
+      "expected": 4,
+      "unit": "节"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "conversation_id": "doc_citations",
+  "category": "state",
+  "turns": [
+   {
+    "user": "资料片段：L01 北岭站有 48 台设备。L02 南湾站有 36 台设备。L03 东港站有 24 台设备。L02 写的是哪个站的多少台设备？",
+    "require": [
+     {
+      "type": "record",
+      "name": "资料内容",
+      "expected": "L02"
+     }
+    ],
+    "sources": {
+     "L01": {
+      "site": "北岭",
+      "count": 48
+     },
+     "L02": {
+      "site": "南湾",
+      "count": 36
+     },
+     "L03": {
+      "site": "东港",
+      "count": 24
+     }
+    }
+   },
+   {
+    "user": "三个站合计多少台设备？只回答数字。",
+    "require": [
+     {
+      "type": "number",
+      "name": "设备总数",
+      "expected": 108,
+      "unit": "台"
+     }
+    ],
+    "sources": {
+     "L01": {
+      "site": "北岭",
+      "count": 48
+     },
+     "L02": {
+      "site": "南湾",
+      "count": 36
+     },
+     "L03": {
+      "site": "东港",
+      "count": 24
+     }
+    }
+   },
+   {
+    "user": "哪一条资料写的是东港站？",
+    "require": [
+     {
+      "type": "citation",
+      "name": "资料编号",
+      "expected": "L03"
+     }
+    ],
+    "sources": {
+     "L01": {
+      "site": "北岭",
+      "count": 48
+     },
+     "L02": {
+      "site": "南湾",
+      "count": 36
+     },
+     "L03": {
+      "site": "东港",
+      "count": 24
+     }
+    }
+   },
+   {
+    "user": "用一句话写出合计台数，并标出你引用的资料编号。",
+    "require": [
+     {
+      "type": "number",
+      "name": "设备总数",
+      "expected": 108,
+      "unit": "台"
+     }
+    ],
+    "sources": {
+     "L01": {
+      "site": "北岭",
+      "count": 48
+     },
+     "L02": {
+      "site": "南湾",
+      "count": 36
+     },
+     "L03": {
+      "site": "东港",
+      "count": 24
+     }
+    },
+    "format": {
+     "citations": [
+      "L01",
+      "L02",
+      "L03"
+     ]
+    }
+   }
+  ]
+ }
+]

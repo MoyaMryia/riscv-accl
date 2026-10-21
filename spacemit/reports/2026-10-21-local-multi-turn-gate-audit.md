@@ -94,6 +94,7 @@ python3 spacemit/bench/mtp-r3/local_multi_turn_replay.py \
 [离线重评记录](raw/multi-turn-v2-rescore-20261021-r1/automatic-v2/summary.json)显示，26 个核心事实正确答案通过。
 原六个错误答案中，五个判为错误，一个转人工复核，没有错误答案被判为正确。
 此检查作为代码回归测试，模型验收结果继续使用原始记录。
+后续完整 48 轮测量与人工复核见[v2 结果](2026-10-21-fixed-multi-turn-v2-results.md)。
 
 | 模型 | 已保存轮次 | 人工确认正确 | 人工确认错误 | 原计划未执行 |
 | --- | ---: | ---: | ---: | ---: |

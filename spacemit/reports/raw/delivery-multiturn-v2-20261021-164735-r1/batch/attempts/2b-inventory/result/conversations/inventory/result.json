@@ -1,0 +1,222 @@
+{
+  "conversation_id": "inventory",
+  "category": "state",
+  "status": "failed",
+  "turns_planned": 4,
+  "turns_completed": 4,
+  "checks_passed": 2,
+  "checks_total": 5,
+  "quality_statistics": {
+    "correct": 1,
+    "incorrect": 3,
+    "review_required": 0,
+    "unattempted": 0,
+    "planned": 4,
+    "accuracy": 0.25,
+    "turns_with_format_warnings": 1
+  },
+  "failure": {
+    "turn": 2,
+    "status": "failed",
+    "failures": [
+      {
+        "kind": "require",
+        "name": "补货",
+        "expected": false,
+        "observed": {
+          "values": [
+            true
+          ]
+        },
+        "matched": false
+      }
+    ]
+  },
+  "records": [
+    {
+      "turn": 1,
+      "prompt_chars": 53,
+      "prompt_tokens": 80,
+      "completion_tokens": 18,
+      "cached_tokens": 0,
+      "wall_s": 7.51,
+      "ttft_s": 3.767,
+      "quality": {
+        "passed": true,
+        "checks": [
+          {
+            "kind": "require",
+            "name": "库存",
+            "expected": 70,
+            "observed": {
+              "values": [
+                70
+              ],
+              "denied": [],
+              "equations": [
+                {
+                  "computed": 70,
+                  "claimed": 70
+                }
+              ],
+              "units": []
+            },
+            "matched": true
+          }
+        ],
+        "failures": [],
+        "answer_chars": 21,
+        "assessment_version": "v2",
+        "format_warnings": [
+          "回答含额外单位、说明或其他格式。"
+        ]
+      }
+    },
+    {
+      "turn": 2,
+      "prompt_chars": 34,
+      "prompt_tokens": 132,
+      "completion_tokens": 2,
+      "cached_tokens": 0,
+      "wall_s": 6.081,
+      "ttft_s": 5.849,
+      "quality": {
+        "passed": false,
+        "checks": [
+          {
+            "kind": "require",
+            "name": "补货",
+            "expected": false,
+            "observed": {
+              "values": [
+                true
+              ]
+            },
+            "matched": false
+          }
+        ],
+        "failures": [
+          {
+            "kind": "require",
+            "name": "补货",
+            "expected": false,
+            "observed": {
+              "values": [
+                true
+              ]
+            },
+            "matched": false
+          }
+        ],
+        "answer_chars": 2,
+        "assessment_version": "v2",
+        "format_warnings": []
+      }
+    },
+    {
+      "turn": 3,
+      "prompt_chars": 38,
+      "prompt_tokens": 170,
+      "completion_tokens": 3,
+      "cached_tokens": 0,
+      "wall_s": 7.774,
+      "ttft_s": 7.32,
+      "quality": {
+        "passed": false,
+        "checks": [
+          {
+            "kind": "require",
+            "name": "库存",
+            "expected": 53,
+            "observed": {
+              "values": [
+                70
+              ],
+              "denied": [],
+              "equations": [],
+              "units": []
+            },
+            "matched": false
+          }
+        ],
+        "failures": [
+          {
+            "kind": "require",
+            "name": "库存",
+            "expected": 53,
+            "observed": {
+              "values": [
+                70
+              ],
+              "denied": [],
+              "equations": [],
+              "units": []
+            },
+            "matched": false
+          }
+        ],
+        "answer_chars": 2,
+        "assessment_version": "v2",
+        "format_warnings": []
+      }
+    },
+    {
+      "turn": 4,
+      "prompt_chars": 21,
+      "prompt_tokens": 196,
+      "completion_tokens": 5,
+      "cached_tokens": 0,
+      "wall_s": 9.189,
+      "ttft_s": 8.299,
+      "quality": {
+        "passed": false,
+        "checks": [
+          {
+            "kind": "require",
+            "name": "补货",
+            "expected": true,
+            "observed": {
+              "values": [
+                true
+              ]
+            },
+            "matched": true
+          },
+          {
+            "kind": "require",
+            "name": "库存",
+            "expected": 53,
+            "observed": {
+              "values": [
+                70
+              ],
+              "denied": [],
+              "equations": [],
+              "units": []
+            },
+            "matched": false
+          }
+        ],
+        "failures": [
+          {
+            "kind": "require",
+            "name": "库存",
+            "expected": 53,
+            "observed": {
+              "values": [
+                70
+              ],
+              "denied": [],
+              "equations": [],
+              "units": []
+            },
+            "matched": false
+          }
+        ],
+        "answer_chars": 5,
+        "assessment_version": "v2",
+        "format_warnings": []
+      }
+    }
+  ]
+}
