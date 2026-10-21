@@ -11,21 +11,18 @@ from pathlib import Path
 import signal
 import subprocess
 import sys
-import time
 import urllib.request
 
 import diagnostic as base
 import multi_turn_cases as cases_module
 from repetition_guard import RepeatGuard
 
-SAVE_KEYS = ('answer', 'ttft_s', 'wall_s', 'finish_reason', 'usage', 'timings', 'server_slot')
-
 
 class HttpClient:
     """把聊天模块包装成逐轮提问接口。"""
 
     def __init__(self, chat, url, model, max_tokens, timeout, context,
-                 cache_prompt=False, guard_factory=None):
+                 cache_prompt=False, guard_factory=None, evidence_root=None):
         self.chat = chat
         self.url = url
         self.model = model
@@ -34,17 +31,36 @@ class HttpClient:
         self.context = context
         self.cache_prompt = cache_prompt
         self.guard_factory = guard_factory
+        self.evidence_root = evidence_root
+        self.turn = 0
 
     def ask(self, messages):
         payload = self.chat.request_body(messages, self.model, 0, self.max_tokens)
         payload.update(cache_prompt=self.cache_prompt,
                        stream_options={'include_usage': True}, verbose=True)
-        prompt_count = self.chat.count_prompt_tokens(self.url, payload, self.timeout)
-        if prompt_count + self.max_tokens > self.context:
-            raise ValueError('turn does not fit in the context window')
+        self.turn += 1
+        folder = None
+        if self.evidence_root is not None:
+            folder = self.evidence_root / f'turn-{self.turn}'
+            folder.mkdir(parents=True)
+            base.save(folder / 'request.json', payload)
         guard = self.guard_factory() if self.guard_factory is not None else None
-        response = self.chat.complete(self.url, payload, self.timeout,
-                                      display=False, guard=guard)
+        old_handler = signal.signal(signal.SIGALRM, base.deadline_handler)
+        try:
+            signal.setitimer(signal.ITIMER_REAL, self.timeout)
+            prompt_count = self.chat.count_prompt_tokens(self.url, payload, self.timeout)
+            if prompt_count + self.max_tokens > self.context:
+                raise ValueError('turn does not fit in the context window')
+            response = self.chat.complete(
+                self.url, payload, self.timeout, display=False, guard=guard,
+                stream_path=folder / 'stream.sse' if folder is not None else None)
+        finally:
+            signal.setitimer(signal.ITIMER_REAL, 0)
+            signal.signal(signal.SIGALRM, old_handler)
+        if folder is not None:
+            base.save(folder / 'answer.json', response)
+            if isinstance(response.get('answer'), str):
+                (folder / 'answer.txt').write_text(response['answer'], encoding='utf-8')
         return {'payload': payload, 'prompt_count': prompt_count, 'response': response}
 
 
@@ -73,8 +89,13 @@ def validate_turn(result, prompt_count, max_tokens, cache_prompt):
         base.finite_positive(result.get(key), key)
     if result.get('server_slot') != 0:
         raise ValueError('server slot differs')
+    generated, accepted = timing.get('draft_n', 0), timing.get('draft_n_accepted', 0)
+    if type(generated) is not int or type(accepted) is not int or not 0 <= accepted <= generated:
+        raise ValueError('draft counts are invalid')
+    if generated != 0:
+        raise ValueError('direct arm reports drafts')
     return {'prompt_tokens': prompt_n, 'completion_tokens': completion_n,
-            'cached_tokens': cached}
+            'cached_tokens': cached, 'draft_n': generated, 'draft_n_accepted': accepted}
 
 
 def run_conversation(client, conversation, save_turn=None):
@@ -143,9 +164,20 @@ def summarize(results):
     }
 
 
-def serve(args, models, arm='direct'):
+def stop_server(process):
+    """终止服务器，并等待进程退出。"""
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=30)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+
+
+def serve(args, models, conversation_id, arm='direct'):
     """启动一个服务器进程，返回 (process, url, folder)。"""
-    folder = args.output / 'servers' / f'server-{args.port}'
+    folder = args.output / 'servers' / conversation_id / f'server-{args.port}'
     folder.mkdir(parents=True)
     log_path = folder / 'server.log'
     libraries = f'{args.server.parent}:{args.tcm}:{args.spert / "lib"}'
@@ -154,28 +186,26 @@ def serve(args, models, arm='direct'):
                           '--log-verbosity', base.LOG_VERBOSITY]))
     env = base.clean_environment(os.environ, libraries, False, arm != 'loaded_off')
     base.save(folder / 'launch.json', {'argv': argv, 'environment': env})
-    log = log_path.open('w')
-    process = subprocess.Popen(argv, stdout=log, stderr=subprocess.STDOUT, env=env)
-    try:
-        base.wait_ready(process, f'http://127.0.0.1:{args.port}')
-    except BaseException:
-        log.close()
-        process.terminate()
-        process.wait()
-        raise
-    log.close()
+    with log_path.open('w') as log:
+        process = subprocess.Popen(argv, stdout=log, stderr=subprocess.STDOUT, env=env,
+                                   pass_fds=(9,))
     url = f'http://127.0.0.1:{args.port}'
-    with urllib.request.urlopen(url + '/props', timeout=30) as response:
-        props = json.load(response)
-    base.save(folder / 'properties.json', props)
-    if props['total_slots'] != 1 or props['default_generation_settings']['n_ctx'] != args.context:
-        process.terminate()
-        process.wait()
-        raise ValueError('runtime slot count or context differs')
+    try:
+        base.wait_ready(process, url)
+        with urllib.request.urlopen(url + '/props', timeout=30) as response:
+            props = json.load(response)
+        base.save(folder / 'properties.json', props)
+        if props['total_slots'] != 1 or props['default_generation_settings']['n_ctx'] != args.context:
+            raise ValueError('runtime slot count or context differs')
+    except BaseException:
+        stop_server(process)
+        base.save(folder / 'exit.json', {'returncode': process.returncode})
+        raise
     return process, url, folder
 
 
 def main(argv=None):
+    cases = cases_module.read_cases()
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('output', 'server', 'models', 'spert', 'tcm', 'manifest',
                  'build-receipt', 'chat', 'quality', 'effective', 'tool-receipt'):
@@ -185,6 +215,7 @@ def main(argv=None):
     parser.add_argument('--max-tokens', type=int, default=1024)
     parser.add_argument('--timeout', type=int, default=900)
     parser.add_argument('--context', type=int, default=12288)
+    parser.add_argument('--conversation', choices=[c['conversation_id'] for c in cases])
     parser.add_argument('--cache-prompt', action='store_true')
     parser.add_argument('--guard-window', type=int, default=3)
     parser.add_argument('--guard-min-chars', type=int, default=20)
@@ -193,13 +224,16 @@ def main(argv=None):
         parser.error('use tmux and a valid port')
     if not 0 < args.max_tokens < args.context:
         parser.error('max tokens must be smaller than the context')
+    if args.timeout <= 0:
+        parser.error('timeout must be positive')
+    if args.conversation is not None:
+        cases = [c for c in cases if c['conversation_id'] == args.conversation]
     signal.signal(signal.SIGTERM, base.term_handler)
     args.output.mkdir(parents=True, exist_ok=False)
     models, identities = base.verify_inputs(args, model_names=(args.model,), extra_tools={
         'suite': Path(__file__), 'assessment': Path(cases_module.__file__)})
     base.save(args.output / 'identity.json', identities)
     chat = base.load_module('multi_turn_chat', args.chat)
-    cases = cases_module.read_cases()
     base.save(args.output / 'cases.json', cases)
     base.save(args.output / 'protocol.json', {
         'model': args.model, 'conversations': len(cases),
@@ -212,7 +246,7 @@ def main(argv=None):
         folder = args.output / 'conversations' / conversation['conversation_id']
         folder.mkdir(parents=True)
         try:
-            process, url, server_folder = serve(args, models)
+            process, url, server_folder = serve(args, models, conversation['conversation_id'])
         except (RuntimeError, ValueError, OSError) as error:
             results.append({'conversation_id': conversation['conversation_id'],
                             'category': conversation['category'], 'status': 'incomplete',
@@ -221,34 +255,26 @@ def main(argv=None):
                             'failure': {'turn': 0, 'status': 'incomplete',
                                         'error': type(error).__name__ + ': ' + str(error)[:300]},
                             'records': []})
+            base.save(folder / 'result.json', results[-1])
             settled += 1
             base.save(args.output / 'progress.json',
                       {'planned': planned, 'settled': settled,
                        'last': conversation['conversation_id'], 'status': 'incomplete'})
             continue
-        client = HttpClient(chat, url, 'local', args.max_tokens, args.timeout, args.context,
-                            args.cache_prompt,
-                            guard_factory=lambda: RepeatGuard(args.guard_window,
-                                                              args.guard_min_chars))
         try:
+            client = HttpClient(chat, url, 'local', args.max_tokens, args.timeout, args.context,
+                                args.cache_prompt,
+                                guard_factory=lambda: RepeatGuard(args.guard_window,
+                                                                  args.guard_min_chars),
+                                evidence_root=folder)
+
             def save_turn(index, turn, reply, quality):
                 turn_folder = folder / f'turn-{index}'
-                turn_folder.mkdir()
-                base.save(turn_folder / 'request.json', reply['payload'])
-                base.save(turn_folder / 'answer.json',
-                          {k: v for k, v in reply['response'].items() if k in SAVE_KEYS})
-                (turn_folder / 'answer.txt').write_text(reply['response']['answer'])
                 base.save(turn_folder / 'quality.json', quality)
 
             result = run_conversation(client, conversation, save_turn)
         finally:
-            if process.poll() is None:
-                process.terminate()
-                try:
-                    process.wait(timeout=30)
-                except subprocess.TimeoutExpired:
-                    process.kill()
-                    process.wait()
+            stop_server(process)
             base.save(server_folder / 'exit.json', {'returncode': process.returncode})
         results.append(result)
         base.save(folder / 'result.json', result)

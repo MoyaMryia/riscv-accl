@@ -91,7 +91,7 @@ def _terminate(process):
     process.wait()
 
 
-def run(jobs, output, *, guard=None, before=None, after=None):
+def run(jobs, output, *, guard=None, before=None, after=None, pass_fds=()):
     """按输入顺序运行全部任务，并返回含最终门禁的 summary。"""
     _validate_jobs(jobs)
     root = Path(output)
@@ -132,7 +132,7 @@ def run(jobs, output, *, guard=None, before=None, after=None):
                     spawn_failed = False
                     try:
                         process = subprocess.Popen(job['argv'], stdout=stdout, stderr=stderr,
-                                                   start_new_session=True)
+                                                   start_new_session=True, pass_fds=pass_fds)
                     except OSError as error:
                         spawn_failed = True
                         returncode = None

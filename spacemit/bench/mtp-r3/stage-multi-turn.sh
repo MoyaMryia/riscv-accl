@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # 生成固定多轮任务目录：复制工具、写入收据与启动脚本。
-# 用法：stage-multi-turn.sh JOB_DIR 2B或4B
+# 用法：stage-multi-turn.sh JOB_DIR 2B或4B或both
 set -euo pipefail
 if [ "$#" -ne 2 ]; then
-    echo '用法：stage-multi-turn.sh JOB_DIR 2B或4B' >&2
+    echo '用法：stage-multi-turn.sh JOB_DIR 2B或4B或both' >&2
     exit 2
 fi
 job=$1
 model=$2
 case "$model" in
-    2B|4B) ;;
-    *) echo '型号只支持 2B 或 4B。' >&2; exit 2 ;;
+    2B|4B|both) ;;
+    *) echo '型号只支持 2B、4B 或 both。' >&2; exit 2 ;;
 esac
 test ! -e "$job"
 repo=$(cd "$(dirname "$0")/../../.." && pwd)
@@ -18,6 +18,8 @@ tools="$repo/spacemit/bench/mtp-r3"
 mkdir -p "$job"
 export PYTHONDONTWRITEBYTECODE=1
 cp "$tools"/{diagnostic.py,repetition_guard.py,multi_turn_suite.py,multi_turn_cases.py} "$job"/
+cp "$tools"/{batch_controller.py,multi_turn_batch.py} "$job"/
+cp "$tools"/test_{multi_turn_batch,multi_turn_suite,multi_turn_cases,batch_controller}.py "$job"/
 cp "$repo/spacemit/serve/cached-document-chat.py" "$job/chat.py"
 cp "$repo/spacemit/release-candidate/tests/quality.py" "$job/quality.py"
 cp "$repo/spacemit/bench/final-default/effective.py" "$job/effective.py"
@@ -40,18 +42,43 @@ import multi_turn_cases  # noqa: E402  (从任务目录读取冻结题集)
 
 cases = multi_turn_cases.read_cases()
 (job / 'cases.json').write_text(json.dumps(cases, ensure_ascii=False, indent=1) + '\n')
-print('PLANNED_TURNS', multi_turn_cases.planned_turns(cases))
+frozen = {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+          for path in sorted(job.glob('*.py'))}
+(job / 'frozen-tools.json').write_text(json.dumps(frozen, indent=1) + '\n')
+print('PLANNED_TURNS_PER_MODEL', multi_turn_cases.planned_turns(cases))
 PY
 cat > "$job/launch.sh" <<'SH'
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-base="$HOME/Projects/riscv-accl-bench-2026-09-27/k1-final-default-20261013-r1/final-r3"
-exec bash run-board.sh "$PWD" "$base/build/bin/llama-server" \
-    "$HOME/Projects/spacemit-llama/models" \
-    "$HOME/Projects/spacemit-llama/spert/spine-runtime.riscv64.0.6.2" \
-    "$HOME/Projects/llm-bench/.toolchain/spine-tcm" \
-    "$base/package/manifest.json" "$base/build/build-receipt.json" "$MODEL" multi_turn
+exec >run.log 2>&1
+trap 'rc=$?; printf "%s\n" "$rc" > exit-status' EXIT
+case "$MODEL" in
+    both) models=(2B 4B) ;;
+    *) models=("$MODEL") ;;
+esac
+python3 - "$PWD" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+home = Path.home()
+bench = home / 'Projects/riscv-accl-bench-2026-09-27'
+base = bench / 'k1-final-default-20261013-r1/final-r3'
+runtime = {
+    'server': str(base / 'build/bin/llama-server'),
+    'models': str(home / 'Projects/spacemit-llama/models'),
+    'spert': str(home / 'Projects/spacemit-llama/spert/spine-runtime.riscv64.0.6.2'),
+    'tcm': str(home / 'Projects/llm-bench/.toolchain/spine-tcm'),
+    'manifest': str(base / 'package/manifest.json'),
+    'build_receipt': str(base / 'build/build-receipt.json'),
+    'lock': str(bench / 'document-quality-suite.lock'),
+    'turn_timeout_s': 900,
+}
+with (Path(sys.argv[1]) / 'runtime.json').open('x') as output:
+    output.write(json.dumps(runtime, indent=2) + '\n')
+PY
+python3 -u multi_turn_batch.py --job "$PWD" --runtime "$PWD/runtime.json" --models "${models[@]}"
 SH
 sed -i "s/\$MODEL/$model/" "$job/launch.sh"
 chmod +x "$job/launch.sh"

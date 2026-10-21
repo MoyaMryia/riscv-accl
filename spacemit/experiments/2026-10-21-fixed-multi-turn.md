@@ -9,7 +9,8 @@
 
 在固定题集上检查多轮推理质量。
 每轮回答必须满足题面要求，后续轮次必须保持前面轮次的事实。
-两个模型分别运行，每个会话使用独立服务器进程。
+两个模型顺序运行，每个会话使用独立工作进程与独立服务器进程。
+外层控制器持有板端共用锁，工作进程与服务器继承锁描述符。
 
 ## 2 题集
 
@@ -53,8 +54,9 @@
 每个会话要求全部轮次完成，且每轮 require 模式全中、forbid 模式全不中。
 任一轮不满足时该会话记为 failed，并停止该会话的后续轮次。
 任一请求错误、超时、截断、空答或退化重复时该会话记为 incomplete。
-批次存在 failed 或 incomplete 会话时，控制器以状态 2 退出。
-退出码 2 表示矩阵已执行且保留了失败。
+批次存在 failed、incomplete、blocked 或 unattempted 会话时，控制器以状态 2 退出。
+状态计数之和必须等于计划会话数。
+退出码 2 表示批次门槛未通过。
 
 ## 5 记录
 
@@ -68,16 +70,27 @@
 | `result/conversations/<id>/turn-N/` | 请求、回答、逐轮判定 |
 | `result/conversations/<id>/result.json` | 会话状态与逐轮指标 |
 | `result/progress.json` | 已结算会话数与最后会话 |
-| `result/summary.json` | 会话状态、轮次计数、检查计数、门槛 |
+| `result/summary.json` | 单会话状态、轮次计数、检查计数、门槛 |
+| `batch/plan.json` | 全部会话、进程参数与截止时间 |
+| `batch/progress.json`、`batch/summary.json` | 已结算会话、五类状态计数与批次门槛 |
+| `batch/attempts/<id>/` | 独立会话的日志、退出状态、判定与 `result/` |
+| `configs/`、`runtime.json`、`frozen-tools.json` | 执行前固定的会话参数、运行路径与工具身份 |
 | `result/servers/<port>/` | 启动参数、环境、属性、退出状态 |
 
+单会话的 `result/` 位于对应的 `batch/attempts/<id>/` 中。
 逐轮记录词元数、墙钟、首词元时延与检查结果。
+请求发送前保存正文，响应流同步写入 `stream.sse`。
 
 ## 6 失败隔离
 
 一次请求失败只影响它所在的会话。
 其余会话继续执行，并按计划结算。
 服务器启动失败时该会话记为 incomplete，下一会话重新启动服务器。
+内部错误停止当前工作进程，外层控制器保存失败并执行后续会话。
+控制器在工作进程计时前取得锁，锁等待不消耗会话执行预算。
+每个会话的预算为轮数乘以单轮期限，再加服务器启动期限与 120 s 清理预算。
+控制器确认残留子进程退出后才执行下一会话。
+清理超时会阻塞依赖同一板端资源的剩余会话，并保存证据。
 批次不重试失败会话；重跑使用新的任务目录。
 
 ## 7 命令
@@ -85,18 +98,19 @@
 生成任务目录：
 
 ```bash
-bash spacemit/bench/mtp-r3/stage-multi-turn.sh lab/multi-turn-20261021/2b 2B
+bash spacemit/bench/mtp-r3/stage-multi-turn.sh lab/multi-turn-20261021/both both
 ```
 
 把任务目录复制到板上，在 tmux 中执行：
 
 ```bash
-cd ~/Projects/riscv-accl-bench-2026-09-27/multi-turn-20261021/2b
+cd ~/Projects/riscv-accl-bench-2026-09-27/multi-turn-20261021/both
 bash launch.sh
 ```
 
 任务目录必须使用新路径。
-4B 使用单独目录和 `4B` 参数。
+`both` 生成两个模型共 12 个会话、48 轮的顺序计划。
+单模型运行使用独立目录，并把 `both` 替换为 `2B` 或 `4B`。
 
 ## 8 状态
 
