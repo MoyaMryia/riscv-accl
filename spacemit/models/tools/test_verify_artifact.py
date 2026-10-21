@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """核验结构比较工具拒绝差异，并接受完全相同的记录。"""
 
+import hashlib
 import importlib.util
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -78,6 +80,52 @@ class CompareTest(unittest.TestCase):
         result = VERIFY.compare_structures(structure(), candidate,
                                            ignore=['blk.0.attn_q.weight'])
         self.assertTrue(result['passed'])
+
+
+class FakeField:
+    def __init__(self, value=None, data=None):
+        self.value = value
+        self.data = data or []
+
+    def contents(self):
+        return self.value
+
+
+class FakeTensor:
+    def __init__(self, name, shape, tensor_type):
+        self.name, self.shape, self.tensor_type = name, shape, tensor_type
+
+
+class FakeReader:
+    gguf_version = 3
+
+    def __init__(self):
+        self.fields = {
+            'tokenizer.ggml.model': FakeField('gpt2'),
+            'tokenizer.ggml.tokens': FakeField(data=[b'a', b'b']),
+            'tokenizer.chat_template': FakeField('template'),
+        }
+        self.tensors = [FakeTensor('w', [2, 2], 'Q4_0')]
+
+
+class FakeModule:
+    GGUFReader = staticmethod(lambda path: FakeReader())
+
+
+class ReadStructureTest(unittest.TestCase):
+    def test_reads_string_fields_through_contents(self):
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / 'fake.gguf'
+            path.write_bytes(b'GGUF')
+            result = VERIFY.read_structure(path, FakeModule)
+        self.assertEqual(result['tokenizer_model'], 'gpt2')
+        self.assertEqual(result['tokenizer'], {
+            'count': 2,
+            'tokens_sha256': hashlib.sha256(b'a\0b\0').hexdigest()})
+        self.assertEqual(result['chat_template_sha256'],
+                         hashlib.sha256(b'template').hexdigest())
+        self.assertEqual(result['tensor_count'], 1)
+        self.assertEqual(result['gguf_version'], 3)
 
 
 if __name__ == '__main__':

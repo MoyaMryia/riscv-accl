@@ -44,9 +44,11 @@ def read_structure(path, gguf_module):
         'gguf_version': int(getattr(reader, 'gguf_version', 0)),
         'tensor_count': len(tensors),
         'tensors': sorted(tensors, key=lambda item: item['name']),
-        'tokenizer_model': str(getattr(fields.get('tokenizer.ggml.model'), 'contents', '')),
+        'tokenizer_model': str(fields['tokenizer.ggml.model'].contents()
+                               if 'tokenizer.ggml.model' in fields else ''),
         'tokenizer': tokenizer,
-        'chat_template_sha256': hashlib.sha256(str(getattr(template, 'contents', '')).encode()).hexdigest(),
+        'chat_template_sha256': hashlib.sha256(
+            str(template.contents() if template is not None else '').encode()).hexdigest(),
     }
 
 

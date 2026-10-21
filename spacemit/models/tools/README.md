@@ -7,7 +7,7 @@ These scripts keep the model recipe for the SpaceMiT X60. Supply the model files
 The [source and reproduction record](../REPRODUCIBILITY.md) separates the historical Unsloth artifacts from the new official-checkpoint recipe.
 `reproduce-official.sh` requires fixed official input files and the recorded SpaceMiT source snapshot.
 `record-reproduction.py` verifies input identities and records artifact hashes.
-The complete official conversion remains untested.
+The complete official conversion ran on 2026-10-21 for both models. K1 inference remains pending.
 
 ## Structure check
 
