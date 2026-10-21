@@ -1,0 +1,70 @@
+{
+  "conversation_id": "duration_math",
+  "category": "state",
+  "status": "failed",
+  "turns_planned": 4,
+  "turns_completed": 2,
+  "checks_passed": 1,
+  "checks_total": 2,
+  "failure": {
+    "turn": 2,
+    "status": "failed",
+    "failures": [
+      {
+        "pattern": "3\\s*小时.{0,8}15|195",
+        "kind": "require",
+        "matched": false
+      }
+    ]
+  },
+  "records": [
+    {
+      "turn": 1,
+      "prompt_chars": 19,
+      "prompt_tokens": 51,
+      "completion_tokens": 4,
+      "cached_tokens": 0,
+      "wall_s": 8.474,
+      "ttft_s": 7.105,
+      "quality": {
+        "passed": true,
+        "checks": [
+          {
+            "pattern": "(?<![\\d.])150(?![\\d.])",
+            "kind": "require",
+            "matched": true
+          }
+        ],
+        "failures": [],
+        "answer_chars": 3
+      }
+    },
+    {
+      "turn": 2,
+      "prompt_chars": 26,
+      "prompt_tokens": 82,
+      "completion_tokens": 9,
+      "cached_tokens": 0,
+      "wall_s": 13.745,
+      "ttft_s": 10.136,
+      "quality": {
+        "passed": false,
+        "checks": [
+          {
+            "pattern": "3\\s*小时.{0,8}15|195",
+            "kind": "require",
+            "matched": false
+          }
+        ],
+        "failures": [
+          {
+            "pattern": "3\\s*小时.{0,8}15|195",
+            "kind": "require",
+            "matched": false
+          }
+        ],
+        "answer_chars": 10
+      }
+    }
+  ]
+}

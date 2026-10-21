@@ -1,0 +1,1264 @@
+[
+  {
+    "model": "2B",
+    "conversation_id": "doc_citations",
+    "turn": 1,
+    "answer_path": "batch/attempts/2b-doc_citations/result/conversations/doc_citations/turn-1/answer.txt",
+    "correct": false,
+    "reference": "南湾站，36 台设备。",
+    "reason": "答案否认能够确定站名和数量，但 L02 明确写明南湾站有 36 台设备。",
+    "assessment": {
+      "passed": null,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "资料内容",
+          "expected": {
+            "site": "南湾",
+            "count": 36
+          },
+          "observed": {
+            "sites": [
+              "北岭",
+              "南湾",
+              "东港",
+              "北岭",
+              "南湾",
+              "东港",
+              "东港"
+            ],
+            "counts": [
+              48,
+              36,
+              24
+            ],
+            "denied_sites": [],
+            "denied_counts": [],
+            "references": [
+              "L01",
+              "L02",
+              "L03",
+              "L03",
+              "L02"
+            ],
+            "units": [
+              "台",
+              "台",
+              "台"
+            ]
+          },
+          "matched": null
+        },
+        {
+          "kind": "require",
+          "name": "资料编号有效",
+          "expected": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "observed": [
+            "L01",
+            "L02",
+            "L03",
+            "L03",
+            "L02"
+          ],
+          "matched": true
+        }
+      ],
+      "failures": [
+        {
+          "kind": "require",
+          "name": "资料内容",
+          "expected": {
+            "site": "南湾",
+            "count": 36
+          },
+          "observed": {
+            "sites": [
+              "北岭",
+              "南湾",
+              "东港",
+              "北岭",
+              "南湾",
+              "东港",
+              "东港"
+            ],
+            "counts": [
+              48,
+              36,
+              24
+            ],
+            "denied_sites": [],
+            "denied_counts": [],
+            "references": [
+              "L01",
+              "L02",
+              "L03",
+              "L03",
+              "L02"
+            ],
+            "units": [
+              "台",
+              "台",
+              "台"
+            ]
+          },
+          "matched": null
+        }
+      ],
+      "answer_chars": 141,
+      "assessment_version": "v2",
+      "format_warnings": [
+        "回答包含不确定表述，需人工复核。"
+      ]
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "duration_math",
+    "turn": 1,
+    "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-1/answer.txt",
+    "correct": true,
+    "reference": "150",
+    "reason": "2.5×60＝150 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "分钟数",
+          "expected": 150,
+          "observed": {
+            "values": [
+              150
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "duration_math",
+    "turn": 2,
+    "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-2/answer.txt",
+    "correct": true,
+    "reference": "3 小时 15 分钟",
+    "reason": "150＋45＝195 分钟，即 3 小时 15 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "合计分钟数",
+          "expected": 195,
+          "observed": {
+            "minutes": [
+              195,
+              195,
+              195
+            ],
+            "denied": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 53,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "duration_math",
+    "turn": 3,
+    "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-3/answer.txt",
+    "correct": true,
+    "reference": "195",
+    "reason": "3×60＋15＝195 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "分钟数",
+          "expected": 195,
+          "observed": {
+            "values": [
+              195
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "duration_math",
+    "turn": 4,
+    "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-4/answer.txt",
+    "correct": true,
+    "reference": "4",
+    "reason": "195÷45 的整数商是 4，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "完整课时数",
+          "expected": 4,
+          "observed": {
+            "values": [
+              4,
+              4
+            ],
+            "denied": [],
+            "equations": [
+              {
+                "computed": 4,
+                "claimed": 4,
+                "dividend": 195,
+                "divisor": 45,
+                "quotient": 4,
+                "remainder": 15,
+                "computed_remainder": 15,
+                "units": [
+                  null,
+                  null,
+                  null,
+                  null
+                ],
+                "units_valid": true
+              }
+            ],
+            "units": [
+              "节"
+            ]
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 37,
+      "assessment_version": "v2",
+      "format_warnings": [
+        "回答含额外单位、说明或其他格式。"
+      ]
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "inventory",
+    "turn": 1,
+    "answer_path": "batch/attempts/2b-inventory/result/conversations/inventory/turn-1/answer.txt",
+    "correct": true,
+    "reference": "70",
+    "reason": "80＋24－31－3＝70 件，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "库存",
+          "expected": 70,
+          "observed": {
+            "values": [
+              70
+            ],
+            "denied": [],
+            "equations": [
+              {
+                "computed": 70,
+                "claimed": 70
+              }
+            ],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 21,
+      "assessment_version": "v2",
+      "format_warnings": [
+        "回答含额外单位、说明或其他格式。"
+      ]
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "inventory",
+    "turn": 2,
+    "answer_path": "batch/attempts/2b-inventory/result/conversations/inventory/turn-2/answer.txt",
+    "correct": false,
+    "reference": "不需要",
+    "reason": "用户给定事实算得库存为 70 件，高于 60 件阈值，答案却要求补货。",
+    "assessment": {
+      "passed": false,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "补货",
+          "expected": false,
+          "observed": {
+            "values": [
+              true
+            ]
+          },
+          "matched": false
+        }
+      ],
+      "failures": [
+        {
+          "kind": "require",
+          "name": "补货",
+          "expected": false,
+          "observed": {
+            "values": [
+              true
+            ]
+          },
+          "matched": false
+        }
+      ],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "meeting_gap",
+    "turn": 1,
+    "answer_path": "batch/attempts/2b-meeting_gap/result/conversations/meeting_gap/turn-1/answer.txt",
+    "correct": false,
+    "reference": "30",
+    "reason": "10:00 至 10:30 的空档为 30 分钟，答案却为 105。",
+    "assessment": {
+      "passed": false,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "空档分钟数",
+          "expected": 30,
+          "observed": {
+            "values": [
+              105
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": false
+        }
+      ],
+      "failures": [
+        {
+          "kind": "require",
+          "name": "空档分钟数",
+          "expected": 30,
+          "observed": {
+            "values": [
+              105
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": false
+        }
+      ],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "policy_versions",
+    "turn": 1,
+    "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-1/answer.txt",
+    "correct": true,
+    "reference": "15",
+    "reason": "现行 V2.0 的确认时限为 15 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "现行时限",
+          "expected": 15,
+          "observed": {
+            "values": [
+              15
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "policy_versions",
+    "turn": 2,
+    "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-2/answer.txt",
+    "correct": true,
+    "reference": "30",
+    "reason": "旧版 V1.2 的确认时限为 30 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "旧版时限",
+          "expected": 30,
+          "observed": {
+            "values": [
+              30
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "policy_versions",
+    "turn": 3,
+    "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-3/answer.txt",
+    "correct": true,
+    "reference": "不符合",
+    "reason": "按 30 分钟确认超过现行 15 分钟时限，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "符合现行规定",
+          "expected": false,
+          "observed": {
+            "values": [
+              false
+            ]
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "policy_versions",
+    "turn": 4,
+    "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-4/answer.txt",
+    "correct": true,
+    "reference": "V2.0",
+    "reason": "用户明确指定现行版本为 V2.0，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "现行版本",
+          "expected": "V2.0",
+          "observed": {
+            "values": [
+              "V2.0"
+            ],
+            "denied": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 4,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "2B",
+    "conversation_id": "site_totals",
+    "turn": 1,
+    "answer_path": "batch/attempts/2b-site_totals/result/conversations/site_totals/turn-1/answer.txt",
+    "correct": false,
+    "reference": "108",
+    "reason": "48＋36＋24＝108 台，答案却为 148。",
+    "assessment": {
+      "passed": false,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 108,
+          "observed": {
+            "values": [
+              148
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": false
+        }
+      ],
+      "failures": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 108,
+          "observed": {
+            "values": [
+              148
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": false
+        }
+      ],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "doc_citations",
+    "turn": 1,
+    "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-1/answer.txt",
+    "correct": true,
+    "reference": "南湾站，36 台设备。",
+    "reason": "答案正确指出 L02 对应南湾站的 36 台设备。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "资料内容",
+          "expected": {
+            "site": "南湾",
+            "count": 36
+          },
+          "observed": {
+            "sites": [
+              "南湾",
+              "南湾"
+            ],
+            "counts": [
+              36,
+              36
+            ],
+            "denied_sites": [],
+            "denied_counts": [],
+            "references": [
+              "L02"
+            ],
+            "units": [
+              "台",
+              "台"
+            ]
+          },
+          "matched": true
+        },
+        {
+          "kind": "require",
+          "name": "资料编号有效",
+          "expected": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "observed": [
+            "L02"
+          ],
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 71,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "doc_citations",
+    "turn": 2,
+    "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-2/answer.txt",
+    "correct": true,
+    "reference": "108",
+    "reason": "48＋36＋24＝108 台，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 108,
+          "observed": {
+            "values": [
+              108
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        },
+        {
+          "kind": "require",
+          "name": "资料编号有效",
+          "expected": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "observed": [],
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "doc_citations",
+    "turn": 3,
+    "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-3/answer.txt",
+    "correct": true,
+    "reference": "L03",
+    "reason": "用户资料中的 L03 写明东港站，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "资料编号",
+          "expected": "L03",
+          "observed": {
+            "values": [
+              "L03"
+            ],
+            "denied": []
+          },
+          "matched": true
+        },
+        {
+          "kind": "require",
+          "name": "资料编号有效",
+          "expected": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "observed": [
+            "L03"
+          ],
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 16,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "doc_citations",
+    "turn": 4,
+    "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-4/answer.txt",
+    "correct": true,
+    "reference": "三个站合计 108 台设备，引用 L01、L02、L03。",
+    "reason": "答案给出正确合计 108 台，并标明 L01、L02、L03。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 108,
+          "observed": {
+            "values": [
+              108
+            ],
+            "denied": [],
+            "equations": [],
+            "units": [
+              "台"
+            ]
+          },
+          "matched": true
+        },
+        {
+          "kind": "require",
+          "name": "资料编号有效",
+          "expected": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "observed": [
+            "L01",
+            "L02",
+            "L03"
+          ],
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 56,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "duration_math",
+    "turn": 1,
+    "answer_path": "batch/attempts/4b-duration_math/result/conversations/duration_math/turn-1/answer.txt",
+    "correct": true,
+    "reference": "150",
+    "reason": "2.5×60＝150 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "分钟数",
+          "expected": 150,
+          "observed": {
+            "values": [
+              150
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "duration_math",
+    "turn": 2,
+    "answer_path": "batch/attempts/4b-duration_math/result/conversations/duration_math/turn-2/answer.txt",
+    "correct": false,
+    "reference": "3 小时 15 分钟",
+    "reason": "150＋45＝195 分钟，即 3 小时 15 分钟，答案少算 1 小时。",
+    "assessment": {
+      "passed": false,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "合计分钟数",
+          "expected": 195,
+          "observed": {
+            "minutes": [
+              135
+            ],
+            "denied": []
+          },
+          "matched": false
+        }
+      ],
+      "failures": [
+        {
+          "kind": "require",
+          "name": "合计分钟数",
+          "expected": 195,
+          "observed": {
+            "minutes": [
+              135
+            ],
+            "denied": []
+          },
+          "matched": false
+        }
+      ],
+      "answer_chars": 10,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "inventory",
+    "turn": 1,
+    "answer_path": "batch/attempts/4b-inventory/result/conversations/inventory/turn-1/answer.txt",
+    "correct": false,
+    "reference": "70",
+    "reason": "80＋24－31－3＝70 件，答案却为 69。",
+    "assessment": {
+      "passed": false,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "库存",
+          "expected": 70,
+          "observed": {
+            "values": [
+              69
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": false
+        }
+      ],
+      "failures": [
+        {
+          "kind": "require",
+          "name": "库存",
+          "expected": 70,
+          "observed": {
+            "values": [
+              69
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": false
+        }
+      ],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "meeting_gap",
+    "turn": 1,
+    "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-1/answer.txt",
+    "correct": true,
+    "reference": "30",
+    "reason": "10:00 至 10:30 的空档为 30 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "空档分钟数",
+          "expected": 30,
+          "observed": {
+            "values": [
+              30
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "meeting_gap",
+    "turn": 2,
+    "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-2/answer.txt",
+    "correct": true,
+    "reference": "冲突",
+    "reason": "会议 A 延长至 10:45，与 10:30 开始的会议 B 重叠，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "会议冲突",
+          "expected": true,
+          "observed": {
+            "values": [
+              true
+            ]
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "meeting_gap",
+    "turn": 3,
+    "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-3/answer.txt",
+    "correct": true,
+    "reference": "冲突",
+    "reason": "会议 A 恢复原时长至 10:00，与 09:45 开始的会议 B 重叠，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "会议冲突",
+          "expected": true,
+          "observed": {
+            "values": [
+              true
+            ]
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "meeting_gap",
+    "turn": 4,
+    "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-4/answer.txt",
+    "correct": true,
+    "reference": "10:00",
+    "reason": "会议 A 于 10:00 结束，会议 B 最早可于 10:00 开始，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "最早开始时间",
+          "expected": 600,
+          "observed": {
+            "minutes_since_midnight": [
+              600
+            ],
+            "denied": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 5,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "policy_versions",
+    "turn": 1,
+    "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-1/answer.txt",
+    "correct": true,
+    "reference": "15",
+    "reason": "现行 V2.0 的确认时限为 15 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "现行时限",
+          "expected": 15,
+          "observed": {
+            "values": [
+              15
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "policy_versions",
+    "turn": 2,
+    "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-2/answer.txt",
+    "correct": true,
+    "reference": "30",
+    "reason": "旧版 V1.2 的确认时限为 30 分钟，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "旧版时限",
+          "expected": 30,
+          "observed": {
+            "values": [
+              30
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "policy_versions",
+    "turn": 3,
+    "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-3/answer.txt",
+    "correct": true,
+    "reference": "不符合",
+    "reason": "按 30 分钟确认超过现行 15 分钟时限，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "符合现行规定",
+          "expected": false,
+          "observed": {
+            "values": [
+              false
+            ]
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "policy_versions",
+    "turn": 4,
+    "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-4/answer.txt",
+    "correct": true,
+    "reference": "V2.0",
+    "reason": "用户明确指定现行版本为 V2.0，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "现行版本",
+          "expected": "V2.0",
+          "observed": {
+            "values": [
+              "V2.0"
+            ],
+            "denied": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 4,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "site_totals",
+    "turn": 1,
+    "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-1/answer.txt",
+    "correct": true,
+    "reference": "108",
+    "reason": "48＋36＋24＝108 台，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 108,
+          "observed": {
+            "values": [
+              108
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "site_totals",
+    "turn": 2,
+    "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-2/answer.txt",
+    "correct": true,
+    "reference": "109",
+    "reason": "南湾增加 3 台且北岭减少 2 台，108＋3－2＝109 台，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 109,
+          "observed": {
+            "values": [
+              109
+            ],
+            "denied": [],
+            "equations": [],
+            "units": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 3,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "site_totals",
+    "turn": 3,
+    "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-3/answer.txt",
+    "correct": true,
+    "reference": "林岚",
+    "reason": "用户指定项目负责人为林岚，后续没有修改，答案正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "负责人",
+          "expected": "林岚",
+          "observed": {
+            "values": [
+              "林岚"
+            ],
+            "denied": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 2,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  },
+  {
+    "model": "4B",
+    "conversation_id": "site_totals",
+    "turn": 4,
+    "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-4/answer.txt",
+    "correct": true,
+    "reference": "当前设备总数为 109 台，项目负责人是林岚。",
+    "reason": "用户更新后的设备总数为 109 台且负责人仍是林岚，答案两项均正确。",
+    "assessment": {
+      "passed": true,
+      "checks": [
+        {
+          "kind": "require",
+          "name": "设备总数",
+          "expected": 109,
+          "observed": {
+            "values": [
+              109
+            ],
+            "denied": [],
+            "equations": [],
+            "units": [
+              "台"
+            ]
+          },
+          "matched": true
+        },
+        {
+          "kind": "require",
+          "name": "负责人",
+          "expected": "林岚",
+          "observed": {
+            "values": [
+              "林岚"
+            ],
+            "denied": []
+          },
+          "matched": true
+        }
+      ],
+      "failures": [],
+      "answer_chars": 23,
+      "assessment_version": "v2",
+      "format_warnings": []
+    }
+  }
+]

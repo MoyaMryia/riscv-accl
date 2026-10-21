@@ -2,7 +2,7 @@
 """在固定多轮题集上测量完整回答质量。
 
 每个会话使用独立服务器进程，轮次按顺序发送，历史逐轮累积。
-单轮失败只终止该会话，其他会话继续执行。
+事实错误保留为失败，后续轮次继续采集；传输失败停止当前会话。
 """
 import argparse
 import json
@@ -98,6 +98,19 @@ def validate_turn(result, prompt_count, max_tokens, cache_prompt):
             'cached_tokens': cached, 'draft_n': generated, 'draft_n_accepted': accepted}
 
 
+def quality_statistics(records, planned):
+    """汇总逐轮正确性，复核与未执行轮次保留独立计数。"""
+    correct = sum(row['quality']['passed'] is True for row in records)
+    incorrect = sum(row['quality']['passed'] is False for row in records)
+    review = sum(row['quality']['passed'] is None for row in records)
+    unattempted = planned - len(records)
+    return {'correct': correct, 'incorrect': incorrect, 'review_required': review,
+            'unattempted': unattempted, 'planned': planned,
+            'accuracy': correct / planned if not review and not unattempted else None,
+            'turns_with_format_warnings': sum(bool(row['quality']['format_warnings'])
+                                            for row in records)}
+
+
 def run_conversation(client, conversation, save_turn=None):
     """按顺序执行一个会话，返回逐轮记录与会话状态。"""
     history = [{'role': 'system', 'content': cases_module.SYSTEM}]
@@ -110,12 +123,12 @@ def run_conversation(client, conversation, save_turn=None):
             reply = client.ask(messages)
             metrics = validate_turn(reply['response'], reply['prompt_count'],
                                     client.max_tokens, client.cache_prompt)
-            quality = cases_module.assess(turn, reply['response']['answer'])
         except (RuntimeError, ValueError, OSError, TimeoutError) as error:
             failure = {'turn': index, 'status': 'incomplete',
                        'error': type(error).__name__ + ': ' + str(error)[:300]}
             status = 'incomplete'
             break
+        quality = cases_module.assess(turn, reply['response']['answer'])
         record = {'turn': index, 'prompt_chars': len(turn['user']),
                   'prompt_tokens': metrics['prompt_tokens'],
                   'completion_tokens': metrics['completion_tokens'],
@@ -128,11 +141,12 @@ def run_conversation(client, conversation, save_turn=None):
             save_turn(index, turn, reply, quality)
         history.extend([{'role': 'user', 'content': turn['user']},
                         {'role': 'assistant', 'content': reply['response']['answer']}])
-        if not quality['passed']:
-            failure = {'turn': index, 'status': 'failed',
-                       'failures': quality['failures']}
-            status = 'failed'
-            break
+        if quality['passed'] is not True:
+            turn_status = 'incomplete' if quality['passed'] is None else 'failed'
+            if failure is None:
+                failure = {'turn': index, 'status': turn_status, 'failures': quality['failures']}
+            if status != 'incomplete':
+                status = turn_status
     checks = [c for record in records for c in record['quality']['checks']]
     return {
         'conversation_id': conversation['conversation_id'],
@@ -140,9 +154,9 @@ def run_conversation(client, conversation, save_turn=None):
         'status': status,
         'turns_planned': len(conversation['turns']),
         'turns_completed': len(records),
-        'checks_passed': sum(c['matched'] if c['kind'] == 'require' else not c['matched']
-                             for c in checks),
+        'checks_passed': sum(c['matched'] is True for c in checks),
         'checks_total': len(checks),
+        'quality_statistics': quality_statistics(records, len(conversation['turns'])),
         'failure': failure,
         'records': records,
     }
@@ -161,6 +175,11 @@ def summarize(results):
         'checks_passed': sum(r['checks_passed'] for r in results),
         'checks_total': sum(r['checks_total'] for r in results),
         'gate_passed': counts['passed'] == len(results),
+        'assessment_version': cases_module.ASSESSMENT_VERSION,
+        'quality_acceptance': None,
+        'quality_statistics': quality_statistics(
+            [record for result in results for record in result['records']],
+            sum(result['turns_planned'] for result in results)),
     }
 
 
@@ -236,7 +255,9 @@ def main(argv=None):
     chat = base.load_module('multi_turn_chat', args.chat)
     base.save(args.output / 'cases.json', cases)
     base.save(args.output / 'protocol.json', {
-        'model': args.model, 'conversations': len(cases),
+        'model': args.model, 'assessment_version': cases_module.ASSESSMENT_VERSION,
+        'quality_scoring': 'per_turn', 'stop_after_quality_error': False,
+        'quality_acceptance': None, 'conversations': len(cases),
         'turns': cases_module.planned_turns(cases), 'config': base.CONFIG,
         'context': args.context, 'max_tokens': args.max_tokens,
         'timeout_s': args.timeout, 'cache_prompt': args.cache_prompt,
@@ -285,7 +306,7 @@ def main(argv=None):
     summary = summarize(results)
     summary['results'] = results
     base.save(args.output / 'summary.json', summary)
-    print('MULTI_TURN_' + ('PASSED' if summary['gate_passed'] else 'FAILED'),
+    print('MULTI_TURN_' + ('COMPLETE' if summary['gate_passed'] else 'RECORDED_FAILURES'),
           json.dumps(summary['counts'], ensure_ascii=False))
     return 0 if summary['gate_passed'] else 2
 

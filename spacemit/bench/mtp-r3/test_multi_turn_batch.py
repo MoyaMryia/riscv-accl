@@ -33,6 +33,28 @@ class BatchTest(unittest.TestCase):
                 self.assertEqual(Path(config['attempt']).name, job['id'])
                 self.assertEqual(arguments[arguments.index('--timeout') + 1], '900')
 
+    def test_quality_totals_keep_review_and_unattempted_turns(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            runtime = {key: '/runtime/' + key for key in batch.RUNTIME_KEYS}
+            runtime['turn_timeout_s'] = 900
+            jobs = batch.prepare_jobs(root, runtime, ['2B', '4B'])
+            folder = root / 'batch/attempts/2b-site_totals/result/conversations/site_totals'
+            for index, passed in enumerate((True, False, True, None), 1):
+                turn = folder / f'turn-{index}'
+                turn.mkdir(parents=True)
+                (turn / 'quality.json').write_text(json.dumps({
+                    'passed': passed, 'format_warnings': ['额外说明'] if index == 1 else []}))
+            result = batch.summarize_quality(root, jobs)
+            self.assertEqual(result['models']['2B'], {
+                'correct': 2, 'incorrect': 1, 'review_required': 1, 'unattempted': 20,
+                'planned': 24, 'accuracy': None, 'turns_with_format_warnings': 1})
+            self.assertEqual(result['models']['4B'], {
+                'correct': 0, 'incorrect': 0, 'review_required': 0, 'unattempted': 24,
+                'planned': 24, 'accuracy': None, 'turns_with_format_warnings': 0})
+            self.assertIsNone(result['quality_acceptance'])
+            self.assertEqual(result['assessment_version'], 'v2')
+
     def exercise_worker(self, status=None, error=None):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

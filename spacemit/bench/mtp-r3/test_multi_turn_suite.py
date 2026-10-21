@@ -76,18 +76,44 @@ class ConversationTest(unittest.TestCase):
         self.assertEqual(summary['checks_passed'], sum(EXPECTED_CHECKS.values()))
         self.assertEqual(summary['checks_total'], sum(EXPECTED_CHECKS.values()))
 
-    def test_failed_turn_stops_only_that_conversation(self):
+    def test_quality_error_is_scored_and_later_turns_continue(self):
         client = FakeClient('site_totals', fail_at=2)
         result = suite.run_conversation(client, self.cases[0])
         self.assertEqual(result['status'], 'failed')
-        self.assertEqual(result['turns_completed'], 2)
-        self.assertEqual(client.calls, 2)
+        self.assertEqual(result['turns_completed'], 4)
+        self.assertEqual(client.calls, 4)
         self.assertEqual(result['failure']['turn'], 2)
+        self.assertEqual(result['quality_statistics'], {
+            'correct': 3, 'incorrect': 1, 'review_required': 0, 'unattempted': 0,
+            'planned': 4, 'accuracy': .75, 'turns_with_format_warnings': 0})
         other = suite.run_conversation(FakeClient('inventory'), self.cases[1])
         self.assertEqual(other['status'], 'passed')
         summary = suite.summarize([result, other])
         self.assertFalse(summary['gate_passed'])
         self.assertEqual(summary['counts'], {'passed': 1, 'failed': 1, 'incomplete': 0})
+
+    def test_ambiguous_answer_requires_review_without_stopping_later_turns(self):
+        client = FakeClient('site_totals')
+        client.answers[1] = '答案为109。最终答案为110。'
+        result = suite.run_conversation(client, self.cases[0])
+        self.assertEqual(client.calls, 4)
+        self.assertEqual(result['status'], 'incomplete')
+        self.assertEqual(result['quality_statistics'], {
+            'correct': 3, 'incorrect': 0, 'review_required': 1, 'unattempted': 0,
+            'planned': 4, 'accuracy': None, 'turns_with_format_warnings': 1})
+        self.assertIs(result['records'][1]['quality']['passed'], None)
+        self.assertIsNone(suite.summarize([result])['quality_acceptance'])
+        self.assertFalse(suite.summarize([result])['gate_passed'])
+
+    def test_format_warning_does_not_reduce_factual_accuracy(self):
+        client = FakeClient('inventory')
+        client.answers[0] = '80 + 24 - 31 - 3 = 70'
+        result = suite.run_conversation(client, self.cases[1])
+        self.assertEqual(result['status'], 'passed')
+        self.assertEqual(result['quality_statistics'], {
+            'correct': 4, 'incorrect': 0, 'review_required': 0, 'unattempted': 0,
+            'planned': 4, 'accuracy': 1.0, 'turns_with_format_warnings': 1})
+        self.assertEqual(result['records'][0]['quality']['checks'][0]['observed']['values'], [70])
 
     def test_worker_error_marks_incomplete(self):
         client = FakeClient('inventory', error_at=1)
@@ -101,8 +127,12 @@ class ConversationTest(unittest.TestCase):
         passed = suite.run_conversation(FakeClient('site_totals'), self.cases[0])
         incomplete = {'conversation_id': 'other', 'status': 'incomplete',
                       'turns_planned': 4, 'turns_completed': 0,
-                      'checks_passed': 0, 'checks_total': 0}
-        self.assertFalse(suite.summarize([passed, incomplete])['gate_passed'])
+                      'checks_passed': 0, 'checks_total': 0, 'records': []}
+        summary = suite.summarize([passed, incomplete])
+        self.assertFalse(summary['gate_passed'])
+        self.assertEqual(summary['quality_statistics']['unattempted'], 4)
+        self.assertIsNone(summary['quality_statistics']['accuracy'])
+        self.assertIsNone(summary['quality_acceptance'])
 
 
 class ValidateTurnTest(unittest.TestCase):

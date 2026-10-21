@@ -1,0 +1,78 @@
+{
+  "id": "2b-meeting_gap",
+  "model": "2B",
+  "conversation_id": "meeting_gap",
+  "turn_index": 1,
+  "rule": {
+    "user": "会议 A 为 09:00 至 10:00，会议 B 为 10:30 至 11:15。两场会议之间有多少分钟空档？只回答数字。",
+    "require": [
+      "(?<![\\d.])30(?![\\d.])"
+    ]
+  },
+  "request": "/home/moyamryia/Projects/riscv-accl/lab/local-multiturn-replay-20261021-144500-r1/result/configs/2b-meeting_gap/request.json",
+  "alias": "local",
+  "original_quality": {
+    "passed": false,
+    "checks": [
+      {
+        "pattern": "(?<![\\d.])30(?![\\d.])",
+        "kind": "require",
+        "matched": false
+      }
+    ],
+    "failures": [
+      {
+        "pattern": "(?<![\\d.])30(?![\\d.])",
+        "kind": "require",
+        "matched": false
+      }
+    ],
+    "answer_chars": 3
+  },
+  "source_request": "/home/moyamryia/Projects/riscv-accl/spacemit/reports/raw/delivery-multiturn-20261021-115000-r2/batch/attempts/2b-meeting_gap/result/conversations/meeting_gap/turn-1/request.json",
+  "attempt": "/home/moyamryia/Projects/riscv-accl/lab/local-multiturn-replay-20261021-144500-r1/result/batch/attempts/2b-meeting_gap",
+  "timeout_s": 900,
+  "assessment": "/home/moyamryia/Projects/riscv-accl/lab/local-multiturn-replay-20261021-144500-r1/result/assessment_v1.py",
+  "chat": "/home/moyamryia/Projects/riscv-accl/lab/local-multiturn-replay-20261021-144500-r1/result/chat.py",
+  "url": "http://127.0.0.1:18260",
+  "environment": {
+    "PATH": "/home/moyamryia/.pi/agent/bin:/opt/ffmpeg6/bin:/home/moyamryia/.nvm/versions/node/v24.19.0/bin:/home/moyamryia/.local/share/pnpm/bin:/home/moyamryia/.opencode/bin:/home/moyamryia/.cargo/bin:/home/moyamryia/.bun/bin:/home/moyamryia/.local/bin:/home/moyamryia/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/moyamryia/.lmstudio/bin:/usr/local/go/bin:/home/moyamryia/go/bin:/home/moyamryia/.lmstudio/bin",
+    "HOME": "/home/moyamryia",
+    "LANG": "en_US.UTF-8",
+    "LD_LIBRARY_PATH": "/home/moyamryia/Projects/riscv-accl/lab/local-reference/build-a990751-generic/bin",
+    "K1_PACKAGE_LOCK_FD": "9"
+  },
+  "argv": [
+    "/home/moyamryia/Projects/riscv-accl/lab/local-reference/build-a990751-generic/bin/llama-server",
+    "-m",
+    "/home/moyamryia/Projects/riscv-accl/lab/local-reference/models/Qwen3.5-2B-MTP-Q4_0-embQ4_0-dv64k.gguf",
+    "--alias",
+    "local",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18260",
+    "--n-gpu-layers",
+    "0",
+    "--threads",
+    "4",
+    "--threads-batch",
+    "4",
+    "--batch-size",
+    "32",
+    "--ubatch-size",
+    "32",
+    "--ctx-size",
+    "12288",
+    "--parallel",
+    "1",
+    "--cache-type-k",
+    "f16",
+    "--cache-type-v",
+    "f16",
+    "--flash-attn",
+    "on",
+    "--spec-type",
+    "none"
+  ]
+}

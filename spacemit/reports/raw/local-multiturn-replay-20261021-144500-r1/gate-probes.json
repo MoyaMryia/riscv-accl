@@ -1,0 +1,147 @@
+{
+  "records": [
+    {
+      "conversation_id": "meeting_gap",
+      "turn": 2,
+      "answer": "不冲突",
+      "expected_passed": false,
+      "v1_result": {
+        "passed": true,
+        "checks": [
+          {
+            "pattern": "冲突|重叠",
+            "kind": "require",
+            "matched": true
+          }
+        ],
+        "failures": [],
+        "answer_chars": 3
+      },
+      "matches_reference": false
+    },
+    {
+      "conversation_id": "meeting_gap",
+      "turn": 3,
+      "answer": "不冲突",
+      "expected_passed": false,
+      "v1_result": {
+        "passed": true,
+        "checks": [
+          {
+            "pattern": "冲突|重叠",
+            "kind": "require",
+            "matched": true
+          }
+        ],
+        "failures": [],
+        "answer_chars": 3
+      },
+      "matches_reference": false
+    },
+    {
+      "conversation_id": "inventory",
+      "turn": 4,
+      "answer": "不需要补货，库存 53 件。",
+      "expected_passed": false,
+      "v1_result": {
+        "passed": true,
+        "checks": [
+          {
+            "pattern": "需要",
+            "kind": "require",
+            "matched": true
+          },
+          {
+            "pattern": "(?<![\\d.])53(?![\\d.])",
+            "kind": "require",
+            "matched": true
+          }
+        ],
+        "failures": [],
+        "answer_chars": 14
+      },
+      "matches_reference": false
+    },
+    {
+      "conversation_id": "doc_citations",
+      "turn": 1,
+      "answer": "南湾站有 36 台设备。",
+      "expected_passed": true,
+      "v1_result": {
+        "passed": false,
+        "checks": [
+          {
+            "pattern": "南湾",
+            "kind": "require",
+            "matched": true
+          },
+          {
+            "pattern": "(?<![\\d.])36(?![\\d.])",
+            "kind": "require",
+            "matched": true
+          },
+          {
+            "pattern": "L02",
+            "kind": "require",
+            "matched": false
+          },
+          {
+            "pattern": "L01|L03",
+            "kind": "forbid",
+            "matched": false
+          }
+        ],
+        "failures": [
+          {
+            "pattern": "L02",
+            "kind": "require",
+            "matched": false
+          }
+        ],
+        "answer_chars": 12
+      },
+      "matches_reference": false
+    },
+    {
+      "conversation_id": "doc_citations",
+      "turn": 1,
+      "answer": "L02 是南湾站，有 36 台；不是 L01 北岭站，也不是 L03 东港站。",
+      "expected_passed": true,
+      "v1_result": {
+        "passed": false,
+        "checks": [
+          {
+            "pattern": "南湾",
+            "kind": "require",
+            "matched": true
+          },
+          {
+            "pattern": "(?<![\\d.])36(?![\\d.])",
+            "kind": "require",
+            "matched": true
+          },
+          {
+            "pattern": "L02",
+            "kind": "require",
+            "matched": true
+          },
+          {
+            "pattern": "L01|L03",
+            "kind": "forbid",
+            "matched": true
+          }
+        ],
+        "failures": [
+          {
+            "pattern": "L01|L03",
+            "kind": "forbid",
+            "matched": true
+          }
+        ],
+        "answer_chars": 39
+      },
+      "matches_reference": false
+    }
+  ],
+  "mismatches": 5
+}

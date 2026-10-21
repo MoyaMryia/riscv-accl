@@ -1,0 +1,310 @@
+{
+  "method": "independent_prompt_and_answer_review",
+  "source_root": "spacemit/reports/raw/delivery-multiturn-20261021-115000-r2",
+  "review_basis": "依据用户各轮资料及更新独立手算；模型前轮答案不改变用户事实。按核心事实与数值判定，接受等价单位和简短解释。",
+  "read_disclosure": "首次读取 cases.json 时，工具同时显示了 require 和 forbid 字段。未将这些字段作为判定依据。未读取 quality.json、判定器或测试预期结果。因此，本次复核不满足完全未接触 require 字段的读取约束。",
+  "rows": [
+    {
+      "model": "2B",
+      "conversation_id": "doc_citations",
+      "turn": 1,
+      "correct": false,
+      "reference": "L02 写的是南湾站有 36 台设备。",
+      "reason": "答案最终称无法确定，并否认资料已给出的站名，核心事实错误。",
+      "answer_path": "batch/attempts/2b-doc_citations/result/conversations/doc_citations/turn-1/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "duration_math",
+      "turn": 1,
+      "correct": true,
+      "reference": "2.5 × 60 = 150 分钟。",
+      "reason": "小时换算为分钟的数值正确。",
+      "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-1/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "duration_math",
+      "turn": 2,
+      "correct": true,
+      "reference": "150 + 45 = 195 分钟，即 3 小时 15 分钟。",
+      "reason": "合计时长与独立加法及换算结果相同。",
+      "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-2/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "duration_math",
+      "turn": 3,
+      "correct": true,
+      "reference": "3 × 60 + 15 = 195 分钟。",
+      "reason": "小时和分钟的合计数值正确。",
+      "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-3/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "duration_math",
+      "turn": 4,
+      "correct": true,
+      "reference": "195 = 45 × 4 + 15，最多排 4 节完整的课。",
+      "reason": "完整课数为 4，余 15 分钟，正确。",
+      "answer_path": "batch/attempts/2b-duration_math/result/conversations/duration_math/turn-4/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "inventory",
+      "turn": 1,
+      "correct": true,
+      "reference": "80 + 24 - 31 - 3 = 70，库存 70 件。",
+      "reason": "库存与独立加减结果相同。",
+      "answer_path": "batch/attempts/2b-inventory/result/conversations/inventory/turn-1/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "inventory",
+      "turn": 2,
+      "correct": false,
+      "reference": "库存 70 件，高于补货阈值 60 件，不需要补货。",
+      "reason": "70 件高于 60 件，答案却称需要补货。",
+      "answer_path": "batch/attempts/2b-inventory/result/conversations/inventory/turn-2/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "meeting_gap",
+      "turn": 1,
+      "correct": false,
+      "reference": "10:30 - 10:00 = 30 分钟。",
+      "reason": "空档是 30 分钟，答案给出 105。",
+      "answer_path": "batch/attempts/2b-meeting_gap/result/conversations/meeting_gap/turn-1/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "policy_versions",
+      "turn": 1,
+      "correct": true,
+      "reference": "现行 V2.0 的确认时限是 15 分钟。",
+      "reason": "现行时限正确。",
+      "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-1/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "policy_versions",
+      "turn": 2,
+      "correct": true,
+      "reference": "旧版 V1.2 的确认时限是 30 分钟。",
+      "reason": "旧版时限正确。",
+      "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-2/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "policy_versions",
+      "turn": 3,
+      "correct": true,
+      "reference": "30 分钟超过现行时限 15 分钟，不符合。",
+      "reason": "30 分钟超过现行时限，结论正确。",
+      "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-3/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "policy_versions",
+      "turn": 4,
+      "correct": true,
+      "reference": "现行版本号是 V2.0。",
+      "reason": "现行版本号正确。",
+      "answer_path": "batch/attempts/2b-policy_versions/result/conversations/policy_versions/turn-4/answer.txt"
+    },
+    {
+      "model": "2B",
+      "conversation_id": "site_totals",
+      "turn": 1,
+      "correct": false,
+      "reference": "48 + 36 + 24 = 108，合计 108 台。",
+      "reason": "设备总数是 108，答案给出 148。",
+      "answer_path": "batch/attempts/2b-site_totals/result/conversations/site_totals/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "doc_citations",
+      "turn": 1,
+      "correct": true,
+      "reference": "L02 写的是南湾站有 36 台设备。",
+      "reason": "站名与设备数量均正确。",
+      "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "doc_citations",
+      "turn": 2,
+      "correct": true,
+      "reference": "48 + 36 + 24 = 108，合计 108 台。",
+      "reason": "合计台数正确。",
+      "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-2/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "doc_citations",
+      "turn": 3,
+      "correct": true,
+      "reference": "L03 写的是东港站。",
+      "reason": "资料编号与东港站对应关系正确。",
+      "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-3/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "doc_citations",
+      "turn": 4,
+      "correct": true,
+      "reference": "三个站合计 108 台设备，引用资料编号为 L01、L02、L03。",
+      "reason": "合计台数及引用的三个资料编号均正确。",
+      "answer_path": "batch/attempts/4b-doc_citations/result/conversations/doc_citations/turn-4/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "duration_math",
+      "turn": 1,
+      "correct": true,
+      "reference": "2.5 × 60 = 150 分钟。",
+      "reason": "小时换算为分钟的数值正确。",
+      "answer_path": "batch/attempts/4b-duration_math/result/conversations/duration_math/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "duration_math",
+      "turn": 2,
+      "correct": false,
+      "reference": "150 + 45 = 195 分钟，即 3 小时 15 分钟。",
+      "reason": "合计为 3 小时 15 分钟，答案少算 1 小时。",
+      "answer_path": "batch/attempts/4b-duration_math/result/conversations/duration_math/turn-2/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "inventory",
+      "turn": 1,
+      "correct": false,
+      "reference": "80 + 24 - 31 - 3 = 70，库存 70 件。",
+      "reason": "库存是 70 件，答案给出 69。",
+      "answer_path": "batch/attempts/4b-inventory/result/conversations/inventory/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "meeting_gap",
+      "turn": 1,
+      "correct": true,
+      "reference": "10:30 - 10:00 = 30 分钟。",
+      "reason": "空档与两场会议的相邻时刻差相同。",
+      "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "meeting_gap",
+      "turn": 2,
+      "correct": true,
+      "reference": "会议 A 延长至 10:45，与会议 B 的 10:30 至 11:15 重叠 15 分钟，冲突。",
+      "reason": "延长后重叠 15 分钟，冲突结论正确。",
+      "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-2/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "meeting_gap",
+      "turn": 3,
+      "correct": true,
+      "reference": "会议 A 恢复为 09:00 至 10:00，会议 B 从 09:45 开始，重叠 15 分钟，冲突。",
+      "reason": "恢复原时长后仍重叠 15 分钟，冲突结论正确。",
+      "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-3/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "meeting_gap",
+      "turn": 4,
+      "correct": true,
+      "reference": "会议 A 于 10:00 结束，会议 B 最早可在 10:00 开始。",
+      "reason": "开始时刻等于会议 A 的结束时刻，正确。",
+      "answer_path": "batch/attempts/4b-meeting_gap/result/conversations/meeting_gap/turn-4/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "policy_versions",
+      "turn": 1,
+      "correct": true,
+      "reference": "现行 V2.0 的确认时限是 15 分钟。",
+      "reason": "现行时限正确。",
+      "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "policy_versions",
+      "turn": 2,
+      "correct": true,
+      "reference": "旧版 V1.2 的确认时限是 30 分钟。",
+      "reason": "旧版时限正确。",
+      "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-2/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "policy_versions",
+      "turn": 3,
+      "correct": true,
+      "reference": "30 分钟超过现行时限 15 分钟，不符合。",
+      "reason": "30 分钟超过现行时限，结论正确。",
+      "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-3/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "policy_versions",
+      "turn": 4,
+      "correct": true,
+      "reference": "现行版本号是 V2.0。",
+      "reason": "现行版本号正确。",
+      "answer_path": "batch/attempts/4b-policy_versions/result/conversations/policy_versions/turn-4/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "site_totals",
+      "turn": 1,
+      "correct": true,
+      "reference": "48 + 36 + 24 = 108，合计 108 台。",
+      "reason": "总数与独立加法结果相同。",
+      "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-1/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "site_totals",
+      "turn": 2,
+      "correct": true,
+      "reference": "(48 - 2) + (36 + 3) + 24 = 109，合计 109 台。",
+      "reason": "按用户新增和报废数量更新后，总数正确。",
+      "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-2/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "site_totals",
+      "turn": 3,
+      "correct": true,
+      "reference": "项目负责人是林岚。",
+      "reason": "负责人姓名与用户资料相同。",
+      "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-3/answer.txt"
+    },
+    {
+      "model": "4B",
+      "conversation_id": "site_totals",
+      "turn": 4,
+      "correct": true,
+      "reference": "当前设备总数为 109 台，项目负责人是林岚。",
+      "reason": "更新后的总数与负责人姓名均正确。",
+      "answer_path": "batch/attempts/4b-site_totals/result/conversations/site_totals/turn-4/answer.txt"
+    }
+  ],
+  "counts_by_model": {
+    "2B": {
+      "correct": 9,
+      "incorrect": 4,
+      "unknown": 0
+    },
+    "4B": {
+      "correct": 17,
+      "incorrect": 2,
+      "unknown": 0
+    }
+  },
+  "total_rows": 32,
+  "semantic_uncertainties": []
+}

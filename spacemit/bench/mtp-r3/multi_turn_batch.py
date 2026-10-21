@@ -39,6 +39,7 @@ def prepare_jobs(root, runtime, models):
                 arguments.extend(['--' + key, str(root / filename)])
             config = config_root / (identifier + '.json')
             base.save(config, {'arguments': arguments, 'attempt': str(attempt),
+                               'turns_planned': len(conversation['turns']),
                                'lock': runtime['lock']})
             jobs.append({'id': identifier,
                          'argv': [sys.executable, str(root / Path(__file__).name),
@@ -47,6 +48,22 @@ def prepare_jobs(root, runtime, models):
                                       + base.HEALTH_TIMEOUT_S + CLEANUP_BUDGET_S,
                          'dependency': model})
     return jobs
+
+
+def summarize_quality(root, jobs):
+    """按模型汇总已保存的逐轮质量，不把未执行或待复核轮次计为正确。"""
+    grouped = {}
+    for job in jobs:
+        model = job['dependency']
+        item = grouped.setdefault(model, {'records': [], 'planned': 0})
+        config = json.loads((root / 'configs' / (job['id'] + '.json')).read_text())
+        item['planned'] += config['turns_planned']
+        folder = root / 'batch' / 'attempts' / job['id'] / 'result' / 'conversations'
+        for path in sorted(folder.glob('*/turn-*/quality.json')):
+            item['records'].append({'quality': json.loads(path.read_text())})
+    return {'assessment_version': cases_module.ASSESSMENT_VERSION, 'quality_acceptance': None,
+            'models': {model: suite.quality_statistics(item['records'], item['planned'])
+                       for model, item in grouped.items()}}
 
 
 def worker(config_path):
@@ -157,6 +174,7 @@ def main(argv=None):
     before, after = lifecycle_hooks()
     with board_lock(runtime['lock']):
         summary = controller.run(jobs, root / 'batch', before=before, after=after, pass_fds=(9,))
+    base.save(root / 'quality-summary.json', summarize_quality(root, jobs))
     return controller.exit_code(summary)
 
 

@@ -1,8 +1,10 @@
 # Reports index
 
-Document check: October 18, 2026, Asia/Singapore.
+Document check: October 21, 2026, Asia/Singapore.
 [Requirements.md](../../Requirements.md) is the sole current acceptance reference.
 
+- [Local replay and gate audit](2026-10-21-local-multi-turn-gate-audit.md): five of six failed answers remain incorrect on x86. Five probe cases expose errors in the v1 checks. The v2 audit checks 32 saved answers against an independent reference.
+- [Fixed multi-turn acceptance](2026-10-21-fixed-multi-turn-results.md): six conversations pass and six fail. The batch completes 32 of 48 planned turns and exits with status 2.
 - [Router version check](2026-10-21-routing-version-clarification.md): the model remains `bert-router-v1`. The later gain study uses a prompt rule, not new BERT weights.
 - [Official checkpoint conversion](2026-10-21-official-conversion.md): both models converted, quantized, and packaged. Tensors, types, and tokenizer data match the delivered files. The chat template differs.
 - [MTP docstring rule](2026-10-21-2b-mtp-docstring-rule-validation.md): a prompt-only rule yields 3.48% net time gain on a code grid. The family-cluster interval is 1.30% to 5.10%. Code requests without a docstring requirement save 12.0% on average.

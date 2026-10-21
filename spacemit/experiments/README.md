@@ -14,6 +14,7 @@ the base and the patch-order instructions of each experiment.
 
 | Experiment | Present interpretation |
 | --- | --- |
+| [Fixed multi-turn v2](2026-10-21-fixed-multi-turn-v2.md) | Implements per-turn correctness and format warnings. The [gate audit](../reports/2026-10-21-local-multi-turn-gate-audit.md) preserves the prior failures. |
 | [IME scalar schedule](2026-10-13-ime-scalar-schedule-r1-protocol.md) | [Completed screen](../reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md): 288 exact native cases pass. All eight performance cells fail advancement. Model timing does not run. |
 | [Finite fragment timing protocol R4](2026-10-12-k1-fragment-timing-r4-protocol.md) | Complete-call point estimates use a shared call loop. Same-family checks do not establish accuracy for new algorithm families. |
 | [Fragment source protocol R2](2026-10-12-k1-fragment-source-r2-protocol.md) | Real Q8 payload pairs test the source workflow. Model gaps remain explicit, and all candidates remain available. |

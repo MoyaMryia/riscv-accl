@@ -1,0 +1,70 @@
+{
+  "conversation_id": "inventory",
+  "category": "state",
+  "status": "failed",
+  "turns_planned": 4,
+  "turns_completed": 2,
+  "checks_passed": 1,
+  "checks_total": 2,
+  "failure": {
+    "turn": 2,
+    "status": "failed",
+    "failures": [
+      {
+        "pattern": "不需要|无需|不用补货",
+        "kind": "require",
+        "matched": false
+      }
+    ]
+  },
+  "records": [
+    {
+      "turn": 1,
+      "prompt_chars": 53,
+      "prompt_tokens": 80,
+      "completion_tokens": 18,
+      "cached_tokens": 0,
+      "wall_s": 7.499,
+      "ttft_s": 3.771,
+      "quality": {
+        "passed": true,
+        "checks": [
+          {
+            "pattern": "(?<![\\d.])70(?![\\d.])",
+            "kind": "require",
+            "matched": true
+          }
+        ],
+        "failures": [],
+        "answer_chars": 21
+      }
+    },
+    {
+      "turn": 2,
+      "prompt_chars": 34,
+      "prompt_tokens": 132,
+      "completion_tokens": 2,
+      "cached_tokens": 0,
+      "wall_s": 6.098,
+      "ttft_s": 5.866,
+      "quality": {
+        "passed": false,
+        "checks": [
+          {
+            "pattern": "不需要|无需|不用补货",
+            "kind": "require",
+            "matched": false
+          }
+        ],
+        "failures": [
+          {
+            "pattern": "不需要|无需|不用补货",
+            "kind": "require",
+            "matched": false
+          }
+        ],
+        "answer_chars": 2
+      }
+    }
+  ]
+}

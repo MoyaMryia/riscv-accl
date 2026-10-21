@@ -1,0 +1,42 @@
+.{"settled": 1, "planned": 6, "id": "job-0", "status": "failed", "reason": "worker_exit"}
+{"settled": 2, "planned": 6, "id": "job-1", "status": "incomplete", "reason": "timeout"}
+{"settled": 3, "planned": 6, "id": "job-2", "status": "failed", "reason": "worker_crash"}
+{"settled": 4, "planned": 6, "id": "job-3", "status": "failed", "reason": "worker_exit"}
+{"settled": 5, "planned": 6, "id": "job-4", "status": "failed", "reason": "worker_failed"}
+{"settled": 6, "planned": 6, "id": "job-5", "status": "passed", "reason": "passed"}
+..usage: python3 -m unittest [-h] [--worker WORKER] [--output OUTPUT]
+                           [--source-batch SOURCE_BATCH] [--server SERVER]
+                           [--models MODELS] [--manifest MANIFEST]
+                           [--chat CHAT] [--port PORT] [--timeout TIMEOUT]
+python3 -m unittest: error: --chat is required
+.............................................MULTI_TURN_PASSED {"passed": 6, "failed": 0, "incomplete": 0}
+MULTI_TURN_PASSED {"passed": 1, "failed": 0, "incomplete": 0}
+MULTI_TURN_FAILED {"passed": 5, "failed": 0, "incomplete": 1}
+MULTI_TURN_FAILED {"passed": 0, "failed": 0, "incomplete": 1}
+WAIT_LOCK
+LOCK_ACQUIRED
+{"settled": 1, "planned": 2, "id": "crash", "status": "failed", "reason": "worker_exit"}
+{"settled": 2, "planned": 2, "id": "next", "status": "passed", "reason": "passed"}
+....{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "backend_busy"}
+.{"settled": 1, "planned": 1, "id": "one", "status": "incomplete", "reason": "worker_incomplete"}
+{"settled": 1, "planned": 1, "id": "one", "status": "incomplete", "reason": "timeout"}
+{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "worker_crash"}
+{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "worker_exit"}
+{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "worker_failed"}
+.{"settled": 1, "planned": 7, "id": "passed1", "status": "passed", "reason": "passed"}
+{"settled": 2, "planned": 7, "id": "truncated", "status": "incomplete", "reason": "truncated"}
+{"settled": 3, "planned": 7, "id": "timedout", "status": "incomplete", "reason": "timeout"}
+{"settled": 4, "planned": 7, "id": "workercrash", "status": "failed", "reason": "worker_crash"}
+{"settled": 5, "planned": 7, "id": "assertion", "status": "failed", "reason": "worker_exit"}
+{"settled": 6, "planned": 7, "id": "functional", "status": "failed", "reason": "functional"}
+{"settled": 7, "planned": 7, "id": "passed2", "status": "passed", "reason": "passed"}
+.{"settled": 1, "planned": 2, "id": "blocked", "status": "blocked", "reason": "backend_unavailable"}
+{"settled": 2, "planned": 2, "id": "next", "status": "passed", "reason": "passed"}
+..{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "worker_protocol"}
+{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "worker_protocol"}
+{"settled": 1, "planned": 1, "id": "one", "status": "failed", "reason": "worker_exit"}
+.
+----------------------------------------------------------------------
+Ran 58 tests in 1.717s
+
+OK

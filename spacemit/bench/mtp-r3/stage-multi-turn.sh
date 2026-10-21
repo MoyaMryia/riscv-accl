@@ -24,9 +24,11 @@ cp "$repo/spacemit/serve/cached-document-chat.py" "$job/chat.py"
 cp "$repo/spacemit/release-candidate/tests/quality.py" "$job/quality.py"
 cp "$repo/spacemit/bench/final-default/effective.py" "$job/effective.py"
 cp "$tools/run-board.sh" "$job/run-board.sh"
-python3 - "$job" <<'PY'
+cp "$repo/spacemit/experiments/2026-10-21-fixed-multi-turn-v2.md" "$job/PROTOCOL.md"
+python3 - "$job" "$repo" <<'PY'
 import hashlib
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -42,6 +44,16 @@ import multi_turn_cases  # noqa: E402  (从任务目录读取冻结题集)
 
 cases = multi_turn_cases.read_cases()
 (job / 'cases.json').write_text(json.dumps(cases, ensure_ascii=False, indent=1) + '\n')
+source = Path(sys.argv[2]) / 'spacemit/reports/raw/delivery-multiturn-20261021-115000-r2'
+fixtures = [source / 'cases.json', source / 'multi_turn_cases.py',
+            *sorted(source.glob('batch/attempts/*/result/conversations/*/turn-*/answer.txt'))]
+fixture_hashes = {}
+for path in fixtures:
+    target = job / 'fixtures/v1' / path.relative_to(source)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(path, target)
+    fixture_hashes[str(target.relative_to(job))] = hashlib.sha256(target.read_bytes()).hexdigest()
+(job / 'frozen-fixtures.json').write_text(json.dumps(fixture_hashes, indent=1) + '\n')
 frozen = {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
           for path in sorted(job.glob('*.py'))}
 (job / 'frozen-tools.json').write_text(json.dumps(frozen, indent=1) + '\n')
