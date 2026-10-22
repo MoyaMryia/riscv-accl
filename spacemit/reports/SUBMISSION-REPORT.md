@@ -1,6 +1,6 @@
 # Qwen3.5 inference on the SpaceMiT K1
 
-**Evidence cutoff: October 16, 2026, Asia/Singapore**
+**Performance evidence cutoff: October 16, 2026, Asia/Singapore. Later acceptance update: October 22, 2026**
 
 ## Abstract
 
@@ -47,8 +47,10 @@ The [gap report](2026-10-13-requirements-gap.md) retains the complete requiremen
 | Verified | Both current GGUF files run locally on K1 without a cloud API |
 | Verified | 28 ordinary-default performance requests, 12 capacity-extension requests, and six complete natural code answers |
 | Verified | Exact native dumps, 64 short state records, and two relocated model launches |
-| Pending | Full official model origin and reproducible conversion of both final weights |
-| Pending | Repeated long-context stability, long state acceptance, and the fixed multi-turn quality suite |
+| Verified | Conversion, quantization, and packaging of both official checkpoints; new products and historical GGUF files have separate records |
+| Verified | Fixed multi-turn v2 with 48 requests and independent review; 15/24 correct for 2B and 19/24 for 4B, and the user accepted the measured quality |
+| Verified | Natural long context: all 12 answers correct at short, 16k, and 32k inputs |
+| Pending | Long state correctness and repeat stability at 8192, 16384, and 32768 inputs |
 | Not implemented in this release | GPU acceleration, KV compression, and memory reduction through page allocation |
 
 No external competition submission is recorded.
@@ -316,6 +318,17 @@ The new r3 package supplies the fixed default delivery for this campaign.
 The [work ledger](WORK-LEDGER.md) lists all work, the adopted items, and the reason for each stopped item.
 The [next plan](2026-10-16-next-plan.md) orders the remaining experiments by expected gain.
 
+## 9. Later acceptance records
+
+These reports record acceptance after October 16, 2026.
+Section 5 and section 5.1 keep the frozen performance numbers.
+
+- Official checkpoint conversion: both checkpoints converted, quantized, and packaged; tensors, types, and tokenizer data match the delivered files, and the chat template differs ([report](2026-10-21-official-conversion.md)).
+- Fixed multi-turn v2: all 48 requests complete; independent review finds 15/24 correct for 2B and 19/24 for 4B, and the user accepted the measured quality with the retained errors ([report](2026-10-21-fixed-multi-turn-v2-results.md)).
+- Fixed multi-turn v1: 32 of 48 planned turns complete with exit status 2; six conversations pass and six fail ([report](2026-10-21-fixed-multi-turn-results.md)).
+- Natural long context: all 12 answers correct at short, 16k, and 32k inputs ([report](2026-10-22-long-context-natural-results.md)).
+- MTP docstring rule: the prompt-only rule gives a 3.48% net time gain with a 1.30% to 5.10% family-cluster interval ([report](2026-10-21-2b-mtp-docstring-rule-validation.md)).
+
 ## Scope
 
 Configuration: MUSE-Pi-Pro, K1/X60, nominal 16 GB RAM, version `k1-final-20261013-r3`, 4 threads, batch 32, F16 K/V, one slot.
@@ -326,9 +339,7 @@ The overall comparison does not separate the contribution of each adopted path.
 The tested board has 16 GB of RAM.
 
 - Pending: repeat stability at 8192, 16384, and 32768 inputs. Blocker: these shapes have one or two pairs. Release condition: measure at least three pairs per shape.
-- Pending: general and multi-turn answer quality. Blocker: the fixed multi-turn quality suite has no run on r3. Release condition: run the suite on both models with the relative quality gate.
-- Pending: long semantic quality and long state correctness. Blocker: the 16k and 32k requests use 65 forced output tokens. Release condition: run natural long-document answers and long state checks on r3.
-- Pending: full official model origin and conversion. Blocker: the two official checkpoints have no complete download and conversion run. Release condition: convert both checkpoints with the included scripts, then compare files and answers with the current GGUF files.
+- Pending: long state correctness. Blocker: no long-state check runs on r3. Release condition: run a long-state check on r3 and report it separately from natural long answers.
 - Pending: contribution of wide RVV, route 3, B1-r2, and C1. Blocker: the final comparison measures the whole version. Release condition: disable one path at a time on the same r3 binary and measure pairs.
 - Pending: a unified public download archive for the exact dependencies. Blocker: the vendor runtime libraries are not in the package. Release condition: publish the exact runtime files with their SHA-256 values.
 - Pending: operation on an 8 GB device. Blocker: no 8 GB board was tested. Release condition: run the capacity protocol on an 8 GB board.

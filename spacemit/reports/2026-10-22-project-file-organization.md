@@ -102,6 +102,22 @@ PDF 由同目录 TeX 生成，中文用 XeLaTeX，英文用 pdfLaTeX，各运行
 引用同步更新：[文档地图](../../docs/README.md)、[本机实验目录说明](../../lab/README.md)、
 [2026-10-11 进度报告](2026-10-11-project-progress.md)（链接改为纯文本）。
 
+## 最终成果包与报告同步
+
+报告更新：性能证据截止保持 2026-10-16。
+新增第 9 节“后续验收记录”，列出官方检查点加工、固定多轮 v1／v2、自然长上下文和文档字符串规则。
+状态表与适用范围同步更新：官方转换与多轮质量改为已验证，长状态与重复稳定性仍列为后续验收项。
+中英文 TeX 与 PDF 重新导出，英文 10 页，中文 8 页，导出检查无 `Overfull` 与缺字。
+
+成果包更新：`reports/` 从 9 份增至 16 份；`project/` 引用闭包同步到当前提交。
+入口页、检查表、`manifest.json` 与 `SHA256SUMS` 重新生成，`official_conversion_completed` 改为 `true`。
+新增[同步脚本](../../spacemit/final-release/update-package.py)，不复制模型权重，不改写 `evidence/` 中的原始归档。
+报告身份见[report-receipt.json](../../spacemit/final-release/report-receipt.json)，归档身份见[package-receipt.json](../../spacemit/final-release/package-receipt.json)。
+
+归档为 `lab/final-release-20261022/release/final-release.tar.gz`。
+SHA-256 为 `0dcb96abc613fd6e68e3adff67c1d584c59a20b8ba5f0a9e4626bcced859fa86`，字节数 4,297,873,704。
+解压后 `sha256sum -c SHA256SUMS` 通过，覆盖 9,597 个文件。
+
 ## 原位保留
 
 下列材料保留原路径，原因见[归档清单](../../archive/README.md)。
@@ -120,12 +136,12 @@ PDF 由同目录 TeX 生成，中文用 XeLaTeX，英文用 pdfLaTeX，各运行
 指向不随 Git 分发目标的链接不计入失效链接：仓库外路径与被 `.gitignore` 排除的路径属于此类。
 因此同一判据在本机工作区与干净检出中结果一致。
 该阶段检查链接与章节锚点、主题索引覆盖、归档残留引用、原始记录和必需文件。
-失效链接基线为[doc_links_baseline.json](../../tools/doc_links_baseline.json)，11 条。
+失效链接基线为[doc_links_baseline.json](../../tools/doc_links_baseline.json)，5 条。
 基线只能缩小：清单外的新失效链接失败，清单中已修复的条目同样失败。
 
 | 检查 | 结果 |
 | --- | --- |
-| 文档链接与锚点 | 覆盖 249 份活动文档与 2,091 条本地链接；新失效链接 0 条，已修复基线条目 0 条 |
+| 文档链接与锚点 | 覆盖 250 份活动文档与 2,110 条本地链接；新失效链接 0 条，已修复基线条目 6 条 |
 | 主题索引覆盖 | 109 份日期报告全部覆盖，无重复，无多余条目 |
 | 归档残留引用 | 4 个检索标记在活动文档与代码中命中 0 次 |
 | 原始记录保留 | 工作区 Git 差异 0 行；暂存区差异 0 行；28,791 个文件哈希与整理前一致 |
@@ -133,6 +149,8 @@ PDF 由同目录 TeX 生成，中文用 XeLaTeX，英文用 pdfLaTeX，各运行
 | 写作检查 | `bash tools/ci-local.sh lint` 退出码 0 |
 | Python 测试 | `bash tools/ci-local.sh python` 退出码 0 |
 | 提交前检查 | `bash tools/ci-local.sh --staged` 退出码 0 |
+| 成果包链接 | 133 条包内链接通过 |
+| 成果包散列 | 9,597 项 `sha256sum -c` 通过；解压复核通过 |
 | 技术指南一致性 | 两版标题、性能表逐行数值、命令块与内存单位一致；数值与 `SUBMISSION-ZH` 比对；`guide_errors` 为 0 |
 | 技术指南注入 | 7 项注入全部失败：改数值、互换内存两臂、`MB` 单位、单表头丢单位、删 6.3、删命令行、改标题 |
 | 技术指南导出 | 中文 7 页，英文 7 页；无 `Overfull` 警告（评分表有 `Underfull` 提示） |
@@ -176,6 +194,6 @@ PY
 ## 适用范围
 
 本次检查的配置为：本机仓库 `/home/moyamryia/Projects/riscv-accl`，Git 分支 `main`，提交 `2d09c081` 的工作区。
-本次检查的样本为：249 份活动 Markdown 文档、2,091 条本地链接、109 份日期报告、28,791 个原始记录文件。
+本次检查的样本为：250 份活动 Markdown 文档、2,110 条本地链接、109 份日期报告、28,791 个原始记录文件。
 本次没有运行板端测试，也没有改动模型、构建或测量数据。
-11 条基线条目分布在 `spacemit/experiments/` 与 `spacemit/final-release/submission/`，修正路径属于后续文档任务。
+剩余 5 条基线条目位于 `spacemit/experiments/`，其 `raw/` 前缀路径属于后续文档任务。

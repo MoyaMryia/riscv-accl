@@ -66,7 +66,7 @@ Source, policy, and binary bytes retain their tested hashes.
 ## 4. Acceptance and historical limits
 
 [Requirements.md](../../Requirements.md) controls acceptance.
-The [gap map](2026-10-13-requirements-gap.md) retains official model origin, conversion, long-state, and multi-turn gaps.
+The [gap map](2026-10-13-requirements-gap.md) records the gaps on October 13. Section 9 of the report lists the later acceptance records.
 The [previous stop audit](2026-10-12-combined-stop-audit.md) retains the 3.0220477% decode regression under its original conditions.
 The [scalar schedule screen](2026-10-13-k1-live-inspect-and-scalar-schedule.md) retains its failed performance gate.
 The [TCM audit](2026-10-13-k1-tcm-access.md) does not establish inference performance gains.

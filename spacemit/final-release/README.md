@@ -8,6 +8,7 @@
 成果包内的 `SUBMISSION-CHECKLIST.md` 记录六项内容及验收限制。
 补测收据、两模型新入口检查和报告均随包保存。
 最终归档与解压核验身份见本目录的 `committee-receipt.json`。
+2026-10-22 同步后的成果包归档身份见[package-receipt.json](package-receipt.json)。
 本目录原有 r3 元数据与原归档身份仍保留。
 
 已验证版本为 `k1-final-20261013-r3`。
@@ -36,6 +37,20 @@ C2-r2 与 MTP 草稿解码关闭。
 | 部分请求 MTP | 文档字符串收益规则与 BERT 类别代理分别记录，见[版本澄清](../reports/2026-10-21-routing-version-clarification.md)。 |
 
 上述记录作为独立补充材料提供。
+同步脚本把报告、入口页、清单与文件散列更新到当前仓库状态。
+原始归档、生产二进制与模型权重保持不变。
+
+## 同步成果包
+
+[同步脚本](update-package.py)从当前仓库复制报告与引用闭包，并重新生成清单与散列。
+
+```sh
+python3 spacemit/final-release/update-package.py
+```
+
+同步覆盖 `reports/`、`project/`、入口页、`manifest.json` 与 `SHA256SUMS`。
+脚本不改写 `evidence/` 中的原始归档，也不复制模型权重。
+报告身份见[report-receipt.json](report-receipt.json)；本次同步的计数与归档身份见 `evidence/report-refresh-receipt.json`。
 原 r3 和委员会成果包的归档、生产模型、二进制与默认配置保持不变。
 原归档内的说明按冻结时的状态读取。
 

@@ -82,7 +82,8 @@ K1},pdfauthor={riscv-accl project}}
 \vspace{8mm}
 {\Large Infrastructure Optimization and Performance Evaluation\par}
 \vspace{12mm}
-{\large Evidence cutoff: October 16, 2026 (Asia/Singapore)\par}
+{\large Performance evidence cutoff: October 16, 2026 (Asia/Singapore);
+later acceptance update: October 22, 2026\par}
 \vspace{14mm}
 \begin{tabular}{@{}ll@{}}
 \textbf{Platform} & MUSE-Pi-Pro, K1/X60, nominal 16 GB RAM \\
@@ -99,7 +100,8 @@ Long-input results have one pair per model. Formal acceptance gaps remain.\par
 \end{titlepage}
 {\small\tableofcontents}
 \clearpage
-\textbf{Evidence cutoff: October 16, 2026, Asia/Singapore}
+\textbf{Performance evidence cutoff: October 16, 2026, Asia/Singapore.
+Later acceptance update: October 22, 2026}
 
 \hypertarget{abstract}{%
 \section{Abstract}\label{abstract}}
@@ -338,16 +340,29 @@ Exact native dumps, 64 short state records, and two relocated model
 launches\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.47\columnwidth}\raggedright
-Pending\strut
+Verified\strut
 \end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
-Full official model origin and reproducible conversion of both final
-weights\strut
+Conversion, quantization, and packaging of both official checkpoints;
+new products and historical GGUF files have separate records\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Verified\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Fixed multi-turn v2 with 48 requests and independent review; 15/24
+correct for 2B and 19/24 for 4B, and the user accepted the measured
+quality\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.47\columnwidth}\raggedright
+Verified\strut
+\end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
+Natural long context: all 12 answers correct at short, 16k, and 32k
+inputs\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.47\columnwidth}\raggedright
 Pending\strut
 \end{minipage} & \begin{minipage}[t]{0.47\columnwidth}\raggedright
-Repeated long-context stability, long state acceptance, and the fixed
-multi-turn quality suite\strut
+Long state correctness and repeat stability at 8192, 16384, and 32768
+inputs\strut
 \end{minipage}\tabularnewline
 \begin{minipage}[t]{0.47\columnwidth}\raggedright
 Not implemented in this release\strut
@@ -810,6 +825,38 @@ stopped item. The
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-next-plan.md}{next
 plan} orders the remaining experiments by expected gain.
 
+\hypertarget{later-acceptance-records}{%
+\section{9. Later acceptance records}\label{later-acceptance-records}}
+
+These reports record acceptance after October 16, 2026. Section 5 and
+section 5.1 keep the frozen performance numbers.
+
+\begin{itemize}
+\tightlist
+\item
+  Official checkpoint conversion: both checkpoints converted, quantized,
+  and packaged; tensors, types, and tokenizer data match the delivered
+  files, and the chat template differs
+  (\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-official-conversion.md}{report}).
+\item
+  Fixed multi-turn v2: all 48 requests complete; independent review
+  finds 15/24 correct for 2B and 19/24 for 4B, and the user accepted the
+  measured quality with the retained errors
+  (\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-fixed-multi-turn-v2-results.md}{report}).
+\item
+  Fixed multi-turn v1: 32 of 48 planned turns complete with exit status
+  2; six conversations pass and six fail
+  (\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-fixed-multi-turn-results.md}{report}).
+\item
+  Natural long context: all 12 answers correct at short, 16k, and 32k
+  inputs
+  (\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-22-long-context-natural-results.md}{report}).
+\item
+  MTP docstring rule: the prompt-only rule gives a 3.48\% net time gain
+  with a 1.30\% to 5.10\% family-cluster interval
+  (\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-2b-mtp-docstring-rule-validation.md}{report}).
+\end{itemize}
+
 \hypertarget{scope}{%
 \section{Scope}\label{scope}}
 
@@ -829,19 +876,9 @@ path. The tested board has 16 GB of RAM.
   these shapes have one or two pairs. Release condition: measure at
   least three pairs per shape.
 \item
-  Pending: general and multi-turn answer quality. Blocker: the fixed
-  multi-turn quality suite has no run on r3. Release condition: run the
-  suite on both models with the relative quality gate.
-\item
-  Pending: long semantic quality and long state correctness. Blocker:
-  the 16k and 32k requests use 65 forced output tokens. Release
-  condition: run natural long-document answers and long state checks on
-  r3.
-\item
-  Pending: full official model origin and conversion. Blocker: the two
-  official checkpoints have no complete download and conversion run.
-  Release condition: convert both checkpoints with the included scripts,
-  then compare files and answers with the current GGUF files.
+  Pending: long state correctness. Blocker: no long-state check runs on
+  r3. Release condition: run a long-state check on r3 and report it
+  separately from natural long answers.
 \item
   Pending: contribution of wide RVV, route 3, B1-r2, and C1. Blocker:
   the final comparison measures the whole version. Release condition:
@@ -1048,8 +1085,8 @@ limits}\label{acceptance-and-historical-limits}}
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/Requirements.md}{Requirements.md}
 controls acceptance. The
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-13-requirements-gap.md}{gap
-map} retains official model origin, conversion, long-state, and
-multi-turn gaps. The
+map} records the gaps on October 13. Section 9 of the report lists the
+later acceptance records. The
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-12-combined-stop-audit.md}{previous
 stop audit} retains the 3.0220477\% decode regression under its original
 conditions. The

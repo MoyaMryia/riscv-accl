@@ -83,7 +83,7 @@
 \vspace{8mm}
 {\Large 基础设施优化与性能评估\par}
 \vspace{12mm}
-{\large 证据截止：2026-10-16（Asia/Singapore）\par}
+{\large 性能证据截止：2026-10-16（Asia/Singapore）；后续验收更新：2026-10-22\par}
 \vspace{14mm}
 \begin{tabular}{@{}ll@{}}
 \textbf{平台} & MUSE-Pi-Pro，K1／X60，标称 16 GB 内存 \\
@@ -99,7 +99,7 @@
 \end{titlepage}
 {\small\tableofcontents}
 \clearpage
-证据截止：2026-10-16，Asia/Singapore。
+性能证据截止：2026-10-16，Asia/Singapore。后续验收记录更新：2026-10-22。
 
 \hypertarget{ux6458ux8981}{%
 \section{摘要}\label{ux6458ux8981}}
@@ -167,8 +167,13 @@
 次完整自然代码回答\tabularnewline
 已验证 & 原生转储逐位一致、64
 条短状态记录和两个模型的迁移启动\tabularnewline
-待验收 & 官方模型来源和两个最终权重的可复现转换\tabularnewline
-待验收 & 长上下文重复稳定性、长状态和固定多轮质量套件\tabularnewline
+已验证 & 两个官方检查点的转换、量化和打包；产物与历史 GGUF
+分别记录\tabularnewline
+已验证 & 固定多轮 v2 完成 48 轮请求与独立复核；2B 15/24、4B 19/24
+正确，用户接受测得质量\tabularnewline
+已验证 & 自然长上下文在短、16k、32k 档位共 12
+次回答全部正确\tabularnewline
+待验收 & 长状态正确性和 8192／16384／32768 的重复稳定性\tabularnewline
 本版未实现 & GPU 加速、KV 压缩和分页分配的内存收益\tabularnewline
 \bottomrule
 \end{longtable}
@@ -562,6 +567,30 @@ r3 上按相对质量门槛和分类速度门槛重新测试 MTP。
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/WORK-LEDGER.md}{项目工作总账}列出全部工作、采用项和每个停止事项的原因。
 \href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-16-next-plan.md}{下一步计划}按预期收益排列剩余实验。
 
+\hypertarget{ux540eux7eedux9a8cux6536ux8bb0ux5f55}{%
+\section{9. 后续验收记录}\label{ux540eux7eedux9a8cux6536ux8bb0ux5f55}}
+
+下列报告记录 2026-10-16 之后的独立验收。第 5 节与 5.1
+节的冻结测量保持不变。
+
+\begin{itemize}
+\tightlist
+\item
+  官方检查点加工：两个检查点完成转换、量化和打包；张量、类型与分词器数据与交付文件一致，对话模板不同（\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-official-conversion.md}{报告}）。
+\item
+  固定多轮 v2：48 轮请求全部完成；独立复核 2B 15/24、4B 19/24
+  正确，用户接受测得质量并保留已知错误（\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-fixed-multi-turn-v2-results.md}{报告}）。
+\item
+  固定多轮 v1：48 个计划轮次完成 32 个，退出码 2；6 个会话通过、6
+  个失败（\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-fixed-multi-turn-results.md}{报告}）。
+\item
+  自然长上下文：短、16k、32k 档位共 12
+  次回答全部正确（\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-22-long-context-natural-results.md}{报告}）。
+\item
+  部分请求 MTP：文档字符串规则在代码网格上净收益 3.48\%，族区间
+  1.30\%～5.10\%（\href{https://github.com/MoyaMryia/riscv-accl/blob/main/spacemit/reports/2026-10-21-2b-mtp-docstring-rule-validation.md}{报告}）。
+\end{itemize}
+
 \hypertarget{ux9002ux7528ux8303ux56f4}{%
 \section{适用范围}\label{ux9002ux7528ux8303ux56f4}}
 
@@ -579,14 +608,8 @@ r3 上按相对质量门槛和分类速度门槛重新测试 MTP。
   待验证：8192、16384 和 32768 输入的重复稳定性。阻塞：这些形状只有 1～2
   对。解除条件：每形状至少测量 3 对。
 \item
-  待验证：通用质量和多轮质量。阻塞：固定多轮质量套件没有在 r3
-  上执行。解除条件：在两个模型上按相对质量门槛执行该套件。
-\item
-  待验证：长文语义质量和长状态正确性。阻塞：16k 和 32k 请求使用 65
-  个强制输出词元。解除条件：在 r3 上执行自然长文回答和长状态检查。
-\item
-  待验证：官方模型来源和完整转换。阻塞：两个官方检查点没有完整的下载与转换记录。解除条件：用随包脚本转换两个检查点，再与现用
-  GGUF 比较文件和回答。
+  待验证：长状态正确性。阻塞：r3 上没有长状态检查。解除条件：在 r3
+  上执行长状态检查，并与自然长文回答分开记录。
 \item
   待验证：宽 RVV、route 3、B1-r2 和 C1
   各自的贡献。阻塞：最终对照只比较整体版本。解除条件：在同一 r3

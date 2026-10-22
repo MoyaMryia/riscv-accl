@@ -20,7 +20,7 @@ TARGETS = {
         "output": "SUBMISSION-REPORT",
         "title": "Qwen3.5 Inference on the SpaceMiT K1",
         "subtitle": "Infrastructure Optimization and Performance Evaluation",
-        "date": "Evidence cutoff: October 16, 2026 (Asia/Singapore)",
+        "date": "Performance evidence cutoff: October 16, 2026 (Asia/Singapore); later acceptance update: October 22, 2026",
     },
     "zh": {
         "sources": ("SUBMISSION-ZH.md",),
@@ -29,7 +29,7 @@ TARGETS = {
         "output": "SUBMISSION-ZH",
         "title": "面向进迭时空 K1 的 Qwen3.5 本地推理优化",
         "subtitle": "基础设施优化与性能评估",
-        "date": "证据截止：2026-10-16（Asia/Singapore）",
+        "date": "性能证据截止：2026-10-16（Asia/Singapore）；后续验收更新：2026-10-22",
     },
 }
 
