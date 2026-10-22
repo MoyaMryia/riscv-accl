@@ -7,7 +7,7 @@ cd "$(git rev-parse --show-toplevel)"
 
 # 触发路径（扩展正则，匹配暂存文件路径）。
 PYTHON_PATHS='^(tools/|spacemit/bench/qemu-screen/predictor/freeze-sources\.py$|spacemit/bench/mtp-r3/|spacemit/bench/final-default/|spacemit/models/tools/|spacemit/serve/cached-document-chat\.py$|spacemit/serve/decode-router/)'
-DOC_PATHS='\.(md|tex)$|^\.gitignore$|^tools/check-docs\.py$|^tools/doc_links_baseline\.json$|^spacemit/reports/(raw|snapshots)/'
+DOC_PATHS='\.(md|tex|pdf)$|^\.gitignore$|^tools/check-docs\.py$|^tools/doc_links_baseline\.json$|^spacemit/reports/(raw|snapshots)/'
 
 stage_lint() { python3 tools/writing_lint.py "$@"; }
 stage_docs() { python3 tools/check-docs.py "$@"; }

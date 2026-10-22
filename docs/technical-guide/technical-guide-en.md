@@ -91,7 +91,7 @@ The project implements systematic operator kernel optimization for the edge RISC
 - **Result**: The change removes redundant memory transfers and increases decode speed by 10% to 25%.
 
 ### 3.4 Microbatch Setting (-ub 32 -b 32)
-- **Principle**: Hardware profiling reveals that block GEMM efficiency decreases when batch dimension $M \ge 64$ because of cache capacity limits.
+- **Principle**: Hardware profiling reveals that block GEMM efficiency decreases when batch dimension M ≥ 64 because of cache capacity limits.
 - **Optimization**: The server sets microbatch `-ub 32` and batch size `-b 32` as the uniform default.
 - **Result**: Data blocks fit the CPU cache hierarchy and sustain peak compute throughput.
 
@@ -108,23 +108,23 @@ Tests compare identical Q4_0 weights, F16 KV cache, and matched prompt lengths.
 
 ### 4.1 Qwen3.5-2B Performance Table
 
-| Input Context | Sample Pairs | Total Request Time (Baseline → Final) | Speedup Ratio | TTFT Latency (Baseline → Final) | TTFT Reduction | Decode Rate (Baseline → Final) | Peak RSS (Baseline → Final) |
+| Input Context | Sample Pairs | Total Request Time (Baseline → Final) | Speedup Ratio | TTFT Latency (Baseline → Final) | TTFT Reduction | Decode Rate (Baseline → Final) | Peak RSS (Baseline → Final, MiB) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **512** | 3 | 43.03s → **34.71s** | **1.24x** | 23.84s → **19.56s** | **17.96%** | 3.39 → **4.29 tok/s** | 2472MB → 2470MB |
-| **2,048** | 3 | 136.55s → **97.17s** | **1.41x** | 115.64s → **81.63s** | **29.41%** | 3.11 → **4.19 tok/s** | 2472MB → 2470MB |
-| **8,192** | 1 | 875.36s → **426.22s** | **2.05x** | 846.32s → **408.16s** | **51.77%** | 2.24 → **3.60 tok/s** | 2473MB → 2471MB |
-| **16,384** | 2 | 2868.83s → **1057.23s** | **2.71x** | 2829.81s → **1035.03s** | **63.43%** | 1.66 → **2.91 tok/s** | 2473MB → 2471MB |
-| **32,768** | 1 | 10822.89s → **3014.28s** | **3.59x** | 10761.02s → **2983.91s** | **72.27%** | 1.05 → **2.14 tok/s** | 2474MB → 2472MB |
+| **512** | 3 | 43.03s → **34.71s** | **1.24x** | 23.84s → **19.56s** | **17.96%** | 3.39 → **4.29 tok/s** | 2472 MiB → 2470 MiB |
+| **2,048** | 3 | 136.55s → **97.17s** | **1.41x** | 115.64s → **81.63s** | **29.41%** | 3.11 → **4.19 tok/s** | 2472 MiB → 2470 MiB |
+| **8,192** | 1 | 875.36s → **426.22s** | **2.05x** | 846.32s → **408.16s** | **51.77%** | 2.24 → **3.60 tok/s** | 2473 MiB → 2471 MiB |
+| **16,384** | 2 | 2868.83s → **1057.23s** | **2.71x** | 2829.65s → **1034.91s** | **63.43%** | 1.66 → **2.91 tok/s** | 2572 MiB → 2570 MiB |
+| **32,768** | 1 | 10822.89s → **3014.28s** | **3.59x** | 10761.01s → **2983.90s** | **72.27%** | 1.05 → **2.14 tok/s** | 2768 MiB → 2766 MiB |
 
 ### 4.2 Qwen3.5-4B Performance Table
 
-| Input Context | Sample Pairs | Total Request Time (Baseline → Final) | Speedup Ratio | TTFT Latency (Baseline → Final) | TTFT Reduction | Decode Rate (Baseline → Final) | Peak RSS (Baseline → Final) |
+| Input Context | Sample Pairs | Total Request Time (Baseline → Final) | Speedup Ratio | TTFT Latency (Baseline → Final) | TTFT Reduction | Decode Rate (Baseline → Final) | Peak RSS (Baseline → Final, MiB) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **512** | 3 | 113.13s → **80.35s** | **1.41x** | 63.70s → **49.87s** | **21.72%** | 1.32 → **2.13 tok/s** | 5342MB → 5341MB |
-| **2,048** | 3 | 411.79s → **246.58s** | **1.67x** | 354.44s → **213.50s** | **39.77%** | 1.13 → **1.97 tok/s** | 5342MB → 5341MB |
-| **8,192** | 1 | 3323.89s → **1170.32s** | **2.84x** | 3234.17s → **1126.54s** | **65.17%** | 0.72 → **1.49 tok/s** | 5343MB → 5342MB |
-| **16,384** | 2 | 11388.99s → **3033.91s** | **3.75x** | 11256.40s → **2975.80s** | **73.56%** | 0.49 → **1.12 tok/s** | 5343MB → 5342MB |
-| **32,768** | 1 | 42294.22s → **8952.51s** | **4.72x** | 42071.21s → **8866.01s** | **78.93%** | 0.29 → **0.75 tok/s** | 5344MB → 5343MB |
+| **512** | 3 | 113.13s → **80.35s** | **1.41x** | 63.70s → **49.87s** | **21.72%** | 1.32 → **2.13 tok/s** | 5342 MiB → 5341 MiB |
+| **2,048** | 3 | 411.79s → **246.58s** | **1.67x** | 354.44s → **213.50s** | **39.77%** | 1.13 → **1.97 tok/s** | 5342 MiB → 5341 MiB |
+| **8,192** | 1 | 3323.89s → **1170.32s** | **2.84x** | 3234.17s → **1126.54s** | **65.17%** | 0.72 → **1.49 tok/s** | 5343 MiB → 5342 MiB |
+| **16,384** | 2 | 11388.99s → **3033.91s** | **3.75x** | 11256.20s → **2975.72s** | **73.56%** | 0.49 → **1.12 tok/s** | 5600 MiB → 5601 MiB |
+| **32,768** | 1 | 42294.22s → **8952.51s** | **4.72x** | 42070.82s → **8866.02s** | **78.93%** | 0.29 → **0.75 tok/s** | 6117 MiB → 6118 MiB |
 
 ### 4.3 Key Findings
 1. **Speedups Grow with Input Length**: At 512 tokens, requests gain 24% to 41% speedup. At 32k tokens, speed increases **3.59x on 2B** and **4.72x on 4B**. The 256-bit vector Flash Attention kernel provides significant offloading for long sequences.
@@ -196,7 +196,7 @@ curl http://127.0.0.1:18085/v1/chat/completions \
     "model": "qwen3.5-2b",
     "messages": [
       {"role": "system", "content": "You are a helpful assistant."},
-      {"role": "user", "content": "Write a quicksort implementation in C language and state its time complexity."}
+      {"role": "user", "content": "Write a quicksort in C and state its time complexity."}
     ],
     "temperature": 0.0,
     "max_tokens": 512
@@ -208,6 +208,6 @@ curl http://127.0.0.1:18085/v1/chat/completions \
 ## 7. Scope
 
 - Configuration: MUSE-Pi-Pro (SpacemiT K1-x 8-core CPU, 16 GB RAM, Bianbu Linux 2.3.5 / 24.04).
-- Sample count: Covers input lengths from 512 to 32,768 tokens, including 28 paired benchmark tests and 12 long-context generation tests.
+- Sample count: Covers input lengths from 512 to 32,768 tokens, including 28 default benchmark requests and 12 long-context generation tests.
 - Blocker: Direct DMA mapping to hardware TCM in user space remains restricted by operating system kernel permissions.
 - Release condition: Implement kernel driver updates that enable unprivileged DMA mappings to hardware TCM.

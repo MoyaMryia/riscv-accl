@@ -84,6 +84,7 @@
 
 技术指南同时保留 Markdown、TeX 和 PDF 三种形式。
 修改正文后必须同步三种形式。
+[文档检查](../tools/check-docs.py)逐行核对 Markdown 与 TeX 的标题、性能表数值与命令，并把数值与[中文技术报告](../spacemit/reports/SUBMISSION-ZH.md)比对。
 PDF 从同目录的 TeX 生成；中文使用 XeLaTeX，英文使用 pdfLaTeX。
 
 ```bash

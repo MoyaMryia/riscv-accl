@@ -31,18 +31,20 @@ DATED = re.compile(r'^2026-\d{2}-\d{2}-.+\.md$')
 STALE_TOKENS = ('spacemit/patches/', 'spacemit/apply-patches.sh',
                 'k1-llm-inference-optimizations-old', 'TECHNICAL-GUIDE-')
 TEXT_SUFFIXES = {'.md', '.tex', '.sh', '.py'}
+GUIDES = (('zh', 'docs/technical-guide/technical-guide-zh'),
+          ('en', 'docs/technical-guide/technical-guide-en'))
+COMMANDS = ('cd ~/Projects/riscv-accl', 'curl http://127.0.0.1:18085/v1/chat/completions')
+COMMANDS = ('cd ~/Projects/riscv-accl', 'curl http://127.0.0.1:18085/v1/chat/completions')
+VALUE = re.compile(r'\d{4,}(?:,\d{3})*|\d+\.\d+')
 # 本脚本定义检索标记，必须写出这些旧路径。
 EXEMPT_STALE = {'tools/check-docs.py'}
 REQUIRED = (
-    'docs/README.md', 'docs/technical-guide/technical-guide-zh.md',
-    'docs/technical-guide/technical-guide-zh.tex', 'docs/technical-guide/technical-guide-zh.pdf',
-    'docs/technical-guide/technical-guide-en.md', 'docs/technical-guide/technical-guide-en.tex',
-    'docs/technical-guide/technical-guide-en.pdf', 'archive/README.md',
+    'docs/README.md', 'archive/README.md',
     'archive/patches-5ad05d8/apply-patches.sh',
     'archive/reports/k1-llm-inference-optimizations-2026-09-24.tex',
     'archive/reports/k1-llm-inference-optimizations-2026-09-24.pdf',
     'spacemit/reports/TOPICS.md', 'lab/README.md',
-)
+) + tuple(f'{stem}.{suffix}' for _, stem in GUIDES for suffix in ('md', 'tex', 'pdf'))
 
 
 def prose(text):
@@ -134,6 +136,107 @@ def check_stale():
     return hits
 
 
+def guide_titles(text, tex):
+    if tex:
+        titles = re.findall(r'\\(?:section|subsection)\{([^}]*)\}', text)
+    else:
+        titles = re.findall(r'^#{2,3}\s+(.*)$', text, re.M)
+    out = []
+    for title in titles:
+        title = re.sub(r'^\d+(?:\.\d+)?\.?\s+', '', title.strip())
+        for escaped, plain in (('\\%', '%'), ('\\_', '_'), ('\\&', '&')):
+            title = title.replace(escaped, plain)
+        out.append(re.sub(r'\s+', ' ', title))
+    return out
+
+
+def guide_blocks(text, tex):
+    if tex:
+        parts = re.findall(r'\\begin\{Verbatim\}(?:\[[^\]]*\])?\n(.*?)\\end\{Verbatim\}', text, re.S)
+        parts += re.findall(r'\\begin\{verbatim\}(.*?)\\end\{verbatim\}', text, re.S)
+    else:
+        parts = re.findall(r'```bash\n(.*?)```', text, re.S)
+    return [re.sub(r'\s+', ' ', part.replace('\\\n', '')).strip() for part in parts]
+
+
+def performance_rows(text, tex):
+    rows = []
+    for line in text.splitlines():
+        if tex:
+            if not re.match(r'\\textbf\{[\d,]+\}', line):
+                continue
+        elif not re.match(r'^\| \*\*[\d,]+\*\*', line):
+            continue
+        line = line.replace(',', '')
+        cells = line.split('&') if tex else line.strip().strip('|').split('|')
+        numbers = [float(n) for cell in cells for n in re.findall(r'\d+(?:\.\d+)?', cell)]
+        rows.append(numbers)
+    return rows
+
+
+def reference_values():
+    text = (ROOT / 'spacemit/reports/SUBMISSION-ZH.md').read_text(encoding='utf-8')
+    return [float(m.group(0).replace(',', '')) for m in re.finditer(r'\d[\d,]*(?:\.\d+)?', text)]
+
+
+def check_guides():
+    errors = []
+    reference = reference_values()
+    cells = {'request': (2, 3), 'ttft': (5, 6), 'decode': (8, 9), 'rss': (10, 11)}
+    for lang, stem in GUIDES:
+        md_name, tex_name = stem + '.md', stem + '.tex'
+        md = (ROOT / md_name).read_text(encoding='utf-8')
+        tex = (ROOT / tex_name).read_text(encoding='utf-8')
+        if guide_titles(md, False) != guide_titles(tex, True):
+            errors.append({'guide': lang, 'error': 'headings differ'})
+        md_rows, tex_rows = performance_rows(md, False), performance_rows(tex, True)
+        if md_rows != tex_rows:
+            pairs = [(index, md_row, tex_row) for index, (md_row, tex_row)
+                     in enumerate(zip(md_rows, tex_rows)) if md_row != tex_row]
+            errors.append({'guide': lang, 'error': 'performance rows differ',
+                           'rows': len(md_rows), 'tex_rows': len(tex_rows),
+                           'first_differences': pairs[:3]})
+        if len(md_rows) != 10:
+            errors.append({'guide': lang, 'error': 'expected 10 performance rows',
+                           'rows': len(md_rows)})
+        for index, row in enumerate(md_rows):
+            if len(row) != 12:
+                errors.append({'guide': lang, 'row': index, 'error': 'row cell count',
+                               'numbers': len(row)})
+                continue
+            for name, (base, final) in cells.items():
+                tolerance = 0.51 if name == 'rss' else 0.011
+                for column in (base, final):
+                    if not any(abs(value - row[column]) <= tolerance for value in reference):
+                        errors.append({'guide': lang, 'row': index, 'column': name,
+                                       'error': 'value not in SUBMISSION-ZH',
+                                       'value': row[column]})
+        md_blocks, tex_blocks = guide_blocks(md, False), guide_blocks(tex, True)
+        if md_blocks != tex_blocks:
+            errors.append({'guide': lang, 'error': 'command blocks differ',
+                           'md_blocks': len(md_blocks), 'tex_blocks': len(tex_blocks)})
+        for name, text in ((md_name, md), (tex_name, tex)):
+            if re.search(r'\d{4,}\s?MB', text):
+                errors.append({'guide': lang, 'file': name, 'error': 'memory value in MB'})
+        if md.count('MiB → ') != 10:
+            errors.append({'guide': lang, 'error': 'expected 10 memory rows',
+                           'found': md.count('MiB → ')})
+        for name, text in ((md_name, md), (tex_name, tex)):
+            headers = [line for line in text.splitlines()
+                       if line.startswith(('| 输入长度', '| Input', '\\textbf{输入词元}',
+                                           '\\textbf{Input}'))]
+            if len(headers) != 2 or not all('MiB' in line for line in headers):
+                errors.append({'guide': lang, 'file': name,
+                               'error': 'memory unit missing from a table header',
+                               'headers': len(headers)})
+        for command in COMMANDS:
+            for name, text in ((md_name, md), (tex_name, tex)):
+                if command not in text:
+                    errors.append({'guide': lang, 'file': name, 'error': 'command absent',
+                                   'command': command})
+    return errors
+
+
 def check_required():
     absent = [name for name in REQUIRED if not (ROOT / name).exists()]
     tracked = subprocess.run(['git', '-C', str(ROOT), 'ls-files', '--error-unmatch', 'lab/README.md'],
@@ -172,12 +275,14 @@ def check_frozen(before, staged):
 
 def base_baseline(ref):
     """读取基准提交中的基线条目；该提交没有基线文件时返回 None。"""
-    try:
-        text = subprocess.run(['git', '-C', str(ROOT), 'show', f'{ref}:tools/doc_links_baseline.json'],
-                              check=True, capture_output=True, text=True).stdout
-    except subprocess.CalledProcessError:
-        return None
-    return {(e['file'], e['link'], e['error']) for e in json.loads(text)['errors']}
+    completed = subprocess.run(['git', '-C', str(ROOT), 'show',
+                                f'{ref}:tools/doc_links_baseline.json'],
+                               capture_output=True, text=True)
+    if completed.returncode != 0:
+        if 'does not exist' in completed.stderr or 'but not in' in completed.stderr:
+            return None
+        raise SystemExit('git show 失败：' + completed.stderr.strip())
+    return {(e['file'], e['link'], e['error']) for e in json.loads(completed.stdout)['errors']}
 
 
 def load_baseline():
@@ -214,6 +319,7 @@ def main(argv=None):
     stale = check_stale()
     frozen = check_frozen(args.before, args.staged)
     required = check_required()
+    guides = check_guides()
     base = base_baseline(args.base_ref) if args.base_ref else None
     grown = sorted(baseline - base) if base is not None else []
 
@@ -225,12 +331,13 @@ def main(argv=None):
     failed = bool(new or fixed or grown or topics['missing'] or topics['duplicated']
                   or topics['unknown'] or stale or frozen['changed_paths']
                   or frozen.get('changed_or_missing') or required['absent']
-                  or not required['lab_readme_tracked'])
+                  or not required['lab_readme_tracked'] or guides)
     summary = {'links': {'documents': documents, 'local_links': checked,
                          'baseline_entries': len(baseline), 'new_errors': len(new),
                          'fixed_errors': len(fixed)},
                'topics': topics, 'stale_references': stale, 'frozen': frozen,
-               'required': required, 'baseline_growth': len(grown), 'failed': failed}
+               'required': required, 'baseline_growth': len(grown),
+               'guide_errors': len(guides), 'failed': failed}
     if args.json:
         out = Path(args.json)
         (out / 'links.json').write_text(json.dumps(
@@ -255,6 +362,8 @@ def main(argv=None):
         print(f"frozen: {name}", file=sys.stderr)
     for name in required['absent']:
         print(f"absent: {name}", file=sys.stderr)
+    for item in guides:
+        print(f"guide: {item}", file=sys.stderr)
     return int(failed)
 
 
