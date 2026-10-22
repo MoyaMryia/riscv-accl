@@ -14,7 +14,7 @@ the base and the patch-order instructions of each experiment.
 
 | Experiment | Present interpretation |
 | --- | --- |
-| [Natural long-context answers](2026-10-21-long-context-natural.md) | Plans eight long requests and four short controls. Uses the existing r3 binaries and models. |
+| [Natural long-context answers](2026-10-21-long-context-natural.md) | [Completed](../reports/2026-10-22-long-context-natural-results.md): all 12 requests stop naturally and match independent references. Uses the existing r3 binaries and models. |
 | [Fixed multi-turn v2](2026-10-21-fixed-multi-turn-v2.md) | Implements per-turn correctness and format warnings. The [gate audit](../reports/2026-10-21-local-multi-turn-gate-audit.md) preserves the prior failures. |
 | [IME scalar schedule](2026-10-13-ime-scalar-schedule-r1-protocol.md) | [Completed screen](../reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md): 288 exact native cases pass. All eight performance cells fail advancement. Model timing does not run. |
 | [Finite fragment timing protocol R4](2026-10-12-k1-fragment-timing-r4-protocol.md) | Complete-call point estimates use a shared call loop. Same-family checks do not establish accuracy for new algorithm families. |

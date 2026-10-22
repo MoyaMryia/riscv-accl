@@ -2,7 +2,7 @@
 
 本项目在进迭时空 K1 平台上部署 Qwen3.5 2B 和 4B 本地文本推理。
 [Requirements.md](Requirements.md) 是要求、验收目标和评分口径的唯一现行依据。
-文档核对日期：2026-10-21，Asia/Singapore。
+文档核对日期：2026-10-22，Asia/Singapore。
 
 > **Notice：来源补证（2026-10-16）**
 >
@@ -27,6 +27,8 @@ GGUF 是当前推理引擎读取的模型文件格式。
 本次保留实际失败，继续提供现有运行材料与性能证据。
 
 已验证：[v2 完整多轮测量](spacemit/reports/2026-10-21-fixed-multi-turn-v2-results.md)完成 48 轮请求与独立人工复核。
+用户接受测得的现有质量并保留已知错误，决定见[交付接受记录](spacemit/reports/2026-10-21-fixed-multi-turn-v2-results.md#6-交付接受决定)。
+已验证：[长上下文自然回答](spacemit/reports/2026-10-22-long-context-natural-results.md)完成两个模型的短、16k、32k 档位验证，12 个回答全部正确。
 
 | 任务 | 可用入口 |
 | --- | --- |

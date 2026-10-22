@@ -1,8 +1,9 @@
 # Reports index
 
-Document check: October 21, 2026, Asia/Singapore.
+Document check: October 22, 2026, Asia/Singapore.
 [Requirements.md](../../Requirements.md) is the sole current acceptance reference.
 
+- [Natural long-context results](2026-10-22-long-context-natural-results.md): all 12 requests complete with correct answers. The 4B 32k TTFT is 8942.772–9025.844 s.
 - [Complete multi-turn v2 measurement](2026-10-21-fixed-multi-turn-v2-results.md): all 48 requests complete. Independent review finds 15/24 correct answers for 2B and 19/24 for 4B.
 - [Local replay and gate audit](2026-10-21-local-multi-turn-gate-audit.md): five of six failed answers remain incorrect on x86. Five probe cases expose errors in the v1 checks. The v2 audit checks 32 saved answers against an independent reference.
 - [Fixed multi-turn acceptance](2026-10-21-fixed-multi-turn-results.md): six conversations pass and six fail. The batch completes 32 of 48 planned turns and exits with status 2.

@@ -32,6 +32,7 @@ C2-r2 与 MTP 草稿解码关闭。
 | --- | --- |
 | 官方全链加工 | 已验证：两个检查点完成转换、量化和打包，收据见[加工报告](../reports/2026-10-21-official-conversion.md)。 |
 | 固定多轮质量 | 已验证：原 r3 与历史模型完成 [v2 全部 48 轮测量与人工复核](../reports/2026-10-21-fixed-multi-turn-v2-results.md)；[原验收失败](../reports/2026-10-21-fixed-multi-turn-results.md)分别保留。 |
+| 长上下文自然回答 | 已验证：原 r3 与历史模型完成两个任务的短、16k、32k 档位检查，见[自然回答与内存结果](../reports/2026-10-22-long-context-natural-results.md)。 |
 | 部分请求 MTP | 文档字符串收益规则与 BERT 类别代理分别记录，见[版本澄清](../reports/2026-10-21-routing-version-clarification.md)。 |
 
 上述记录作为独立补充材料提供。
