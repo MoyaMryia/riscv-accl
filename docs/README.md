@@ -15,7 +15,7 @@
 | `archive/` | 已归档的历史材料 | 是 |
 | `tools/` | 仓库检查工具与本地 CI | 是 |
 | `env/` | 比赛背景与 QEMU 环境说明 | 说明入库，QEMU 镜像保留本机 |
-| `lab/` | 本机实验工件与保留归档 | 只入库 `README.md`、`baseline-record.md`、`src/` 与 `plugin/insnsum.c` |
+| `lab/` | 本机实验工件、保留归档与另一项目的 TinyLlama 基线材料 | 只入库 `README.md` |
 | `bianbu/`、`TinyLlama/`、`llamacpp-conv/` | 厂商镜像、模型仓库与转换工具副本 | 否 |
 | `/final-release/` | 交付脚本生成的完整成果目录；`spacemit/final-release/` 是入库的交付说明与工具 | 否 |
 

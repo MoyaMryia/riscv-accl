@@ -16,7 +16,7 @@
 
 ## 起点与比较边界
 
-最早的[立项记录](../../lab/baseline-record.md)为 2026-09-04 的 TinyLlama QEMU 仿真。
+最早的立项记录 `lab/baseline-record.md` 为 2026-09-04 的 TinyLlama QEMU 仿真。
 该记录当天转向 K1 真机和 Qwen3.5 2B／4B。
 TinyLlama 仿真速度不能作为 Qwen3.5 真机的性能分母。
 厂商原库本身已有硬件优化，也不能称为没有任何优化的软件。
