@@ -1,14 +1,15 @@
 # 历史材料的适用范围
 
 [Requirements.md](../../Requirements.md) 是唯一现行验收依据。
+已归档材料与原位保留的历史材料见[归档清单](../../archive/README.md)。
 历史要求、实验门槛和过去的用户限定只解释当时结果。
 当前部署、结果和验收缺口分别见[部署入口](../DEPLOYMENT.md)、[结果索引](RESULTS.md)和[缺口报告](2026-10-13-requirements-gap.md)。
 
 | 保留材料 | 日期或源码边界 | 使用限制 |
 | --- | --- | --- |
 | [根目录早期报告](../../FINAL-REPORT.md) | 2026-09-21 短输入实验，含后续注记 | 历史“最终”标题不表示现行验收完成。不同量化的旧文档数值不是匹配基线。 |
-| [早期部署说明](../README.md)、[补丁工具](../apply-patches.sh)、`../patches/` | 从 `5ad05d8` 开始的补丁栈 | 与 `a990751` 发布包使用不同的干净源码目录。保留 MTP 精确性限制。 |
-| [9 月 TeX](k1-llm-inference-optimizations-old.tex)、[9 月 PDF](k1-llm-inference-optimizations-old.pdf) | 2026-09-24 内核实验 | 不包含后续长上下文、质量和矩阵路由结果。 |
+| [早期部署说明](../README.md)、[补丁工具](../../archive/patches-5ad05d8/apply-patches.sh)、`../../archive/patches-5ad05d8/patches/` | 从 `5ad05d8` 开始的补丁栈 | 与 `a990751` 发布包使用不同的干净源码目录。保留 MTP 精确性限制。 |
+| [9 月 TeX](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.tex)、[9 月 PDF](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.pdf) | 2026-09-24 内核实验 | 不包含后续长上下文、质量和矩阵路由结果。 |
 | [旧英文报告快照](snapshots/2026-10-12/SUBMISSION-REPORT.pdf)、[文件收据](snapshots/2026-10-12/receipts.json) | 2026-10-12 导出快照 | 保留原 Markdown、TeX、PDF 与工具字节。主入口已更新为 2026-10-16；现行判定使用根目录要求与当前证据。 |
 | [10 月 11 日进度](2026-10-11-project-progress.md)、[版本比较](2026-10-11-original-current-comparison.md) | 三项全开组合停止前 | 后续停止结论见 [10 月 12 日复核](2026-10-12-combined-stop-audit.md)。 |
 | [10 月 12 日差距核对](2026-10-12-current-requirements-gap.md) | 当日要求核对 | 当前逐项缺口由 [10 月 13 日报告](2026-10-13-requirements-gap.md)接续。 |

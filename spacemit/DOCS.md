@@ -1,6 +1,6 @@
 # Current documentation guide
 
-Document check: October 16, 2026, Asia/Singapore.
+Document check: October 22, 2026, Asia/Singapore.
 [Requirements.md](../Requirements.md) is the sole current acceptance reference.
 Use the [deployment guide](DEPLOYMENT.md), [test guide](bench/TESTS.md), and [result index](reports/RESULTS.md).
 The [current gap report](reports/2026-10-13-requirements-gap.md) maps each requirement to evidence.
@@ -18,6 +18,11 @@ Dated queue statements do not establish current board activity.
 | [Report text](reports/SUBMISSION-REPORT.md) | Editable technical report |
 | [Evidence appendix](reports/SUBMISSION-EVIDENCE.md) | Claim-to-record map, source identities, and check commands |
 | [Export instructions](reports/REPORT-BUILD.md) | Document update rules and repeatable export |
+| [Report topic index](reports/TOPICS.md) | 109 dated reports grouped by topic |
+| [Documentation map](../docs/README.md) | Repository-wide document entry |
+| [Archive inventory](../archive/README.md) | Archived and in-place historical materials |
+| [Technical guide](../docs/technical-guide/technical-guide-en.md) | Platform, kernels, benchmarks, and scoring |
+| [Chinese technical guide](../docs/technical-guide/technical-guide-zh.md) | Chinese version of the guide |
 
 The English report, appendix, TeX, and PDF include the October 16 supplements to the fixed default delivery.
 The [capacity extension](reports/2026-10-16-ultralong-final-comparison.md) records 12 matched requests at 16k and 32k inputs.
@@ -54,6 +59,13 @@ These diagnostics do not establish a new model speedup.
 | Board access and C1 | Verified for the October 13 inspection | [Live inspection](reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md); C1 also has earlier independent model checks. |
 | IME scalar schedule | Exact native checks pass; performance screen fails | [Inspection and screen](reports/2026-10-13-k1-live-inspect-and-scalar-schedule.md); no new candidate model timing; release keeps the original kernel. |
 | TCM access | Sudo identifies and maps four real blocks | [TCM audit](reports/2026-10-13-k1-tcm-access.md); ordinary user access fails on permissions. No bandwidth or inference gain follows. |
+| 2B MTP head | Measured on three Chinese answers | [Head investigation](reports/2026-10-17-2b-mtp-head-investigation.md): a 64k prefix covers 32.16–34.24% of tokens; replay adds target corrections. |
+| r3 MTP first pair | Complete answer passes 106 checks | [First pair](reports/2026-10-17-r3-mtp-first-pair.md): 2B complete-answer time falls 23.32%; both 508-token answers are identical. |
+| 2B BERT router | Classifier and end-to-end runs measured | [Classifier](reports/2026-10-18-2b-bert-classifier.md): 83/96 labels correct and 78.879218 ms median; [end-to-end](reports/2026-10-18-2b-router-e2e.md): direct on all 12 tasks with 0.044487% added wall time. |
+| MTP docstring rule | Prompt-only rule measured on a code grid | [Rule validation](reports/2026-10-21-2b-mtp-docstring-rule-validation.md): 3.48% net time gain with a 1.30% to 5.10% family-cluster interval. |
+| Official checkpoint conversion | Both models converted and packaged | [Conversion](reports/2026-10-21-official-conversion.md): tensors, types, and tokenizer data match the delivered files; the chat template differs. |
+| Fixed multi-turn v2 | 48 of 48 requests complete | [v2 results](reports/2026-10-21-fixed-multi-turn-v2-results.md): 15/24 correct for 2B and 19/24 for 4B; the user accepted the measured quality with the retained errors. |
+| Natural long context | 12 of 12 answers correct | [Long-context results](reports/2026-10-22-long-context-natural-results.md): short, 16k, and 32k inputs on both models. |
 
 The October 11 [progress snapshot](reports/2026-10-11-project-progress.md) and
 [version comparison](reports/2026-10-11-original-current-comparison.md) predate the combination stop.
@@ -72,9 +84,11 @@ The documentation task does not resume board tests or establish automatic retrie
 | Inspect operator data and collector limits | [Operator tools](bench/operator-data/README.md) |
 | Find a dated result | [Reports index](reports/README.md) |
 | Find a predeclared experiment | [Experiments index](experiments/README.md) |
+| Find a dated report by topic | [Report topic index](reports/TOPICS.md) |
+| Find archived material | [Archive inventory](../archive/README.md) |
 
 The release pins official-fork `a990751` and exact measured source hashes.
-The older `apply-patches.sh` helper targets `5ad05d8`.
+The older [archived patch helper](../archive/patches-5ad05d8/apply-patches.sh) targets `5ad05d8`.
 Use separate source checkouts for these packages.
 The release guide supplies the current launch commands.
 

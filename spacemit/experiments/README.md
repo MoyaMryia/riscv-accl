@@ -9,7 +9,7 @@ Use the [documentation guide](../DOCS.md) for current work. Use the
 For the consolidated results and the adoption decisions, use the
 [submission report](../reports/SUBMISSION-REPORT.md).
 The [current release](../release/README.md) pins `a990751`. The historical
-`apply-patches.sh` helper targets `5ad05d8`. Use separate checkouts. Follow
+[`archive/patches-5ad05d8/apply-patches.sh`](../../archive/patches-5ad05d8/apply-patches.sh) targets `5ad05d8`. Use separate checkouts. Follow
 the base and the patch-order instructions of each experiment.
 
 | Experiment | Present interpretation |
@@ -46,4 +46,4 @@ the base and the patch-order instructions of each experiment.
 
 Older queued-run instructions explain historical procedures. Consult the
 completed reports before you repeat them. The experimental and rejected
-patches remain as evidence. They are not all options in `apply-patches.sh`.
+patches remain as evidence. They are not all options in the archived helper.

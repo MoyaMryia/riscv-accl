@@ -2,6 +2,8 @@
 
 Document check: October 22, 2026, Asia/Singapore.
 [Requirements.md](../../Requirements.md) is the sole current acceptance reference.
+Use the [topic index](TOPICS.md) to find a report by theme.
+Archived material and in-place historical material are in the [archive inventory](../../archive/README.md).
 
 - [Natural long-context results](2026-10-22-long-context-natural-results.md): all 12 requests complete with correct answers. The 4B 32k TTFT is 8942.772–9025.844 s.
 - [Complete multi-turn v2 measurement](2026-10-21-fixed-multi-turn-v2-results.md): all 48 requests complete. Independent review finds 15/24 correct answers for 2B and 19/24 for 4B.
@@ -176,8 +178,8 @@ board result.
 `raw/` holds the reproducible artifacts and the generated summaries. The report
 numbers stay with their workload, source, and output-length limits.
 
-The [PDF export](k1-llm-inference-optimizations.pdf) and its
-[LaTeX source](k1-llm-inference-optimizations.tex) are the 2026-09-24 kernel
+The [PDF export](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.pdf) and its
+[LaTeX source](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.tex) are the 2026-09-24 kernel
 campaign report. They do not include the later RVV, long-context,
 cache-quality, or compact-layout/GEMM-routing work. Read its speculative
 exactness and bandwidth statements with the later corrections in the submission

@@ -115,7 +115,7 @@
 
 - [板端评估与完整计时样本](raw/decode-router-20261018-r1/result/evaluation.json)。
 - [训练与开发测试记录](raw/decode-router-20261018-r1/training.json)。
-- [模型与任务集](../serve/decode-router/README.md#分类与策略)。
+- [模型与任务集](../serve/decode-router/README.md)。
 - [故障注入结果](raw/decode-router-20261018-r1/fault-checks.json)。
 - [回放使用的原生时间](raw/decode-router-20261018-r1/measurements.json)和[固定请求](raw/decode-router-20261018-r1/requests.json)。
 

@@ -33,3 +33,6 @@ jobs:
       - name: Check limit sentences and broad except handlers
         # HEAD^ 是推送前的提交，或 PR 合并提交的基准分支。基线条目不能增加。
         run: bash tools/ci-local.sh lint --base-ref HEAD^
+      - name: Check documentation links and original records
+        # 与 lint 相同，基线条目不能增加。
+        run: bash tools/ci-local.sh docs --base-ref HEAD^

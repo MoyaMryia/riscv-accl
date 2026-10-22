@@ -25,7 +25,8 @@ outside the release scope, as the user requested.
 
 ## Install and build
 
-Use a separate clean checkout on the K1 board. The older `apply-patches.sh`
+Use a separate clean checkout on the K1 board. The older
+[archived patch helper](../../archive/patches-5ad05d8/apply-patches.sh)
 targets `5ad05d8` and is a historical package. Do not apply both packages to one
 checkout.
 

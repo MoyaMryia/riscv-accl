@@ -75,5 +75,5 @@ Compile the Chinese source with `xelatex` in the same way.
 7. Confirm that `raw/` files remain unchanged.
 
 The exporter does not run a board experiment or update raw records.
-The September [TeX report](k1-llm-inference-optimizations.tex) remains a historical export.
+The September [TeX report](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.tex) remains a historical export.
 Its PDF is not the current report.

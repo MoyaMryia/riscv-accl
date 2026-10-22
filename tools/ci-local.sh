@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 # 本地和 CI 共用的检查命令。CI 依赖安装留在 workflow 中。
-#   tools/ci-local.sh <lint|python>  在工作区运行一个阶段
+#   tools/ci-local.sh <lint|python|docs>  在工作区运行一个阶段
 #   tools/ci-local.sh --staged       提交前检查，pre-commit hook 调用
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 # 触发路径（扩展正则，匹配暂存文件路径）。
 PYTHON_PATHS='^(tools/|spacemit/bench/qemu-screen/predictor/freeze-sources\.py$|spacemit/bench/mtp-r3/|spacemit/bench/final-default/|spacemit/models/tools/|spacemit/serve/cached-document-chat\.py$|spacemit/serve/decode-router/)'
+DOC_PATHS='\.(md|tex)$|^\.gitignore$|^tools/check-docs\.py$|^tools/doc_links_baseline\.json$|^spacemit/reports/(raw|snapshots)/'
 
 stage_lint() { python3 tools/writing_lint.py "$@"; }
+stage_docs() { python3 tools/check-docs.py "$@"; }
 stage_python() {
     bash -n spacemit/serve/decode-router/reproduce-bert.sh
     python3 -m unittest discover -s tools/tests -p 'test_*.py' -v
@@ -36,6 +38,11 @@ staged() {
     base=HEAD
     git rev-parse -q --verify HEAD >/dev/null || base=
     stage_lint --staged ${base:+--base-ref "$base"}
+    if grep -qE "$DOC_PATHS" <<<"$changed"; then
+        require_clean "$DOC_PATHS"
+        echo "== docs ==" >&2
+        stage_docs --staged ${base:+--base-ref "$base"}
+    fi
     if grep -qE "$PYTHON_PATHS" <<<"$changed"; then
         require_clean "$PYTHON_PATHS"
         echo "== python ==" >&2
@@ -47,5 +54,6 @@ case "${1:-}" in
     --staged) staged ;;
     lint) shift; stage_lint "$@" ;;
     python) stage_python ;;
-    *) echo "用法：$0 <lint|python|--staged>" >&2; exit 2 ;;
+    docs) shift; stage_docs "$@" ;;
+    *) echo "用法：$0 <lint|python|docs|--staged>" >&2; exit 2 ;;
 esac

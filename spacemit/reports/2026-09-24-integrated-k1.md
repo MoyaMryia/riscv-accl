@@ -28,8 +28,8 @@ JSONL and fallback events are under
 
 | Change | Observed result | Decision |
 | --- | --- | --- |
-| [Q8_0 IME1 patch 0007](../patches/0007-q8-ime1.patch), adapted from [llama.cpp PR #28479](https://github.com/ggml-org/llama.cpp/pull/28479) | 4B Q8_0 pp64 1.117 → 7.472 (6.69×); tg32 0.866 → 1.349 (+55.8%). Three server greedy responses kept identical hashes. | Offer for deployments that need Q8_0. Q4_0 remains faster and smaller. |
-| [M4 scale patch 0008](../patches/0008-ime-m4-scale.patch), from the [OpenSolvers X60 study](https://github.com/opensolvers/benchmarks/blob/main/papers/x60-ime-block-scale-optimization.md) | 4B Q4_0 pp128 9.058 → 9.360 (+3.3%); 2B mapped MTP English 6.944 → 7.066 (+1.8%), Chinese 5.030 → 5.121 (+1.8%). | Offer for Q4_0 prefill and MTP verification. |
+| [Q8_0 IME1 patch 0007](../../archive/patches-5ad05d8/patches/0007-q8-ime1.patch), adapted from [llama.cpp PR #28479](https://github.com/ggml-org/llama.cpp/pull/28479) | 4B Q8_0 pp64 1.117 → 7.472 (6.69×); tg32 0.866 → 1.349 (+55.8%). Three server greedy responses kept identical hashes. | Offer for deployments that need Q8_0. Q4_0 remains faster and smaller. |
+| [M4 scale patch 0008](../../archive/patches-5ad05d8/patches/0008-ime-m4-scale.patch), from the [OpenSolvers X60 study](https://github.com/opensolvers/benchmarks/blob/main/papers/x60-ime-block-scale-optimization.md) | 4B Q4_0 pp128 9.058 → 9.360 (+3.3%); 2B mapped MTP English 6.944 → 7.066 (+1.8%), Chinese 5.030 → 5.121 (+1.8%). | Offer for Q4_0 prefill and MTP verification. |
 | Existing mapped 32k head plus CPU draft sampling | With patch 0008, 2B English 7.066 and Chinese 5.121 in the paired M4 test. | Keep the existing mapped head and the CPU sampling flag as workload-specific choices. |
 
 The Q8_0 patch is an upstream draft. Its 4B improvement is real on this

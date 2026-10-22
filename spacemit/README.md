@@ -18,7 +18,7 @@ Use a clean checkout of the official fork at `5ad05d8`. The helper checks the co
 git clone https://github.com/spacemit-com/llama.cpp.git ~/Projects/spacemit-llama/llama.cpp
 cd ~/Projects/spacemit-llama/llama.cpp
 git checkout 5ad05d8
-/path/to/riscv-accl/spacemit/apply-patches.sh "$PWD" --m4-scale --rvv256
+/path/to/riscv-accl/archive/patches-5ad05d8/apply-patches.sh "$PWD" --m4-scale --rvv256
 # Optional: --frspec for the mapped 32k head, --lowacc for the acceptance fallback,
 # --q8-ime1 for Q8_0; the command above selects M4 Q4_0 and RVV F16-KV prefill,
 # and --windowed-mtp for opt-in draft-KV windowing.

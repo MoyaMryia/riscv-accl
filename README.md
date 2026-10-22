@@ -43,7 +43,11 @@ GGUF 是当前推理引擎读取的模型文件格式。
 | 检查已有证据或运行新测试 | [测试入口](spacemit/bench/TESTS.md) |
 | 阅读中文技术报告 | [SUBMISSION-ZH.md](spacemit/reports/SUBMISSION-ZH.md)、[PDF](spacemit/reports/SUBMISSION-ZH.pdf) |
 | 查找全部报告与协议 | [报告索引](spacemit/reports/README.md)、[实验索引](spacemit/experiments/README.md) |
-| 查看本次整理和检查记录 | [整理记录](spacemit/reports/2026-10-13-project-file-organization.md) |
+| 按主题查找日期报告 | [报告主题索引](spacemit/reports/TOPICS.md) |
+| 查找全部文档入口 | [文档地图](docs/README.md) |
+| 阅读技术指南 | [中文](docs/technical-guide/technical-guide-zh.md)、[英文](docs/technical-guide/technical-guide-en.md) |
+| 查看已归档或原位保留的历史材料 | [归档清单](archive/README.md) |
+| 查看本次整理和检查记录 | [整理记录](spacemit/reports/2026-10-22-project-file-organization.md) |
 
 已验证：最终单一构建已完成两模型普通启动与真实起点匹配对照。
 默认启用 B1-r2、C1、宽 RVV 与 route 3，具体范围见[最终交付](spacemit/final-release/README.md)。
@@ -64,7 +68,7 @@ C1 有独立模型验证记录，统一包中的候选配置保持实验状态�
 中文与英文技术报告及 TeX／PDF 已更新为 2026-10-16，旧版快照单独保留。
 [16k／32k 补测](spacemit/reports/2026-10-16-ultralong-final-comparison.md)记录 12 次匹配请求。
 [最终版 TCM 调查](spacemit/reports/2026-10-16-final-release-tcm.md)确认普通用户下两个模型的短推理没有使用真实 TCM。
-`FINAL-REPORT.md`、早期补丁栈及旧 `lab/` 记录保留历史范围。
+`FINAL-REPORT.md`、[早期补丁栈](archive/patches-5ad05d8/apply-patches.sh)及旧 `lab/` 记录保留历史范围。
 其适用日期、源码和限制见[历史材料说明](spacemit/reports/HISTORY.md)。
 `spacemit/reports/raw/` 保存不可改写的原始记录与 SHA-256 收据。
 模型权重、部分二进制转储和完整归档不随 Git 分发。

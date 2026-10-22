@@ -3,6 +3,7 @@ env/qemu/vmlinux-rv64
 env/qemu/initramfs.cpio.gz
 # lab/: 实验工件与可再生产物，只入库文本资产
 /lab/*
+!/lab/README.md
 !/lab/baseline-record.md
 !/lab/src/
 !/lab/plugin/
@@ -23,6 +24,11 @@ bianbu/
 spacemit/reports/*.aux
 spacemit/reports/*.log
 spacemit/reports/*.out
+# 技术指南放在 docs/ 下，导出中间文件不入库。
+docs/**/*.aux
+docs/**/*.log
+docs/**/*.out
+docs/**/*.toc
 # generated frequency-rank domain map (rebuilt by make-domain-map.py)
 spacemit/models/frspec/*.bin
 

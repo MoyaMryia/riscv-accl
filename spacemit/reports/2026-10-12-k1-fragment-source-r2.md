@@ -17,7 +17,7 @@
 
 ## 来源与边界
 
-来源为 `spacemit/patches/0007-q8-ime1.patch` 的 `make_block_q8_0x16`。
+来源为 `archive/patches-5ad05d8/patches/0007-q8-ime1.patch` 的 `make_block_q8_0x16`。
 样例只包含 16 行 Q8 数据的 512 字节载荷重排。
 元数据比例复制、张量分配与完整模型执行不在范围内。
 夹具把输入行的载荷整理成连续的输入组。

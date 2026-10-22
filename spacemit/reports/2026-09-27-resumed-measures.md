@@ -20,7 +20,7 @@ one launch per arm, and the 32k row is a single optimized-arm feasibility
 run. Both model files are the local Qwen3.5 2B/4B MTP Q4_0 GGUFs, with Q4_0
 **weights** and F16 **K/V**, served in direct mode. Both builds are SpaceMiT
 llama.cpp at `a990751` plus the opt-in
-[256-bit RVV patch](../patches/0009-wide-rvv-vlen256.patch). `R` is the
+[256-bit RVV patch](../../archive/patches-5ad05d8/patches/0009-wide-rvv-vlen256.patch). `R` is the
 isolated `spacemit-llama-rvv32` build, and `I` is the integrated
 `spacemit-llama-integrated` build. Settings: one stream, four threads,
 `-b 32 -ub 32 -fa on`, greedy seed 42, 32 outputs, and no prompt cache.

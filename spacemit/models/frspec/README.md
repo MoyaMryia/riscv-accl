@@ -1,6 +1,6 @@
 # Frequency-ranked 32k MTP draft head (experimental)
 
-This experiment uses Qwen3.5-2B and it dates from 2026-09-23. It follows the draft-vocabulary idea in [FR-Spec](https://aclanthology.org/2025.acl-long.198/). The verifier keeps the full vocabulary. A compact MTP head proposes frequent token IDs. Apply `patches/0005-frequency-ranked-d2t.patch` after the four official-fork optimization patches.
+This experiment uses Qwen3.5-2B and it dates from 2026-09-23. It follows the draft-vocabulary idea in [FR-Spec](https://aclanthology.org/2025.acl-long.198/). The verifier keeps the full vocabulary. A compact MTP head proposes frequent token IDs. Apply `archive/patches-5ad05d8/patches/0005-frequency-ranked-d2t.patch` after the four official-fork optimization patches.
 
 The input token stream in `corpus-token-ids.txt` contains 809,481 IDs. The exact 2B tokenizer produced these IDs from public llama.cpp docs/tools and the project Chinese benchmark notes. `make-map.py` ranks observed IDs by frequency. It includes IDs 248000–248319, then fills the remaining 32,768 entries in ascending ID order. The script writes `d2t-map32k.bin` deterministically (SHA-256 `19e1f1ca60967da53d1d5c278232960f0ff72ccf8c71d76888a9837f164a23f9`).
 

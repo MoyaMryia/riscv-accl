@@ -7,7 +7,7 @@ R1 的历史样例不能替代本轮实际源码接入。
 
 ## 样例与边界
 
-样例取自 `spacemit/patches/0007-q8-ime1.patch`。
+样例取自 `archive/patches-5ad05d8/patches/0007-q8-ime1.patch`。
 具体范围是 `make_block_q8_0x16` 的 512 字节载荷重排。
 元数据比例复制、张量分配与完整模型执行不在本轮边界内。
 基线保留原来的逐列字节重排与清零。
