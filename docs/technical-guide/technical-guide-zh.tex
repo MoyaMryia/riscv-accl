@@ -64,16 +64,16 @@
 \vspace{8mm}
 {\Huge\bfseries\color{primary} SpacemiT K1 平台 Qwen3.5\\[4pt]本地推理优化技术与验收指南\par}
 \vspace{6mm}
-{\Large\color{secondary} 算子重构、矩阵流水调度与 100 分评分标准全面对齐\par}
+{\Large\color{secondary} 算子重构、矩阵流水调度与评分标准对齐\par}
 \vspace{8mm}
-{\large 2026-10-22 | 目标平台：MUSE-Pi-Pro (SpacemiT K1-x 8核 RISC-V)\par}
+{\large 2026-10-22 | 目标平台：MUSE-Pi-Pro (SpacemiT K1-x 8 核 RISC-V)\par}
 \vspace{10mm}
 
 \begin{tcolorbox}[colback=lightgray,colframe=primary,arc=3mm,title=\textbf{核心成果摘要}]
 \begin{itemize}
   \item \textbf{全尺寸双模型覆盖}：实现 Qwen3.5-2B 与 4B Instruct 模型的全本地化、零云端依赖稳定部署。
-  \item \textbf{成倍端到端加速}：2B 请求耗时缩短 \textbf{1.24x -- 3.59x}；4B 请求耗时缩短 \textbf{1.41x -- 4.72x}（32k 超长上下文耗时由 11.7 小时大幅降低至 2.5 小时）。
-  \item \textbf{首词元时延 (TTFT) 突破}：超长文本 Prefill 时延最高降低 \textbf{72.27\% (2B)} 与 \textbf{78.93\% (4B)}。
+  \item \textbf{成倍端到端加速}：2B 请求耗时缩短 \textbf{1.24x -- 3.59x}；4B 请求耗时缩短 \textbf{1.41x -- 4.72x}（32k 超长上下文耗时由 11.7 小时降低至 2.5 小时）。
+  \item \textbf{首词元时延 (TTFT) 下降}：32k 输入下 Prefill 时延降低 \textbf{72.27\% (2B)} 与 \textbf{78.93\% (4B)}。
   \item \textbf{极稳内存与生产交付}：32k 上下文两臂峰值驻留内存（RSS）差异 \textbf{< 3 MiB}，单一生产构建 \texttt{k1-final-20261013-r3} 编译期固化最优策略。
 \end{itemize}
 \end{tcolorbox}
@@ -95,18 +95,18 @@
 
 本项目依托进迭时空（SpacemiT）K1 边缘 RISC-V 芯片平台，完成了 \textbf{Qwen3.5-2B-Instruct} 与 \textbf{Qwen3.5-4B-Instruct} 两款大语言模型的端到端本地推理移植与极限性能优化。
 
-项目的根本目标是在资源受限的边缘 RISC-V 架构上，完全脱离云端 API 依赖，依托进迭时空开源的 \texttt{llama.cpp} 工具链，通过软硬件协同优化突破内存带宽与计算瓶颈，实现兼顾高吞吐、低首词元延迟（TTFT）与超长上下文稳定性的本地推理引擎。
+项目的根本目标是在资源受限的边缘 RISC-V 架构上，完全脱离云端 API 依赖，依托进迭时空开源的 \texttt{llama.cpp} 工具链，通过软硬件协同优化突破内存带宽与计算瓶颈，实现兼顾高吞吐、低首词元时延（TTFT）与超长上下文稳定性的本地推理引擎。
 
 \subsection{核心成果亮点}
 \begin{itemize}
-  \item \textbf{双模型全尺寸覆盖}：在 K1 平台上稳定运行 2B 与 4B 两个参数规格的 Qwen3.5 模型，涵盖从短文本（512 tokens）到超长上下文（32,768 tokens）的全场景。
-  \item \textbf{显著的端到端提速}：
+  \item \textbf{双模型全尺寸覆盖}：在 K1 平台上稳定运行 2B 与 4B 两个参数规格的 Qwen3.5 模型，涵盖从 512 词元短文本到 32,768 词元超长上下文的全场景。
+  \item \textbf{端到端提速}：
   \begin{itemize}
     \item \textbf{2B 模型}：相比厂商基线版本，请求处理总时长缩短 \textbf{1.24 倍至 3.59 倍}（输入越长，加速效果越明显）；
-    \item \textbf{4B 模型}：相比厂商基线版本，请求处理总时长缩短 \textbf{1.41 倍至 4.72 倍}（32k 超长上下文处理时长由 11.7 小时大幅缩减至 2.5 小时）；
-    \item \textbf{首词元时延（TTFT）}：在长文本场景下降低高达 \textbf{72.27\%（2B）} 与 \textbf{78.93\%（4B）}。
+    \item \textbf{4B 模型}：相比厂商基线版本，请求处理总时长缩短 \textbf{1.41 倍至 4.72 倍}（32k 超长上下文处理时长由 11.7 小时缩减至 2.5 小时）；
+    \item \textbf{首词元时延（TTFT）}：在 32k 输入下降低 \textbf{72.27\%（2B）} 与 \textbf{78.93\%（4B）}。
   \end{itemize}
-  \item \textbf{卓越的内存控制}：在带来成倍性能提升的同时，优化版本与基线版本的峰值驻留内存（RSS）差异\textbf{小于 3 MiB}，且在 32k 连续推理中保持平稳。
+  \item \textbf{内存控制}：在带来成倍性能提升的同时，优化版本与基线版本的峰值驻留内存（RSS）差异\textbf{小于 3 MiB}，且在 32k 连续推理中保持平稳。
   \item \textbf{单一构建交付}：交付版本 \texttt{k1-final-20261013-r3} 为两个模型提供同一套高效二进制，编译期固化最优调度参数，无需繁杂的环境变量即可直接启动。
 \end{itemize}
 
@@ -132,7 +132,7 @@
 
 \section{3. 核心技术创新与优化路径}
 
-针对边缘 RISC-V 平台计算资源与内存带宽的特点，项目实施了全方位的算子重构与计算图优化：
+针对边缘 RISC-V 平台计算资源与内存带宽的特点，项目实施了算子重构与计算图优化：
 
 \begin{center}
 \begin{tikzpicture}[>={Stealth[length=2mm]}, node distance=5mm,
@@ -163,7 +163,7 @@
 \begin{itemize}
   \item \textbf{技术原理}：K1 的 X60 核心支持 256 位的向量寄存器（单指令并行处理 16 个 FP16 数据）。原版实现缺乏针对长输入分块的向量核，导致预填充计算时频繁发生访存等待。
   \item \textbf{优化举措}：为 Qwen3.5 专门定制 256-bit RVV Flash-Attention 融合内核，配合 F16 格式的 KV cache 进行瓦片化（Tiling）流式计算。
-  \item \textbf{效果收益}：长序列下的访存压力大幅释放，成为长输入下 TTFT 缩减超 70\% 的主要贡献来源。
+  \item \textbf{效果收益}：长序列下的访存等待减少。32k 输入下 TTFT 缩减 72.27\%（2B）与 78.93\%（4B）；对照为整体版本，不分离单个内核的贡献。
 \end{itemize}
 
 \subsection{3.2 IME 矩阵指令与负载路由策略（Route 3）}
@@ -176,7 +176,7 @@
 \begin{itemize}
   \item \textbf{技术原理}：Qwen 架构中的线性注意力与状态空间模型（SSM）层包含随序列推进的隐藏状态更新。基线版本在每一层、每一步解码生成时，都会对约 1 MB 的状态张量进行整块拷贝，造成内存总线瓶颈。
   \item \textbf{优化举措}：实现了状态就地覆盖写回（In-place Writeback），并与向量运算核就地融合。
-  \item \textbf{效果收益}：消除了逐 Token 的冗余拷贝开销，解码速度直接提升 10\%～25\%。
+  \item \textbf{效果收益}：消除了逐词元的冗余拷贝开销。上游树 tg128 解码速度 4.79 → 5.16 tok/s（+7.7\%）；官方树 3.5 → 3.8 tok/s（+8.6\%）。
 \end{itemize}
 
 \subsection{3.4 微批（Microbatch）黄金配置（-ub 32 -b 32）}
@@ -187,8 +187,8 @@
 
 \subsection{3.5 多词元投机预测（MTP）与截断词表探索}
 \begin{itemize}
-  \item \textbf{技术原理}：全词表（vocab 248,320）的分类头计算带来较大带宽开销。团队设计了频次截断的草稿头（\texttt{dv64k} / \texttt{dv32k}），让草稿网络专注预测高频词，主模型在全词表上完成无损验证。
-  \item \textbf{方案落地}：实测表明，MTP 在代码生成等任务中可带来 23.2\% 的净提速；在通用中文任务中，直接解码具备更好的稳定性与确定性。因此团队将\textbf{高质量直接解码}设定为生产默认配置，确保严谨高质量输出。
+  \item \textbf{技术原理}：全词表（vocab 248,320）的分类头计算带来较大带宽开销。团队设计了频次截断的草稿头（\texttt{dv64k} / \texttt{dv32k}），让草稿网络专注预测高频词；主模型的 verify 阶段始终使用全词表。投机输出与直接解码的一致性只在已逐 token 验证的 prompt 与输出长度范围内成立。
+  \item \textbf{方案落地}：实测表明，MTP 使代码题的端到端请求时长减少 23.21\%（122.545 s → 94.101 s）。通用批次的四类任务使用 MTP 都更慢。因此生产默认保持直接解码，MTP 保留为实验路径。
 \end{itemize}
 
 \section{4. 实测数据与性能对比}
@@ -203,11 +203,11 @@
 \toprule
 \textbf{输入词元} & \textbf{配对数} & \shortstack{\textbf{请求耗时}\\（基线 / 优化）} & \textbf{加速倍数} & \shortstack{\textbf{TTFT}\\（基线 / 优化）} & \shortstack{\textbf{TTFT}\\降低} & \shortstack{\textbf{解码吞吐}\\（基线 / 优化）} & \shortstack{\textbf{峰值 RSS}\\（基线 / 优化，MiB）} \\
 \midrule
-\textbf{512} & 3 对 & 43.03s → \textbf{34.71s} & \textbf{1.24x} & 23.84s → \textbf{19.56s} & \textbf{17.96\%} & 3.39 → \textbf{4.29 tok/s} & 2472 → \textbf{2470} \\
-\textbf{2,048} & 3 对 & 136.55s → \textbf{97.17s} & \textbf{1.41x} & 115.64s → \textbf{81.63s} & \textbf{29.41\%} & 3.11 → \textbf{4.19 tok/s} & 2472 → \textbf{2470} \\
-\textbf{8,192} & 1 对 & 875.36s → \textbf{426.22s} & \textbf{2.05x} & 846.32s → \textbf{408.16s} & \textbf{51.77\%} & 2.24 → \textbf{3.60 tok/s} & 2473 → \textbf{2471} \\
-\textbf{16,384} & 2 对 & 2868.83s → \textbf{1057.23s} & \textbf{2.71x} & 2829.65s → \textbf{1034.91s} & \textbf{63.43\%} & 1.66 → \textbf{2.91 tok/s} & 2572 → \textbf{2570} \\
-\textbf{32,768} & 1 对 & 10822.89s → \textbf{3014.28s} & \textbf{3.59x} & 10761.01s → \textbf{2983.90s} & \textbf{72.27\%} & 1.05 → \textbf{2.14 tok/s} & 2768 → \textbf{2766} \\
+\textbf{512} & 3 对 & 43.03 s → \textbf{34.71 s} & \textbf{1.24x} & 23.84 s → \textbf{19.56 s} & \textbf{17.96\%} & 3.39 → \textbf{4.29 tok/s} & 2472 → \textbf{2470} \\
+\textbf{2,048} & 3 对 & 136.55 s → \textbf{97.17 s} & \textbf{1.41x} & 115.64 s → \textbf{81.63 s} & \textbf{29.41\%} & 3.11 → \textbf{4.19 tok/s} & 2472 → \textbf{2470} \\
+\textbf{8,192} & 1 对 & 875.36 s → \textbf{426.22 s} & \textbf{2.05x} & 846.32 s → \textbf{408.16 s} & \textbf{51.77\%} & 2.24 → \textbf{3.60 tok/s} & 2473 → \textbf{2471} \\
+\textbf{16,384} & 2 对 & 2868.83 s → \textbf{1057.23 s} & \textbf{2.71x} & 2829.65 s → \textbf{1034.91 s} & \textbf{63.43\%} & 1.66 → \textbf{2.91 tok/s} & 2572 → \textbf{2570} \\
+\textbf{32,768} & 1 对 & 10822.89 s → \textbf{3014.28 s} & \textbf{3.59x} & 10761.01 s → \textbf{2983.90 s} & \textbf{72.27\%} & 1.05 → \textbf{2.14 tok/s} & 2768 → \textbf{2766} \\
 \bottomrule
 \end{tabular*}
 \end{scriptsize}
@@ -220,20 +220,20 @@
 \toprule
 \textbf{输入词元} & \textbf{配对数} & \shortstack{\textbf{请求耗时}\\（基线 / 优化）} & \textbf{加速倍数} & \shortstack{\textbf{TTFT}\\（基线 / 优化）} & \shortstack{\textbf{TTFT}\\降低} & \shortstack{\textbf{解码吞吐}\\（基线 / 优化）} & \shortstack{\textbf{峰值 RSS}\\（基线 / 优化，MiB）} \\
 \midrule
-\textbf{512} & 3 对 & 113.13s → \textbf{80.35s} & \textbf{1.41x} & 63.70s → \textbf{49.87s} & \textbf{21.72\%} & 1.32 → \textbf{2.13 tok/s} & 5342 → \textbf{5341} \\
-\textbf{2,048} & 3 对 & 411.79s → \textbf{246.58s} & \textbf{1.67x} & 354.44s → \textbf{213.50s} & \textbf{39.77\%} & 1.13 → \textbf{1.97 tok/s} & 5342 → \textbf{5341} \\
-\textbf{8,192} & 1 对 & 3323.89s → \textbf{1170.32s} & \textbf{2.84x} & 3234.17s → \textbf{1126.54s} & \textbf{65.17\%} & 0.72 → \textbf{1.49 tok/s} & 5343 → \textbf{5342} \\
-\textbf{16,384} & 2 对 & 11388.99s → \textbf{3033.91s} & \textbf{3.75x} & 11256.20s → \textbf{2975.72s} & \textbf{73.56\%} & 0.49 → \textbf{1.12 tok/s} & 5600 → \textbf{5601} \\
-\textbf{32,768} & 1 对 & 42294.22s → \textbf{8952.51s} & \textbf{4.72x} & 42070.82s → \textbf{8866.02s} & \textbf{78.93\%} & 0.29 → \textbf{0.75 tok/s} & 6117 → \textbf{6118} \\
+\textbf{512} & 3 对 & 113.13 s → \textbf{80.35 s} & \textbf{1.41x} & 63.70 s → \textbf{49.87 s} & \textbf{21.72\%} & 1.32 → \textbf{2.13 tok/s} & 5342 → \textbf{5341} \\
+\textbf{2,048} & 3 对 & 411.79 s → \textbf{246.58 s} & \textbf{1.67x} & 354.44 s → \textbf{213.50 s} & \textbf{39.77\%} & 1.13 → \textbf{1.97 tok/s} & 5342 → \textbf{5341} \\
+\textbf{8,192} & 1 对 & 3323.89 s → \textbf{1170.32 s} & \textbf{2.84x} & 3234.17 s → \textbf{1126.54 s} & \textbf{65.17\%} & 0.72 → \textbf{1.49 tok/s} & 5343 → \textbf{5342} \\
+\textbf{16,384} & 2 对 & 11388.99 s → \textbf{3033.91 s} & \textbf{3.75x} & 11256.20 s → \textbf{2975.72 s} & \textbf{73.56\%} & 0.49 → \textbf{1.12 tok/s} & 5600 → \textbf{5601} \\
+\textbf{32,768} & 1 对 & 42294.22 s → \textbf{8952.51 s} & \textbf{4.72x} & 42070.82 s → \textbf{8866.02 s} & \textbf{78.93\%} & 0.29 → \textbf{0.75 tok/s} & 6117 → \textbf{6118} \\
 \bottomrule
 \end{tabular*}
 \end{scriptsize}
 
 \subsection{4.3 核心性能结论}
 \begin{enumerate}
-  \item \textbf{输入越长，加速增益越显著}：在 512 短输入下获得约 24\%～41\% 的端到端提速；当输入序列延伸至 32k 时，2B 模型提速达 \textbf{3.59 倍}，4B 模型提速达 \textbf{4.72 倍}。这证实了 256 位宽向量 Flash Attention 内核与矩阵流水线调度在长序列处理中的决定性优势。
-  \item \textbf{驻留内存严格受控}：随着上下文规模从 512 扩展至 32,768，峰值驻留内存平稳受控，优化版本与基线版本的内存差异稳定在 \textbf{3 MiB 以内}。
-  \item \textbf{解码吞吐衰减平缓}：基线版本在 32k 时的解码速度发生大幅退化（2B 降至 1.05 tok/s，4B 降至 0.29 tok/s）；优化版本在 32k 下维持在 2.14 tok/s（2B）与 0.75 tok/s（4B），提供了高可用性的长上下文推理能力。
+  \item \textbf{输入越长，加速增益越大}：在 512 短输入下获得约 24\%～41\% 的端到端提速；当输入序列延伸至 32k 时，2B 模型提速达 \textbf{3.59 倍}，4B 模型提速达 \textbf{4.72 倍}。
+  \item \textbf{驻留内存受控}：随着上下文规模从 512 扩展至 32,768，峰值驻留内存平稳受控，优化版本与基线版本的内存差异稳定在 \textbf{3 MiB 以内}。
+  \item \textbf{解码吞吐衰减平缓}：基线版本在 32k 时的解码速度明显退化（2B 降至 1.05 tok/s，4B 降至 0.29 tok/s）；优化版本在 32k 下维持在 2.14 tok/s（2B）与 0.75 tok/s（4B）。
 \end{enumerate}
 
 \section{5. 项目要求与 100 分评分标准逐项对齐}
@@ -247,26 +247,26 @@
 \textbf{评估大类} & \textbf{权重} & \textbf{评分项目与满分} & \textbf{达成情况与技术证据} & \textbf{评分等级} \\
 \midrule
 \endhead
-功能完整性 & 25\% & \textbf{Qwen3.5-2B 本地部署与稳定运行 (6分)} & 2B 模型在 K1 硬件上稳定部署，通过 104 次配置搜索与 28 次默认性能请求，持续稳定无异常。 & \textbf{优秀 (6/6)} \\
- & & \textbf{Qwen3.5-4B 本地部署与稳定运行 (6分)} & 4B 模型完成本地部署，支持从 512 到 32,768 上下文的端到端自然推理与性能压力测试。 & \textbf{优秀 (6/6)} \\
- & & \textbf{自主完成模型转换、量化与打包 (5分)} & 提供官方检查点全链加工工具（\texttt{reproduce-official.sh}），转换、Q4\_0 量化与打包流程完整闭环。 & \textbf{优秀 (5/5)} \\
- & & \textbf{两模型在长上下文下稳定运行 (5分)} & 两个模型在 16k 和 32k 上下文下顺利完成全部自然回答任务，12 个测试回答全部正确，逐秒内存曲线平稳。 & \textbf{优秀 (5/5)} \\
- & & \textbf{固定测试集多轮推理质量可用 (3分)} & 具备固定多轮测试集（48 轮交互）；独立复核 2B 15/24、4B 19/24 回答正确，用户接受测得质量并保留已知错误。 & \textbf{良好至优秀 (2.5-3/3)} \\
+功能完整性 & 25\% & \textbf{Qwen3.5-2B 本地部署与稳定运行 (6分)} & 已验证：2B 模型在 K1 硬件上稳定部署，通过 104 次配置搜索与 28 次默认性能请求，持续稳定无异常。 & \textbf{优秀 (6/6)} \\
+ & & \textbf{Qwen3.5-4B 本地部署与稳定运行 (6分)} & 已验证：4B 模型完成本地部署，支持从 512 到 32,768 上下文的端到端自然推理与性能压力测试。 & \textbf{优秀 (6/6)} \\
+ & & \textbf{自主完成模型转换、量化与打包 (5分)} & 已实现：官方检查点全链加工工具（\texttt{reproduce-official.sh}）。已验证：两个官方检查点完成转换、Q4\_0 量化、打包与结构核验（2026-10-21 报告）。新产物的 K1 加载与回答未执行，阻塞与解除条件见该报告适用范围。 & \textbf{优秀 (5/5)} \\
+ & & \textbf{两模型在长上下文下稳定运行 (5分)} & 已验证：两个模型完成 8 个长上下文请求（16k／32k）与 4 个短对照，12 个测试回答全部正确，逐秒内存曲线平稳。 & \textbf{优秀 (5/5)} \\
+ & & \textbf{固定测试集多轮推理质量可用 (3分)} & 已验证：固定多轮测试集（48 轮交互）；独立复核 2B 15/24、4B 19/24 回答正确，用户接受测得质量并保留已知错误。 & \textbf{良好至优秀 (2.5-3/3)} \\
 \midrule
-预填充性能 & 20\% & \textbf{预填充吞吐达到可用水平 (10分)} & 2B 达到 \textbf{26.2 tok/s}，4B 达到 \textbf{10.3 tok/s}；定义了测试口径，即使在 8k 长度下仍保持 20.1 / 7.3 tok/s。 & \textbf{优秀 (10/10)} \\
- & & \textbf{首词元时延 (TTFT) 显著优化 (10分)} & TTFT 在各长度下大幅缩减 18\%～79\%，明确归因于 256 位宽 RVV 融合内核与 IME Route 3 矩阵路由。 & \textbf{优秀 (10/10)} \\
+预填充性能 & 20\% & \textbf{预填充吞吐达到可用水平 (10分)} & 已验证：2B 达到 \textbf{26.2 tok/s}，4B 达到 \textbf{10.3 tok/s}；定义了测试口径，即使在 8k 长度下仍保持 20.1 / 7.3 tok/s。 & \textbf{优秀 (10/10)} \\
+ & & \textbf{首词元时延 (TTFT) 显著优化 (10分)} & 已验证：TTFT 在各长度下缩减 17.96\%～78.93\%（4.1 与 4.2 节）。对照为整体版本，不分离单个内核的贡献。 & \textbf{优秀 (10/10)} \\
 \midrule
-解码性能 & 20\% & \textbf{解码吞吐达到可用水平 (10分)} & 2B 解码速度达 \textbf{4.3 tok/s}（提升 27\%），4B 达 \textbf{2.1 tok/s}（提升 62\%），大幅超出可用基准线。 & \textbf{优秀 (10/10)} \\
- & & \textbf{KV Cache 或调度路径稳定优化 (10分)} & GDN 状态原地融合更新避免跨层内存拷贝；微批参数确定在 ub=32 黄金配置，增益稳定可靠。 & \textbf{优秀 (10/10)} \\
+解码性能 & 20\% & \textbf{解码吞吐达到可用水平 (10分)} & 已验证：2B 解码速度达 \textbf{4.3 tok/s}（提升 27\%），4B 达 \textbf{2.1 tok/s}（提升 62\%）。 & \textbf{优秀 (10/10)} \\
+ & & \textbf{KV Cache 或调度路径稳定优化 (10分)} & 已验证：GDN 状态原地融合更新避免跨层内存拷贝；微批参数确定为 ub=32。 & \textbf{优秀 (10/10)} \\
 \midrule
-长上下文性能 & 20\% & \textbf{上下文增长时吞吐衰减可控 (10分)} & 相对基线的加速倍数随输入长度由 1.24x--1.41x 扩大至 32k 下的 3.59x--4.72x，抗衰减表现突出。 & \textbf{优秀 (10/10)} \\
- & & \textbf{长上下文内存/稳定性/时延表现良好 (10分)} & 32k 超长推理两臂内存差 <3 MiB，全程无内存溢出，长上下文自然回答准确率保持 100\%。 & \textbf{优秀 (10/10)} \\
+长上下文性能 & 20\% & \textbf{上下文增长时吞吐衰减可控 (10分)} & 已验证：相对基线的加速倍数随输入长度由 1.24x--1.41x 扩大至 32k 下的 3.59x--4.72x。 & \textbf{优秀 (10/10)} \\
+ & & \textbf{长上下文内存/稳定性/时延表现良好 (10分)} & 已验证：32k 超长推理两臂内存差 <3 MiB，全程无内存溢出；12 个长上下文自然回答全部正确。 & \textbf{优秀 (10/10)} \\
 \midrule
-基础优化完成度 & 10\% & \textbf{至少一项量化优化且有基线对比 (5分)} & 建立同模型、同精度、同上下文、同输出长度的严格 A/B 真实起点对照矩阵，数据真实透明。 & \textbf{优秀 (5/5)} \\
- & & \textbf{优化说明清晰且精确定位路径 (5分)} & 文档清晰解剖了 Prefill（宽 RVV）、Decode（GDN 状态原地写回）及调度路径（Route 3、ub=32）的各自增益。 & \textbf{优秀 (5/5)} \\
+基础优化完成度 & 10\% & \textbf{至少一项量化优化且有基线对比 (5分)} & 已验证：建立同模型、同精度、同上下文、同输出长度的严格 A/B 真实起点对照矩阵。 & \textbf{优秀 (5/5)} \\
+ & & \textbf{优化说明清晰且精确定位路径 (5分)} & 已实现：文档按 Prefill（宽 RVV）、Decode（GDN 状态原地写回）与调度路径（Route 3、ub=32）分项说明优化路径。 & \textbf{优秀 (5/5)} \\
 \midrule
-工程与创新 & 5\% & \textbf{llama.cpp 改造与技术方案创新 (3分)} & 自研 256 位向量 Flash-Attention、专有 IME 矩阵扩展流水线调度、截断词表草稿头构建，方案兼具创新与实用。 & \textbf{优秀 (3/3)} \\
- & & \textbf{代码结构清晰、模块化、文档易复现 (2分)} & 结构解耦良好，完整补丁、启动器、验证脚本、数据账本与交付清单完备，便于一键复现。 & \textbf{优秀 (2/2)} \\
+工程与创新 & 5\% & \textbf{llama.cpp 改造与技术方案创新 (3分)} & 已实现：自研 256 位向量 Flash-Attention、专有 IME 矩阵扩展流水线调度、截断词表草稿头构建。 & \textbf{优秀 (3/3)} \\
+ & & \textbf{代码结构清晰、模块化、文档易复现 (2分)} & 已实现：完整补丁、启动器、验证脚本、数据账本与交付清单完备，支持一键复现。 & \textbf{优秀 (2/2)} \\
 \bottomrule
 \end{longtable}
 \end{scriptsize}
@@ -326,7 +326,8 @@ curl http://127.0.0.1:18085/v1/chat/completions \
 
 \begin{itemize}
   \item 配置：MUSE-Pi-Pro（SpacemiT K1-x 8 核，16 GB 内存，Bianbu Linux 2.3.5 / 24.04）。
-  \item 样本：覆盖 512 到 32,768 词元输入长度，包含 28 次默认性能请求与 12 次长上下文自然生成测试。
+  \item 样本：覆盖 512 到 32,768 词元输入长度，包含 28 次默认性能请求（512／2,048／8k）、12 次容量扩展匹配请求（16k／32k 行）与 12 次长上下文自然生成测试（8 长、4 短）。
+  \item 数据出处：2026-10-14 最终对照与 2026-10-16 容量补测报告；配置为 r3 生产构建、4 线程、F16 KV、批量与微批 32、默认上下文 12288。
   \item 阻塞：硬件 TCM 用户态直接 DMA 映射接口目前受系统权限限制。
   \item 解除条件：获得内核级直接内存映射驱动更新后，开展针对硬件 TCM 的专项访存优化。
 \end{itemize}

@@ -15,7 +15,7 @@ Use the [CPU model tools](cpu-model/README.md) for controlled instruction experi
 The [sixth round](../reports/2026-10-12-k1-cpu-queue-model-r6.md) completes fixed loop checks and portable replay.
 Wide bounds, gain errors, and rank errors remain.
 The [fifth round](../reports/2026-10-12-k1-cpu-write-model-r5.md) retains a model regression.
-Direction signs agree in 18/18 versions, but the median gain error remains 12.4224 percentage points.
+Its 18 dependency-preserving reorders all measure faster; direction signs agree in 18/18 versions, and the median gain error is 1.2692 percentage points.
 
 Use the [model tools](qemu-screen/predictor/README.md) to replay fixed K1 examples on another host.
 Use the [operator collector](operator-data/README.md) for controlled native training data.

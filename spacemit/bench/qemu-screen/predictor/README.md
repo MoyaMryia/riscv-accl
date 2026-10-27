@@ -109,7 +109,7 @@ python3 spacemit/bench/qemu-screen/predictor/model-bundle.py --output lab/k1-por
 python3 run-examples.py --output ../k1-replay
 ```
 
-本轮全部范例主机重放用时约 0.38 s 与 0.32 s。
+本轮范例主机重放用时约 0.38 s 与 0.32 s。
 这不是 K1 运行时间。
 新算法必须另建适用范围与独立误差校准。
 模型能力、检查缺口与投入顺序见 V6 报告。

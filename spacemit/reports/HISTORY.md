@@ -10,7 +10,7 @@
 | [根目录早期报告](../../FINAL-REPORT.md) | 2026-09-21 短输入实验，含后续注记 | 历史“最终”标题不表示现行验收完成。不同量化的旧文档数值不是匹配基线。 |
 | [早期部署说明](../README.md)、[补丁工具](../../archive/patches-5ad05d8/apply-patches.sh)、`../../archive/patches-5ad05d8/patches/` | 从 `5ad05d8` 开始的补丁栈 | 与 `a990751` 发布包使用不同的干净源码目录。保留 MTP 精确性限制。 |
 | [9 月 TeX](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.tex)、[9 月 PDF](../../archive/reports/k1-llm-inference-optimizations-2026-09-24.pdf) | 2026-09-24 内核实验 | 不包含后续长上下文、质量和矩阵路由结果。 |
-| [旧英文报告快照](snapshots/2026-10-12/SUBMISSION-REPORT.pdf)、[文件收据](snapshots/2026-10-12/receipts.json) | 2026-10-12 导出快照 | 保留原 Markdown、TeX、PDF 与工具字节。主入口已更新为 2026-10-16；现行判定使用根目录要求与当前证据。 |
+| [旧英文报告快照](snapshots/2026-10-12/SUBMISSION-REPORT.pdf)、[文件收据](snapshots/2026-10-12/receipts.json) | 2026-10-12 导出快照 | 保留原 Markdown、TeX、PDF 与工具字节。主入口已更新为 2026-10-22；现行判定使用根目录要求与当前证据。 |
 | [10 月 11 日进度](2026-10-11-project-progress.md)、[版本比较](2026-10-11-original-current-comparison.md) | 三项全开组合停止前 | 后续停止结论见 [10 月 12 日复核](2026-10-12-combined-stop-audit.md)。 |
 | [10 月 12 日差距核对](2026-10-12-current-requirements-gap.md) | 当日要求核对 | 当前逐项缺口由 [10 月 13 日报告](2026-10-13-requirements-gap.md)接续。 |
 | [实验协议目录](../experiments/README.md) | 各协议规定的版本与门槛 | 协议存在不表示测试已运行或已通过。必须查对应结果。 |
@@ -27,4 +27,5 @@ TCM 的普通用户不可用状态只描述该用户进程。
 新报告仍保留根要求的验收缺口。
 2026-10-16 更新追加[16k／32k 容量补测](2026-10-16-ultralong-final-comparison.md)与[最终版 TCM 调查](2026-10-16-final-release-tcm.md)。
 补测沿用 r3 生产二进制，普通默认上下文仍为 12288。
+2026-10-22 更新在综合报告新增第 9 节后续验收记录（官方检查点加工、固定多轮 v1／v2、自然长上下文），并把 16 份报告同步进成果包。
 更新前的报告见[10 月 14 日快照](snapshots/2026-10-14-final-r3/SUBMISSION-REPORT.md)与[TCM 调查前快照](snapshots/2026-10-16-before-tcm/SUBMISSION-REPORT.md)。

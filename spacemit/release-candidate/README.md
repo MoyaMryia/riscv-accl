@@ -77,7 +77,7 @@ bash package/with-lock.sh python3 package/run.py \
   --profile optimized --receipt 4B-launch.json
 ```
 
-启动器固定四线程、6144 上下文、单槽、批量及微批量 32、F16 键和值缓存以及 CPU 后端。
+启动器固定四线程、6,144 上下文、单槽、批大小与微批大小 32、F16 键和值缓存以及 CPU 后端。
 服务器只监听本机 `127.0.0.1:8080`。
 推理不依赖云端 API。
 在同一 tmux 会话的新窗口发送本地请求。

@@ -3,7 +3,7 @@
 > 历史说明：本文保留 2026-09-21 的短输入测试记录。
 > 唯一现行要求见 [Requirements.md](Requirements.md)。
 > 当前部署、结果与验收缺口见[部署入口](spacemit/DEPLOYMENT.md)、[结果索引](spacemit/reports/RESULTS.md)和[缺口报告](spacemit/reports/2026-10-13-requirements-gap.md)。
-> [英文报告](spacemit/reports/SUBMISSION-REPORT.md)、[PDF](spacemit/reports/SUBMISSION-REPORT.pdf)和[证据附录](spacemit/reports/SUBMISSION-EVIDENCE.md)已更新为 2026-10-14。
+> [英文报告](spacemit/reports/SUBMISSION-REPORT.md)、[PDF](spacemit/reports/SUBMISSION-REPORT.pdf)和[证据附录](spacemit/reports/SUBMISSION-EVIDENCE.md)已更新为 2026-10-22。
 > [最终默认对照](spacemit/reports/2026-10-14-final-default-comparison.md)记录单一构建与真实起点的匹配实测；旧英文导出另存快照。
 > 本文的历史标题不表示当前所有候选均已完成验收。
 
@@ -30,7 +30,7 @@ export LD_LIBRARY_PATH=$HOME/Projects/llm-bench/.toolchain/spine-tcm:$PWD/spert/
 | llama-bench tg128 | 3.07（Q4_1，文档值） | **5.19 ± 0.00** | +69% |
 | llama-bench pp128 | 10.32（Q4_1） | **22.07**（-ub 32） | +114% |
 | server 单路 tg（MTP+dv64k，128-token 样本一致） | — | **6.31 t/s** | 对基线 +106% |
-| server 多流聚合 conc=8 | — | **13.89 t/s** | — |
+| server 多流聚合 conc=8 | — | **13.89 t/s** | 另一次记录为 13.85，见下表默认行 |
 
 并发全景（server，-t 4 -ub 32 -fa on）：
 
@@ -44,7 +44,7 @@ export LD_LIBRARY_PATH=$HOME/Projects/llm-bench/.toolchain/spine-tcm:$PWD/spert/
 
 | 指标 | 数值 | 备注 |
 |---|---|---|
-| llama-bench tg128 | 2.30 | 2.38 GB÷5.4 GB/s=440 ms/tok，**已在带宽地板** |
+| llama-bench tg128 | 2.30 | 2.38 GB÷5.4 GB/s=440 ms/tok，**已在带宽地板**；5.4 GB/s 由耗时反推，2026-10-12 的 k1-model-v3 实测同平台单线程连续读有效载荷 7.314 GB/s，两者口径不同 |
 | llama-bench pp128（-ub 32） | 9.04 | |
 | server 单路 tg：非投机 → MTP 全词表 → **MTP+dv64k** | 2.23 → 2.88 → **3.20 t/s** | **+43%，128-token 样本一致** |
 | server conc=8 聚合（非投机） | 6.50 t/s | conc1/2/4：2.21/2.97/5.48 |
@@ -81,13 +81,13 @@ libspert 通过弱符号探测 `libspine_tcm.so`。该库不在 `LD_LIBRARY_PATH
 
 ### 4. 自适应投机门控 + checkpoint 回滚默认（多流逆袭关键）
 
-发现链：启用 spec 后设 `cparams.n_rs_seq=3`（recurrent 回滚快照），每轮维护 SSM 快照拷贝（conc=8 时 dup_bytes 8.6%），且**屏蔽 GDN 原地快路**。多流即使不打草稿也亏 24%（9.85 对 13.49）。
+发现链：启用 spec 后设 `cparams.n_rs_seq=3`（recurrent 回滚快照），每轮维护 SSM 快照拷贝（conc=8 时 dup_bytes 8.6%），且**屏蔽 GDN 原地快路**。多流即使不打草稿也亏 27%（9.85 对 13.49）。
 解法：
 
 - `SPINE_SPEC_MAX_ACTIVE`（默认 1）：活跃槽超过阈值时自动停草稿，在途草稿仍正常验证。
 - 默认 `n_rs_seq=0`（checkpoint 回滚，仅 SSM 状态）。`SPINE_SPEC_RS=1` 切回快照模式。
 
-结果：高并发追平或反超非投机（13.85）。单路只付 12%（5.40 对 6.31）。纯单路评测用 RS 模式。
+结果：高并发追平或反超非投机（13.85）。单路只付 14%（5.40 对 6.31）。纯单路评测用 RS 模式。
 **投机交叉点实测**：低并发（≤2）时带宽受限的 spec 占优；高并发（≥4）时 IME 算力受限的 spec 吃亏。
 
 ### 5. pp ubatch 甜点（纯配置，pp128 +69%）

@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | 可运行代码 | `runtime/source/`、`runtime/build/`、`runtime/package/` | 原 r3 已验证；组装时复制完整源码和原生产二进制。 |
 | 一键部署脚本 | `deploy.sh`、`deploy.py`、`docs/DEPLOYMENT.md` | 新入口已实现；本地检查与板端迁移检查分别记录。 |
-| 官方原始模型转换与量化脚本 | `model-materials/tools/`、`converter-source/` | 已实现；必须同时提供固定转换源码和官方输入元数据。完整实际转换待验证。 |
+| 官方原始模型转换与量化脚本 | `model-materials/tools/`、`converter-source/` | 已实现；必须同时提供固定转换源码和官方输入元数据。转换验收状态见 SUBMISSION-CHECKLIST.md。 |
 | 模型转换与部署说明 | `docs/MODEL-CONVERSION.md`、`docs/DEPLOYMENT.md` | 独立说明随包提供，不能依赖本机实验路径。 |
 | 起点与优化性能报告 | `reports/` | 普通默认对照已验证；16k／32k 补测结束后核验并纳入。 |
 | 框架改造或模型压缩设计 | `docs/DESIGN.md` | 必须说明最终启用路径、回退条件、数值检查和未采用方案。 |

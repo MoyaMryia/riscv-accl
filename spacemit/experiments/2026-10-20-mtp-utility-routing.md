@@ -18,20 +18,22 @@
 | 事实 | 数字 | 记录 |
 | --- | ---: | --- |
 | 代码正控，纯 MTP 对直接 | 122.545 s → 94.101 s，减少 23.21% | [总账](../reports/RESULTS-LEDGER.md) |
-| 代码控制第二批，clamp | -7.32% | [路由端到端](raw/2b-router-codecontrols-20261018-r2/result/summary.json) |
-| 代码控制第二批，deltas | -12.42% | 同上 |
-| 代码控制第二批，count | +16.85% | 同上 |
-| 通用任务，代码 | +2.78% | [通用批次](raw/2b-general-mtp-20261017-r1/result/summary.json) |
+| 代码控制第二批，clamp | -8.24% | [clamp 逐题记录](../reports/raw/2b-router-codecontrols-20261018-r2/result/cases/clamp_values/) |
+| 代码控制第二批，deltas | -12.46% | [deltas 逐题记录](../reports/raw/2b-router-codecontrols-20261018-r2/result/cases/pairwise_deltas/) |
+| 代码控制第二批，count | +15.63% | [count 逐题记录](../reports/raw/2b-router-codecontrols-20261018-r2/result/cases/count_items/) |
+| 通用任务，代码 | +2.78% | [通用批次](../reports/raw/2b-general-mtp-20261017-r1/result/summary.json) |
 | 通用任务，中文 | +69.86% | 同上 |
 | 通用任务，问答 | +34.00% | 同上 |
 | 通用任务，长文 | +40.59% | 同上 |
-| 完整词表对前缀词表 | 慢 13.18% | [完整词表](raw/2b-full-head-ablation-20261017-r1/result/summary.json) |
-| BERT 意图路由，端到端 | +0.11% | [路由端到端](raw/2b-bert-router-e2e-20261018-r1/result/summary.json) |
+| 完整词表对前缀词表 | 慢 13.18% | [完整词表](../reports/raw/2b-full-head-ablation-20261017-r1/result/summary.json) |
+| BERT 意图路由，端到端 | +0.11% | [路由端到端](../reports/raw/2b-bert-router-e2e-20261018-r1/result/summary.json) |
 | BERT 测试集对 ngram | 86.46% 对 38.54% | [分类器](../reports/2026-10-18-2b-bert-classifier.md) |
 
 由上表得到本规范的出发点：类别标签与收益方向不一致。
-同一类别内既有 -12.42%，也有 +16.85%。
+同一类别内既有 -12.46%，也有 +15.63%。
 因此路由的预测对象是每请求收益；类别只作分组标签。
+
+> 2026-10-28 更正：原表“代码控制第二批”三行误引 BERT 路由批次的逐题数字（-7.32%／-12.42%／+16.85%），已按 `2b-router-codecontrols-20261018-r2` 各案例目录 `answer.json` 的 `wall_s` 改为 -8.24%／-12.46%／+15.63%；结论不变。
 
 ## 3. 定义
 

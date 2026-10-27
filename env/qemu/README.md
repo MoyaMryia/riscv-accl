@@ -6,8 +6,8 @@
 
 ```bash
 cd env/qemu
-./boot.sh                 # 默认 512MB 内存，落到 root shell
-./boot.sh --rebuild 1024  # 先重建 initramfs，再用 1GB 内存启动
+./boot.sh                 # 默认 512 MB 内存，落到 root shell
+./boot.sh --rebuild 1024  # 先重建 initramfs，再用 1 GB 内存启动
 ```
 
 启动后进入 `(none):~#`（或 `#`）busybox root shell。退出 QEMU 用 `Ctrl-A x`，这是 QEMU `-nographic` 的默认停止快捷键。也可以用 `Ctrl-A c` 切到 QEMU monitor，再输入 `quit`。注意 `Ctrl-C` 会直接送达 guest shell，不能用来退出 QEMU。
@@ -20,9 +20,9 @@ cd env/qemu
 
 | 文件 | 大小 | 说明 |
 |---|---|---|
-| `boot.sh` | 1.4KB | 启动脚本 |
-| `vmlinux-rv64` | 31MB | 内核 Image（Debian 6.12.94 riscv64，EFI-stub） |
-| `initramfs.cpio.gz` | 3.4MB | 已打好的 initramfs（busybox + `/init` + `/etc/inittab`） |
+| `boot.sh` | 1.4 KB | 启动脚本 |
+| `vmlinux-rv64` | 31 MB | 内核 Image（Debian 6.12.94 riscv64，EFI-stub） |
+| `initramfs.cpio.gz` | 3.4 MB | 已打好的 initramfs（busybox + `/init` + `/etc/inittab`） |
 | `initrd-root/` | — | initramfs 源目录，用 `--rebuild` 重打 |
 
 `boot.sh` 每次 `--rebuild` 会执行：`cd initrd-root && find . | cpio -o -H newc | gzip > initramfs.cpio.gz`。
@@ -37,7 +37,7 @@ cd env/qemu
 2. **rootfs**：Alpine riscv64 minirootfs。
    `https://mirror.nju.edu.cn/alpine/edge/releases/riscv64/alpine-minirootfs-20260805-riscv64.tar.gz`
 
-注意：NJU 及国内教育镜像**没有** `debian-cloud-images`。Debian 官方 riscv64 cloud 镜像只在 `cloud.debian.org`，实测约 210KB/s，慢且非教育网。因此用 "Debian 内核 + Alpine rootfs" 组合，两种资源都落在 NJU 上。
+注意：NJU 及国内教育镜像**没有** `debian-cloud-images`。Debian 官方 riscv64 cloud 镜像只在 `cloud.debian.org`，实测约 210 KB/s，慢且非教育网。因此用 "Debian 内核 + Alpine rootfs" 组合，两种资源都落在 NJU 上。
 
 ## 四、验收标准
 
