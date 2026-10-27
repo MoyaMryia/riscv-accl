@@ -76,6 +76,7 @@ bash deploy.sh /absolute/path/to/model.gguf
 
 [模型转换说明](MODEL-CONVERSION.md)提供从固定官方检查点开始的完整命令。
 当前实测使用历史加工的两个固定 GGUF。
+旧独立硬件测试结果属于各自历史配置，不计入本发布推理收益；仓库内的完整范围见 `spacemit/reports/HISTORY.md`。
 本包不包含模型权重、厂商运行库或凭据。
 16k／32k 补测只扩大上下文容量，普通默认容量仍为 12288。
 配置与样本数见综合报告的“适用范围”。
